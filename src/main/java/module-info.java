@@ -30,6 +30,9 @@ module com.example.pharmacymanagementsystem_qlht {
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuNhapHang;
+    exports com.example.pharmacymanagementsystem_qlht.view;
+
+
     requires javafx.base;
     requires java.sql;
     requires java.prefs;
@@ -76,4 +79,7 @@ module com.example.pharmacymanagementsystem_qlht {
     exports com.example.pharmacymanagementsystem_qlht.TienIch;
     opens com.example.pharmacymanagementsystem_qlht.TienIch to javafx.fxml;
 
+
+
+    opens com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia to javafx.graphics;
 }
