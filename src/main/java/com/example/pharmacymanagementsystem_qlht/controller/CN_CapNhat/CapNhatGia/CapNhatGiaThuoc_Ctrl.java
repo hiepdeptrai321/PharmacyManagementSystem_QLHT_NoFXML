@@ -1,7 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatGia;
 
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
-import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -40,12 +39,11 @@ public class CapNhatGiaThuoc_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatGia/CapNhatGiaThuoc_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-
+        // call the GUI helper that injects controls into this controller then initializes
+        new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia.CapNhatGiaThuoc_GUI()
+                .showWithController(stage, this);
     }
+
     public void initialize() {
         tfTimThuoc.setOnAction(e-> timThuoc());
         btnReset.setOnAction(e-> LamMoi());
