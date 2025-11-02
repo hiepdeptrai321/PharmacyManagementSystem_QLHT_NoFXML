@@ -1,8 +1,9 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhaCungCap;
 
 import com.example.pharmacymanagementsystem_qlht.dao.NhaCungCap_Dao;
-import com.example.pharmacymanagementsystem_qlht.model.KeHang;
 import com.example.pharmacymanagementsystem_qlht.model.NhaCungCap;
+import com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia.CapNhatGiaThuoc_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNCC.DanhMucNhaCungCap_GUI;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -24,32 +25,20 @@ public class DanhMucNhaCungCap_Ctrl extends Application {
 
     public TableColumn colChiTietNhaCungCap;
     public TableColumn<NhaCungCap, String> colChiTiet;
-    @FXML
-    private TableView<NhaCungCap> tblNhaCungCap;
-    @FXML
-    private TableColumn<NhaCungCap, String> colMaNCC;
-    @FXML
-    private TableColumn<NhaCungCap, String> colTenNCC;
-    @FXML
-    private TableColumn<NhaCungCap, String> colDiaChi;
-    @FXML
-    private TableColumn<NhaCungCap, String> colSDT;
-    @FXML
-    private TableColumn<NhaCungCap, String> colEmail;
-    @FXML
-    private TableColumn<NhaCungCap, String> colGhiChu;
-    @FXML
+    public TableView<NhaCungCap> tblNhaCungCap;
+    public TableColumn<NhaCungCap, String> colMaNCC;
+    public TableColumn<NhaCungCap, String> colTenNCC;
+    public TableColumn<NhaCungCap, String> colDiaChi;
+    public TableColumn<NhaCungCap, String> colSDT;
+    public TableColumn<NhaCungCap, String> colEmail;
+    public TableColumn<NhaCungCap, String> colGhiChu;
     private TableColumn<NhaCungCap, String> colTenCongTy;
-    @FXML
-    private TableColumn<NhaCungCap, String> colSTT;
-    @FXML
-    private TextField txtTimKiem;
-    @FXML
-    private Button btnLamMoi;
-    @FXML
+    public TableColumn<NhaCungCap, String> colSTT;
+    public TextField txtTimKiem;
+    public Button btnLamMoi;
+    public Button btnThemNCC;
     private NhaCungCap_Dao nhaCungCapDao =  new NhaCungCap_Dao();
-    @FXML
-    private Button btnTim;
+    public Button btnTim;
 
 
 //  Phương thức khởi tạo
@@ -59,6 +48,7 @@ public class DanhMucNhaCungCap_Ctrl extends Application {
         btnLamMoi.setOnAction(e-> LamMoi());
         btnTim.setOnAction(e-> TimKiem());
         txtTimKiem.setOnAction(e-> TimKiem());
+        btnThemNCC.setOnAction(e -> btnThemNCC());
     }
 
 //  Load nhà cung cấp vào bảng
@@ -111,52 +101,56 @@ public class DanhMucNhaCungCap_Ctrl extends Application {
 //  Nhớ xóa
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNCC/DanhMucNhaCungCap_GUI.fxml")));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        new DanhMucNhaCungCap_GUI()
+                .showWithController(stage, this);
     }
 
 //  Button mở giao diện sửa xóa nhà cung cấp
-    private void suaXoaNhaCungCap(NhaCungCap ncc) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNCC/SuaXoaNhaCungCap_GUI.fxml"));
-            Parent root = loader.load();
+private void suaXoaNhaCungCap(NhaCungCap ncc) {
+    try {
+        // Tạo GUI view
+        var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNCC.SuaXoaNhaCungCap_GUI();
 
-//          Thêm dữ liệu nhà cung cấp vào ctrl sửa xóa
-            SuaXoaNhaCungCap_Ctrl ctrl = loader.getController();
-            ctrl.initialize(ncc);
-            ctrl.setDanhMucNhaCungCap_ctrl(this);
+        // Tạo controller tương ứng
+        var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhaCungCap.SuaXoaNhaCungCap_Ctrl();
 
-            Stage dialog = new Stage();
-            dialog.initOwner(btnLamMoi.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Chi tiết nhà cung cấp");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Truyền controller cha (để reload danh sách)
+        ctrl.setDanhMucNhaCungCap_ctrl(this);
+
+        // Truyền NCC để form fill dữ liệu
+        ctrl.loadData(ncc);
+
+        // Tạo stage
+        Stage dialog = new Stage();
+        dialog.initOwner(btnLamMoi.getScene().getWindow());
+        dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        dialog.setTitle("Chi tiết nhà cung cấp");
+
+        // Show thông qua hàm view
+        gui.showWithController(dialog, ctrl);
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
-//  Button mở giao diện thêm nhà cung cấp
-    public void btnThemNCC(ActionEvent actionEvent) {
+
+    //  Button mở giao diện thêm nhà cung cấp
+    public void btnThemNCC() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNCC/ThemNhaCungCap_GUI.fxml"));
-            Parent root = loader.load();
+            var gui = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNCC.ThemNhaCungCap_GUI();
+
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhaCungCap.ThemNhaCungCap_Ctrl();
 
 //          Thêm dữ liệu ctrl cha vào ctrl thêm
-            ThemNhaCungCap_Ctrl ctrl = loader.getController();
             ctrl.setParentCtrl(this);
 
             Stage dialog = new Stage();
             dialog.initOwner(btnLamMoi.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Chi tiết nhà cung cấp");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+            dialog.setTitle("Thêm nhà cung cấp");
+
+            gui.showWithController(dialog, ctrl);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -185,7 +179,7 @@ public class DanhMucNhaCungCap_Ctrl extends Application {
     public void refreshTable() {
         loadNhaCungCap();
     }
-    @FXML
+
     private void LamMoi() {
         txtTimKiem.clear();
         loadNhaCungCap();
