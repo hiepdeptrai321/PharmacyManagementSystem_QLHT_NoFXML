@@ -2,10 +2,6 @@ package com.example.pharmacymanagementsystem_qlht.model;
 
 import java.time.LocalDate;
 
-/**
- * Lớp Wrapper đơn giản để hiển thị Hóa đơn trong bảng Thống kê.
- * Chứa các kiểu dữ liệu đơn giản (String, double, LocalDate).
- */
 public class HoaDonDisplay {
     private String maHD;
     private LocalDate ngayLap;
@@ -21,15 +17,10 @@ public class HoaDonDisplay {
         this.tongTien = tongTien;
     }
 
-    // Getters và Setters
+    // Getters
     public String getMaHD() { return maHD; }
-    public void setMaHD(String maHD) { this.maHD = maHD; }
     public LocalDate getNgayLap() { return ngayLap; }
-    public void setNgayLap(LocalDate ngayLap) { this.ngayLap = ngayLap; }
     public String getMaKH() { return maKH; }
-    public void setMaKH(String maKH) { this.maKH = maKH; }
     public String getMaNV() { return maNV; }
-    public void setMaNV(String maNV) { this.maNV = maNV; }
     public double getTongTien() { return tongTien; }
-    public void setTongTien(double tongTien) { this.tongTien = tongTien; }
 }
