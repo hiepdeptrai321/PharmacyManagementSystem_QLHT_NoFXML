@@ -22,7 +22,7 @@ import java.time.LocalDate; // <-- THÊM
  * Lớp View (Đã cập nhật)
  * Sử dụng HoaDonDisplay thay vì HoaDon
  */
-public class ThongKeBanHang_View {
+public class ThongKeBanHang_GUI {
 
     // --- Panel trái (Giữ nguyên) ---
     public Button btnBang = new Button("Bảng");

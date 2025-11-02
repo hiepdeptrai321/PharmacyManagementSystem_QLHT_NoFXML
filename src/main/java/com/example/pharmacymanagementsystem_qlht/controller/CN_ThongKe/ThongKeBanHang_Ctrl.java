@@ -1,6 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe;
 
-import com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe.ThongKeBanHang_View;
+import com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe.ThongKeBanHang_GUI;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,7 +54,7 @@ import javafx.util.Callback; // <-- THÊM
 
 public class ThongKeBanHang_Ctrl extends Application {
 
-    private ThongKeBanHang_View view;
+    private ThongKeBanHang_GUI view;
     private ThongKe_Dao tkDao = new ThongKe_Dao();
     private HoaDon_Dao hoaDonDao = new HoaDon_Dao(); // <-- THÊM
     private ObservableList<ThongKeBanHang> listThongKe;
@@ -63,7 +63,7 @@ public class ThongKeBanHang_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        view = new ThongKeBanHang_View();
+        view = new ThongKeBanHang_GUI();
         Parent root = view.createContent();
         setupLogic();
         Scene scene = new Scene(root);

@@ -5,7 +5,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.ThongKeXNT_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeTonKho;
 import com.example.pharmacymanagementsystem_qlht.model.ThuocHetHan;
 
-import com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe.ThongKeXNT_View;
+import com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe.ThongKeXNT_GUI;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 // XÓA: import java.net.URL;
-import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 // XÓA: import java.util.ResourceBundle;
@@ -57,7 +56,7 @@ public class ThongKeXNT_Ctrl extends Application {
     // (Chúng đã được chuyển sang ThongKeXNT_View)
 
     // --- 2. KHAI BÁO VIEW ---
-    private ThongKeXNT_View view;
+    private ThongKeXNT_GUI view;
 
     // --- 3. CÁC BIẾN LOGIC (GIỮ NGUYÊN) ---
     private ObservableList<ThongKeTonKho> masterDataTonKho = FXCollections.observableArrayList();
@@ -70,7 +69,7 @@ public class ThongKeXNT_Ctrl extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         // 1. Khởi tạo View
-        view = new ThongKeXNT_View();
+        view = new ThongKeXNT_GUI();
 
         // 2. Dựng giao diện từ View
         Parent root = view.createContent();

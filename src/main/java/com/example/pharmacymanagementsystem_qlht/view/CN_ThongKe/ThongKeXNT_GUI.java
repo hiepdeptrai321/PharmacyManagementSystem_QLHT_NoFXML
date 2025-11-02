@@ -20,7 +20,7 @@ import java.time.LocalDate;
  * Nó KHÔNG chứa logic nghiệp vụ hay xử lý sự kiện.
  * Nó cung cấp các thành phần (public) để Controller có thể truy cập và gắn logic vào.
  */
-public class ThongKeXNT_View {
+public class ThongKeXNT_GUI {
 
     // --- Khai báo public các thành phần để Controller có thể truy cập ---
 
