@@ -1,14 +1,12 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhomDuocLy;
 
-import com.example.pharmacymanagementsystem_qlht.dao.KeHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.NhomDuocLy_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
-import com.example.pharmacymanagementsystem_qlht.model.KeHang;
-import com.example.pharmacymanagementsystem_qlht.model.NhaCungCap;
 import com.example.pharmacymanagementsystem_qlht.model.NhomDuocLy;
+// Import file GUI mới
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhomDuocLy.XoaSuaNhomDuocLy_GUI;
 import javafx.application.Application;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML; // Giữ nguyên
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,17 +18,18 @@ import java.util.List;
 
 public class SuaXoaNhomDuocLy extends Application {
 
+    // *** THAY ĐỔI 1: Bỏ 'private' ***
     @FXML
-    private Pane btnLuu;
+    public Pane btnLuu;
 
     @FXML
-    private Pane btnXoa;
+    public Pane btnXoa;
 
     @FXML
-    private TextArea txtMota;
+    public TextArea txtMota;
 
     @FXML
-    private TextField txtTenNDL;
+    public TextField txtTenNDL;
 
     private NhomDuocLy_Dao nhomDuocLyDao = new NhomDuocLy_Dao();
     private Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
@@ -40,28 +39,45 @@ public class SuaXoaNhomDuocLy extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhomDuocLy/XoaSuaNhomDuocLy.fxml"));
+        // *** THAY ĐỔI 2: Thay thế 2 dòng FXMLLoader ***
+        // Parent root = FXMLLoader.load(getClass().getResource(".../XoaSuaNhomDuocLy.fxml"));
+
+        XoaSuaNhomDuocLy_GUI gui = new XoaSuaNhomDuocLy_GUI();
+        Parent root = gui.createContent(this); // Bơm component vào 'this'
+
+        // *** THAY ĐỔI 3: Gọi initialize() bằng tay ***
+        initialize();
+
+        // Phần còn lại giữ nguyên
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThemNhaCungCap.css" + "").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThemNhaCungCap.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void initialize() {
         btnLuu.setOnMouseClicked(event -> luuNDL());
         btnXoa.setOnMouseClicked(event -> xoaNDL());
     }
 
-
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void hienThiThongTin(NhomDuocLy ndl) {
         if (ndl != null) {
             nhomDuocLyhientai = ndl;
             txtTenNDL.setText(ndl.getTenNDL());
             txtMota.setText(ndl.getMoTa() != null ? ndl.getMoTa() : "");
-
         }
     }
+
+    // ... TẤT CẢ CÁC HÀM BÊN DƯỚI (luuNDL, xoaNDL, showThuocConTrongNDL, showAlert, dongCuaSo)
+    // ... ĐỀU ĐƯỢC GIỮ NGUYÊN 100% ...
+    // (Tôi sẽ không dán lại chúng để tiết kiệm không gian, bạn chỉ cần
+    //  thay đổi 3 phần tôi đã đánh dấu ở trên trong file của bạn)
+
     private void luuNDL() {
         if (nhomDuocLyhientai == null) {
             showAlert("Lỗi", "Không có dữ liệu kệ hàng để cập nhật!", Alert.AlertType.ERROR);
@@ -95,7 +111,6 @@ public class SuaXoaNhomDuocLy extends Application {
         }
 
         try {
-            // Lấy danh sách thuốc còn trong kệ
             List<String> thuocTrongNDL = thuocDao.layDanhSachThuocTheoNDL(nhomDuocLyhientai.getMaNDL());
 
             if (thuocTrongNDL != null && !thuocTrongNDL.isEmpty()) {
@@ -111,7 +126,6 @@ public class SuaXoaNhomDuocLy extends Application {
                 return;
             }
 
-            // Thực hiện xóa
             boolean success = nhomDuocLyDao.deleteById(nhomDuocLyhientai.getMaNDL());
             if (success) {
                 showAlert("Thành công", "Đã xóa nhóm dược lý thành công!", Alert.AlertType.INFORMATION);
@@ -136,7 +150,6 @@ public class SuaXoaNhomDuocLy extends Application {
         alert.setTitle("Không thể xóa nhóm dược lý");
         alert.setHeaderText("Không thể xóa! nhóm dược lý này vẫn còn thuốc.");
 
-        // Tạo TextArea có scrollbar
         TextArea textArea = new TextArea(sb.toString());
         textArea.setEditable(false);
         textArea.setWrapText(true);

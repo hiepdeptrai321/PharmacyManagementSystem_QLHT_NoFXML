@@ -2,12 +2,15 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhomDu
 
 import com.example.pharmacymanagementsystem_qlht.dao.NhomDuocLy_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.NhomDuocLy;
+// Import các file GUI mới
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhomDuocLy.DanhMucNhomDuocLy_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhomDuocLy.ThemNhomDuocLy_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhomDuocLy.XoaSuaNhomDuocLy_GUI;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML; // Giữ nguyên
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,49 +21,51 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class DanhMucNhomDuocLy_Ctrl extends Application {
-    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
+    // *** THAY ĐỔI 1: Bỏ 'private' ***
     @FXML
-    private Button btnThem;
-
+    public Button btnThem;
     @FXML
-    private Button btnLamMoi;
-
+    public Button btnLamMoi;
     @FXML
-    private Button btnTim;
-
+    public Button btnTim;
     @FXML
-    private Button btnXoa;
-
+    public Button btnXoa; // Biến này có khai báo nhưng FXML không có, vẫn giữ cho bạn
     @FXML
-    private TableColumn<NhomDuocLy, String> cotMaNDL;
-
+    public TableColumn<NhomDuocLy, String> cotMaNDL;
     @FXML
-    private TableColumn<NhomDuocLy, String> cotSTT;
-
+    public TableColumn<NhomDuocLy, String> cotSTT;
     @FXML
-    private TableColumn<NhomDuocLy, String> cotTenNDL;
-
+    public TableColumn<NhomDuocLy, String> cotTenNDL;
     @FXML
-    private TableColumn<NhomDuocLy, String> colChiTiet;
-
+    public TableColumn<NhomDuocLy, String> colChiTiet;
     @FXML
-    private TableView<NhomDuocLy> tbNhomDuocLy;
-
+    public TableView<NhomDuocLy> tbNhomDuocLy;
     @FXML
-    private TextField txtTimKiem;
+    public TextField txtTimKiem;
 
     private NhomDuocLy_Dao nhomDuocLyDao = new NhomDuocLy_Dao();
 
-    // 2. KHỞI TẠO (INITIALIZE)
-
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhomDuocLy/DanhMucNhomDuocLy.fxml"));
+        // *** THAY ĐỔI 2: Thay thế 2 dòng FXMLLoader ***
+        // Parent root = FXMLLoader.load(getClass().getResource(".../DanhMucNhomDuocLy.fxml"));
+
+        DanhMucNhomDuocLy_GUI gui = new DanhMucNhomDuocLy_GUI();
+        Parent root = gui.createContent(this); // Bơm component vào 'this'
+
+        // *** THAY ĐỔI 3: Gọi initialize() bằng tay ***
+        // (Trong FXML, hàm initialize() của bạn tự loadTable(), ở đây ta làm tương tự)
+        initialize();
+
+        // Phần còn lại giữ nguyên
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyKeHang.css").toExternalForm());
+        // CSS đã được load trong file GUI, dòng này không cần thiết nữa
+        // scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyKeHang.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void initialize() {
         loadTable();
         btnTim.setOnAction(e -> TimKiem());
@@ -68,7 +73,8 @@ public class DanhMucNhomDuocLy_Ctrl extends Application {
         btnThem.setOnAction(e -> btnThemClick(new NhomDuocLy()));
         txtTimKiem.setOnAction(e-> TimKiem());
     }
-    // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void loadTable() {
         List<NhomDuocLy> list = nhomDuocLyDao.selectAll();
         ObservableList<NhomDuocLy> data = FXCollections.observableArrayList(list);
@@ -81,13 +87,8 @@ public class DanhMucNhomDuocLy_Ctrl extends Application {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(item);
-                    setAlignment(Pos.CENTER_LEFT);
-                }
+                if (empty) { setText(null); setGraphic(null); }
+                else { setText(item); setAlignment(Pos.CENTER_LEFT); }
             }
         });
         colChiTiet.setCellFactory(col -> new TableCell<NhomDuocLy, String>() {
@@ -107,8 +108,9 @@ public class DanhMucNhomDuocLy_Ctrl extends Application {
             }
         });
         tbNhomDuocLy.setItems(data);
-
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void TimKiem() {
         String keyword = txtTimKiem.getText().trim().toLowerCase();
         List<NhomDuocLy> list = nhomDuocLyDao.selectAll();
@@ -117,45 +119,68 @@ public class DanhMucNhomDuocLy_Ctrl extends Application {
             return;
         }
 
-
         List<NhomDuocLy> filtered = list.stream()
                 .filter(NhomDuocLy ->
                         (NhomDuocLy.getMaNDL() != null && NhomDuocLy.getMaNDL().toLowerCase().contains(keyword)) ||
                                 (NhomDuocLy.getTenNDL() != null && NhomDuocLy.getTenNDL().toLowerCase().contains(keyword))
-
                 )
                 .toList();
         tbNhomDuocLy.setItems(FXCollections.observableArrayList(filtered));
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     @FXML
     private void LamMoi() {
         txtTimKiem.clear();
         loadTable();
     }
+
+    // *** THAY ĐỔI 4: Sửa lại hàm mở cửa sổ con (Thêm) ***
     public void btnThemClick(NhomDuocLy ndl) {
         try {
             Stage stage = new Stage();
-            FXMLLoader loader =  new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhomDuocLy/ThemNhomDuocLy.fxml"));
-            Parent root = loader.load();
-            //ChiTietNhaCungCap_Ctrl ctrl = loader.getController();
-           // ctrl.hienThiThongTin(ncc);
+
+            // 1. Tạo Controller mới
+            ThemNhomDuocLy_Ctrl ctrl = new ThemNhomDuocLy_Ctrl();
+            // 2. Tạo GUI và bơm component vào controller
+            ThemNhomDuocLy_GUI gui = new ThemNhomDuocLy_GUI();
+            Parent root = gui.createContent(ctrl);
+            // 3. Gọi initialize() của controller con
+            ctrl.initialize();
+
+            // Phần còn lại giữ nguyên
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.initOwner(btnThem.getScene().getWindow()); // Thêm 2 dòng này
+            stage.initModality(javafx.stage.Modality.WINDOW_MODAL); // để làm dialog
             stage.showAndWait();
             loadTable();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    // *** THAY ĐỔI 5: Sửa lại hàm mở cửa sổ con (Chi tiết) ***
     public void btnChiTietClick(NhomDuocLy ndl) {
         try {
             Stage stage = new Stage();
-            FXMLLoader loader =  new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhomDuocLy/XoaSuaNhomDuocLy.fxml"));
-            Parent root = loader.load();
-            SuaXoaNhomDuocLy ctrl = loader.getController();
+
+            // 1. Tạo Controller mới
+            SuaXoaNhomDuocLy ctrl = new SuaXoaNhomDuocLy();
+            // 2. Tạo GUI và bơm component vào controller
+            XoaSuaNhomDuocLy_GUI gui = new XoaSuaNhomDuocLy_GUI();
+            Parent root = gui.createContent(ctrl);
+            // 3. Gọi initialize() của controller con
+            ctrl.initialize();
+
+            // 4. Gọi hàm hienThiThongTin (giữ nguyên)
             ctrl.hienThiThongTin(ndl);
+
+            // Phần còn lại giữ nguyên
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.initOwner(btnThem.getScene().getWindow()); // Thêm 2 dòng này
+            stage.initModality(javafx.stage.Modality.WINDOW_MODAL); // để làm dialog
             stage.showAndWait();
             loadTable();
         } catch (Exception e) {

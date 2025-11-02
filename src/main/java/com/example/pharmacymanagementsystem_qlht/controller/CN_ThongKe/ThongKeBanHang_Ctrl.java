@@ -25,6 +25,7 @@ import com.itextpdf.io.font.constants.StandardFonts;
 import java.text.DecimalFormat;
 import javafx.scene.control.TableCell;
 import com.example.pharmacymanagementsystem_qlht.dao.ThongKe_Dao;
+// THÊM CÁC IMPORT CẦN THIẾT
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import com.example.pharmacymanagementsystem_qlht.model.HoaDonDisplay;
 
@@ -46,7 +47,7 @@ import javafx.scene.text.Text;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 
-// ĐÃ XÓA: import liên quan đến FXML, ChiTietHoaDon_Ctrl, v.v.
+// ĐÃ XÓA: import liên quan đến ChiTietHoaDon_Ctrl
 
 
 public class ThongKeBanHang_Ctrl extends Application {
@@ -69,13 +70,11 @@ public class ThongKeBanHang_Ctrl extends Application {
         stage.show();
     }
 
-    // Constructor để truyền View vào (nếu được gọi từ nơi khác)
     public ThongKeBanHang_Ctrl(ThongKeBanHang_GUI view) {
         this.view = view;
         setupLogic();
     }
 
-    // Constructor mặc định
     public ThongKeBanHang_Ctrl() {}
 
     private void setupLogic() {
@@ -159,9 +158,8 @@ public class ThongKeBanHang_Ctrl extends Application {
         view.cotNgayLap.setCellValueFactory(new PropertyValueFactory<>("ngayLap"));
         view.cotMaKhachHang.setCellValueFactory(new PropertyValueFactory<>("maKH"));
         view.cotMaNhanVien.setCellValueFactory(new PropertyValueFactory<>("maNV"));
-        // Sửa cột cuối cùng
-        view.cotTongTienVAT.setCellValueFactory(new PropertyValueFactory<>("tongTien"));
-        view.cotTongTienVAT.setCellFactory(col -> createFormattedCell(formatter));
+        view.cotTongTien.setCellValueFactory(new PropertyValueFactory<>("tongTien"));
+        view.cotTongTien.setCellFactory(col -> createFormattedCell(formatter));
 
         // ĐÃ XÓA: Logic nút "Chi tiết"
     }
@@ -370,10 +368,9 @@ public class ThongKeBanHang_Ctrl extends Application {
 
             // --- Sheet 2: Danh sách Hóa đơn ---
             Sheet sheetHD = workbook.createSheet("Danh sach Hoa don");
-            // Sửa header
             String[] headersHD = {
                     view.cotMaHoaDon.getText(), view.cotNgayLap.getText(),
-                    view.cotMaKhachHang.getText(), view.cotMaNhanVien.getText(), view.cotTongTienVAT.getText()
+                    view.cotMaKhachHang.getText(), view.cotMaNhanVien.getText(), view.cotTongTien.getText()
             };
             Row headerRowHD = sheetHD.createRow(0);
             for (int i = 0; i < headersHD.length; i++) {
@@ -462,12 +459,12 @@ public class ThongKeBanHang_Ctrl extends Application {
         tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotNgayLap.getText()).setBold()));
         tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotMaKhachHang.getText()).setBold()));
         tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotMaNhanVien.getText()).setBold()));
-        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotTongTienVAT.getText()).setBold())); // Sửa
+        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotTongTien.getText()).setBold()));
         for (HoaDonDisplay hd : listHoaDon) {
             tableHD.addCell(hd.getMaHD());
             tableHD.addCell(hd.getNgayLap().toString());
-            tableHD.addCell(hd.getMaKH() != null ? hd.getMaKH() : "");
-            tableHD.addCell(hd.getMaNV() != null ? hd.getMaNV() : "");
+            tableHD.addCell(hd.getMaKH() != null ? hd.getMaKH() : ""); // Kiểm tra null
+            tableHD.addCell(hd.getMaNV() != null ? hd.getMaNV() : ""); // Kiểm tra null
             tableHD.addCell(formatter.format(hd.getTongTien()));
         }
         document.add(tableHD);
