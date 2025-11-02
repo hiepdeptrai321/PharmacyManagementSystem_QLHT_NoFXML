@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Lập hóa đơn" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl" />
+    <module name="PharmacyManagementSystem_QLHT" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
