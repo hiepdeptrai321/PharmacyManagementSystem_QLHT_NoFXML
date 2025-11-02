@@ -4,6 +4,8 @@ import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuDoiHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietPhieuDoiHang;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuDoiHang;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi.ChiTietPhieuDoiHang_GUI;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -12,40 +14,44 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.util.List;
 
-public class ChiTietPhieuDoiHang_Ctrl  {
-    @FXML private Button btnDong;
-    @FXML private Button btnInPhieuDoi;
-    @FXML private TableColumn<ChiTietPhieuDoiHang, String> colLyDo;
-    @FXML private TableColumn<ChiTietPhieuDoiHang, String> colSTT;
-    @FXML private TableColumn<ChiTietPhieuDoiHang, String> colSoLuong;
-    @FXML private TableColumn<ChiTietPhieuDoiHang, String> colDonVi;
-    @FXML private TableColumn<ChiTietPhieuDoiHang, String> colTenSP;
+public class ChiTietPhieuDoiHang_Ctrl extends Application {
+    public Button btnDong;
+    public Button btnInPhieuDoi;
+    public TableColumn<ChiTietPhieuDoiHang, String> colLyDo;
+    public TableColumn<ChiTietPhieuDoiHang, String> colSTT;
+    public TableColumn<ChiTietPhieuDoiHang, String> colSoLuong;
+    public TableColumn<ChiTietPhieuDoiHang, String> colDonVi;
+    public TableColumn<ChiTietPhieuDoiHang, String> colTenSP;
 
 
-    @FXML private Label lblGhiChuValue;
-    @FXML private Label lblMaPhieuDoiValue;
-    @FXML private Label lblNgayLapValue;
-    @FXML private Label lblSDTKhachHangValue;
-    @FXML private Label lblTenKhachHangValue;
-    @FXML private Label lblTenNhanVienValue;
+    public Label lblGhiChuValue;
+    public Label lblMaPhieuDoiValue;
+    public Label lblNgayLapValue;
+    public Label lblSDTKhachHangValue;
+    public Label lblTenKhachHangValue;
+    public Label lblTenNhanVienValue;
 
 
-    @FXML
-    private TableView<ChiTietPhieuDoiHang> tblChiTietPhieuDoi;
+    public TableView<ChiTietPhieuDoiHang> tblChiTietPhieuDoi;
 
     private PhieuDoiHang phieuDoiHang;
-
-    @FXML
+    @Override
+    public void start(Stage stage) throws Exception {
+        ChiTietPhieuDoiHang_GUI gui = new ChiTietPhieuDoiHang_GUI();
+        gui.showWithController(stage, this);
+    }
     public void initialize() {
         btnDong.setOnAction(e -> ((Stage) btnDong.getScene().getWindow()).close());
         Platform.runLater(()->{
             Stage dialog = (Stage) btnDong.getScene().getWindow();
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
+            dialog.getIcons().add(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
         });
+
     }
     public void setPhieuDoiHang(PhieuDoiHang pDoi) {
         this.phieuDoiHang = pDoi;
@@ -84,9 +90,13 @@ public class ChiTietPhieuDoiHang_Ctrl  {
         }
     }
 
-    public void xuLyInPhieu(ActionEvent actionEvent) {
+    public void xuLyInPhieu() {
     }
-
-    public void xuLyDong(ActionEvent actionEvent) {
+    public void xuLyDong() {
+        Stage stage = (Stage) btnDong.getScene().getWindow();
+        stage.close();
+    }
+    public static void main(String[] args) {
+        launch(args);
     }
 }

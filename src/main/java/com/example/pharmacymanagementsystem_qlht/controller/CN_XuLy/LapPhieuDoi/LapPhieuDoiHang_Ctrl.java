@@ -4,6 +4,7 @@ import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.DoiHangItem;
+import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuDoi.LapPhieuDoi_GUI;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,31 +26,31 @@ import java.util.*;
 import static javafx.scene.control.Alert.AlertType.*;
 
 public class LapPhieuDoiHang_Ctrl extends Application {
-    @FXML private TextField txtTimHoaDonGoc;
-    @FXML private Button btnTimHD;
-    @FXML private TableView<ChiTietHoaDon> tblSanPhamGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colSTTGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colTenSPGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colSoLuongGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colDonViGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colDonGiaGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colGiamGiaGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colThanhTienGoc;
-    @FXML private TableColumn<ChiTietHoaDon, Void> colDoi;
+    public TextField txtTimHoaDonGoc;
+    public Button btnTimHD;
+    public TableView<ChiTietHoaDon> tblSanPhamGoc;
+    public TableColumn<ChiTietHoaDon, String> colSTTGoc;
+    public TableColumn<ChiTietHoaDon, String> colTenSPGoc;
+    public TableColumn<ChiTietHoaDon, String> colSoLuongGoc;
+    public TableColumn<ChiTietHoaDon, String> colDonViGoc;
+    public TableColumn<ChiTietHoaDon, String> colDonGiaGoc;
+    public TableColumn<ChiTietHoaDon, String> colGiamGiaGoc;
+    public TableColumn<ChiTietHoaDon, String> colThanhTienGoc;
+    public TableColumn<ChiTietHoaDon, Void> colDoi;
 
-    @FXML private TableView<DoiHangItem> tblSanPhamDoi;
-    @FXML private TableColumn<DoiHangItem, String> colSTTDoi;
-    @FXML private TableColumn<DoiHangItem, String> colTenSPDoi;
-    @FXML private TableColumn<DoiHangItem, Number> colSoLuongDoi;
-    @FXML private TableColumn<DoiHangItem, String> colDonViDoi;
-    @FXML private TableColumn<DoiHangItem, String> colLyDo;
-    @FXML private TableColumn<DoiHangItem, Void> colBo;
+    public TableView<DoiHangItem> tblSanPhamDoi;
+    public TableColumn<DoiHangItem, String> colSTTDoi;
+    public TableColumn<DoiHangItem, String> colTenSPDoi;
+    public TableColumn<DoiHangItem, Number> colSoLuongDoi;
+    public TableColumn<DoiHangItem, String> colDonViDoi;
+    public TableColumn<DoiHangItem, String> colLyDo;
+    public TableColumn<DoiHangItem, Void> colBo;
 
-    @FXML private TextField lblMaHDGoc;
-    @FXML private TextField lblTenKH;
-    @FXML private TextField lblSDT;
-    @FXML private DatePicker dpNgayLapPhieu;
-    @FXML private TextArea txtGhiChu;
+    public TextField lblMaHDGoc;
+    public TextField lblTenKH;
+    public TextField lblSDT;
+    public DatePicker dpNgayLapPhieu;
+    public TextArea txtGhiChu;
 
     // State
     private final ObservableList<ChiTietHoaDon> dsGoc = FXCollections.observableArrayList();
@@ -61,7 +62,11 @@ public class LapPhieuDoiHang_Ctrl extends Application {
     private final ChiTietHoaDon_Dao cthdDao = new ChiTietHoaDon_Dao();
     private final KhachHang_Dao khDao = new KhachHang_Dao();
 
-    @FXML
+    @Override
+    public void start(Stage stage) throws Exception {
+        LapPhieuDoi_GUI gui = new LapPhieuDoi_GUI(this);
+        gui.show(stage);
+    }
     public void initialize() {
         dpNgayLapPhieu.setValue(LocalDate.now());
         guiMacDinh();
@@ -349,15 +354,9 @@ public class LapPhieuDoiHang_Ctrl extends Application {
     }
 
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_XuLy/LapPhieuDoi/LapPhieuDoiHang_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
 
-    public void xuLyTimHoaDonGoc(ActionEvent actionEvent) {
+
+    public void xuLyTimHoaDonGoc() {
         String ma = txtTimHoaDonGoc == null ? null : txtTimHoaDonGoc.getText();
         if (ma == null || ma.isBlank()) {
             thongBaoTuyChinh(WARNING, "Mã hóa đơn gốc không thể trống", "Vui lòng nhập mã hóa đơn gốc.");
@@ -406,10 +405,10 @@ public class LapPhieuDoiHang_Ctrl extends Application {
         }
     }
 
-    public void xuLyInPhieuDoi(ActionEvent actionEvent) {
+    public void xuLyInPhieuDoi() {
         System.out.println("In phiếu đổi clicked");
     }
-    public void xuLyDoiHang(ActionEvent actionEvent) {
+    public void xuLyDoiHang() {
         if (dsDoi.isEmpty()) {
             thongBaoTuyChinh(WARNING, "Danh sách đổi hàng trống", "Vui lòng thêm sản phẩm để đổi.");
             return;
@@ -577,7 +576,7 @@ public class LapPhieuDoiHang_Ctrl extends Application {
         alert.showAndWait();
     }
 
-    public void xuLyHuy(ActionEvent actionEvent) {
+    public void xuLyHuy() {
         dsDoi.clear();
         dsGoc.clear();
         doiByMaLH.clear();

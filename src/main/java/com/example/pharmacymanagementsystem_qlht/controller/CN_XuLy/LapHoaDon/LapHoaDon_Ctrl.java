@@ -8,6 +8,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.ApDungKhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.service.DichVuKhuyenMai;
+import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -82,33 +83,34 @@ public class LapHoaDon_Ctrl extends Application {
     private final Thuoc_SanPham_Dao spDao = new Thuoc_SanPham_Dao();
     private final ConcurrentHashMap<String, String> tenSpCache = new ConcurrentHashMap<>();
     private Map<ChiTietHoaDon, Integer> baseQtyMap = new IdentityHashMap<>();
-    @FXML private Button btnThanhToanVaIn;
-    @FXML private Button btnThemKH;
-    @FXML private DatePicker dpNgayLap;
-    @FXML private ChoiceBox<String> cbPhuongThucTT;
-    @FXML private Pane paneTienMat;
-    @FXML private TextField txtTimThuoc;
-    @FXML private TextField txtTenKH;
-    @FXML private TextField txtSDT;
-    @FXML private TableView<ChiTietHoaDon> tblChiTietHD;
-    @FXML private TableColumn <ChiTietHoaDon, String> colSTT;
-    @FXML private TableColumn <ChiTietHoaDon, String> colTenSP;
-    @FXML private TableColumn <ChiTietHoaDon, String> colSL;
-    @FXML private TableColumn <ChiTietHoaDon, String> colDonVi;
-    @FXML private TableColumn <ChiTietHoaDon, String> colDonGia;
-    @FXML private TableColumn <ChiTietHoaDon, String> colChietKhau;
-    @FXML private TableColumn <ChiTietHoaDon, String> colThanhTien;
-    @FXML private TableColumn <ChiTietHoaDon, String> colBo;
-    @FXML private Label lblTongTien;
-    @FXML private Label lblGiamGia;
-    @FXML private Label lblVAT;
-    @FXML private Label lblThanhTien;
-    @FXML private TextField txtSoTienKhachDua;
-    @FXML private Label lblTienThua;
-    @FXML private Button btnThanhToan;
-    @FXML private Label lblGiamTheoHD;
-    @FXML private RadioButton rbOTC;
-    @FXML private TextField txtMaDonThuoc;
+    
+    public Button btnThanhToanVaIn;
+    public Button btnThemKH;
+    public DatePicker dpNgayLap;
+    public ChoiceBox<String> cbPhuongThucTT;
+    public Pane paneTienMat;
+    public TextField txtTimThuoc;
+    public TextField txtTenKH;
+    public TextField txtSDT;
+    public TableView<ChiTietHoaDon> tblChiTietHD;
+    public TableColumn <ChiTietHoaDon, String> colSTT;
+    public TableColumn <ChiTietHoaDon, String> colTenSP;
+    public TableColumn <ChiTietHoaDon, String> colSL;
+    public TableColumn <ChiTietHoaDon, String> colDonVi;
+    public TableColumn <ChiTietHoaDon, String> colDonGia;
+    public TableColumn <ChiTietHoaDon, String> colChietKhau;
+    public TableColumn <ChiTietHoaDon, String> colThanhTien;
+    public TableColumn <ChiTietHoaDon, String> colBo;
+    public Label lblTongTien;
+    public Label lblGiamGia;
+    public Label lblVAT;
+    public Label lblThanhTien;
+    public TextField txtSoTienKhachDua;
+    public Label lblTienThua;
+    public Button btnThanhToan;
+    public Label lblGiamTheoHD;
+    public RadioButton rbOTC;
+    public TextField txtMaDonThuoc;
     private Stage qrStage;
     private static final String OTC_OFF = "Không kê đơn(OTC)";
     private static final String OTC_ON  = "Kê đơn(ETC)";
@@ -123,13 +125,9 @@ public class LapHoaDon_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_XuLy/LapHoaDon/LapHoaDon_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        LapHoaDon_GUI.showWithController(stage, this);
     }
 
-    @FXML
     public void initialize() {
         VND.setMaximumFractionDigits(0);
         dpNgayLap.setValue(LocalDate.now());
@@ -141,6 +139,7 @@ public class LapHoaDon_Ctrl extends Application {
         tinhTongTien();
         initTienMatEvents();
         chuyenHoaDon();
+        btnThanhToan.setOnAction(e -> xuLyThanhToan());
     }
 
     private void chuyenHoaDon() {
@@ -155,11 +154,9 @@ public class LapHoaDon_Ctrl extends Application {
                         .otherwise(OTC_OFF)
         );
         rbOTC.selectedProperty().addListener((obs, was, isSelected) -> applyLoaiHoaDonUI(isSelected));
-        // Apply initial state
         applyLoaiHoaDonUI(rbOTC.isSelected());
     }
     private void applyLoaiHoaDonUI(boolean isETC) {
-        // ETC => allow entering prescription id and date
         if (txtMaDonThuoc != null) {
             txtMaDonThuoc.setDisable(!isETC);
             txtMaDonThuoc.setEditable(isETC);
@@ -773,8 +770,8 @@ public class LapHoaDon_Ctrl extends Application {
 
 
 //------------Xử lý khách hàng ----------------
-    @FXML
-    private void xuLyTimKhachHang() {
+
+    public void xuLyTimKhachHang() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKKhachHang/TKKhachHang_GUI.fxml"));
             Parent root = loader.load();
@@ -794,7 +791,7 @@ public class LapHoaDon_Ctrl extends Application {
         }
     }
 
-    public void xuLyThemKH(ActionEvent actionEvent) {
+    public void xuLyThemKH() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhachHang/ThemKhachHang_GUI.fxml"));
@@ -1139,11 +1136,10 @@ public class LapHoaDon_Ctrl extends Application {
     }
 
 
-    public void xoaRong(ActionEvent actionEvent) {
+    public void xoaRong() {
         txtTimThuoc.setText("");
     }
-    @FXML
-    private void xuLyThanhToan(ActionEvent actionEvent) {
+    public void xuLyThanhToan() {
         if (tblChiTietHD.getItems() == null || tblChiTietHD.getItems().isEmpty()) {
             hien(WARNING, "Lỗi thanh toán", "Chưa có sản phẩm nào trong hóa đơn.");
             return;
@@ -1624,15 +1620,8 @@ public class LapHoaDon_Ctrl extends Application {
         document.close();
     }
 
-    private void showAlert(Alert.AlertType alertType, String title, String content) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
 
-    private void lamMoiGiaoDienSauThanhToan() {
+    private void lamMoiGiaoDien() {
         tblChiTietHD.getItems().clear();
         txtTimThuoc.clear();
         lblTongTien.setText("0 VNĐ");
@@ -1648,7 +1637,7 @@ public class LapHoaDon_Ctrl extends Application {
         txtMaDonThuoc.clear();
     }
 
-    public void xuLyHuy(ActionEvent actionEvent) {
-        lamMoiGiaoDienSauThanhToan();
+    public void xuLyHuy() {
+        lamMoiGiaoDien();
     }
 }
