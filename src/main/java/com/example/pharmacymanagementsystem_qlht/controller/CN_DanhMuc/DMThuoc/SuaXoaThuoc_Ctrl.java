@@ -66,9 +66,19 @@ public class SuaXoaThuoc_Ctrl {
     private Consumer<Thuoc_SanPham> onAdded;
     private Consumer<Thuoc_SanPham> onDeleted;
     private DanhMucThuoc_Ctrl danhMucThuoc_Ctrl;
+    public Button btnXoa;
+    public Button btnHuy;
+    public Button btnLuu;
+    public Button btnChonAnh;
 
-    @FXML
-    public void initialize(Thuoc_SanPham thuoc) {
+    public void initialize() {
+        btnXoa.setOnAction(e -> btnXoa());
+        btnHuy.setOnAction(e -> btnHuy());
+        btnLuu.setOnAction(e -> btnCapNhat());
+        btnChonAnh.setOnAction(e -> chonFile());
+    }
+
+    public void load(Thuoc_SanPham thuoc) {
         listChiTietHoatChat = new ChiTietHoatChat_Dao().selectAll();
         thuocTempDeXemSoLuongTon = thuoc;
         tblHoatChat.setEditable(true);
@@ -249,11 +259,10 @@ public class SuaXoaThuoc_Ctrl {
         });
     }
 
-    public void btnCapNhat(ActionEvent actionEvent) {
+    public void btnCapNhat() {
         // Lấy root hiện tại
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        Scene scene = stage.getScene();
-        AnchorPane root = (AnchorPane) scene.getRoot();
+
+        AnchorPane root = (AnchorPane) btnLuu.getScene().getRoot();
 
         // Tạo overlay làm mờ nền
         StackPane overlay = new StackPane();
@@ -362,7 +371,7 @@ public class SuaXoaThuoc_Ctrl {
         stage.close();
     }
 
-    public void btnHuy(ActionEvent actionEvent) {
+    public void btnHuy() {
         dong();
     }
 
@@ -370,7 +379,7 @@ public class SuaXoaThuoc_Ctrl {
         danhMucThuoc_Ctrl = parent;
     }
 
-    public void btnXoa(ActionEvent actionEvent) {
+    public void btnXoa() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn xoá thuốc này?", ButtonType.YES, ButtonType.NO);
         confirm.setHeaderText(null);
         confirm.showAndWait().ifPresent(btn -> {
@@ -399,7 +408,7 @@ public class SuaXoaThuoc_Ctrl {
         });
     }
 
-    public void chonFile(ActionEvent actionEvent) {
+    public void chonFile() {
         Stage stage = (Stage) txtMaThuoc.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Chọn ảnh thuốc");

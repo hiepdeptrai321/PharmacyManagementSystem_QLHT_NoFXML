@@ -1,20 +1,18 @@
-#NutHuy {
+#btnThem {
+    -fx-background-color: green;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+#btnHuy {
     -fx-background-color: #FF0000;
-    -fx-background-radius: 5px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
 }
-#NutHuy:pressed {
-    -fx-background-color: #b30000;
-}
+
+
 #txtTrang_Bold{
     -fx-font-weight: bold;
     -fx-text-fill: white;
-}
-#nutThem{
-    -fx-background-color: green;
-    -fx-background-radius: 5px;
-}
-#nutThem:pressed{
-    -fx-background-color: #006600;
 }
 #imgReset{
 fx-background-color: white;}
