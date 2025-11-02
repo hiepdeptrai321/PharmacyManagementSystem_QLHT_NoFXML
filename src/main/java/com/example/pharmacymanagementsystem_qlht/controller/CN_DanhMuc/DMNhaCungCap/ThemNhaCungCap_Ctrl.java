@@ -19,21 +19,30 @@ public class ThemNhaCungCap_Ctrl {
     public TextField txtTenCongTy;
     public TextField txtMaSoThue;
     public TextArea txtGhiChu;
+    public Button  btnThem;
+    public Button  btnHuy;
     NhaCungCap ncc = new NhaCungCap();
+
+    public void initialize() {
+        // Khởi tạo nếu cần
+        btnThem.setOnAction(e -> btnThemNCC());
+        btnHuy.setOnAction(e -> btnHuy());
+    }
 
 //  Thiết lập Ctrl cha
     public void setParentCtrl(DanhMucNhaCungCap_Ctrl parent) {
         this.danhMucNhaCungCap_Ctrl = parent;
     }
+
     public void setLapPhieuNhapHang_Ctrl(LapPhieuNhapHang_Ctrl lapPhieuNhapHang_Ctrl){this.lapPhieuNhapHang_Ctrl = lapPhieuNhapHang_Ctrl;}
 
 //  Button hủy (đóng cửa sổ)
-    public void btnHuy(MouseEvent mouseEvent) {
+    public void btnHuy() {
         dong();
     }
 
 //  Button thêm nhà cung cấp
-    public void btnThemNCC(MouseEvent mouseEvent) {
+    public void btnThemNCC() {
         ncc.setTenNCC(txtTenNCC.getText());
         ncc.setDiaChi(txtDiaChi.getText());
         ncc.setSDT(txtSDT.getText());
