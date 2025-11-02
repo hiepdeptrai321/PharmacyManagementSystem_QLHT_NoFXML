@@ -11,15 +11,15 @@ import javafx.stage.Stage;
 
 public class ThemDVT_Ctrl{
     @FXML
-    private Button btnHuy;
+    public Button btnHuy;
 
     @FXML
-    private Button btnThem;
+    public Button btnThem;
 
     @FXML
-    private TextField txtKyHieu;
+    public TextField txtKyHieu;
     @FXML
-    private TextField txtTenDVT;
+    public TextField txtTenDVT;
 
     private DonViTinh_Dao donViTinh_dao = new DonViTinh_Dao();
 
