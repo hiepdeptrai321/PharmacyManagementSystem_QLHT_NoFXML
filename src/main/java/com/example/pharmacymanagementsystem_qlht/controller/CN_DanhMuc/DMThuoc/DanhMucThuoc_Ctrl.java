@@ -164,17 +164,19 @@ public class DanhMucThuoc_Ctrl extends Application {
 //  Thêm thuốc
     public void themthuoc() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMThuoc/ThemThuoc_GUI.fxml"));
-            Parent root = loader.load();
-            ThemThuoc_Ctrl ctrl = loader.getController();
-            ctrl.setParent(this);
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.ThemThuoc_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.ThemThuoc_Ctrl();
 
             Stage dialog = new Stage();
             dialog.initOwner(tbl_Thuoc.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
             dialog.setTitle("Thêm thuốc");
-            dialog.showAndWait();
+
+            // 1) build UI + inject + initialize
+            gui.showWithController(dialog, ctrl);
+            // 2) set parent để refresh bảng sau khi lưu/xóa
+            ctrl.setParent(this);
+            // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -182,26 +184,28 @@ public class DanhMucThuoc_Ctrl extends Application {
 
 //  Mở giao diện cập nhật
     public void btnCapNhat(Thuoc_SanPham thuoc) {
-        try {
+    try {
+        if (thuoc == null) return; // an toàn
 
-            var gui = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.SuaXoaThuoc_GUI();
+        var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.SuaXoaThuoc_GUI();
+        var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.SuaXoaThuoc_Ctrl();
 
-            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.SuaXoaThuoc_Ctrl();
+        Stage dialog = new Stage();
+        dialog.initOwner(tbl_Thuoc.getScene().getWindow());
+        dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        dialog.setTitle("Chi tiết thuốc");
 
-            Stage dialog = new Stage();
-            dialog.initOwner(tbl_Thuoc.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        // 1) build UI + inject + initialize
+        gui.showWithController(dialog, ctrl);
+        // 2) set parent để refresh bảng sau khi lưu/xóa
+        ctrl.setParent(this);
+        // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
+        ctrl.load(thuoc);
 
-
-            ctrl.initialize();
-            ctrl.load(thuoc);
-            ctrl.setParent(this);
-
-            gui.showWithController(dialog, ctrl);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
     public void refestTable(){
         list.clear();
@@ -217,17 +221,19 @@ public class DanhMucThuoc_Ctrl extends Application {
 
     public void btnThemThuocByExcel() {
         try{
-            Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMThuoc/ThemThuocBangFileExcel_GUI.fxml"));
-            Parent root = loader.load();
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.ThemThuocBangFileExcel_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.ThemThuocBangFileExcel();
+
             Stage dialog = new Stage();
-            ThemThuocBangFileExcel ctrl = loader.getController();
-            ctrl.setDanhMucThuocCtrl(this);
             dialog.initOwner(tbl_Thuoc.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Thêm thuốc bằng file Excel");
-            dialog.showAndWait();
+            dialog.setTitle("Thêm thuốc");
+
+            // 1) build UI + inject + initialize
+            gui.showWithController(dialog, ctrl);
+            // 2) set parent để refresh bảng sau khi lưu/xóa
+            ctrl.setDanhMucThuocCtrl(this);
+            // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
         } catch (Exception e){
             e.printStackTrace();
         }

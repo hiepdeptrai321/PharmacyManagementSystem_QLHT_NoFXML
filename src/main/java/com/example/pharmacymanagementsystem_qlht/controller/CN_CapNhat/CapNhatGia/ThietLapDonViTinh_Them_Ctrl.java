@@ -36,6 +36,9 @@ public class ThietLapDonViTinh_Them_Ctrl {
         loadCbDVT();
         cbDVCBCheck();
         btnThemDVT.setOnAction(e-> btnThemDVTClick());
+        btnHuy.setOnAction(e -> btnHuyClick(null));
+        btnThem.setOnAction(e -> btnThemClick(null));
+        checkDVCB.setOnAction(e-> cbDVCBCheck());
     }
 
     // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
@@ -56,14 +59,14 @@ public class ThietLapDonViTinh_Them_Ctrl {
 
     public void btnThemDVTClick() {
         try {
+            ThemDVT_Ctrl ctrl = new ThemDVT_Ctrl();
             Stage stage = new Stage();
-            FXMLLoader loader =  new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatGia/ThemDVT.fxml"));
-            Parent root = loader.load();
-            ThemDVT_Ctrl ctrl = loader.getController();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-            loadCbDVT();
+            stage.setTitle("Thêm đơn vị tính mới");
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            // show UI built in code (SuaGiaThuoc_GUI)
+            new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia.ThemDVT_GUI()
+                    .showWithController(stage, ctrl);
+            stage.setOnHidden(e->loadCbDVT());
 
         } catch (Exception e) {
             e.printStackTrace();

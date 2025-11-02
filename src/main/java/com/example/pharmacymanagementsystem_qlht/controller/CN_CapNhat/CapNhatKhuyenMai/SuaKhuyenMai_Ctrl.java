@@ -24,44 +24,75 @@ import java.util.Locale;
 
 public class SuaKhuyenMai_Ctrl {
 
+    public Tab tabThuoc;
+    public Button btnLuu;
     // FXML controls
-    @FXML private Button btnHuy;
+    @FXML
+    public Button btnHuy;
 
-    @FXML private TableView<ChiTietKhuyenMai> tbDSThuoc;
-    @FXML private TableColumn<ChiTietKhuyenMai, String>  colMaThuoc;
-    @FXML private TableColumn<ChiTietKhuyenMai, String>  colTenThuoc;
-    @FXML private TableColumn<ChiTietKhuyenMai, Integer> colSLAP;
-    @FXML private TableColumn<ChiTietKhuyenMai, Integer> colSLTD;
-    @FXML private TableColumn<ChiTietKhuyenMai, Void>    colXoaCT;
+    @FXML
+    public TableView<ChiTietKhuyenMai> tbDSThuoc;
+    @FXML
+    public TableColumn<ChiTietKhuyenMai, String>  colMaThuoc;
+    @FXML
+    public TableColumn<ChiTietKhuyenMai, String>  colTenThuoc;
+    @FXML
+    public TableColumn<ChiTietKhuyenMai, Integer> colSLAP;
+    @FXML
+    public TableColumn<ChiTietKhuyenMai, Integer> colSLTD;
+    @FXML
+    public TableColumn<ChiTietKhuyenMai, Void>    colXoaCT;
 
-    @FXML private TabPane tabPaneProducts;
-    @FXML private Tab tabTangKem;
-    @FXML private Tab tabHoaDon;
+    @FXML
+    public TabPane tabPaneProducts;
+    @FXML
+    public Tab tabTangKem;
+    @FXML
+    public Tab tabHoaDon;
 
-    @FXML private TableView<Thuoc_SP_TangKem> tbTangKem;
-    @FXML private TableColumn<Thuoc_SP_TangKem, String>  colMaQua;
-    @FXML private TableColumn<Thuoc_SP_TangKem, String>  colTenQua;
-    @FXML private TableColumn<Thuoc_SP_TangKem, Integer> colSLTang;
-    @FXML private TableColumn<Thuoc_SP_TangKem, Void>    colXoaQua;
-    @FXML private TableColumn<Thuoc_SP_TangKem, String>    colDonVi;
-    @FXML private TableColumn<Thuoc_SP_TangKem, String>    colDonViQua;
+    @FXML
+    public TableView<Thuoc_SP_TangKem> tbTangKem;
+    @FXML
+    public TableColumn<Thuoc_SP_TangKem, String>  colMaQua;
+    @FXML
+    public TableColumn<Thuoc_SP_TangKem, String>  colTenQua;
+    @FXML
+    public TableColumn<Thuoc_SP_TangKem, Integer> colSLTang;
+    @FXML
+    public TableColumn<Thuoc_SP_TangKem, Void>    colXoaQua;
+    @FXML
+    public TableColumn<ChiTietKhuyenMai, String>    colDonVi;
+    @FXML
+    public TableColumn<Thuoc_SP_TangKem, String>    colDonViQua;
 
-    @FXML private TextField tfTimThuoc;
-    @FXML private ListView<Thuoc_SanPham> listViewThuoc;
+    @FXML
+    public TextField tfTimThuoc;
+    @FXML
+    public ListView<Thuoc_SanPham> listViewThuoc;
 
-    @FXML private TextField tfTimQua;
-    @FXML private ListView<Thuoc_SanPham> listViewQua;
+    @FXML
+    public TextField tfTimQua;
+    @FXML
+    public ListView<Thuoc_SanPham> listViewQua;
 
-    @FXML private TextField tfTenKM;
-    @FXML private TextField tfMaKM;
-    @FXML private ComboBox<String> cbLoaiKM;
-    @FXML private TextField tfGiaTri;
-    @FXML private DatePicker dpTuNgay;
-    @FXML private DatePicker dpDenNgay;
-    @FXML private TextField tfMoTa;
+    @FXML
+    public TextField tfTenKM;
+    @FXML
+    public TextField tfMaKM;
+    @FXML
+    public ComboBox<String> cbLoaiKM;
+    @FXML
+    public TextField tfGiaTri;
+    @FXML
+    public DatePicker dpTuNgay;
+    @FXML
+    public DatePicker dpDenNgay;
+    @FXML
+    public TextField tfMoTa;
 
     // New invoice-related fields
-    @FXML private TextField tfGiaTriHoaDon;
+    @FXML
+    public TextField tfGiaTriHoaDon;
 
     // Data sources
     private final ObservableList<ChiTietKhuyenMai>  ctItems   = FXCollections.observableArrayList();
@@ -108,8 +139,8 @@ public class SuaKhuyenMai_Ctrl {
 
         setupCurrencyField(tfGiaTriHoaDon);
 
-
-
+        btnHuy.setOnAction(e-> btnHuyClick());
+        btnLuu.setOnAction(e-> btnLuuClick());
     }
 
     private void loadAllThuoc() {

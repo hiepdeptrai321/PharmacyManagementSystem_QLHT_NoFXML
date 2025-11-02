@@ -22,15 +22,15 @@ public class SuaSoLuongThuoc_Ctrl {
     public Button btnLuu;
     public Button btnHuy;
     @FXML
-    private TextField tfMaThuoc;
+    public TextField tfMaThuoc;
     @FXML
-    private TextField tfTenThuoc;
+    public TextField tfTenThuoc;
     @FXML
-    private TextField tfSoLuongTon;
+    public TextField tfSoLuongTon;
     @FXML
-    private ComboBox<String> cbViTri;
+    public ComboBox<String> cbViTri;
     @FXML
-    private ComboBox<String> cbLoaiHang;
+    public ComboBox<String> cbLoaiHang;
 
     private Thuoc_SP_TheoLo thuoc_sp_theoLo;
 
@@ -43,10 +43,12 @@ public class SuaSoLuongThuoc_Ctrl {
         tfSoLuongTon.setText(String.valueOf(thuocLo.getSoLuongTon()));
         cbViTri.setValue(thuoc.getVitri().getTenKe());
         cbLoaiHang.setValue(thuoc.getLoaiHang().getTenLoaiHang());
+        btnHuy.setOnAction(e -> btnHuyClick());
+        btnLuu.setOnAction(e -> btnLuuClick());
     }
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         Platform.runLater(() -> {
             tfSoLuongTon.requestFocus();
         });
