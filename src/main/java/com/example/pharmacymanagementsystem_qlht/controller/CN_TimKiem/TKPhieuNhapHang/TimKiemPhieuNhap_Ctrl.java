@@ -4,6 +4,8 @@ import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuNhap_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuNhap;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuTraHang;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuNhapHang.ChiTietPhieuNhapHang_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuNhapHang.TKPhieuNhapHang_GUI;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -37,40 +39,22 @@ public class TimKiemPhieuNhap_Ctrl extends Application {
     public ComboBox chonNhanVien;
     public ComboBox cbxChonNhaCC;
     public CheckBox cboxTrangThai;
-    @FXML
-    private TableView<PhieuNhap> tblPhieuNhap;
-    @FXML
-    private TableColumn<PhieuNhap, String> colMaPN;
-    @FXML
-    private TableColumn<PhieuNhap, String> colNhaCungCap;
-    @FXML
-    private TableColumn<PhieuNhap, String> colNgayNhap;
-    @FXML
-    private TableColumn<PhieuNhap, String> colTrangThai;
-    @FXML
-    private TableColumn<PhieuNhap, String> colGhiChu;
-    @FXML
-    private TableColumn<PhieuNhap, String> colNhanVien;
-    @FXML
-    private TitledPane tpBoLoc;
-    @FXML
+    public TableView<PhieuNhap> tblPhieuNhap;
+    public TableColumn<PhieuNhap, String> colMaPN;
+    public TableColumn<PhieuNhap, String> colNhaCungCap;
+    public TableColumn<PhieuNhap, String> colNgayNhap;
+    public TableColumn<PhieuNhap, String> colTrangThai;
+    public TableColumn<PhieuNhap, String> colGhiChu;
+    public TableColumn<PhieuNhap, String> colNhanVien;
+    public TitledPane tpBoLoc;
     private ObservableList<PhieuNhap> duLieuChinh = FXCollections.observableArrayList();
-    @FXML
     private FilteredList<PhieuNhap> duLieu;
 
     @Override
     public void start(Stage stage) throws Exception {
-        try{
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuNhapHang/TKPhieuNhapHang_GUI.fxml")));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        new TKPhieuNhapHang_GUI().showWithController(stage, this);
     }
 
-    @FXML
     public void initialize(){
         duLieuChinh.addAll(new PhieuNhap_Dao().selectAll());
         duLieu = new FilteredList<>(duLieuChinh, sp -> true);
@@ -174,19 +158,28 @@ public class TimKiemPhieuNhap_Ctrl extends Application {
     }
     private void btnChiTietClick(PhieuNhap pn) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuNhapHang/ChiTietPhieuNhapHang_GUI.fxml"));
-            Parent root = loader.load();
+            // 1) Tạo controller
+            ChiTietPhieuNhap_Ctrl ctrl = new ChiTietPhieuNhap_Ctrl();
 
-            ChiTietPhieuNhap_Ctrl ctrl = loader.getController();
-            ctrl.load(pn);
+            // 2) Tạo GUI Java thuần
+            ChiTietPhieuNhapHang_GUI gui = new ChiTietPhieuNhapHang_GUI();
 
+            // 3) Tạo Stage cho cửa sổ chi tiết
             Stage dialog = new Stage();
             dialog.initOwner(txtTimKiem.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
             dialog.setTitle("Chi tiết phiếu nhập hàng");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+            dialog.getIcons().add(
+                    new javafx.scene.image.Image(
+                            getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png"))
+            );
+
+            // 4) Gán GUI + controller
+            gui.showWithController(dialog, ctrl);
+
+            // 5) Tải dữ liệu phiếu nhập
+            ctrl.load(pn);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

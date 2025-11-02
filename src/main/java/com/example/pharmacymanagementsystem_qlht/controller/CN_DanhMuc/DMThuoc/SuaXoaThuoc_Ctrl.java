@@ -9,13 +9,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -25,9 +19,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.util.Map;
-import java.util.HashMap;
-import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.FloatStringConverter;
 
 import javax.imageio.ImageIO;
@@ -35,52 +26,140 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
 
 public class SuaXoaThuoc_Ctrl {
     public TextField txtTenThuoc;
-    public ComboBox cbxLoaiHang;
-    public ComboBox cbxViTri;
+    public ComboBox<String> cbxLoaiHang;
+    public ComboBox<String> cbxViTri;
     public TextField txtHamLuong;
     public TextField txtHangSanXuat;
-    public ComboBox cbxNhomDuocLy;
+    public ComboBox<String> cbxNhomDuocLy;
     public TextField txtNuocSanXuat;
     public TextField txtQuyCachDongGoi;
     public TextField txtSDK_GPNK;
+
     public TableView<ChiTietHoatChat> tblHoatChat;
-    public TableColumn<ChiTietHoatChat,String> colMaHoatChat;
-    public TableColumn<ChiTietHoatChat,String> colTenHoatChat;
-    public TableColumn<ChiTietHoatChat,Float> colHamLuong;
-    public TableColumn<ChiTietHoatChat,String> colXoa;
+    public TableColumn<ChiTietHoatChat, String> colMaHoatChat;
+    public TableColumn<ChiTietHoatChat, String> colTenHoatChat;
+    public TableColumn<ChiTietHoatChat, Float>  colHamLuong;
+    public TableColumn<ChiTietHoatChat, String> colXoa;
+
     public TextField txtDuongDung;
     public TextField txtDonViHamLuong;
-    public ListView listViewHoatChat;
+
+    public ListView<HoatChat> listViewHoatChat;
     public TextField txtTimKiemHoatChat;
+
     public TextField txtMaThuoc;
     public ImageView imgThuoc_SanPham;
+
     private ObservableList<HoatChat> allHoatChat;
-    private List<ChiTietHoatChat> listChiTietHoatChat = new ArrayList<>();
+    private final List<ChiTietHoatChat> listChiTietHoatChat = new ArrayList<>();
     private Thuoc_SanPham thuocTempDeXemSoLuongTon;
-    private Consumer<Thuoc_SanPham> onAdded;
-    private Consumer<Thuoc_SanPham> onDeleted;
     private DanhMucThuoc_Ctrl danhMucThuoc_Ctrl;
+
     public Button btnXoa;
     public Button btnHuy;
     public Button btnLuu;
     public Button btnChonAnh;
 
+    // ===== Khởi tạo hành vi KHÔNG phụ thuộc dữ liệu thuốc =====
     public void initialize() {
-        btnXoa.setOnAction(e -> btnXoa());
-        btnHuy.setOnAction(e -> btnHuy());
-        btnLuu.setOnAction(e -> btnCapNhat());
-        btnChonAnh.setOnAction(e -> chonFile());
+        if (listViewHoatChat != null) listViewHoatChat.setVisible(false);
+
+        // Nạp danh mục hoạt chất 1 lần
+        listView();
+
+        // Filter theo ô tìm kiếm
+        if (txtTimKiemHoatChat != null) {
+            txtTimKiemHoatChat.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null && !newVal.trim().isEmpty()) {
+                    listViewHoatChat.setVisible(true);
+                    locDanhSachHoatChat(newVal);
+                } else {
+                    listViewHoatChat.setVisible(false);
+                }
+            });
+        }
+
+        // Chọn hoạt chất để thêm vào bảng
+        if (listViewHoatChat != null) {
+            listViewHoatChat.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal == null) return;
+
+                // Chỉ cho thêm khi đã có thuốc (load đã chạy)
+                if (thuocTempDeXemSoLuongTon == null || tblHoatChat == null) {
+                    Platform.runLater(() -> {
+                        listViewHoatChat.getSelectionModel().clearSelection();
+                        listViewHoatChat.setVisible(false);
+                    });
+                    return;
+                }
+
+                HoatChat hoatChat = newVal;
+                txtTimKiemHoatChat.clear();
+                listViewHoatChat.setVisible(false);
+
+                boolean notExists = tblHoatChat.getItems().stream()
+                        .noneMatch(item -> item.getHoatChat().getMaHoatChat().equals(hoatChat.getMaHoatChat()));
+
+                if (notExists) {
+                    ChiTietHoatChat chtc = new ChiTietHoatChat();
+                    chtc.setHoatChat(hoatChat);
+                    chtc.setThuoc(thuocTempDeXemSoLuongTon);
+
+                    TextInputDialog dialog = new TextInputDialog();
+                    dialog.setTitle("Nhập hàm lượng");
+                    dialog.setHeaderText("Vui lòng nhập hàm lượng cho hoạt chất: " + hoatChat.getTenHoatChat());
+                    dialog.setContentText("Hàm lượng:");
+                    dialog.showAndWait().ifPresent(hamLuong -> {
+                        try {
+                            float val = Float.parseFloat(hamLuong);
+                            chtc.setHamLuong(val);
+                            listChiTietHoatChat.add(chtc);
+                            tblHoatChat.getItems().add(chtc);
+                        } catch (NumberFormatException ex) {
+                            Alert a = new Alert(Alert.AlertType.ERROR, "Hàm lượng không hợp lệ! Vui lòng nhập số.");
+                            a.setHeaderText(null);
+                            a.showAndWait();
+                        }
+                    });
+
+                    Platform.runLater(() -> {
+                        listViewHoatChat.getSelectionModel().clearSelection();
+                        listViewHoatChat.refresh();
+                    });
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Thông báo");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Hoạt chất đã tồn tại trong danh sách!");
+                    alert.showAndWait();
+
+                    Platform.runLater(() -> {
+                        listViewHoatChat.getSelectionModel().clearSelection();
+                        listViewHoatChat.refresh();
+                    });
+                }
+            });
+        }
+        btnLuu.setOnAction(event -> btnCapNhat());
+        btnHuy.setOnAction(event -> btnHuy());
+        btnXoa.setOnAction(event -> btnXoa());
+        btnChonAnh.setOnAction(event -> chonFile());
     }
 
+    // ===== Nạp dữ liệu PHỤ THUỘC thuốc được chọn =====
     public void load(Thuoc_SanPham thuoc) {
-        listChiTietHoatChat = new ChiTietHoatChat_Dao().selectAll();
+        // Chống gọi load() trước khi inject UI
+        if (tblHoatChat == null || colMaHoatChat == null || colTenHoatChat == null
+                || colHamLuong == null || colXoa == null) {
+            throw new IllegalStateException("Hãy gọi gui.showWithController(stage, ctrl) để inject UI trước, rồi mới gọi ctrl.load(thuoc).");
+        }
+
         thuocTempDeXemSoLuongTon = thuoc;
+
         tblHoatChat.setEditable(true);
         colHamLuong.setCellFactory(TextFieldTableCell.forTableColumn(new FloatStringConverter()));
         colHamLuong.setOnEditCommit(event -> {
@@ -88,124 +167,85 @@ public class SuaXoaThuoc_Ctrl {
             hoatChatMoi.setHamLuong(event.getNewValue());
 
             for (ChiTietHoatChat chtc : listChiTietHoatChat) {
-                if (chtc.getThuoc() != null && hoatChatMoi.getThuoc() != null &&
-                        chtc.getThuoc().getMaThuoc().equals(hoatChatMoi.getThuoc().getMaThuoc()) &&
-                        chtc.getHoatChat().getMaHoatChat().equals(hoatChatMoi.getHoatChat().getMaHoatChat())) {
-
+                if (chtc.getThuoc() != null && hoatChatMoi.getThuoc() != null
+                        && Objects.equals(chtc.getThuoc().getMaThuoc(), hoatChatMoi.getThuoc().getMaThuoc())
+                        && Objects.equals(chtc.getHoatChat().getMaHoatChat(), hoatChatMoi.getHoatChat().getMaHoatChat())) {
                     chtc.setHamLuong(hoatChatMoi.getHamLuong());
                     chtc.setThuoc(thuoc);
                     break;
                 }
             }
         });
-//      Tạo sự kiện cho listViewHoatChat
-        listViewHoatChat.setVisible(false);
-        listView();
-        txtTimKiemHoatChat.textProperty().addListener((obs, oldVal, newVal) -> {
-//          Nếu txtTimKiemHoatChat được nhập thì listViewHoatChat sẽ hiện còn nếu txtTimKiemHoatChat trống thì sẽ tắt
-            if (newVal != null && !newVal.trim().isEmpty()) {
-                listViewHoatChat.setVisible(true);
-                locDanhSachHoatChat(newVal, oldVal);
-            } else {
-                listViewHoatChat.setVisible(false);
-            }
-        });
-        listViewHoatChat.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                HoatChat hoatChat = ((HoatChat) newVal);
-                txtTimKiemHoatChat.clear();
-                listViewHoatChat.setVisible(false);
-//              Kiểm tra nếu Hoạt chất đã có trong bảng chưa
-                if(tblHoatChat.getItems().stream().noneMatch(item -> item.getHoatChat().getMaHoatChat().equals(hoatChat.getMaHoatChat()))) {
-                    ChiTietHoatChat chtc = new ChiTietHoatChat();
-                    chtc.setHoatChat(hoatChat);
-                    chtc.setThuoc(thuoc);
-//                  Tạo dialog để nhập hàm lượng cho hoạt chất
-                    TextInputDialog dialog = new TextInputDialog();
-                    dialog.setTitle("Nhập hàm lượng");
-                    dialog.setHeaderText("Vui lòng nhập hàm lượng cho hoạt chất: " + hoatChat.getTenHoatChat());
-                    dialog.setContentText("Hàm lượng:");
-                    dialog.showAndWait().ifPresent(hamLuong -> {
-                        chtc.setHamLuong(Float.parseFloat(hamLuong));
-//                      Thêm chiTietHoatChat vào list để lưu lại khi thêm thuốc sẽ được thêm vào chi tiết hoạt chất
-                        listChiTietHoatChat.add(chtc);
-                        tblHoatChat.getItems().add(chtc);
-                    });
-                    Platform.runLater(() -> {
-                        listViewHoatChat.getSelectionModel().clearSelection();
-                        listViewHoatChat.refresh();
-                    });
-                } else {
-//                  Thông báo lỗi khi hoạt chất đã tồn tại trong bảng
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Thông báo");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Hoạt chất đã tồn tại trong danh sách!");
-                    alert.showAndWait();
-//                  Clear listViewHoatChat để lần sau thêm 1 hoạt chất khác
-                    Platform.runLater(() -> {
-                        listViewHoatChat.getSelectionModel().clearSelection();
-                        listViewHoatChat.refresh();
-                    });
-                }
-            }
-        });
 
-        cbxLoaiHang.getItems().addAll(new LoaiHang_Dao().getAllTenLH());
-        cbxLoaiHang.getItems().addFirst("Chọn loại hàng");
-        cbxViTri.getItems().addAll(new KeHang_Dao().getAllTenKe());
-        cbxViTri.getItems().addFirst("Chọn vị trí");
-        cbxNhomDuocLy.getItems().addAll(new NhomDuocLy_Dao().getAllTenNhomDuocLy());
-        cbxNhomDuocLy.getItems().addFirst("Chọn nhóm dược lý");
+        // Nguồn dữ liệu cho ComboBox
+        cbxLoaiHang.getItems().setAll(new LoaiHang_Dao().getAllTenLH());
+        cbxLoaiHang.getItems().add(0, "Chọn loại hàng");
+
+        cbxViTri.getItems().setAll(new KeHang_Dao().getAllTenKe());
+        cbxViTri.getItems().add(0, "Chọn vị trí");
+
+        cbxNhomDuocLy.getItems().setAll(new NhomDuocLy_Dao().getAllTenNhomDuocLy());
+        cbxNhomDuocLy.getItems().add(0, "Chọn nhóm dược lý");
+
         loadDuLieuThuoc(thuoc);
     }
 
     public void loadDuLieuThuoc(Thuoc_SanPham thuoc) {
         txtMaThuoc.setText(thuoc.getMaThuoc());
         txtTenThuoc.setText(thuoc.getTenThuoc());
-        cbxLoaiHang.setValue(thuoc.getLoaiHang()!=null? thuoc.getLoaiHang().getTenLoaiHang() : cbxLoaiHang.getItems().get(0));
-        cbxViTri.setValue(thuoc.getVitri()!=null? thuoc.getVitri().getTenKe() : cbxViTri.getItems().get(0));
+        cbxLoaiHang.setValue(thuoc.getLoaiHang() != null ? thuoc.getLoaiHang().getTenLoaiHang() : cbxLoaiHang.getItems().get(0));
+        cbxViTri.setValue(thuoc.getVitri() != null ? thuoc.getVitri().getTenKe() : cbxViTri.getItems().get(0));
         txtHamLuong.setText(String.valueOf(thuoc.getHamLuong()));
         txtHangSanXuat.setText(thuoc.getHangSX());
         txtDonViHamLuong.setText(thuoc.getDonViHamLuong());
         txtDuongDung.setText(thuoc.getDuongDung());
-        if(thuoc.getNhomDuocLy() != null) {
+
+        if (thuoc.getNhomDuocLy() != null) {
             cbxNhomDuocLy.setValue(thuoc.getNhomDuocLy().getTenNDL());
-        }else{
+        } else {
             cbxNhomDuocLy.getSelectionModel().selectFirst();
         }
+
         txtNuocSanXuat.setText(thuoc.getNuocSX());
         txtQuyCachDongGoi.setText(thuoc.getQuyCachDongGoi());
         txtSDK_GPNK.setText(thuoc.getSDK_GPNK());
+
         try {
             if (thuoc.getHinhAnh() == null) {
-                imgThuoc_SanPham.setImage(
-                        new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/noimage.jpg").toExternalForm())
-                );
+                imgThuoc_SanPham.setImage(new Image(
+                        getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/noimage.jpg").toExternalForm()
+                ));
             } else {
                 imgThuoc_SanPham.setImage(new Image(new ByteArrayInputStream(thuoc.getHinhAnh())));
             }
         } catch (Exception e) {
-            imgThuoc_SanPham.setImage(
-                    new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/noimage.jpg").toExternalForm())
-            );
+            imgThuoc_SanPham.setImage(new Image(
+                    getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/noimage.jpg").toExternalForm()
+            ));
         }
+
+        // Đổ bảng hoạt chất
         List<ChiTietHoatChat> listHoatChat = new ChiTietHoatChat_Dao().selectByMaThuoc(thuoc.getMaThuoc());
         ObservableList<ChiTietHoatChat> data = FXCollections.observableArrayList(listHoatChat);
 
-        colMaHoatChat.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().getHoatChat().getMaHoatChat()));
-        colTenHoatChat.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHoatChat().getTenHoatChat()));
-        colHamLuong.setCellValueFactory(new PropertyValueFactory<ChiTietHoatChat,Float>("hamLuong"));
-        colXoa.setCellFactory(celldata -> new TableCell<ChiTietHoatChat,String>(){
+        colMaHoatChat.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getHoatChat().getMaHoatChat()));
+        colTenHoatChat.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getHoatChat().getTenHoatChat()));
+        colHamLuong.setCellValueFactory(new PropertyValueFactory<>("hamLuong"));
+
+        colXoa.setCellFactory(celldata -> new TableCell<>() {
             private final Button btn = new Button("Xóa");
             {
                 btn.setOnAction(event -> {
                     ChiTietHoatChat chtc = getTableView().getItems().get(getIndex());
-                    new ChiTietHoatChat_Dao().deleteById(chtc.getThuoc().getMaThuoc(), chtc.getHoatChat().getMaHoatChat());
+                    new ChiTietHoatChat_Dao().deleteById(
+                            chtc.getThuoc().getMaThuoc(),
+                            chtc.getHoatChat().getMaHoatChat()
+                    );
                     getTableView().getItems().remove(chtc);
                     listChiTietHoatChat.removeIf(item ->
-                            item.getThuoc().getMaThuoc().equals(chtc.getThuoc().getMaThuoc()) &&
-                                    item.getHoatChat().getMaHoatChat().equals(chtc.getHoatChat().getMaHoatChat()));
+                            Objects.equals(item.getThuoc().getMaThuoc(), chtc.getThuoc().getMaThuoc()) &&
+                                    Objects.equals(item.getHoatChat().getMaHoatChat(), chtc.getHoatChat().getMaHoatChat())
+                    );
                 });
             }
             @Override
@@ -214,148 +254,162 @@ public class SuaXoaThuoc_Ctrl {
                 setGraphic(empty ? null : btn);
             }
         });
+
         tblHoatChat.setItems(data);
     }
 
-//  Hiển thị danh sách hoạt chất
+    // Hiển thị danh sách hoạt chất
     public void listView() {
         List<HoatChat> listHoatChat = new HoatChat_Dao().selectAll();
         allHoatChat = FXCollections.observableArrayList(listHoatChat);
         listViewHoatChat.setItems(allHoatChat);
-        listViewHoatChat.setCellFactory(data -> new ListCell<HoatChat>() {
+        listViewHoatChat.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(HoatChat item, boolean empty) {
                 super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                } else {
-                    setText(item.getMaHoatChat() + " - " + item.getTenHoatChat());
-                }
+                setText(empty || item == null ? null : item.getMaHoatChat() + " - " + item.getTenHoatChat());
             }
         });
     }
 
-//  Lọc danh sách hoạt chất
-    private void locDanhSachHoatChat(String newVal, String oldVal) {
-        if (newVal == null || newVal.isEmpty()) {
+    // Lọc danh sách hoạt chất
+    private void locDanhSachHoatChat(String keywordRaw) {
+        if (keywordRaw == null || keywordRaw.isEmpty()) {
             Platform.runLater(() -> listViewHoatChat.setItems(allHoatChat));
             return;
         }
-
-        String keyword = newVal.toLowerCase();
-        ObservableList<HoatChat> danhSachHoatChatDaLoc = FXCollections.observableArrayList();
-
+        String keyword = keywordRaw.toLowerCase();
+        ObservableList<HoatChat> filtered = FXCollections.observableArrayList();
         for (HoatChat hoatChat : allHoatChat) {
             if (hoatChat.getMaHoatChat().toLowerCase().contains(keyword)
                     || hoatChat.getTenHoatChat().toLowerCase().contains(keyword)) {
-                danhSachHoatChatDaLoc.add(hoatChat);
+                filtered.add(hoatChat);
             }
         }
-
-        Platform.runLater(() -> {
-            listViewHoatChat.setItems(danhSachHoatChatDaLoc.isEmpty()
-                    ? FXCollections.observableArrayList()
-                    : danhSachHoatChatDaLoc);
-        });
+        Platform.runLater(() -> listViewHoatChat.setItems(filtered.isEmpty()
+                ? FXCollections.observableArrayList()
+                : filtered));
     }
 
+    // ================== Hành động nút ==================
     public void btnCapNhat() {
-        // Lấy root hiện tại
+        if (btnLuu == null || btnLuu.getScene() == null) return;
 
         AnchorPane root = (AnchorPane) btnLuu.getScene().getRoot();
 
-        // Tạo overlay làm mờ nền
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.4);");
         ProgressIndicator progress = new ProgressIndicator();
         overlay.getChildren().add(progress);
 
-        // Căn overlay phủ toàn màn hình
         AnchorPane.setTopAnchor(overlay, 0.0);
         AnchorPane.setRightAnchor(overlay, 0.0);
         AnchorPane.setBottomAnchor(overlay, 0.0);
         AnchorPane.setLeftAnchor(overlay, 0.0);
 
-        // Thêm overlay vào AnchorPane
         root.getChildren().add(overlay);
 
-        if(!kiemTraHopLe()){
+        if (!kiemTraHopLe()) {
             root.getChildren().remove(overlay);
             return;
         }
-        // Tạo luồng riêng để xử lý cập nhật (tránh lag UI)
+
         new Thread(() -> {
             try {
-                // 👉 Code xử lý lâu (ví dụ: cập nhật CSDL)
                 Thuoc_SanPham thuoc = new Thuoc_SanPham();
                 thuoc.setMaThuoc(txtMaThuoc.getText());
                 thuoc.setTenThuoc(txtTenThuoc.getText().trim());
-                if(cbxLoaiHang.getSelectionModel().getSelectedIndex() == 0){
+
+                if (cbxLoaiHang.getSelectionModel().getSelectedIndex() == 0) {
                     thuoc.setLoaiHang(null);
-                }else{
-                    thuoc.setLoaiHang(new LoaiHang_Dao().selectByTenLH(cbxLoaiHang.getSelectionModel().getSelectedItem().toString()));
+                } else {
+                    thuoc.setLoaiHang(new LoaiHang_Dao()
+                            .selectByTenLH(cbxLoaiHang.getSelectionModel().getSelectedItem()));
                 }
-                if(cbxViTri.getSelectionModel().getSelectedIndex() == 0){
+                if (cbxViTri.getSelectionModel().getSelectedIndex() == 0) {
                     thuoc.setVitri(null);
-                }else{
-                    thuoc.setVitri(new KeHang_Dao().selectByTenKe(cbxViTri.getSelectionModel().getSelectedItem().toString()));
+                } else {
+                    thuoc.setVitri(new KeHang_Dao()
+                            .selectByTenKe(cbxViTri.getSelectionModel().getSelectedItem()));
                 }
+
                 thuoc.setHamLuong(Float.parseFloat(txtHamLuong.getText().trim()));
                 thuoc.setHangSX(txtHangSanXuat.getText().trim());
                 thuoc.setDonViHamLuong(txtDonViHamLuong.getText().trim());
                 thuoc.setDuongDung(txtDuongDung.getText().trim());
-                if(cbxNhomDuocLy.getSelectionModel().getSelectedIndex() == 0){
+
+                if (cbxNhomDuocLy.getSelectionModel().getSelectedIndex() == 0) {
                     thuoc.setNhomDuocLy(null);
-                }else{
-                    thuoc.setNhomDuocLy(new NhomDuocLy_Dao().selectByTenNhomDuocLy(cbxNhomDuocLy.getSelectionModel().getSelectedItem().toString()));
+                } else {
+                    thuoc.setNhomDuocLy(new NhomDuocLy_Dao()
+                            .selectByTenNhomDuocLy(cbxNhomDuocLy.getSelectionModel().getSelectedItem()));
                 }
+
                 thuoc.setNuocSX(txtNuocSanXuat.getText().trim());
                 thuoc.setQuyCachDongGoi(txtQuyCachDongGoi.getText().trim());
                 thuoc.setSDK_GPNK(txtSDK_GPNK.getText().trim());
-                // ... xử lý ảnh, listChiTietHoatChat, update, insert, v.v. ...
-                Image image = imgThuoc_SanPham.getImage(); // lấy ảnh trong ImageView
+
+                // Ảnh
+                Image image = imgThuoc_SanPham.getImage();
                 if (image != null) {
                     BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    try {
-                        ImageIO.write(bufferedImage, "png", baos); // định dạng ảnh png
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                        ImageIO.write(bufferedImage, "png", baos);
                         baos.flush();
-                        byte[] imageBytes = baos.toByteArray();    // chuyển sang byte[]
-                        baos.close();
-                        thuoc.setHinhAnh(imageBytes); // gán vào đối tượng
+                        thuoc.setHinhAnh(baos.toByteArray());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+
                 Thuoc_SanPham_Dao thuoc_dao = new Thuoc_SanPham_Dao();
                 thuoc_dao.update(thuoc);
 
-                if(listChiTietHoatChat != null) {
+                if (!listChiTietHoatChat.isEmpty()) {
+                    // ====== Đồng bộ ChiTietHoatChat theo state hiện tại của bảng ======
                     ChiTietHoatChat_Dao chtc_dao = new ChiTietHoatChat_Dao();
+
+//                  1) Lấy những record đã có trong DB cho MÃ THUỐC này
                     List<ChiTietHoatChat> existingList = chtc_dao.selectByMaThuoc(thuoc.getMaThuoc());
                     Map<String, Float> existingMap = new HashMap<>();
                     for (ChiTietHoatChat c : existingList) {
                         existingMap.put(c.getHoatChat().getMaHoatChat(), c.getHamLuong());
                     }
 
-                    for (ChiTietHoatChat chtc : listChiTietHoatChat) {
-                        ChiTietHoatChat existing = chtc_dao.selectById(
-                                chtc.getThuoc().getMaThuoc(),
-                                chtc.getHoatChat().getMaHoatChat()
-                        );
+//                  2) State hiện tại trên UI (bảng là nguồn sự thật)
+                    List<ChiTietHoatChat> current = new ArrayList<>(tblHoatChat.getItems());
 
-                        if (existing == null) {
-                            chtc_dao.insert(chtc);
-                        } else if (existing.getHamLuong() != chtc.getHamLuong()) {
-                            chtc_dao.update(chtc);
+//                  3) Insert/Update những gì đang có trên UI
+                    for (ChiTietHoatChat c : current) {
+                        // đảm bảo reference Thuoc không bị null khi insert/update
+                        c.setThuoc(thuoc);
+
+                        String key = c.getHoatChat().getMaHoatChat();
+                        if (!existingMap.containsKey(key)) {
+                            // chưa có trong DB -> INSERT
+                            chtc_dao.insert(c);
+                        } else if (!Objects.equals(existingMap.get(key), c.getHamLuong())) {
+                            // có rồi nhưng hàm lượng đổi -> UPDATE
+                            chtc_dao.update(c);
+                        }
+                    }
+
+//                  4) Xóa những record trong DB nhưng đã bị xóa khỏi UI
+                    Set<String> currentKeys = current.stream()
+                            .map(ci -> ci.getHoatChat().getMaHoatChat())
+                            .collect(java.util.stream.Collectors.toSet());
+
+                    for (ChiTietHoatChat old : existingList) {
+                        String key = old.getHoatChat().getMaHoatChat();
+                        if (!currentKeys.contains(key)) {
+                            chtc_dao.deleteById(thuoc.getMaThuoc(), key);
                         }
                     }
                 }
-                // Sau khi xong, ẩn overlay (chạy lại trên JavaFX Thread)
+
                 Platform.runLater(() -> {
                     root.getChildren().remove(overlay);
-                    danhMucThuoc_Ctrl.refestTable();
+                    if (danhMucThuoc_Ctrl != null) danhMucThuoc_Ctrl.refestTable();
                     dong();
                 });
 
@@ -366,7 +420,7 @@ public class SuaXoaThuoc_Ctrl {
         }).start();
     }
 
-    private void dong(){
+    private void dong() {
         Stage stage = (Stage) txtMaThuoc.getScene().getWindow();
         stage.close();
     }
@@ -386,22 +440,22 @@ public class SuaXoaThuoc_Ctrl {
             if (btn == ButtonType.YES) {
                 Thuoc_SanPham_Dao thuoc_dao = new Thuoc_SanPham_Dao();
                 Thuoc_SP_TheoLo_Dao thuocSpTheoLoDao = new Thuoc_SP_TheoLo_Dao();
-                if(thuocSpTheoLoDao.selectSoLuongTonByMaThuoc(thuocTempDeXemSoLuongTon.getMaThuoc())>0){
+                if (thuocSpTheoLoDao.selectSoLuongTonByMaThuoc(thuocTempDeXemSoLuongTon.getMaThuoc()) > 0) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Lỗi");
                     alert.setHeaderText(null);
-                    alert.setContentText("Thuốc "+ thuocTempDeXemSoLuongTon.getTenThuoc() + " hiện đang có tồn kho, bạn có muốn xóa không");
+                    alert.setContentText("Thuốc " + thuocTempDeXemSoLuongTon.getTenThuoc() + " hiện đang có tồn kho, bạn có muốn xóa không");
                     alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
                     alert.showAndWait().ifPresent(response -> {
                         if (response == ButtonType.YES) {
                             thuoc_dao.xoaThuoc_SanPham(thuocTempDeXemSoLuongTon.getMaThuoc());
-                            danhMucThuoc_Ctrl.refestTable();
+                            if (danhMucThuoc_Ctrl != null) danhMucThuoc_Ctrl.refestTable();
                             dong();
                         }
                     });
-                }else{
+                } else {
                     thuoc_dao.xoaThuoc_SanPham(thuocTempDeXemSoLuongTon.getMaThuoc());
-                    danhMucThuoc_Ctrl.refestTable();
+                    if (danhMucThuoc_Ctrl != null) danhMucThuoc_Ctrl.refestTable();
                     dong();
                 }
             }
@@ -423,56 +477,27 @@ public class SuaXoaThuoc_Ctrl {
     }
 
     public boolean kiemTraHopLe() {
-        if(txtTenThuoc.getText().isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText(null);
-            alert.setContentText("Tên thuốc không được để trống!");
-            alert.showAndWait();
-            return false;
-        }else if(txtHamLuong.getText().isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText(null);
-            alert.setContentText("Hàm lượng không được để trống!");
-            alert.showAndWait();
-            return false;
-        }else if(!txtHamLuong.getText().matches("\\d+(\\.\\d+)?")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText(null);
-            alert.setContentText("Hàm lượng không hợp lệ! Vui lòng nhập số.");
-            alert.showAndWait();
-            return false;
-        }else if(txtDonViHamLuong.getText().isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText(null);
-            alert.setContentText("Đơn vị hàm lượng không được để trống!");
-            alert.showAndWait();
-            return false;
-        }else if(txtDuongDung.getText().isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText(null);
-            alert.setContentText("Đường dùng không được để trống!");
-            alert.showAndWait();
-            return false;
-        }else if(txtSDK_GPNK.getText().isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText(null);
-            alert.setContentText("SĐK/GPNK không được để trống!");
-            alert.showAndWait();
-            return false;
-        } else if (txtHamLuong.getText().equals("/d+")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText(null);
-            alert.setContentText("Hàm lượng không hợp lệ! Vui lòng nhập số.");
-            alert.showAndWait();
-            return false;
+        if (txtTenThuoc.getText().isEmpty()) {
+            showErr("Tên thuốc không được để trống!"); return false;
+        } else if (txtHamLuong.getText().isEmpty()) {
+            showErr("Hàm lượng không được để trống!"); return false;
+        } else if (!txtHamLuong.getText().matches("\\d+(\\.\\d+)?")) {
+            showErr("Hàm lượng không hợp lệ! Vui lòng nhập số."); return false;
+        } else if (txtDonViHamLuong.getText().isEmpty()) {
+            showErr("Đơn vị hàm lượng không được để trống!"); return false;
+        } else if (txtDuongDung.getText().isEmpty()) {
+            showErr("Đường dùng không được để trống!"); return false;
+        } else if (txtSDK_GPNK.getText().isEmpty()) {
+            showErr("SĐK/GPNK không được để trống!"); return false;
         }
         return true;
+    }
+
+    private void showErr(String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Lỗi");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }

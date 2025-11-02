@@ -46,15 +46,17 @@ public class SuaXoaNhanVien_Ctrl {
     private NhanVien nhanVien;
     public DanhMucNhanVien_Ctrl danhMucNhanVien_Ctrl;
 
-    public void initialize(NhanVien nhanVien) {
+    public void initialize() {
         cbxGioiTinh.getItems().addAll("Nam", "Nữ");
         cbxTrangThai.getItems().addAll("Đang làm việc", "Đã nghỉ việc");
-        loadDataLuongNhanVien(nhanVien);
-        this.nhanVien = nhanVien;
-
     }
 
-    public void loadDataLuongNhanVien(NhanVien nhanVien) {
+    public void load(NhanVien nhanVien) {
+        loadDataNhanVien(nhanVien);
+        this.nhanVien = nhanVien;
+    }
+
+    public void loadDataNhanVien(NhanVien nhanVien) {
         txtMaNV.setText(nhanVien.getMaNV());
         txtTenNV.setText(nhanVien.getTenNV());
         txtSDT.setText(nhanVien.getSdt());
@@ -126,87 +128,114 @@ public class SuaXoaNhanVien_Ctrl {
 
     public void btnSuaTaiKhoan(ActionEvent actionEvent) {
         try {
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhanVien.SuaTaiKhoan_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhanVien.SuaTaiKhoan_Ctrl();
+
             Stage dialog = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhanVien/SuataiKhoan_GUI.fxml"));
-            Parent root = loader.load();
-
-            SuaTaiKhoan_Ctrl ctrl = loader.getController();
-            ctrl.initialize(nhanVien);
-
-            if(ctrl.isSaved){
-                NhanVien updatedNV = ctrl.getUpdatedNhanVien();
-                if (updatedNV==null) return;
-                nhanVien.setTaiKhoan(updatedNV.getTaiKhoan());
-                nhanVien.setMatKhau(updatedNV.getMatKhau());
-            }
-
-
             dialog.initOwner(txtDiaChi.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
             dialog.setTitle("Sửa tài khoản nhân viên");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+
+            // Inject controls + load dữ liệu + gắn handler + showAndWait()
+            gui.showWithController(dialog, ctrl, nhanVien);
+
+            // Sau khi dialog đóng (showAndWait đã block), đọc kết quả
+            if (ctrl.isSaved) {
+                NhanVien updatedNV = ctrl.getUpdatedNhanVien(); // nếu bạn có getter này
+                if (updatedNV != null) {
+                    nhanVien.setTaiKhoan(updatedNV.getTaiKhoan());
+                    nhanVien.setMatKhau(updatedNV.getMatKhau());
+                } else {
+                    // fallback: tự đọc lại từ các field đã inject trong ctrl (nếu không dùng getUpdatedNhanVien)
+                    if (ctrl.txtTaiKhoan != null) nhanVien.setTaiKhoan(ctrl.txtTaiKhoan.getText());
+                    if (ctrl.txtMatKhau  != null) nhanVien.setMatKhau(ctrl.txtMatKhau.getText());
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public void btnThayDoiLuong(ActionEvent actionEvent) {
         try {
-            Stage dialog = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhanVien/ThietLapLuongNV_GUI.fxml"));
-            Parent root = loader.load();
+            // 1) Controller + GUI
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhanVien.ThietLapLuongNV_Ctrl();
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhanVien.ThietLapLuongNV_GUI();
 
-            ThietLapLuongNV_Ctrl ctrl = loader.getController();
-            LuongNhanVien luongNhanVienTemp = new LuongNhanVien();
-            for(LuongNhanVien lnv : listLuong){
-                if(lnv.getDenNgay()==null){
-                    luongNhanVienTemp = new LuongNhanVien(
-                            lnv.getMaLNV(),
-                            lnv.getTuNgay(),
-                            lnv.getDenNgay(),
-                            lnv.getLuongCoBan(),
-                            lnv.getPhuCap(),
-                            lnv.getGhiChu(),
-                            lnv.getNhanVien()
-                    );
-                    break;
-                }
-            }
-            ctrl.initialize(nhanVien, luongNhanVienTemp);
-
-            dialog.setOnHidden(event -> {
-                if(!ctrl.isSaved){
-                    return;
-                }
-                LuongNhanVien updatedLuongNV = ctrl.luongNhanVien;
-                if (updatedLuongNV==null) return;
-                LuongNhanVien_Dao dao = new LuongNhanVien_Dao();
-                String maLNV = dao.getNewMaLNV();
-                for(LuongNhanVien lnv : listLuong){
-                    if(lnv.getDenNgay()==null){
-                        lnv.setDenNgay(Date.valueOf(LocalDate.now()));
-                            break;
+            // 2) Lấy mức lương hiện hành (đang áp dụng: denNgay == null)
+            LuongNhanVien luongNhanVienTemp = null;
+            if (listLuong != null) {
+                for (LuongNhanVien lnv : listLuong) {
+                    if (lnv.getDenNgay() == null) {
+                        luongNhanVienTemp = new LuongNhanVien(
+                                lnv.getMaLNV(),
+                                lnv.getTuNgay(),
+                                lnv.getDenNgay(),
+                                lnv.getLuongCoBan(),
+                                lnv.getPhuCap(),
+                                lnv.getGhiChu(),
+                                lnv.getNhanVien()
+                        );
+                        break;
                     }
                 }
-                listLuong.add(new LuongNhanVien(maLNV, Date.valueOf(LocalDate.now().plusDays(1)), null, updatedLuongNV.getLuongCoBan(), updatedLuongNV.getPhuCap(), updatedLuongNV.getGhiChu(), nhanVien));
-//              Cập nhật lại TableView
-                ObservableList<LuongNhanVien> updatedDataLuong = FXCollections.observableArrayList(listLuong);
-                tblLuongNV.setItems(updatedDataLuong);
-                tblLuongNV.refresh();
-            });
+            }
+            if (luongNhanVienTemp == null) {
+                luongNhanVienTemp = new LuongNhanVien(null, null, null, 0.0, 0.0, "", nhanVien);
+            }
 
+            // 3) Mở dialog (GUI của bạn nên gọi showAndWait bên trong)
+            Stage dialog = new Stage();
             dialog.initOwner(txtDiaChi.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
             dialog.setTitle("Thay đổi lương nhân viên");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+
+            gui.showWithController(dialog, ctrl, nhanVien, luongNhanVienTemp); // <-- block tới khi đóng
+
+            // 4) Sau khi dialog đóng, đọc kết quả và cập nhật
+            if (!ctrl.isSaved) return;
+            LuongNhanVien updated = ctrl.luongNhanVien;
+            if (updated == null) return;
+
+            LuongNhanVien_Dao dao = new LuongNhanVien_Dao();
+
+            // Đóng bản ghi đang áp dụng nếu có
+            if (listLuong != null) {
+                for (LuongNhanVien lnv : listLuong) {
+                    if (lnv.getDenNgay() == null) {
+                        lnv.setDenNgay(Date.valueOf(LocalDate.now()));
+                        // Persist cập nhật nếu cần:
+                        dao.update(lnv);
+                        break;
+                    }
+                }
+            }
+
+            // Tạo mã mới và thêm bản ghi mới (hiệu lực từ ngày mai)
+            String maLNV = dao.getNewMaLNV();
+            LuongNhanVien moi = new LuongNhanVien(
+                    maLNV,
+                    Date.valueOf(LocalDate.now().plusDays(1)),
+                    null,
+                    updated.getLuongCoBan(),
+                    updated.getPhuCap(),
+                    updated.getGhiChu(),
+                    nhanVien
+            );
+            listLuong.add(moi);
+            // Persist bản ghi mới
+            dao.insert(moi);
+
+            // Cập nhật lại bảng
+            tblLuongNV.setItems(FXCollections.observableArrayList(listLuong));
+            tblLuongNV.refresh();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public void btnLuu(ActionEvent actionEvent) {
         // Lấy root hiện tại
