@@ -6,7 +6,7 @@ USE QuanLyNhaThuoc;
 GO
 
 --Link thư mục hình ảnh thuốc
-DECLARE @path NVARCHAR(255) = N'D:\IUH\hk5\PTUD_Java\Project\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc\';
+DECLARE @path NVARCHAR(255) = N'C:\Users\Nhut Hao\Desktop\New folder (2)\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc\';
 
 -- =========================
 -- Bảng KhachHang
@@ -2544,3 +2544,93 @@ GO
 --EXEC sp_add_jobserver
 --    @job_name = N'Job_TuDongTraHangHetHan';
 --GO
+
+-- XÓA SP CŨ NẾU BẠN ĐÃ TẠO
+DROP PROCEDURE IF EXISTS sp_GetHoaDonTheoThoiGian;
+GO
+DROP PROCEDURE IF EXISTS sp_GetHoaDonTheoTuyChon;
+GO
+
+-- STORED PROCEDURE 1: (Đã cập nhật VAT)
+CREATE PROCEDURE sp_GetHoaDonTheoThoiGian
+    @ThoiGian NVARCHAR(20)
+AS
+BEGIN
+    DECLARE @TuNgay DATE
+    DECLARE @DenNgay DATE
+    
+    -- ----- SỬA LỖI Ở ĐÂY -----
+    -- Di chuyển dòng này lên đầu, bên ngoài tất cả các khối IF
+    DECLARE @Today DATE = GETDATE() 
+    -- -------------------------
+
+    IF @ThoiGian = 'Hôm nay'
+    BEGIN
+        SET @TuNgay = CAST(GETDATE() AS DATE)
+        SET @DenNgay = CAST(GETDATE() AS DATE)
+    END
+    ELSE IF @ThoiGian = 'Tuần này'
+    BEGIN
+        SET DATEFIRST 1; -- Đặt Thứ Hai là ngày đầu tuần
+        SET @TuNgay = DATEADD(dd, 1 - DATEPART(dw, @Today), @Today);
+        SET @DenNgay = DATEADD(dd, 6, @TuNgay);
+    END
+    ELSE IF @ThoiGian = 'Tháng này'
+    BEGIN
+        SET @TuNgay = DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0)
+        SET @DenNgay = EOMONTH(GETDATE())
+    END
+    ELSE IF @ThoiGian = 'Năm Nay'
+    BEGIN
+        SET @TuNgay = DATEFROMPARTS(YEAR(GETDATE()), 1, 1)
+        SET @DenNgay = DATEFROMPARTS(YEAR(GETDATE()), 12, 31)
+    END
+
+    -- Logic SELECT (Phần này đã đúng)
+    SELECT 
+        h.maHD, 
+        CAST(h.ngayLap AS DATE) as ngayLap,
+        h.maKH, 
+        h.maNV,
+        ISNULL(SUM(ct.SoLuong * (ct.DonGia - ct.GiamGia)), 0) * 1.05 AS tongTienNet
+    FROM 
+        HoaDon h
+    LEFT JOIN 
+        ChiTietHoaDon ct ON h.maHD = ct.maHD
+    WHERE 
+        CAST(h.ngayLap AS DATE) BETWEEN @TuNgay AND @DenNgay
+    GROUP BY
+        h.maHD, CAST(h.ngayLap AS DATE), h.maKH, h.maNV
+    ORDER BY 
+        ngayLap DESC;
+END
+GO
+
+-- STORED PROCEDURE 2: (Đã cập nhật VAT)
+CREATE PROCEDURE sp_GetHoaDonTheoTuyChon
+    @TuNgay DATE,
+    @DenNgay DATE
+AS
+BEGIN
+    -- Lấy danh sách hóa đơn VÀ tính tổng tiền NET (đã bao gồm 5% VAT)
+    SELECT 
+        h.maHD, 
+        CAST(h.ngayLap AS DATE) as ngayLap,
+        h.maKH, 
+        h.maNV,
+        -- SỬA Ở ĐÂY: Thêm * 1.05 để tính 5% VAT
+        ISNULL(SUM(ct.SoLuong * (ct.DonGia - ct.GiamGia)), 0) * 1.05 AS tongTienNet
+    FROM 
+        HoaDon h
+    LEFT JOIN 
+        ChiTietHoaDon ct ON h.maHD = ct.maHD
+    WHERE 
+        CAST(h.ngayLap AS DATE) BETWEEN @TuNgay AND @DenNgay
+    GROUP BY
+        h.maHD, CAST(h.ngayLap AS DATE), h.maKH, h.maNV
+    ORDER BY 
+        ngayLap DESC;
+END
+GO
+
+

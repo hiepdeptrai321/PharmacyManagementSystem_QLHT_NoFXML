@@ -1,6 +1,6 @@
-package com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe;
+package com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe; // Sửa package nếu cần
 
-import com.example.pharmacymanagementsystem_qlht.model.HoaDonDisplay; // <-- SỬA
+import com.example.pharmacymanagementsystem_qlht.model.HoaDonDisplay;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,12 +16,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-import java.time.LocalDate; // <-- THÊM
+import java.time.LocalDate;
 
-/**
- * Lớp View (Đã cập nhật)
- * Sử dụng HoaDonDisplay thay vì HoaDon
- */
+
 public class ThongKeBanHang_GUI {
 
     // --- Panel trái (Giữ nguyên) ---
@@ -55,8 +52,9 @@ public class ThongKeBanHang_GUI {
     public TableColumn<HoaDonDisplay, String> cotMaHoaDon = new TableColumn<>("Mã Hóa Đơn");
     public TableColumn<HoaDonDisplay, LocalDate> cotNgayLap = new TableColumn<>("Ngày Lập");
     public TableColumn<HoaDonDisplay, String> cotMaKhachHang = new TableColumn<>("Mã Khách Hàng");
+    public TableColumn<HoaDonDisplay, String> cotMaNhanVien = new TableColumn<>("Mã Nhân Viên");
     public TableColumn<HoaDonDisplay, Double> cotTongTien = new TableColumn<>("Tổng Tiền");
-    public TableColumn<HoaDonDisplay, Void> cotChiTiet = new TableColumn<>("Chi Tiết");
+    // ĐÃ XÓA: cotChiTiet
 
 
     public Parent createContent() {
@@ -83,9 +81,10 @@ public class ThongKeBanHang_GUI {
         cotMaHoaDon.setPrefWidth(200.0);
         cotNgayLap.setPrefWidth(200.0);
         cotMaKhachHang.setPrefWidth(200.0);
-        cotTongTien.setPrefWidth(300.0);
-        cotChiTiet.setPrefWidth(259.0); // Căn chỉnh lại
-        tableHoaDon.getColumns().addAll(cotMaHoaDon, cotNgayLap, cotMaKhachHang, cotTongTien, cotChiTiet);
+        cotMaNhanVien.setPrefWidth(200.0);
+        cotTongTien.setPrefWidth(359.0); // Chia lại độ rộng
+        // ĐÃ XÓA: cotChiTiet
+        tableHoaDon.getColumns().addAll(cotMaHoaDon, cotNgayLap, cotMaKhachHang, cotMaNhanVien, cotTongTien);
         tableHoaDon.setPrefHeight(273.0);
         tableHoaDon.setPrefWidth(1161.0);
 

@@ -1,42 +1,41 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhomDuocLy;
 
-import com.example.pharmacymanagementsystem_qlht.dao.KeHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.NhomDuocLy_Dao;
-import com.example.pharmacymanagementsystem_qlht.model.KeHang;
 import com.example.pharmacymanagementsystem_qlht.model.NhomDuocLy;
+// Import file GUI mới
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhomDuocLy.ThemNhomDuocLy_GUI;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML; // Giữ nguyên FXML
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class ThemNhomDuocLy_Ctrl extends Application {
+    // *** THAY ĐỔI 1: Bỏ 'private' và giữ nguyên '@FXML' (hoặc bỏ '@FXML' cũng được) ***
     @FXML
-    private Button btnHuy;
+    public Button btnHuy;
 
     @FXML
-    private Button btnThem;
+    public Button btnThem;
 
     @FXML
-    private TextArea txtMoTa;
+    public TextArea txtMoTa;
 
     @FXML
-    private TextField txtTenNhomDuocLy;
+    public TextField txtTenNhomDuocLy;
 
     private NhomDuocLy_Dao nhomDuocLyDao = new NhomDuocLy_Dao();
 
 
     @FXML
     public void initialize() {
+        // HÀM NÀY GIỮ NGUYÊN 100%
         btnThem.setOnAction(e -> themNDL());
         btnHuy.setOnAction(e -> btnHuyClick());
     }
@@ -44,22 +43,34 @@ public class ThemNhomDuocLy_Ctrl extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhomDuocLy/ThemNhomDuocLy.fxml"));
+        // *** THAY ĐỔI 2: Thay thế 2 dòng FXMLLoader ***
+        // Parent root = FXMLLoader.load(getClass().getResource(".../ThemNhomDuocLy.fxml"));
+
+        ThemNhomDuocLy_GUI gui = new ThemNhomDuocLy_GUI();
+        Parent root = gui.createContent(this); // 'this' là controller, giao diện sẽ bơm component vào
+
+        // *** THAY ĐỔI 3: Gọi initialize() bằng tay ***
+        initialize();
+
+        // Phần còn lại giữ nguyên
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThemNhaCungCap.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void btnHuyClick(){
         Stage stage = (Stage) txtTenNhomDuocLy.getScene().getWindow();
         stage.close();
     }
 
+    // HÀM NÀY GIỮ NGUYÊN 100%
     @FXML
     void themNDL() {
-        // Sinh mã tự động
         String maNDL = nhomDuocLyDao.generateNewMaNhomDL();
         String tenNDL = txtTenNhomDuocLy.getText().trim();
         String moTa = txtMoTa.getText().trim();
@@ -82,6 +93,7 @@ public class ThemNhomDuocLy_Ctrl extends Application {
         }
     }
 
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type);
         alert.setHeaderText(null);
@@ -89,7 +101,7 @@ public class ThemNhomDuocLy_Ctrl extends Application {
         alert.showAndWait();
     }
 
-
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void dongCuaSo() {
         Stage stage = (Stage) txtTenNhomDuocLy.getScene().getWindow();
         stage.close();
