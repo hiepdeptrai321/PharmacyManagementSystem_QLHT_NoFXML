@@ -32,6 +32,7 @@ public class ConnectDB {
         for (int i = 0; i < args.length; i++) {
             stmt.setObject(i + 1, args[i]);
         }
+
         return stmt;
     }
 //    public Connection getConnection() throws SQLException {

@@ -2,35 +2,58 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhaCun
 
 import com.example.pharmacymanagementsystem_qlht.dao.NhaCungCap_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.NhaCungCap;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.util.Optional;
 
 public class SuaXoaNhaCungCap_Ctrl {
+    @FXML
     public TextField txtTen;
+    @FXML
     public TextField txtDiaChi;
+    @FXML
     public TextField txtSDT;
+    @FXML
     public TextField txtEmail;
+    @FXML
     public TextField txtGPKD_SDK;
+    @FXML
     public TextField txtTenCongTy;
+    @FXML
     public TextField txtMaSoThue;
+    @FXML
     public TextArea txtGhiChu;
+    @FXML
+    public Pane NutHuy;
+    @FXML
+    public Pane nutThem;
+    @FXML
+    public Pane nutXoa;
+
     private NhaCungCap ncc;
     private DanhMucNhaCungCap_Ctrl danhMucNhaCungCap_ctrl;
 
-    public void initialize(NhaCungCap ncc) {
+    public void initialize() {
+        NutHuy.setOnMouseClicked(e -> btnHuy());
+        nutThem.setOnMouseClicked(e -> CapNhatNCC());
+        nutXoa.setOnMouseClicked(e -> XoaNCC());
+        ThemDuLieuThuoc();
+    }
+
+    public void loadData(NhaCungCap ncc) {
         this.ncc = ncc;
-        ThemDuLieuThuoc(ncc);
     }
 
     public void setDanhMucNhaCungCap_ctrl(DanhMucNhaCungCap_Ctrl ctrl) {
         this.danhMucNhaCungCap_ctrl = ctrl;
     }
 
-    private void ThemDuLieuThuoc(NhaCungCap ncc) {
+    private void ThemDuLieuThuoc() {
         txtTen.setText(ncc.getTenNCC());
         txtDiaChi.setText(ncc.getDiaChi());
         txtSDT.setText(ncc.getSDT());
@@ -41,7 +64,7 @@ public class SuaXoaNhaCungCap_Ctrl {
         txtGhiChu.setText(ncc.getGhiChu());
     }
 
-    public void CapNhatNCC(MouseEvent mouseEvent) {
+    public void CapNhatNCC() {
         Dialog<ButtonType> dialogMain = new Dialog<>();
         dialogMain.setTitle("Xác nhận");
         DialogPane dialogTemp = dialogMain.getDialogPane();
@@ -80,9 +103,27 @@ public class SuaXoaNhaCungCap_Ctrl {
         }
     }
 
-    public void XoaNCC(MouseEvent mouseEvent) {
-        NhaCungCap_Dao ncc_dao = new NhaCungCap_Dao();
-        ncc_dao.deleteById(ncc);
+    public void XoaNCC() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác nhận xoá");
+        alert.setHeaderText(null);
+        alert.setContentText("Bạn có chắc muốn xoá nhà cung cấp này không?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+
+            NhaCungCap_Dao dao = new NhaCungCap_Dao();
+
+            // CHÚ Ý: deleteById phải truyền mã, không truyền object ncc
+            boolean ok = dao.deleteById(ncc.getMaNCC());
+
+            if (ok) {
+                new Alert(Alert.AlertType.INFORMATION, "Xoá thành công!", ButtonType.OK).showAndWait();
+                danhMucNhaCungCap_ctrl.refreshTable();
+                dong();
+            } else {
+                new Alert(Alert.AlertType.ERROR, "Xoá thất bại!", ButtonType.OK).showAndWait();
+            }
+        }
     }
 
     public void dong() {
@@ -90,13 +131,7 @@ public class SuaXoaNhaCungCap_Ctrl {
         stage.close();
     }
 
-    public void btnXoa(KeyEvent keyEvent) {
-        NhaCungCap_Dao ncc_dao = new NhaCungCap_Dao();
-        ncc_dao.deleteById(ncc);
-        dong();
-    }
-
-    public void btnHuy(MouseEvent keyEvent) {
+    public void btnHuy() {
         dong();
     }
 }
