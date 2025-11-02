@@ -52,7 +52,7 @@
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font></Label>
-               <Pane layoutY="41.0" prefHeight="160.0" prefWidth="547.0" styleClass="info-pane">
+               <Pane layoutY="41.0" prefHeight="160.0" prefWidth="547.0" styleClass="info-pane"/>
                   <Label styleClass="section-label" text="THÔNG TIN PHIẾU TRẢ" />
                <Pane layoutY="41.0" prefHeight="160.0" prefWidth="462.0" styleClass="info-pane">
                    <Label layoutX="5.0" layoutY="5.0" styleClass="bold-label" text="Tên nhân viên lập:" />
