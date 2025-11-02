@@ -1,63 +1,51 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang;
 
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuTraHang_Dao;
-import com.example.pharmacymanagementsystem_qlht.model.PhieuDatHang;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuTraHang;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuTra.ChiTietPhieuTraHang_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuTra.TKPhieuTraHang_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.DatePicker;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.util.List;
+import java.util.Objects;
 
 public class TKPhieuTraHang_Ctrl extends Application {
-    @FXML
-    private TableView<PhieuTraHang> tblPT;
-    @FXML
-    private TableColumn<PhieuTraHang, Number> colSTT;
-    @FXML
-    private TableColumn<PhieuTraHang, String> colMaPT;
-    @FXML
-    private TableColumn<PhieuTraHang, String> colMaHD;
-    @FXML
-    private TableColumn<PhieuTraHang, String> colNgayLap;
-    @FXML
-    private TableColumn<PhieuTraHang, String> colTenKH;
-    @FXML
-    private TableColumn<PhieuTraHang, String> colSdtKH;
-    @FXML
-    private TableColumn<PhieuTraHang, String> colTenNV;
-    @FXML
-    private TableColumn<PhieuTraHang, String> colChiTiet;
-    @FXML
-    private ComboBox<String> cboTimKiem;
-    @FXML
-    private TextField txtNoiDungTimKiem;
-    @FXML
-    private DatePicker dpTuNgay;
-    @FXML
-    private DatePicker dpDenNgay;
-    @FXML
-    private ComboBox<String> cbLoc;
-    @FXML
-    private Button btnTimKiem;
-    @FXML
-    private Button btnHuyBo;
+    public TableView<PhieuTraHang> tblPT;
+    public TableColumn<PhieuTraHang, Number> colSTT;
+    public TableColumn<PhieuTraHang, String> colMaPT;
+    public TableColumn<PhieuTraHang, String> colMaHD;
+    public TableColumn<PhieuTraHang, String> colNgayLap;
+    public TableColumn<PhieuTraHang, String> colTenKH;
+    public TableColumn<PhieuTraHang, String> colSdtKH;
+    public TableColumn<PhieuTraHang, String> colTenNV;
+    public TableColumn<PhieuTraHang, String> colChiTiet;
+    public ComboBox<String> cboTimKiem;
+    public TextField txtNoiDungTimKiem;
+    public DatePicker dpTuNgay;
+    public DatePicker dpDenNgay;
+    public ComboBox<String> cbLoc;
+    public Button btnTimKiem;
+    public Button btnHuyBo;
 
     private final PhieuTraHang_Dao phieuTraHangDao = new PhieuTraHang_Dao();
 
-    @FXML
+    @Override
+    public void start(Stage stage) throws Exception {
+        new TKPhieuTraHang_GUI().showWithController(stage, this);
+
+    }
     public void initialize() {
 
         cboTimKiem.getItems().addAll(
@@ -135,17 +123,24 @@ public class TKPhieuTraHang_Ctrl extends Application {
             }
         });
         colChiTiet.setCellFactory(col -> new TableCell<PhieuTraHang, String>() {
-            private final Button btn = new Button("Chi tiết");
+            final Button btn = new Button("Xem");
             {
+                btn.getStyleClass().add("btn-detail");
                 btn.setOnAction(event -> {
-                    PhieuTraHang pt = getTableView().getItems().get(getIndex());
-                    btnChiTietClick(pt);
+                    PhieuTraHang data = getTableView().getItems().get(getIndex());
+                    btnChiTietClick(data);
                 });
             }
             @Override
-            protected void updateItem(String item, boolean empty) {
+            public void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    setGraphic(btn);
+                    setText(null);
+                }
             }
         });
         tblPT.setItems(data);
@@ -153,21 +148,17 @@ public class TKPhieuTraHang_Ctrl extends Application {
 
     private void btnChiTietClick(PhieuTraHang pTra) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuTraHang/ChiTietPhieuTraHang_GUI.fxml"));
-            Parent root = loader.load();
-
-            this.getClass();
-            ChiTietPhieuTraHang_Ctrl ctrl = loader.getController();
-            ctrl.setPhieuTraHang(pTra);
-
+            ChiTietPhieuTraHang_Ctrl chiTietCtrl = new ChiTietPhieuTraHang_Ctrl();
+            chiTietCtrl.setPhieuTraHang(pTra);
             Stage dialog = new Stage();
             dialog.initOwner(tblPT.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Chi tiết hoạt động");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.setTitle("Chi tiết phiếu trả hàng: " + pTra.getMaPT());
+            String iconPath = "/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png";
+            dialog.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath))));
+            ChiTietPhieuTraHang_GUI.showWithController(dialog, chiTietCtrl);
         } catch (Exception e) {
+            System.err.println("Cửa sổ chi tiết phiếu trả bị lỗi và đã tự đóng.");
             e.printStackTrace();
         }
     }
@@ -254,12 +245,5 @@ public class TKPhieuTraHang_Ctrl extends Application {
         timKiem();
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuTraHang/TKPhieuTraHang_GUI.fxml"));
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
 
-    }
 }
