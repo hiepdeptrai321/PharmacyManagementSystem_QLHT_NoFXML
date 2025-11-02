@@ -3,6 +3,7 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuTra
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.TraHangItem;
+import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuTra.LapPhieuTra_GUI;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -29,39 +30,39 @@ import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.WARNING;
 
 public class LapPhieuTraHang_Ctrl extends Application {
-    @FXML private TextField txtTimHoaDon;
-    @FXML private Button btnTimHoaDon;
-    @FXML private TableView<ChiTietHoaDon> tblSanPhamHoaDon;
-    @FXML private TableColumn<ChiTietHoaDon, String> colSTTGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colTenSPGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colSLGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colDonViGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colDonGiaGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colGiamGiaGoc;
-    @FXML private TableColumn<ChiTietHoaDon, String> colThanhTienGoc;
-    @FXML private TableColumn<ChiTietHoaDon, Void> colTra;
+    public TextField txtTimHoaDon;
+    public Button btnTimHoaDon;
+    public TableView<ChiTietHoaDon> tblSanPhamHoaDon;
+    public TableColumn<ChiTietHoaDon, String> colSTTGoc;
+    public TableColumn<ChiTietHoaDon, String> colTenSPGoc;
+    public TableColumn<ChiTietHoaDon, String> colSLGoc;
+    public TableColumn<ChiTietHoaDon, String> colDonViGoc;
+    public TableColumn<ChiTietHoaDon, String> colDonGiaGoc;
+    public TableColumn<ChiTietHoaDon, String> colGiamGiaGoc;
+    public TableColumn<ChiTietHoaDon, String> colThanhTienGoc;
+    public TableColumn<ChiTietHoaDon, Void> colTra;
 
-    @FXML private TextField lblMaHDGoc;
-    @FXML private Label lblTenKH;
-    @FXML private Label lblSDT;
-    @FXML private DatePicker dpNgayLapPhieu;
-    @FXML private Label lblTongTienGoc;
-    @FXML private Label lblTongTienTraLai;
-    @FXML private Label lblVAT;
-    @FXML private Label lblSoTienTraLai;
-    @FXML private TextArea txtGhiChu;
+    public TextField lblMaHDGoc;
+    public Label lblTenKH;
+    public Label lblSDT;
+    public DatePicker dpNgayLapPhieu;
+    public Label lblTongTienGoc;
+    public Label lblTongTienTraLai;
+    public Label lblVAT;
+    public Label lblSoTienTraLai;
+    public TextArea txtGhiChu;
 
 
 
-    @FXML private TableView<TraHangItem> tblChiTietTraHang;
-    @FXML private TableColumn<TraHangItem, String> colSTTTra;
-    @FXML private TableColumn<TraHangItem, String> colTenSPTra;
-    @FXML private TableColumn<TraHangItem, Number> colSLTra;
-    @FXML private TableColumn<TraHangItem, String> colLyDo;
-    @FXML private TableColumn<TraHangItem, String> colDonViTra;
-    @FXML private TableColumn<TraHangItem, Double> colDonGiaTra;
-    @FXML private TableColumn<TraHangItem, Double> colThanhTienTra;
-    @FXML private TableColumn<TraHangItem, Void> colBo;
+    public TableView<TraHangItem> tblChiTietTraHang;
+    public TableColumn<TraHangItem, String> colSTTTra;
+    public TableColumn<TraHangItem, String> colTenSPTra;
+    public TableColumn<TraHangItem, Number> colSLTra;
+    public TableColumn<TraHangItem, String> colLyDo;
+    public TableColumn<TraHangItem, String> colDonViTra;
+    public TableColumn<TraHangItem, Double> colDonGiaTra;
+    public TableColumn<TraHangItem, Double> colThanhTienTra;
+    public TableColumn<TraHangItem, Void> colBo;
 
 
 
@@ -77,12 +78,9 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-    Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_XuLy/LapPhieuTra/LapPhieuTraHang_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        LapPhieuTra_GUI gui = new LapPhieuTra_GUI();
+        gui.start(stage);
     }
-    @FXML
     public void initialize(URL location, ResourceBundle resources) {
         dpNgayLapPhieu.setValue(LocalDate.now());
         if (tblSanPhamHoaDon != null) {

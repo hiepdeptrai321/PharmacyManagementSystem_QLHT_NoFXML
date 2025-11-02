@@ -12,120 +12,8 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-public class CapNhatGiaThuoc_GUI extends Application {
+public class CapNhatGiaThuoc_GUI {
 
-    @Override
-    public void start(Stage stage) {
-        // keep original behavior if launched directly
-        buildAndShow(stage);
-    }
-
-    // New helper that builds UI and returns the root scene (used by both start and showWithController)
-    private void buildAndShow(Stage stage) {
-        AnchorPane root = new AnchorPane();
-        root.setPrefSize(1646, 895);
-        root.setStyle("-fx-font-size: 14;");
-
-        Pane lblPaneTitle = new Pane();
-        lblPaneTitle.setId("lblpaneTitle");
-        lblPaneTitle.setLayoutX(-1);
-        lblPaneTitle.setPrefSize(1646, 40);
-
-        Label lbTitle = new Label("Cập nhật giá thuốc");
-        lbTitle.setId("lbtitle");
-        lbTitle.setLayoutX(15);
-        lbTitle.setLayoutY(2);
-        lbTitle.setPrefSize(307, 36);
-
-        ImageView imgIncrease = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/increase.png")).toExternalForm())
-        );
-        imgIncrease.setFitHeight(39);
-        imgIncrease.setFitWidth(47);
-        imgIncrease.setLayoutX(249);
-        imgIncrease.setLayoutY(-1);
-        imgIncrease.setPickOnBounds(true);
-        imgIncrease.setPreserveRatio(true);
-
-        lblPaneTitle.getChildren().addAll(lbTitle, imgIncrease);
-
-        TextField tfTimThuoc = new TextField();
-        tfTimThuoc.setId("tfTimThuoc");
-        tfTimThuoc.setLayoutX(12);
-        tfTimThuoc.setLayoutY(47);
-        tfTimThuoc.setPrefSize(793, 40);
-        tfTimThuoc.setPromptText("Tìm theo mã, tên thuốc");
-
-        Button btnTimThuoc = new Button("🔍 Tìm");
-        btnTimThuoc.setId("btntim");
-        btnTimThuoc.setLayoutX(817);
-        btnTimThuoc.setLayoutY(47);
-        btnTimThuoc.setPrefSize(78, 40);
-        btnTimThuoc.setStyle("-fx-font-size: 14;");
-
-        Button btnReset = new Button();
-        btnReset.setId("btnReset");
-        btnReset.setLayoutX(906);
-        btnReset.setLayoutY(47);
-        btnReset.setPrefSize(45, 40);
-
-        ImageView imgRefresh = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")).toExternalForm())
-        );
-        imgRefresh.setFitHeight(20);
-        imgRefresh.setFitWidth(35);
-        imgRefresh.setPreserveRatio(true);
-        imgRefresh.setPickOnBounds(true);
-        btnReset.setGraphic(imgRefresh);
-
-        TableView<Object> tbThuoc = new TableView<>();
-        tbThuoc.setId("tablethuoc");
-        tbThuoc.setLayoutX(12);
-        tbThuoc.setLayoutY(96);
-        tbThuoc.setPrefSize(1623, 791);
-        tbThuoc.setStyle("-fx-font-size: 14;");
-
-        TableColumn<Object, String> colSTT = new TableColumn<>("STT");
-        colSTT.setPrefWidth(60);
-        colSTT.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<Object, String> colMaThuoc = new TableColumn<>("Mã thuốc");
-        colMaThuoc.setPrefWidth(190);
-        colMaThuoc.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<Object, String> colTenThuoc = new TableColumn<>("Tên thuốc");
-        colTenThuoc.setPrefWidth(498);
-        colTenThuoc.setStyle("-fx-alignment: CENTER_LEFT;");
-
-        TableColumn<Object, String> colDVT = new TableColumn<>("Đơn vị tính (cơ bản)");
-        colDVT.setPrefWidth(217);
-        colDVT.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<Object, String> colGiaNhap = new TableColumn<>("Giá nhập (VNĐ)");
-        colGiaNhap.setPrefWidth(272);
-        colGiaNhap.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<Object, String> colGiaBan = new TableColumn<>("Giá bán (VNĐ)");
-        colGiaBan.setPrefWidth(272);
-        colGiaBan.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<Object, String> colChiTiet = new TableColumn<>("Chi tiết");
-        colChiTiet.setPrefWidth(97);
-        colChiTiet.setStyle("-fx-alignment: CENTER;");
-
-        tbThuoc.getColumns().addAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colGiaNhap, colGiaBan, colChiTiet);
-
-        root.getChildren().addAll(lblPaneTitle, tfTimThuoc, btnTimThuoc, btnReset, tbThuoc);
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css")).toExternalForm());
-
-        stage.setTitle("Cập nhật giá thuốc");
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    // New method: build UI and inject controls into controller, then call controller.initialize()
     public void showWithController(Stage stage, com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatGia.CapNhatGiaThuoc_Ctrl ctrl) {
         // Build the UI (reuse the same build code but capture local controls to inject)
         AnchorPane root = new AnchorPane();
@@ -245,9 +133,5 @@ public class CapNhatGiaThuoc_GUI extends Application {
         stage.setTitle("Cập nhật giá thuốc");
         stage.setScene(scene);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

@@ -12,6 +12,8 @@ module com.example.pharmacymanagementsystem_qlht {
     requires eu.hansolo.tilesfx;
     requires javafx.swing;
     requires java.desktop;
+    opens com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon to javafx.fxml;
+    opens com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon to javafx.graphics, javafx.fxml;
     exports com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc;
     opens   com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc to javafx.graphics;
     opens com.example.pharmacymanagementsystem_qlht.model to javafx.base;
@@ -33,6 +35,7 @@ module com.example.pharmacymanagementsystem_qlht {
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuNhapHang;
+    exports com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon;
 
 
     requires javafx.base;
@@ -61,7 +64,6 @@ module com.example.pharmacymanagementsystem_qlht {
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKKhachHang to javafx.fxml;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon to javafx.fxml;
-    opens com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon to javafx.fxml;
     exports com.example.pharmacymanagementsystem_qlht.model;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang to javafx.fxml;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKNhaCungCap;
