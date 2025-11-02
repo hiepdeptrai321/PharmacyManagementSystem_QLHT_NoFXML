@@ -4,6 +4,8 @@ import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.S
 import com.example.pharmacymanagementsystem_qlht.dao.NhanVien_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.NhanVien;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhanVien.DanhMucNhanVien_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhanVien.ThemNhanVien_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -36,30 +39,22 @@ public class DanhMucNhanVien_Ctrl extends Application {
     public TableColumn<NhanVien, String> colDiaChi;
     public TableColumn<NhanVien, String> colTrangThai;
     public TableColumn<NhanVien, String> colCapNhat;
-    @FXML
-    private Button btnLamMoi;
-    @FXML
-    private Button btnTim;
-    @FXML
-    private TextField txtTim;
+    public Button btnLamMoi;
+    public Button btnTim;
+    public TextField txtTim;
     private NhanVien_Dao nhanVienDao = new NhanVien_Dao();
 
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhanVien/DanhMucNhanVien_GUI.fxml")));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        new DanhMucNhanVien_GUI().showWithController(stage, this);
     }
 
     public void initialize() {
         txtTim.setOnAction(e->TimKiem());
         btnTim.setOnAction(e->TimKiem());
         btnLamMoi.setOnAction(e-> LamMoi());
-        Platform.runLater(()->{
-            loadData();
-        });
+        loadData();
     }
 
     public void loadData() {
@@ -73,9 +68,13 @@ public class DanhMucNhanVien_Ctrl extends Application {
         ObservableList<NhanVien> data = FXCollections.observableList(list);
 
 
-        colSTT.setCellValueFactory(cellData ->
-                new SimpleStringProperty(String.valueOf(tblNhanVien.getItems().indexOf(cellData.getValue()) + 1))
-        );
+        colSTT.setCellFactory(col -> new TableCell<>() {
+            @Override protected void updateItem(String it, boolean empty) {
+                super.updateItem(it, empty);
+                setText(empty ? null : Integer.toString(getIndex() + 1));
+                setGraphic(null);
+            }
+        });
 
         colMaNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
         colTenNV.setCellValueFactory(new PropertyValueFactory<>("tenNV"));
@@ -179,46 +178,48 @@ public class DanhMucNhanVien_Ctrl extends Application {
 
     public void btnCapNhat(NhanVien nhanVien) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhanVien/SuaXoaNhanVien_GUI.fxml"));
-            Parent root = loader.load();
-
-            SuaXoaNhanVien_Ctrl ctrl = loader.getController();
             NhanVien copy = new NhanVien(nhanVien);
-            ctrl.initialize(copy);
-            ctrl.setParent(this);
+
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhanVien.SuaXoaNhanVien_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhanVien.SuaXoaNhanVien_Ctrl();
 
             Stage dialog = new Stage();
             dialog.initOwner(txtTim.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
             dialog.setTitle("Cập nhật nhân viên");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+
+            // 1) build UI + inject + initialize
+            gui.showWithController(dialog, ctrl, copy);
+            // 2) set parent để refresh bảng sau khi lưu/xóa
+            ctrl.setParent(this);
+            // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
+            ctrl.load(copy);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public void btnThemNhanVien(ActionEvent actionEvent) {
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhanVien/ThemNhanVien_GUI.fxml"));
-            Parent root = loader.load();
-
-            ThemNhanVien_Ctrl ctrl = loader.getController();
-            ctrl.setParent(this);
+    public void btnThemNhanVien(ActionEvent e) {
+        try {
+            var gui  = new ThemNhanVien_GUI();
+            var ctrl = new ThemNhanVien_Ctrl();
 
             Stage dialog = new Stage();
-            dialog.initOwner(txtTim.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
+            dialog.initOwner(txtTim.getScene().getWindow());                 // ĐẶT TRƯỚC
             dialog.setTitle("Thêm nhân viên");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
-        }catch (Exception e){
-            e.printStackTrace();
+            dialog.getIcons().add(new Image(getClass().getResourceAsStream(
+                    "/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png"
+            )));
+
+            ctrl.setParent(this);                                            // nếu cần
+            gui.showWithController(dialog, ctrl);                            // hàm này tự showAndWait()
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
+
     private void TimKiem() {
         String keyword = txtTim.getText().trim().toLowerCase();
         List<NhanVien> list = nhanVienDao.selectAll();

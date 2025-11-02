@@ -5,6 +5,7 @@ import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhaCung
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
+import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuNhapHang.LapPhieuNhapHang_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -25,14 +26,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-public class LapPhieuNhapHang_Ctrl {
+public class LapPhieuNhapHang_Ctrl extends Application{
 
 //  1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colSTT;
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colMaThuoc;
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colTenThuoc;
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colLoHang;
-    @FXML public TableColumn<CTPN_TSPTL_CHTDVT, LocalDate> colHanSuDung;
+    public TableColumn<CTPN_TSPTL_CHTDVT, LocalDate> colHanSuDung;
     public TableColumn<CTPN_TSPTL_CHTDVT, Integer> colSoLuong;
     public TableColumn<CTPN_TSPTL_CHTDVT, Double> colDonGiaNhap;
     public TableColumn<CTPN_TSPTL_CHTDVT, Float> colChietKhau;
@@ -41,18 +42,18 @@ public class LapPhieuNhapHang_Ctrl {
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colDonViNhap;
     public TableColumn<CTPN_TSPTL_CHTDVT, LocalDate> colNSX;
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colThanhTien;
-    @FXML private TableView<CTPN_TSPTL_CHTDVT> tblNhapThuoc;
-    @FXML private ComboBox<String> cbxNCC;
-    @FXML private TextField txtMaPhieuNhap;
-    @FXML private DatePicker txtNgayNhap;
-    @FXML private TextArea txtGhiChu;
-    @FXML private TextField txtTongGiaNhap;
-    @FXML private TextField txtTongTienChietKhau;
-    @FXML private TextField txtTongTienThue;
-    @FXML private TextField txtThanhTien;
-    @FXML private TextField txtTimKiemChiTietDonViTinh;
-    @FXML private ListView<String> listViewNhaCungCap;
-    @FXML private ListView<ChiTietDonViTinh> listViewChiTietDonViTinh;
+    public TableView<CTPN_TSPTL_CHTDVT> tblNhapThuoc;
+    public ComboBox<String> cbxNCC;
+    public TextField txtMaPhieuNhap;
+    public DatePicker txtNgayNhap;
+    public TextArea txtGhiChu;
+    public TextField txtTongGiaNhap;
+    public TextField txtTongTienChietKhau;
+    public TextField txtTongTienThue;
+    public TextField txtThanhTien;
+    public TextField txtTimKiemChiTietDonViTinh;
+    public ListView<String> listViewNhaCungCap;
+    public ListView<ChiTietDonViTinh> listViewChiTietDonViTinh;
 
 //  2. KHAI BÁO BIẾN TOÀN CỤC
     private ObservableList<ChiTietDonViTinh> allChiTietDonViTinh;
@@ -64,6 +65,8 @@ public class LapPhieuNhapHang_Ctrl {
     private ObservableList<CTPN_TSPTL_CHTDVT> listNhapThuoc = FXCollections.observableArrayList();
     private PhieuNhap_Dao phieuNhapDao = new PhieuNhap_Dao();
     private List<PhieuNhap> allPhieuNhaps = phieuNhapDao.selectAll();
+
+
 
 //  3. PHƯƠNG THỨC KHỞI TẠO
     public void initialize() {
@@ -1071,5 +1074,10 @@ public class LapPhieuNhapHang_Ctrl {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        new LapPhieuNhapHang_GUI().showWithController(stage, this);
     }
 }
