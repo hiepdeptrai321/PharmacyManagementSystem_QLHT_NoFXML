@@ -1,5 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatKhuyenMai;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatSoLuong.SuaSoLuongThuoc_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietKhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.KhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TangKem_Dao;
@@ -25,26 +26,25 @@ public class CapNhatKhuyenMai_Ctrl extends Application {
     @FXML
     public TableView<KhuyenMai> tbKM;
     public TextField tfTimKM;
-    @FXML
-    private Button btnthemKM;
+    public Button btnTimKM;
     @FXML
     public TableColumn<KhuyenMai, String> colChiTiet;
     @FXML
     public TableColumn<KhuyenMai, String> colSTT;
     @FXML
-    private TableColumn<KhuyenMai, String> colMaKM;
+    public TableColumn<KhuyenMai, String> colMaKM;
     @FXML
-    private TableColumn<KhuyenMai, String> colTenKM;
+    public TableColumn<KhuyenMai, String> colTenKM;
     @FXML
-    private TableColumn<KhuyenMai, String> colLoaiKM;
+    public TableColumn<KhuyenMai, String> colLoaiKM;
     @FXML
-    private TableColumn<KhuyenMai, Float> colGiaTri;
+    public TableColumn<KhuyenMai, Float> colGiaTri;
     @FXML
-    private TableColumn<KhuyenMai, java.sql.Date> colNBD;
+    public TableColumn<KhuyenMai, java.sql.Date> colNBD;
     @FXML
-    private TableColumn<KhuyenMai, java.sql.Date> colNKT;
+    public TableColumn<KhuyenMai, java.sql.Date> colNKT;
     @FXML
-    private Button btnReset;
+    public Button btnReset;
     private KhuyenMai_Dao khuyenMaiDao = new KhuyenMai_Dao();
 
     // 2. KHỞI TẠO (INITIALIZE)
@@ -55,14 +55,14 @@ public class CapNhatKhuyenMai_Ctrl extends Application {
         Platform.runLater(()->{
             loadTable();
         });
+
+        btnTimKM.setOnAction(e-> timKhuyenMai());
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatKhuyenMai/CapNhatKhuyenMai_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatKhuyenMai.CapNhatKhuyenMai_GUI()
+                .showWithController(stage, this);
     }
     // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
 
@@ -100,19 +100,22 @@ public class CapNhatKhuyenMai_Ctrl extends Application {
 
     public void btnChiTietClick(KhuyenMai km) {
         try {
-            Stage stage = new Stage();
-            FXMLLoader loader =  new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatKhuyenMai/SuaKhuyenMai_GUI.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
 
-            SuaKhuyenMai_Ctrl ctrl = loader.getController();
+
+            SuaKhuyenMai_Ctrl ctrl = new SuaKhuyenMai_Ctrl();
+
+            // prepare stage and reload table when window closes
+            Stage stage = new Stage();
+            stage.setTitle("Sửa khuyến mãi");
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+            // show UI built in code (SuaGiaThuoc_GUI)
+            new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatKhuyenMai.SuaKhuyenMai_GUI()
+                    .showWithController(stage, ctrl);
             ctrl.loadData(km);
             ctrl.loadDatatbCTKM(new ChiTietKhuyenMai_Dao().selectByMaKM(km.getMaKM()));
             if("LKM001".equalsIgnoreCase(km.getLoaiKM().getMaLoai()))
                 ctrl.loadDatatbQuaTang(new Thuoc_SP_TangKem_Dao().selectByMaKM(km.getMaKM()));
-
-            stage.initOwner(tbKM.getScene().getWindow()); // set owner so modality/parent exists
-            stage.setScene(scene);
             stage.setResizable(true); // must be true to allow sizeToScene to change size
 
             stage.show();

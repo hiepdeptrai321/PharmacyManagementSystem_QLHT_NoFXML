@@ -1,5 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatSoLuong;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatGia.SuaGiaThuoc_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
@@ -36,10 +37,7 @@ public class CapNhatSoLuongThuoc_Ctrl extends Application {
     // 2. KHỞI TẠO (INITIALIZE)
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatSoLuong/CapNhatSoLuongThuoc_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatSoLuong.CapNhatSoLuongThuoc_GUI().showWithController(stage, this);
     }
 
     public void initialize() {
@@ -48,6 +46,7 @@ public class CapNhatSoLuongThuoc_Ctrl extends Application {
         Platform.runLater(()->{
             loadTable();
         });
+        btnTimThuoc.setOnAction(e-> timThuoc());
     }
     // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
     public void loadTable() {
@@ -106,18 +105,18 @@ public class CapNhatSoLuongThuoc_Ctrl extends Application {
 
     private void showSuaSoLuongThuoc(Thuoc_SP_TheoLo thuocLo) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatSoLuong/SuaSoLuongThuoc_GUI.fxml"));
-            Parent root = loader.load();
-            SuaSoLuongThuoc_Ctrl controller = loader.getController();
+            SuaSoLuongThuoc_Ctrl controller = new SuaSoLuongThuoc_Ctrl();
+
+            // prepare stage and reload table when window closes
+            Stage stage = new Stage();
+            stage.setTitle("Sửa giá thuốc");
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.setOnHidden(e -> loadTable());
+
+            // show UI built in code (SuaGiaThuoc_GUI)
+            new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatSoLuong.SuaSoLuongThuoc_GUI()
+                    .showWithController(stage, controller);
             controller.setThuoc(thuocLo);
-            Stage dialog = new Stage();
-            dialog.initOwner(btnTimThuoc.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Sửa số lượng thuốc");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
 
             tbThuoc.refresh();
         } catch (Exception e) {

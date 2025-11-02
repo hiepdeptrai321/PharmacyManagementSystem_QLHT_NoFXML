@@ -131,18 +131,37 @@ public class CapNhatGiaThuoc_Ctrl extends Application {
         tbThuoc.setItems(data);
     }
 
+//    private void showSuaGiaThuoc(Thuoc_SanPham thuoc) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+//                    "/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatGia/SuaGiaThuoc_GUI.fxml"));
+//            Parent root = loader.load();
+//            SuaGiaThuoc_Ctrl controller = loader.getController();
+//            controller.setThuoc(thuoc); // Implement setThuoc in SuaGiaThuoc_Ctrl
+//            Stage stage = new Stage();
+//            stage.setTitle("Sửa giá thuốc");
+//            stage.setScene(new Scene(root));
+//            stage.showAndWait();
+//            stage.setOnHidden(e-> loadTable());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
     private void showSuaGiaThuoc(Thuoc_SanPham thuoc) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatGia/SuaGiaThuoc_GUI.fxml"));
-            Parent root = loader.load();
-            SuaGiaThuoc_Ctrl controller = loader.getController();
-            controller.setThuoc(thuoc); // Implement setThuoc in SuaGiaThuoc_Ctrl
+            // create controller and pass the selected model
+            SuaGiaThuoc_Ctrl controller = new SuaGiaThuoc_Ctrl();
+
+            // prepare stage and reload table when window closes
             Stage stage = new Stage();
             stage.setTitle("Sửa giá thuốc");
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-            stage.setOnHidden(e-> loadTable());
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.setOnHidden(e -> loadTable());
+
+            // show UI built in code (SuaGiaThuoc_GUI)
+            new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia.SuaGiaThuoc_GUI()
+                    .showWithController(stage, controller);
+            controller.setThuoc(thuoc);
         } catch (Exception e) {
             e.printStackTrace();
         }
