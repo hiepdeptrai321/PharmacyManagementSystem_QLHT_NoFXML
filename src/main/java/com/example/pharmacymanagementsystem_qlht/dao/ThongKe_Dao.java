@@ -8,6 +8,15 @@ import java.time.LocalDate;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import com.example.pharmacymanagementsystem_qlht.model.HoaDonDisplay; // <-- THÊM IMPORT NÀY
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import java.time.LocalDate;
 
 public class ThongKe_Dao {
 
@@ -135,6 +144,62 @@ public class ThongKe_Dao {
                         rs.getInt("SoLuong"), rs.getDouble("ThanhTien")
                 );
                 list.add(sp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public ObservableList<HoaDonDisplay> getHoaDonTheoThoiGian(String thoiGian) {
+        ObservableList<HoaDonDisplay> list = FXCollections.observableArrayList();
+        String sql = "{CALL sp_GetHoaDonTheoThoiGian(?)}";
+
+        try (Connection conn = ConnectDB.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setString(1, thoiGian);
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    // Lấy dữ liệu thô từ SQL
+                    String maHD = rs.getString("maHD");
+                    LocalDate ngayLap = rs.getDate("ngayLap").toLocalDate();
+                    String maKH = rs.getString("maKH");
+                    String maNV = rs.getString("maNV");
+                    double tongTien = rs.getDouble("tongGiaTri"); // Lấy từ cột 'tongGiaTri' của SP
+
+                    // Tạo đối tượng HoaDonDisplay
+                    list.add(new HoaDonDisplay(maHD, ngayLap, maKH, maNV, tongTien));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // --- HÀM MỚI 2 (Sửa lại để trả về HoaDonDisplay) ---
+    public ObservableList<HoaDonDisplay> getHoaDonTheoTuyChon(LocalDate tuNgay, LocalDate denNgay) {
+        ObservableList<HoaDonDisplay> list = FXCollections.observableArrayList();
+        String sql = "{CALL sp_GetHoaDonTheoTuyChon(?, ?)}";
+
+        try (Connection conn = ConnectDB.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setDate(1, java.sql.Date.valueOf(tuNgay));
+            cs.setDate(2, java.sql.Date.valueOf(denNgay));
+
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    // Lấy dữ liệu thô từ SQL
+                    String maHD = rs.getString("maHD");
+                    LocalDate ngayLap = rs.getDate("ngayLap").toLocalDate();
+                    String maKH = rs.getString("maKH");
+                    String maNV = rs.getString("maNV");
+                    double tongTien = rs.getDouble("tongGiaTri");
+
+                    // Tạo đối tượng HoaDonDisplay
+                    list.add(new HoaDonDisplay(maHD, ngayLap, maKH, maNV, tongTien));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
