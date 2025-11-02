@@ -4,6 +4,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.PhieuDoiHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuDoiHang;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuTraHang;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi.TKPhieuDoiHang_GUI;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -29,42 +30,29 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import java.util.List;
 
 public class TKPhieuDoiHang_Ctrl extends Application {
-    @FXML
-    private TableView<PhieuDoiHang> tblPD;
-    @FXML
-    private TableColumn<PhieuDoiHang, Number> colSTT;
-    @FXML
-    private TableColumn<PhieuDoiHang, String> colMaPD;
-    @FXML
-    private TableColumn<PhieuDoiHang, String> colMaHD;
-    @FXML
-    private TableColumn<PhieuDoiHang, String> colNgayLap;
-    @FXML
-    private TableColumn<PhieuDoiHang, String> colTenKH;
-    @FXML
-    private TableColumn<PhieuDoiHang, String> colSdtKH;
-    @FXML
-    private TableColumn<PhieuDoiHang, String> colTenNV;
-    @FXML
-    private TableColumn<PhieuDoiHang, String> colChiTiet;
-    @FXML
-    private ComboBox<String> cboTimKiem;
-    @FXML
-    private TextField txtNoiDungTimKiem;
-    @FXML
-    private DatePicker dpTuNgay;
-    @FXML
-    private DatePicker dpDenNgay;
-    @FXML
-    private ComboBox<String> cbLoc;
-    @FXML
-    private Button btnTimKiem;
-    @FXML
-    private Button btnHuyBo;
+    public TableView<PhieuDoiHang> tblPD;
+    public TableColumn<PhieuDoiHang, Number> colSTT;
+    public TableColumn<PhieuDoiHang, String> colMaPD;
+    public TableColumn<PhieuDoiHang, String> colMaHD;
+    public TableColumn<PhieuDoiHang, String> colNgayLap;
+    public TableColumn<PhieuDoiHang, String> colTenKH;
+    public TableColumn<PhieuDoiHang, String> colSdtKH;
+    public TableColumn<PhieuDoiHang, String> colTenNV;
+    public TableColumn<PhieuDoiHang, String> colChiTiet;
+    public ComboBox<String> cboTimKiem;
+    public TextField txtNoiDungTimKiem;
+    public DatePicker dpTuNgay;
+    public DatePicker dpDenNgay;
+    public ComboBox<String> cbLoc;
+    public Button btnTimKiem;
+    public Button btnHuyBo;
 
     private final PhieuDoiHang_Dao phieuDoiHangDao = new PhieuDoiHang_Dao();
-
-    @FXML
+    @Override
+    public void start(Stage stage) {
+        TKPhieuDoiHang_GUI gui = new TKPhieuDoiHang_GUI();
+        gui.showWithController(stage, this);
+    }
     public void initialize() {
         cboTimKiem.getItems().addAll(
                 "Mã phiếu đổi", "Mã hóa đơn", "Tên khách hàng", "SĐT khách hàng", "Tên nhân viên", "Ngày lập"
@@ -258,12 +246,5 @@ public class TKPhieuDoiHang_Ctrl extends Application {
         timKiem();
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuDoiHang/TKPhieuDoiHang_GUI.fxml"));
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
 
-    }
 }

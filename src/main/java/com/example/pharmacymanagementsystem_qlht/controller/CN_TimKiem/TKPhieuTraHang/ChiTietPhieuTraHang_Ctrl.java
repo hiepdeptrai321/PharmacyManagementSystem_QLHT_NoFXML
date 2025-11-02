@@ -3,6 +3,7 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuT
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuNhap_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuTraHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.*;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuTra.ChiTietPhieuTraHang_GUI;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.application.Platform;
@@ -18,53 +19,64 @@ import javafx.stage.Stage;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Objects;
 
+import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hien;
 import static com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl.formatVNDTable;
+import static javafx.scene.control.Alert.AlertType.ERROR;
 
-public class ChiTietPhieuTraHang_Ctrl {
+public class ChiTietPhieuTraHang_Ctrl extends Application{
 
-    @FXML private PhieuTraHang phieuTraHang;
-    @FXML private TableColumn<ChiTietPhieuTraHang, String> colDonGia;
-    @FXML private Button btnDong;
-    @FXML private Button btnInPhieuTra;
+    public PhieuTraHang phieuTraHang;
+    public TableColumn<ChiTietPhieuTraHang, String> colDonGia;
+    public Button btnDong;
+    public Button btnInPhieuTra;
 
 
-    @FXML private TableColumn<ChiTietPhieuTraHang, String> colLyDo;
-    @FXML private TableColumn<ChiTietPhieuTraHang, String> colSTT;
-    @FXML private TableColumn<ChiTietPhieuTraHang, String> colSoLuong;
-    @FXML private TableColumn<ChiTietPhieuTraHang, String> colTenSP;
-    @FXML private TableColumn<ChiTietPhieuTraHang, Double> colThanhTien;
-    @FXML private Label lblChietKhauPTValue;
-    @FXML private Label lblGhiChuValue;
-    @FXML private Label lblMaPhieuTraValue;
-    @FXML private Label lblNgayLapValue;
+    public TableColumn<ChiTietPhieuTraHang, String> colLyDo;
+    public TableColumn<ChiTietPhieuTraHang, String> colSTT;
+    public TableColumn<ChiTietPhieuTraHang, String> colSoLuong;
+    public TableColumn<ChiTietPhieuTraHang, String> colTenSP;
+    public TableColumn<ChiTietPhieuTraHang, Double> colThanhTien;
+    public Label lblChietKhauPTValue;
+    public Label lblGhiChuValue;
+    public Label lblMaPhieuTraValue;
+    public Label lblNgayLapValue;
 
-    @FXML private Label lblPTHTValue;
-    @FXML private Label lblSDTKH;
-    @FXML private Label lblSDTKhachHangValue;
-    @FXML private Label lblTenKH;
-    @FXML private Label lblTenKhachHangValue;
-    @FXML private Label lblTenNV;
-    @FXML private Label lblTenNhanVienValue;
-    @FXML private Label lblThueVATValue;
-    @FXML private Label lblTienKhachNhanValue;
-    @FXML private Label lblTienThuaValue;
-    @FXML private Label lblTongTienPhaiTraValue;
-    @FXML private Label lblTongTienTraValue;
-    @FXML private TableView<ChiTietPhieuTraHang> tblChiTietPhieuTra;
+    public Label lblPTHTValue;
+    public Label lblSDTKH;
+    public Label lblSDTKhachHangValue;
+    public Label lblTenKH;
+    public Label lblTenKhachHangValue;
+    public Label lblTenNV;
+    public Label lblTenNhanVienValue;
+    public Label lblThueVATValue;
+    public Label lblTienKhachNhanValue;
+    public Label lblTienThuaValue;
+    public Label lblTongTienPhaiTraValue;
+    public Label lblTongTienTraValue;
+    public TableView<ChiTietPhieuTraHang> tblChiTietPhieuTra;
 
-    @FXML
+    @Override
+    public void start(Stage stage) throws Exception {
+        ChiTietPhieuTraHang_GUI.showWithController(stage, new ChiTietPhieuTraHang_Ctrl());
+    }
     public void initialize() {
         btnDong.setOnAction(e -> ((Stage) btnDong.getScene().getWindow()).close());
+        try {
+            hienThiThongTin();
 
-        Platform.runLater(()->{
-            Stage dialog = (Stage) btnDong.getScene().getWindow();
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-        });
+        } catch (Exception e) {
+            hien(ERROR, "Lỗi Dữ Liệu", "Không thể hiển thị chi tiết phiếu trả hàng do lỗi dữ liệu hoặc CSDL.");
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                ((Stage) btnDong.getScene().getWindow()).close();
+            });
+            throw new RuntimeException("Lỗi fatal khi khởi tạo ChiTietPhieuTraHang.", e);
+        }
     }
     public void setPhieuTraHang(PhieuTraHang pTra) {
         this.phieuTraHang = pTra;
-        hienThiThongTin();
     }
 
     private void hienThiThongTin() {
