@@ -33,39 +33,39 @@ import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
 
 public class TKPhieuDatHang_Ctrl extends Application {
     @FXML
-    private TableView<PhieuDatHang> tblPD;
+    public TableView<PhieuDatHang> tblPD;
     @FXML
-    private  TableColumn<PhieuDatHang, Number> colSTT;
+    public TableColumn<PhieuDatHang, Number> colSTT;
     @FXML
-    private TableColumn<PhieuDatHang, String> colMaPD;
+    public TableColumn<PhieuDatHang, String> colMaPD;
     @FXML
-    private TableColumn<PhieuDatHang, String> colNgayLap;
+    public TableColumn<PhieuDatHang, String> colNgayLap;
     @FXML
-    private TableColumn<PhieuDatHang, String> colTenKH;
+    public TableColumn<PhieuDatHang, String> colTenKH;
     @FXML
-    private TableColumn<PhieuDatHang, String> colSdtKH;
+    public TableColumn<PhieuDatHang, String> colSdtKH;
     @FXML
-    private TableColumn<PhieuDatHang, String> colTenNV;
+    public TableColumn<PhieuDatHang, String> colTenNV;
     @FXML
-    private TableColumn<PhieuDatHang, String> colSoTienCoc;
+    public TableColumn<PhieuDatHang, String> colSoTienCoc;
     @FXML
-    private TableColumn<PhieuDatHang, String> colTT;
+    public TableColumn<PhieuDatHang, String> colTT;
     @FXML
-    private TableColumn<PhieuDatHang, String> colChiTiet;
+    public TableColumn<PhieuDatHang, String> colChiTiet;
     @FXML
-    private ComboBox<String> cboTimKiem; //
+    public ComboBox<String> cboTimKiem; //
     @FXML
-    private TextField txtNoiDungTimKiem; //
+    public TextField txtNoiDungTimKiem; //
     @FXML
-    private DatePicker dpTuNgay;
+    public DatePicker dpTuNgay;
     @FXML
-    private DatePicker dpDenNgay;
+    public DatePicker dpDenNgay;
     @FXML
-    private ComboBox<String> cbLoc;
+    public ComboBox<String> cbLoc;
     @FXML
-    private Button btnTimKiem;
+    public Button btnTimKiem;
     @FXML
-    private Button btnHuyBo;
+    public Button btnHuyBo;
 
     private final PhieuDatHang_Dao phieuDatHangDao = new PhieuDatHang_Dao();
 
@@ -169,20 +169,18 @@ public class TKPhieuDatHang_Ctrl extends Application {
 
     private void btnChiTietClick(PhieuDatHang pdh) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuDatHang/ChiTietPhieuDatHang_GUI.fxml"));
-            Parent root = loader.load();
-            ChiTietPhieuDatHang_Ctrl ctrl = loader.getController();
+            ChiTietPhieuDatHang_Ctrl ctrl = new ChiTietPhieuDatHang_Ctrl();
             PhieuDatHang_Dao pdhdao = new PhieuDatHang_Dao();
             pdhdao.duyetPhieuDatHang(pdh.getMaPDat());
+
+            Stage stage = new Stage();
+            stage.setTitle("Chi tiết phiếu đặt hàng");
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_GUI()
+                    .showWithController(stage, ctrl);
             ctrl.setPhieuDatHang(pdhdao.selectById(pdh.getMaPDat()));
             ctrl.setPhieuDatHang(pdh);
-            Stage dialog = new Stage();
-            dialog.initOwner(btnTimKiem.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Chi tiết phiếu đặt hàng");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+            stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -268,9 +266,7 @@ public class TKPhieuDatHang_Ctrl extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuDatHang/TKPhieuDatHang_GUI.fxml"));
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.TKPhieuDatHang_GUI()
+                .showWithController(primaryStage, this);
     }
 }

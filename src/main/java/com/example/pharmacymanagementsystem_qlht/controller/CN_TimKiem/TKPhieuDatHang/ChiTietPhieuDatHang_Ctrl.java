@@ -34,82 +34,82 @@ public class ChiTietPhieuDatHang_Ctrl  {
     private PhieuDatHang phieuDatHang;
 
     @FXML
-    private TableColumn<ChiTietPhieuDatHang, Number> colSTT;
+    public TableColumn<ChiTietPhieuDatHang, Number> colSTT;
 
     @FXML
-    private TableColumn<ChiTietPhieuDatHang, String> colTenSP;
+    public TableColumn<ChiTietPhieuDatHang, String> colTenSP;
 
     @FXML
-    private TableColumn<ChiTietPhieuDatHang, Integer> colSoLuong;
+    public TableColumn<ChiTietPhieuDatHang, Integer> colSoLuong;
 
     @FXML
-    private TableColumn<ChiTietPhieuDatHang, String> colDonVi;
+    public TableColumn<ChiTietPhieuDatHang, String> colDonVi;
 
     @FXML
-    private TableColumn<ChiTietPhieuDatHang, Double> colDonGia;
+    public TableColumn<ChiTietPhieuDatHang, Double> colDonGia;
 
     @FXML
-    private TableColumn<ChiTietPhieuDatHang, String> colNhaCungCap; // used for chiết khấu percent
+    public TableColumn<ChiTietPhieuDatHang, String> colNhaCungCap; // used for chiết khấu percent
 
     @FXML
-    private TableColumn<ChiTietPhieuDatHang, String> colThanhTien;
+    public TableColumn<ChiTietPhieuDatHang, String> colThanhTien;
     @FXML
-    private TableColumn<ChiTietPhieuDatHang, String> colTT;
+    public TableColumn<ChiTietPhieuDatHang, String> colTT;
 
     @FXML
-    private TableView<ChiTietPhieuDatHang> tblChiTietPhieuDat;
+    public TableView<ChiTietPhieuDatHang> tblChiTietPhieuDat;
 
     @FXML
-    private Label lblMaPhieuDatValue;
+    public Label lblMaPhieuDatValue;
 
     @FXML
-    private Label lblNgayLapValue;
+    public Label lblNgayLapValue;
 
     @FXML
-    private Label lblTenNhanVienValue;
+    public Label lblTenNhanVienValue;
 
     @FXML
-    private Label lblTenNCCValue;
+    public Label lblTenNCCValue;
 
     @FXML
-    private Label lblSDTNCCValue;
+    public Label lblSDTNCCValue;
 
     @FXML
-    private Label lblGhiChuValue;
+    public Label lblGhiChuValue;
 
     @FXML
-    private Label lblTongTienDatValue;
+    public Label lblTongTienDatValue;
 
     @FXML
-    private Label lblChietKhauPDValue;
+    public Label lblChietKhauPDValue;
 
     @FXML
-    private Label lblThueVATValue;
+    public Label lblThueVATValue;
 
     @FXML
-    private Label lblTongTienPhaiDatValue;
+    public Label lblTongTienPhaiDatValue;
 
     @FXML
-    private Label lblPTTTValue;
+    public Label lblPTTTValue;
 
     @FXML
-    private Label lblTienDaThanhToanValue;
+    public Label lblTienDaThanhToanValue;
 
     @FXML
-    private Label lblTienConLaiValue;
+    public Label lblTienConLaiValue;
     @FXML
-    private Label lbTT;
+    public Label lbTT;
 
     @FXML
-    private Button btnInPhieuDat;
+    public Button btnInPhieuDat;
 
     @FXML
-    private Button btnLapHoaDon;
+    public Button btnLapHoaDon;
 
     @FXML
-    private Button btnDong;
+    public Button btnDong;
 
-    private final NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
+    public final NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
 
     @FXML
     public void initialize() {

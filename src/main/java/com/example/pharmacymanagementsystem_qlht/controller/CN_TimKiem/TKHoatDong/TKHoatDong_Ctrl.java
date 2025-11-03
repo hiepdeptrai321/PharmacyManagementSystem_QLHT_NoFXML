@@ -26,21 +26,35 @@ import java.util.List;
 
 public class TKHoatDong_Ctrl extends javafx.application.Application {
 
-    @FXML private TextField tfTim;
-    @FXML private Button btnTim;
-    @FXML private Button btnLamMoi;
-    @FXML private TableView<HoatDong> tbHoatDong;
-    @FXML private TableColumn<HoatDong, String> colSTT;
-    @FXML private TableColumn<HoatDong, String> colMa;
-    @FXML private TableColumn<HoatDong, String> colLoai;
-    @FXML private TableColumn<HoatDong, String> colBang;
-    @FXML private TableColumn<HoatDong, String> colThoiGian;
-    @FXML private TableColumn<HoatDong, String> colNguoi;
-    @FXML private TableColumn<HoatDong, String> colChiTiet;
+    @FXML
+    public TextField tfTim;
+    @FXML
+    public Button btnTim;
+    @FXML
+    public Button btnLamMoi;
+    @FXML
+    public TableView<HoatDong> tbHoatDong;
+    @FXML
+    public TableColumn<HoatDong, String> colSTT;
+    @FXML
+    public TableColumn<HoatDong, String> colMa;
+    @FXML
+    public TableColumn<HoatDong, String> colLoai;
+    @FXML
+    public TableColumn<HoatDong, String> colBang;
+    @FXML
+    public TableColumn<HoatDong, String> colThoiGian;
+    @FXML
+    public TableColumn<HoatDong, String> colNguoi;
+    @FXML
+    public TableColumn<HoatDong, String> colChiTiet;
 
-    @FXML private DatePicker dpTuNgay;
-    @FXML private DatePicker dpDenNgay;
-    @FXML private ComboBox<String> cbBoLoc;
+    @FXML
+    public DatePicker dpTuNgay;
+    @FXML
+    public DatePicker dpDenNgay;
+    @FXML
+    public ComboBox<String> cbBoLoc;
 
     private final HoatDong_Dao dao = new HoatDong_Dao();
     private final SimpleDateFormat tsFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
@@ -209,19 +223,14 @@ public class TKHoatDong_Ctrl extends javafx.application.Application {
     private void showDetails(HoatDong hd) {
         Stage chiTiet = new Stage();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKHoatDong/ChiTietHoatDong_GUI.fxml"));
-            Parent root = loader.load();
-            var ctrl = loader.getController();
-            if (ctrl instanceof ChiTietHoatDong_Ctrl) {
-                ((ChiTietHoatDong_Ctrl) ctrl).loadData(hd);
-            }
-            Stage dialog = new Stage();
-            dialog.initOwner(btnLamMoi.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Chi tiết hoạt động");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+            ChiTietHoatDong_Ctrl ctrl = new ChiTietHoatDong_Ctrl();
+            Stage stage = new Stage();
+            stage.setTitle("Chi tiết hoạt động");
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            // show UI built in code (SuaGiaThuoc_GUI)
+            new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoatDong.ChiTietHoatDong_GUI()
+                    .showWithController(stage, ctrl);
+            ctrl.loadData(hd);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,9 +243,7 @@ public class TKHoatDong_Ctrl extends javafx.application.Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKHoatDong/TKHoatDong_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoatDong.TKHoatDong_GUI()
+                .showWithController(stage, this);
     }
 }
