@@ -92,16 +92,18 @@ public class DangNhap_Ctrl extends Application {
             user = nv;
             String role = nv.getVaiTro();
             try {
-                Stage stage = new Stage();
-                Parent root;
-                if ("Quản lý".equalsIgnoreCase(role)) {
-                    root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CuaSoChinh_QuanLy_GUI.fxml"));
-                } else {
-                    root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CuaSoChinh_NhanVien_GUI.fxml"));
+                if ("Quản lý".compareTo(role) == 0) {
+                    CuaSoChinh_QuanLy_Ctrl ctrl = new CuaSoChinh_QuanLy_Ctrl();
+                    Stage stage = new Stage();
+                    new com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI()
+                            .showWithController(stage, ctrl);
                 }
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                else {
+                    CuaSoChinh_NhanVien_Ctrl ctrl = new CuaSoChinh_NhanVien_Ctrl();
+                    Stage stage = new Stage();
+                    new com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_NhanVien_GUI()
+                            .showWithController(stage, ctrl);
+                }
                 this.btnDangNhap.getScene().getWindow().hide();
             } catch (Exception e) {
                 e.printStackTrace();
