@@ -21,24 +21,30 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 
-public class ChiTietHoatDong_Ctrl implements Initializable {
+public class ChiTietHoatDong_Ctrl extends Application {
 
     @FXML
-    private TextField tfMaHD;
-    @FXML private TextField tfLoaiHD;
-    @FXML private TextField tfThoiGian;
-    @FXML private TextField tfMaNV;
-    @FXML private TextField tfTenNV;
-    @FXML private TextField tfBang;
-    @FXML private TextArea tfNoiDung;
-    @FXML private Button btnHuy;
+    public TextField tfMaHD;
+    @FXML
+    public TextField tfLoaiHD;
+    @FXML
+    public TextField tfThoiGian;
+    @FXML
+    public TextField tfMaNV;
+    @FXML
+    public TextField tfTenNV;
+    @FXML
+    public TextField tfBang;
+    @FXML
+    public TextArea tfNoiDung;
+    @FXML
+    public Button btnHuy;
 
     private final SimpleDateFormat tsFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
     private HoatDong currentHd;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize() {
         if (btnHuy != null) {
             btnHuy.setOnAction(e -> {
                 Window w = btnHuy.getScene() == null ? null : btnHuy.getScene().getWindow();
@@ -102,4 +108,9 @@ public class ChiTietHoatDong_Ctrl implements Initializable {
         return s == null ? "" : s;
     }
 
+    @Override
+    public void start(Stage stage) throws Exception {
+        new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoatDong.ChiTietHoatDong_GUI()
+                .showWithController(stage, this);
+    }
 }

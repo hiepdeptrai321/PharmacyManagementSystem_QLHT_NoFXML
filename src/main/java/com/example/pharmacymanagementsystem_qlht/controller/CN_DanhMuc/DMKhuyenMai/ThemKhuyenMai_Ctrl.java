@@ -28,47 +28,47 @@ import java.util.Locale;
 
 public class ThemKhuyenMai_Ctrl {
 
-    @FXML private TextField tfTenKM;
-    @FXML private ComboBox<LoaiKhuyenMai> cbLoaiKM;
-    @FXML private TextField tfGiaTri;
-    @FXML private DatePicker dpTuNgay;
-    @FXML private DatePicker dpDenNgay;
-    @FXML private TextField tfMoTa;
-    @FXML private Tab tabHoaDon;
-    @FXML private TextField tfGiaTriHoaDon;
+    @FXML public TextField tfTenKM;
+    @FXML public ComboBox<LoaiKhuyenMai> cbLoaiKM;
+    @FXML public TextField tfGiaTri;
+    @FXML public DatePicker dpTuNgay;
+    @FXML public DatePicker dpDenNgay;
+    @FXML public TextField tfMoTa;
+    @FXML public Tab tabHoaDon;
+    @FXML public TextField tfGiaTriHoaDon;
 
-    @FXML private TableView<ChiTietKhuyenMai> tbDSThuoc;
-    @FXML private TableColumn<ChiTietKhuyenMai, String>  colMaThuoc;
-    @FXML private TableColumn<ChiTietKhuyenMai, String>  colTenThuoc;
-    @FXML private TableColumn<ChiTietKhuyenMai, Integer> colSLAP;
-    @FXML private TableColumn<ChiTietKhuyenMai, Integer> colSLTD;
-    @FXML private TableColumn<ChiTietKhuyenMai, Void>    colXoaCT;
+    @FXML public TableView<ChiTietKhuyenMai> tbDSThuoc;
+    @FXML public TableColumn<ChiTietKhuyenMai, String>  colMaThuoc;
+    @FXML public TableColumn<ChiTietKhuyenMai, String>  colTenThuoc;
+    @FXML public TableColumn<ChiTietKhuyenMai, Integer> colSLAP;
+    @FXML public TableColumn<ChiTietKhuyenMai, Integer> colSLTD;
+    @FXML public TableColumn<ChiTietKhuyenMai, Void>    colXoaCT;
 
-    @FXML private TabPane tabPaneProducts;
-    @FXML private Tab tabTangKem;
-    @FXML private Tab tabThuoc;
-    @FXML private TableView<Thuoc_SP_TangKem> tbTangKem;
-    @FXML private TableColumn<Thuoc_SP_TangKem, String>  colMaQua;
-    @FXML private TableColumn<Thuoc_SP_TangKem, String>  colTenQua;
-    @FXML private TableColumn<Thuoc_SP_TangKem, Integer> colSLTang;
-    @FXML private TableColumn<Thuoc_SP_TangKem, Void>    colXoaQua;
+    @FXML public TabPane tabPaneProducts;
+    @FXML public Tab tabTangKem;
+    @FXML public Tab tabThuoc;
+    @FXML public TableView<Thuoc_SP_TangKem> tbTangKem;
+    @FXML public TableColumn<Thuoc_SP_TangKem, String>  colMaQua;
+    @FXML public TableColumn<Thuoc_SP_TangKem, String>  colTenQua;
+    @FXML public TableColumn<Thuoc_SP_TangKem, Integer> colSLTang;
+    @FXML public TableColumn<Thuoc_SP_TangKem, Void>    colXoaQua;
 
-    @FXML private TextField tfTimThuoc;
-    @FXML private ListView<Thuoc_SanPham> listViewThuoc;
+    @FXML public TextField tfTimThuoc;
+    @FXML public ListView<Thuoc_SanPham> listViewThuoc;
 
-    @FXML private TextField tfTimQua;
-    @FXML private ListView<Thuoc_SanPham> listViewQua;
+    @FXML public TextField tfTimQua;
+    @FXML public ListView<Thuoc_SanPham> listViewQua;
 
-    @FXML private Button btnThem;
-    @FXML private Button btnHuy;
+    @FXML public Button btnThem;
+    @FXML public Button btnHuy;
 
-    private final ObservableList<ChiTietKhuyenMai> ctItems   = FXCollections.observableArrayList();
-    private final ObservableList<Thuoc_SP_TangKem> giftItems = FXCollections.observableArrayList();
-    private final ObservableList<Thuoc_SanPham> allThuoc     = FXCollections.observableArrayList();
+    public final ObservableList<ChiTietKhuyenMai> ctItems   = FXCollections.observableArrayList();
+    public final ObservableList<Thuoc_SP_TangKem> giftItems = FXCollections.observableArrayList();
+    public final ObservableList<Thuoc_SanPham> allThuoc     = FXCollections.observableArrayList();
 
-    private final KhuyenMai_Dao kmDao               = new KhuyenMai_Dao();
-    private final ChiTietKhuyenMai_Dao ctDao        = new ChiTietKhuyenMai_Dao();
-    private final LoaiKhuyenMai_Dao loaiDao         = new LoaiKhuyenMai_Dao();
+    public final KhuyenMai_Dao kmDao               = new KhuyenMai_Dao();
+    public final ChiTietKhuyenMai_Dao ctDao        = new ChiTietKhuyenMai_Dao();
+    public final LoaiKhuyenMai_Dao loaiDao         = new LoaiKhuyenMai_Dao();
     private final Thuoc_SP_TangKem_Dao giftDao      = new Thuoc_SP_TangKem_Dao();
 
     private javafx.beans.value.ChangeListener<Boolean> giaTriFocusListener;
@@ -76,8 +76,10 @@ public class ThemKhuyenMai_Ctrl {
     private final Locale VN_LOCALE = new Locale("vi", "VN");
     private final NumberFormat CURRENCY_FMT = NumberFormat.getCurrencyInstance(VN_LOCALE);
     // --- add near the other @FXML fields ---
-    @FXML private TableColumn<ChiTietKhuyenMai, String> colDonVi;
-    @FXML private TableColumn<Thuoc_SP_TangKem, String> colDonViQua;
+    @FXML
+    public TableColumn<ChiTietKhuyenMai, String> colDonVi;
+    @FXML
+    public TableColumn<Thuoc_SP_TangKem, String> colDonViQua;
 
     // --- add as class fields ---
     private final Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
@@ -127,6 +129,8 @@ public class ThemKhuyenMai_Ctrl {
         if (tfGiaTriHoaDon != null) setupCurrencyField(tfGiaTriHoaDon);
         setupEnterKeyHandlers();
 
+        btnHuy.setOnAction(e-> btnHuyClick());
+        btnThem.setOnAction(e-> btnThemClick());
 
 
     }

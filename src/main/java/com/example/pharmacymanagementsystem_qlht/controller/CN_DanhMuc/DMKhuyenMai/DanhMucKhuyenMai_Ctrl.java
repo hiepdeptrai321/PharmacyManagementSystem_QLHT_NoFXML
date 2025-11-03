@@ -28,17 +28,18 @@ public class DanhMucKhuyenMai_Ctrl extends Application {
 
     @FXML public TableView<KhuyenMai> tbKM;
     public TextField tfTimKM;
-    @FXML private Button btnthemKM;
+    @FXML public Button btnthemKM;
     @FXML public TableColumn<KhuyenMai, String> colChiTiet;
     @FXML public TableColumn<KhuyenMai, String> colSTT;
-    @FXML private TableColumn<KhuyenMai, String> colMaKM;
-    @FXML private TableColumn<KhuyenMai, String> colTenKM;
-    @FXML private TableColumn<KhuyenMai, String> colLoaiKM;
-    @FXML private TableColumn<KhuyenMai, Float> colGiaTri;
-    @FXML private TableColumn<KhuyenMai, java.sql.Date> colNBD;
-    @FXML private TableColumn<KhuyenMai, java.sql.Date> colNKT;
-    @FXML private TableColumn<KhuyenMai, java.sql.Date> colNgayTao;
-    @FXML private Button btnLamMoi;
+    @FXML public TableColumn<KhuyenMai, String> colMaKM;
+    @FXML public TableColumn<KhuyenMai, String> colTenKM;
+    @FXML public TableColumn<KhuyenMai, String> colLoaiKM;
+    @FXML public TableColumn<KhuyenMai, Float> colGiaTri;
+    @FXML public TableColumn<KhuyenMai, java.sql.Date> colNBD;
+    @FXML public TableColumn<KhuyenMai, java.sql.Date> colNKT;
+    @FXML public TableColumn<KhuyenMai, java.sql.Date> colNgayTao;
+    @FXML public Button btnLamMoi;
+    public Button btnTim;
 
     private KhuyenMai_Dao khuyenMaiDao = new KhuyenMai_Dao();
 
@@ -48,14 +49,15 @@ public class DanhMucKhuyenMai_Ctrl extends Application {
         Platform.runLater(()->{
             loadTable();
         });
+        btnthemKM.setOnAction(e-> btnThemKMClick());
+        btnTim.setOnAction(e-> timKhuyenMai());
+
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhuyenMai/DanhMucKhuyenMai_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhuyenMai.DanhMucKhuyenMai_GUI()
+                .showWithController(stage, this);
     }
 
     public void loadTable() {
@@ -129,17 +131,15 @@ public class DanhMucKhuyenMai_Ctrl extends Application {
 
     public void btnThemKMClick() {
         try {
-            Stage dialog = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhuyenMai/ThemKhuyenMai_GUI.fxml"));
-
-            dialog.setOnHidden(e -> loadTable());
-
-            dialog.initOwner(btnLamMoi.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Thêm khuyến mãi");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+            ThemKhuyenMai_Ctrl ctrl = new ThemKhuyenMai_Ctrl();
+            // prepare stage and reload table when window closes
+            Stage stage = new Stage();
+            stage.setTitle("Thêm khuyến mãi");
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            // show UI built in code (ThemKhuyenMai_GUI)
+            stage.setOnHidden(e -> loadTable());
+            new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhuyenMai.ThemKhuyenMai_GUI()
+                    .showWithController(stage, ctrl);
 
         } catch (Exception e) {
             e.printStackTrace();

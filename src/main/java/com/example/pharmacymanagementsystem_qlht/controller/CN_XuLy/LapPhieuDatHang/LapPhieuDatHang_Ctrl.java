@@ -36,61 +36,68 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LapPhieuDatHang_Ctrl extends Application {
+    public Button btnLamMoi;
+    public Button btnDatHangVaIn;
     // Left / search area
     @FXML private Pane searchPane;
-    @FXML private TextField tfTimSanPham;
+    @FXML
+    public TextField tfTimSanPham;
 
     // Table and its columns (typed)
-    @FXML private TableView<ChiTietPhieuDatHang> tbSanPham;
-    @FXML private TableColumn<ChiTietPhieuDatHang, String> colSTT;
-    @FXML private TableColumn<ChiTietPhieuDatHang, String> colTenSP;
-    @FXML private TableColumn<ChiTietPhieuDatHang, String> colSoLuong;
-    @FXML private TableColumn<ChiTietPhieuDatHang, String> colDonVi;
-    @FXML private TableColumn<ChiTietPhieuDatHang, String> colDonGia;
-    @FXML private TableColumn<ChiTietPhieuDatHang, String> colThanhTien;
-    @FXML private TableColumn<ChiTietPhieuDatHang, String> colXoa;
+    @FXML
+    public TableView<ChiTietPhieuDatHang> tbSanPham;
+    @FXML
+    public TableColumn<ChiTietPhieuDatHang, String> colSTT;
+    @FXML
+    public TableColumn<ChiTietPhieuDatHang, String> colTenSP;
+    @FXML
+    public TableColumn<ChiTietPhieuDatHang, String> colSoLuong;
+    @FXML public TableColumn<ChiTietPhieuDatHang, String> colDonVi;
+    @FXML public TableColumn<ChiTietPhieuDatHang, String> colDonGia;
+    @FXML public TableColumn<ChiTietPhieuDatHang, String> colThanhTien;
+    @FXML public TableColumn<ChiTietPhieuDatHang, String> colXoa;
 
     // Info panel (right)
-    @FXML private Pane infoPane;
-    @FXML private TextField tfMa;
-    @FXML private DatePicker dpNgayLap;
-    @FXML private TextField tfTenKH;
-    @FXML private Label lbTongTien;
-    @FXML private Label lbThue;
-    @FXML private Label lbTongTT;
-    @FXML private TextField tfTienCoc;
-    @FXML private Label lbTienThieu;
-    @FXML private TextArea tfGhiChu;
-    @FXML private Button btnDatHang;
-    @FXML private Button btnHuy;
+    @FXML public Pane infoPane;
+    @FXML public TextField tfMa;
+    @FXML public DatePicker dpNgayLap;
+    @FXML public TextField tfTenKH;
+    @FXML public Label lbTongTien;
+    @FXML public Label lbThue;
+    @FXML public Label lbTongTT;
+    @FXML public TextField tfTienCoc;
+    @FXML public Label lbTienThieu;
+    @FXML public TextArea tfGhiChu;
+    @FXML public Button btnDatHang;
+    @FXML public Button btnHuy;
 
     public KhachHang khachHang;
 
 
     // Additional fields in info panel
-    @FXML private TextField tfSDT;
-    @FXML private TextField tfMaDon;
-    @FXML private ComboBox<String> cbLoaiDon;
-    @FXML private Button btnTimKH;
-    @FXML private Button btnThemKH;
+    @FXML public TextField tfSDT;
+    @FXML public TextField tfMaDon;
+    @FXML public ComboBox<String> cbLoaiDon;
+    @FXML public Button btnTimKH;
+    @FXML public Button btnThemKH;
 
     // Suggestion/context menu support
-    private final ContextMenu goiYMenu = new ContextMenu();
-    private final PauseTransition pause = new PauseTransition(Duration.millis(250));
-    private final Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
-    private final AtomicLong demTruyVan = new AtomicLong(0);
-    private volatile long idTruyVanMoiNhat = 0;
-    private volatile Task<List<String>> goiYHienTai;
-    private volatile boolean tamDungGoiY = false;
-    private final VNDFormatter vndFmt = new VNDFormatter();
+    public final ContextMenu goiYMenu = new ContextMenu();
+    public final PauseTransition pause = new PauseTransition(Duration.millis(250));
+    public final Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
+    public final AtomicLong demTruyVan = new AtomicLong(0);
+    public volatile long idTruyVanMoiNhat = 0;
+    public volatile Task<List<String>> goiYHienTai;
+    public volatile boolean tamDungGoiY = false;
+    public final VNDFormatter vndFmt = new VNDFormatter();
 
 
-    private static final String GoiY_css = "/com/example/pharmacymanagementsystem_qlht/css/GoiYThuoc.css";
-    private boolean GoiY_cssat = false;
+    public static final String GoiY_css = "/com/example/pharmacymanagementsystem_qlht/css/GoiYThuoc.css";
+    public boolean GoiY_cssat = false;
 
     // Table data and unit tracking (behaves like LapHoaDon)
-    private final ObservableList<ChiTietPhieuDatHang> dsChiTietPD = FXCollections.observableArrayList();
-    private final IdentityHashMap<ChiTietPhieuDatHang, ChiTietDonViTinh> dvtTheoDong = new IdentityHashMap<>();
+    public final ObservableList<ChiTietPhieuDatHang> dsChiTietPD = FXCollections.observableArrayList();
+    public final IdentityHashMap<ChiTietPhieuDatHang, ChiTietDonViTinh> dvtTheoDong = new IdentityHashMap<>();
 
     @FXML
     public void initialize() {
@@ -855,10 +862,7 @@ public class LapPhieuDatHang_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_XuLy/LapPhieuDat/LapPhieuDatHang_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuDat.LapPhieuDat_GUI().showWithController(stage, this);
     }
 
     private void initTienCocEvents() {

@@ -3,10 +3,10 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKeHang
 import com.example.pharmacymanagementsystem_qlht.dao.KeHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KeHang;
-import com.example.pharmacymanagementsystem_qlht.model.NhaCungCap;
+// Import file GUI mới
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKeHang.XoaSuaKeHang_GUI;
 import javafx.application.Application;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML; // Giữ nguyên
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,54 +18,67 @@ import java.util.List;
 
 public class XoaSuaKeHang_Ctrl extends Application {
 
+    // *** THAY ĐỔI 1: Bỏ 'private' ***
     @FXML
-    private Pane btnLuu;
+    public Pane btnLuu;
 
     @FXML
-    private Pane btnXoa;
+    public Pane btnXoa;
 
     @FXML
-    private TextArea txtMota;
+    public TextArea txtMota;
 
     @FXML
-    private TextField txtTenKe;
+    public TextField txtTenKe;
 
-    private KeHang_Dao keHangDao = new KeHang_Dao();
-    private Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
-    private KeHang keHangHienTai;
+    private KeHang_Dao keHangDao = new KeHang_Dao(); //
+    private Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao(); //
+    private KeHang keHangHienTai; //
 
 
     public static void main(String[] args) {
         launch(args);
     }
+
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKeHang/XoaSuakeHang.fxml"));
+        // *** THAY ĐỔI 2: Thay thế FXMLLoader ***
+        // Parent root = FXMLLoader.load(getClass().getResource(".../XoaSuakeHang.fxml")); //
+
+        XoaSuaKeHang_GUI gui = new XoaSuaKeHang_GUI();
+        Parent root = gui.createContent(this); // Bơm component vào 'this'
+
+        // *** THAY ĐỔI 3: Gọi initialize() bằng tay ***
+        initialize();
+
+        // Phần còn lại giữ nguyên
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThemNhaCungCap.css" + "").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThemNhaCungCap.css").toExternalForm()); //
         stage.setScene(scene);
         stage.show();
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void initialize() {
         btnLuu.setOnMouseClicked(event -> luuKeHang());
         btnXoa.setOnMouseClicked(event -> xoaKeHang());
     }
 
-
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void hienThiThongTin(KeHang kh) {
         if (kh != null) {
             keHangHienTai = kh;
             txtTenKe.setText(kh.getTenKe());
             txtMota.setText(kh.getMoTa() != null ? kh.getMoTa() : "");
-
         }
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void luuKeHang() {
         if (keHangHienTai == null) {
             showAlert("Lỗi", "Không có dữ liệu kệ hàng để cập nhật!", Alert.AlertType.ERROR);
             return;
         }
-
         String tenKe = txtTenKe.getText().trim();
         String moTa = txtMota.getText().trim();
 
@@ -86,14 +99,13 @@ public class XoaSuaKeHang_Ctrl extends Application {
         }
     }
 
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void xoaKeHang() {
         if (keHangHienTai == null) {
             showAlert("Lỗi", "Không có dữ liệu kệ hàng để xóa!", Alert.AlertType.ERROR);
             return;
         }
-
         try {
-            // Lấy danh sách thuốc còn trong kệ
             List<String> thuocTrongKe = thuocDao.layDanhSachThuocTheoKe(keHangHienTai.getMaKe());
 
             if (thuocTrongKe != null && !thuocTrongKe.isEmpty()) {
@@ -109,7 +121,6 @@ public class XoaSuaKeHang_Ctrl extends Application {
                 return;
             }
 
-            // Thực hiện xóa
             boolean success = keHangDao.deleteById(keHangHienTai.getMaKe());
             if (success) {
                 showAlert("Thành công", "Đã xóa kệ hàng thành công!", Alert.AlertType.INFORMATION);
@@ -124,28 +135,25 @@ public class XoaSuaKeHang_Ctrl extends Application {
         }
     }
 
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void showThuocConTrongKe(List<String> thuocTrongKe) {
         StringBuilder sb = new StringBuilder("Kệ này vẫn còn các thuốc sau:\n\n");
         for (String tenThuoc : thuocTrongKe) {
             sb.append("- ").append(tenThuoc).append("\n");
         }
-
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Không thể xóa kệ hàng");
         alert.setHeaderText("Không thể xóa! Kệ này vẫn còn thuốc.");
-
-        // Tạo TextArea có scrollbar
         TextArea textArea = new TextArea(sb.toString());
         textArea.setEditable(false);
         textArea.setWrapText(true);
         textArea.setPrefWidth(400);
         textArea.setPrefHeight(250);
-
         alert.getDialogPane().setContent(textArea);
-
         alert.showAndWait();
     }
 
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void showAlert(String title, String msg, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -153,6 +161,8 @@ public class XoaSuaKeHang_Ctrl extends Application {
         alert.setContentText(msg);
         alert.showAndWait();
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void dongCuaSo() {
         Stage stage = (Stage) txtTenKe.getScene().getWindow();
         stage.close();
