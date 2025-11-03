@@ -6,6 +6,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
 import com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -482,13 +483,11 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     //  Hàm xử lý sự kiện đăng xuất
     public void btnDangXuatClick(ActionEvent actionEvent) {
         try {
+            DangNhap_Ctrl ctrl = new DangNhap_Ctrl();
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/DangNhap_GUI.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
             stage.setTitle("Đăng nhập hệ thống quản lý nhà thuốc");
-            stage.show();
-            pnlChung.getScene().getWindow().hide();
+            new DangNhap_GUI().showWithController(stage,ctrl);
+            txtNguoiDung.getScene().getWindow().hide();
         } catch (Exception e) {
             e.printStackTrace();
         }
