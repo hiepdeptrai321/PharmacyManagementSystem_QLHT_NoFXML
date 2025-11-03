@@ -7,6 +7,7 @@ import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKNhaCung
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietDonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietDonViTinh;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.ThemThuoc_GUI;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,31 +29,21 @@ public class ThemThuoc_LapPhieuNhapHang_Ctrl{
 
     // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
 
-    @FXML
-    private TextField tfMaThuoc;
-    @FXML
-    private TextField tfTenThuoc;
-    @FXML
-    private TextField tfLoaiHang;
 
-    @FXML
-    private TableView<ChiTietDonViTinh> tbDVT;
-    @FXML
-    private TableColumn<ChiTietDonViTinh, String> colDVT;
-    @FXML
-    private TableColumn<ChiTietDonViTinh, String> colKH;
-    @FXML
-    private TableColumn<ChiTietDonViTinh, Object> colHeSo;
-    @FXML
-    private TableColumn<ChiTietDonViTinh, Object> colGiaNhap;
-    @FXML
-    private TableColumn<ChiTietDonViTinh, Object> colGiaBan;
-    @FXML
-    private TableColumn<ChiTietDonViTinh, Object> colDVCB;
-    @FXML
-    private TableColumn<ChiTietDonViTinh, Void> colXoa;
+    public TextField tfMaThuoc;
+    public TextField tfTenThuoc;
+    private TextField tfLoaiHang;
+    public TableView<ChiTietDonViTinh> tbDVT;
+    public TableColumn<ChiTietDonViTinh, String> colDVT;
+    public TableColumn<ChiTietDonViTinh, String> colKH;
+    public TableColumn<ChiTietDonViTinh, Object> colHeSo;
+    public TableColumn<ChiTietDonViTinh, Object> colGiaNhap;
+    public TableColumn<ChiTietDonViTinh, Object> colGiaBan;
+    public TableColumn<ChiTietDonViTinh, Object> colDVCB;
+    public TableColumn<ChiTietDonViTinh, Void> colXoa;
     public Button btnLuu;
     public Button btnHuy;
+    public Button btnThietLapGia;
     private Thuoc_SanPham thuoc;
     private ObservableList<ChiTietDonViTinh> listGia = FXCollections.observableArrayList();
     private final ChiTietDonViTinh_Dao ctDVTDao = new ChiTietDonViTinh_Dao();
@@ -60,7 +51,7 @@ public class ThemThuoc_LapPhieuNhapHang_Ctrl{
 
     // 2. KHỞI TẠO (INITIALIZE)
 
-    @FXML
+
     public void initialize() {
         colDVT.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDvt().getTenDonViTinh()));
         colKH.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDvt().getKiHieu()));
@@ -250,21 +241,38 @@ public class ThemThuoc_LapPhieuNhapHang_Ctrl{
     }
 
 
-    public void btnThemThuocClick(ActionEvent actionEvent) {
+    public void btnThemThuocClick(ActionEvent e) {
         try {
+            // 1) Stage mới
             Stage stage = new Stage();
-            FXMLLoader loader =  new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMThuoc/ThemThuoc_GUI.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-            ThemThuoc_Ctrl ctrl = loader.getController();
-            if (ctrl.getThuocThem() != null) {
-                setThuoc(ctrl.getThuocThem());
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            // 2) Owner + modality TRƯỚC khi show
+            if (e.getSource() instanceof javafx.scene.Node node) {
+                stage.initOwner(node.getScene().getWindow());
+            }
+            stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            stage.setTitle("Thêm thuốc");
+            stage.setResizable(false);
+
+            // 3) Tạo GUI + Ctrl (KHÔNG show ở đây)
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.ThemThuoc_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.ThemThuoc_Ctrl();
+
+            // Gắn scene và wire control vào controller
+            gui.showWithController(stage, ctrl);    // không gọi show() trong hàm này
+            stage.showAndWait();
+
+            // 5) Nhận kết quả (sau khi cửa sổ đóng)
+            var thuoc = ctrl.getThuocThem();        // nên trả null nếu bấm Hủy
+            if (thuoc != null) {
+                // debug an toàn
+                System.out.println("Thuốc thêm: " + thuoc.getMaThuoc());
+                setThuoc(thuoc);
+            } else {
+                System.out.println("Không có thuốc mới (đã hủy hoặc không hợp lệ).");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
