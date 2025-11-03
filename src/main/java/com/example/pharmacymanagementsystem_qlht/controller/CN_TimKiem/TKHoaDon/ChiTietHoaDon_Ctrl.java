@@ -4,6 +4,8 @@ import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.ApDungKhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.service.DichVuKhuyenMai;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon.ChiTietHoaDon_GUI;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -46,32 +48,32 @@ import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hi
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
-public class ChiTietHoaDon_Ctrl {
-    @FXML private TableView<ChiTietHoaDon> tblChiTietHoaDon;
-    @FXML private TableColumn<ChiTietHoaDon, Number> colNSTT;
-    @FXML private TableColumn<ChiTietHoaDon, String> colNTen;
-    @FXML private TableColumn<ChiTietHoaDon, Integer> colNSL;
-    @FXML private TableColumn<ChiTietHoaDon, String> colNDonVi;
-    @FXML private TableColumn<ChiTietHoaDon, Double> colNDonGia;
-    @FXML private TableColumn<ChiTietHoaDon, Double> colNChietKhau;
-    @FXML private TableColumn<ChiTietHoaDon, Double> colNThanhTien;
-    @FXML private Label lblMaHoaDonValue;
-    @FXML private Label lblNgayLapValue;
-    @FXML private Label lblTenNhanVienValue;
-    @FXML private Label lblTenKhachHangValue;
-    @FXML private Label lblSDTKhachHangValue;
-    @FXML private Label lblGhiChuValue;
-    @FXML private Label lblTongTienHang;
-    @FXML Label lblGiamTheoSP;
-    @FXML Label lblGiamTheoHD;
-    @FXML Label lblVAT;
-    @FXML Label lblTongThanhToan;
+public class ChiTietHoaDon_Ctrl extends Application {
+    public TableView<ChiTietHoaDon> tblChiTietHoaDon;
+    public TableColumn<ChiTietHoaDon, Number> colNSTT;
+    public TableColumn<ChiTietHoaDon, String> colNTen;
+    public TableColumn<ChiTietHoaDon, Integer> colNSL;
+    public TableColumn<ChiTietHoaDon, String> colNDonVi;
+    public TableColumn<ChiTietHoaDon, Double> colNDonGia;
+    public TableColumn<ChiTietHoaDon, Double> colNChietKhau;
+    public TableColumn<ChiTietHoaDon, Double> colNThanhTien;
+    public Label lblMaHoaDonValue;
+    public Label lblNgayLapValue;
+    public Label lblTenNhanVienValue;
+    public Label lblTenKhachHangValue;
+    public Label lblSDTKhachHangValue;
+    public Label lblGhiChuValue;
+    public Label lblTongTienHang;
+    public Label lblGiamTheoSP;
+    public Label lblGiamTheoHD;
+    public Label lblVAT;
+    public Label lblTongThanhToan;
     public static final String FONT_PATH = "C:/Windows/Fonts/arial.ttf";
-    @FXML private Button btnDong;
-    @FXML private Button btnInHoaDon;
-    @FXML private Label lblLoaiHoaDon;
-    @FXML private Label lblMaDonThuocTitle;
-    @FXML private Label lblMaDonThuocValue;
+    public Button btnDong;
+    public Button btnInHoaDon;
+    public Label lblLoaiHoaDon;
+    public Label lblMaDonThuocTitle;
+    public Label lblMaDonThuocValue;
 
 
     private HoaDon hoaDon;
@@ -84,8 +86,11 @@ public class ChiTietHoaDon_Ctrl {
     private final DichVuKhuyenMai kmService = new DichVuKhuyenMai();
     private final Thuoc_SanPham_Dao spDao = new Thuoc_SanPham_Dao();
     private final Map<String, String> tenSpCache = new HashMap<>();
+    @Override
+    public void start(Stage stage) throws Exception {
+        ChiTietHoaDon_GUI.showWithController(stage, this);
+    }
 
-    @FXML
     public void initialize() {
         if (btnDong != null) btnDong.setOnAction(e -> ((Stage) btnDong.getScene().getWindow()).close());
         if (btnInHoaDon != null) btnInHoaDon.setOnAction(e -> xuLyXuatPDF(e));
@@ -328,7 +333,7 @@ public class ChiTietHoaDon_Ctrl {
     private static String safeStr(String s) { return s == null ? "" : s; }
 
 
-    @FXML
+
     private void xuLyXuatPDF(ActionEvent event) {
         // 1. Kiểm tra dữ liệu
         if (hoaDon == null || tblChiTietHoaDon.getItems() == null || tblChiTietHoaDon.getItems().isEmpty()) {

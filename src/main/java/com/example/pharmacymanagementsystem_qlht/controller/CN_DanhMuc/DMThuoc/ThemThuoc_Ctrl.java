@@ -55,6 +55,8 @@ public class ThemThuoc_Ctrl {
     private DanhMucThuoc_Ctrl parentController;
     private Thuoc_SanPham thuocThem = new Thuoc_SanPham();
     private boolean isThayDoi = false;
+    public Button btnChonFile;
+    public Button btnLuu;
 
     public void initialize() {
 
@@ -140,6 +142,7 @@ public class ThemThuoc_Ctrl {
 //      Thêm mã thuốc
         Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
         txtMaThuoc.setText(thuocDao.generatekeyThuocSanPham());
+
     }
 
 //  Khai báo bảng thuốc
@@ -170,7 +173,7 @@ public class ThemThuoc_Ctrl {
     }
 
 //  Action button hủy
-    public void btnHuyClick(ActionEvent actionEvent) {
+    public void btnHuyClick() {
         Stage stage = (Stage) btnHuy.getScene().getWindow();
         stage.close();
     }
@@ -243,9 +246,7 @@ public class ThemThuoc_Ctrl {
             }
 
 //          Lấy root hiện tại
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = stage.getScene();
-            AnchorPane root = (AnchorPane) scene.getRoot();
+            AnchorPane root = (AnchorPane) btnThem.getScene().getRoot();
 
 //          Tạo overlay làm mờ nền
             StackPane overlay = new StackPane();
@@ -295,7 +296,7 @@ public class ThemThuoc_Ctrl {
                 Platform.runLater(() -> {
                     root.getChildren().remove(overlay);
                     isThayDoi = true;
-                    stage.close();
+                    dong();
                 });
             }).start();
         }
@@ -414,5 +415,10 @@ public class ThemThuoc_Ctrl {
 
     public Thuoc_SanPham getThuocThem() {
         return thuocThem;
+    }
+
+    public void dong(){
+        Stage stage = (Stage) btnThem.getScene().getWindow();
+        stage.close();
     }
 }

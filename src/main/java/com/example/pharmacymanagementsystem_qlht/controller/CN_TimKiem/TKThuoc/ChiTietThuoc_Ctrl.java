@@ -33,18 +33,21 @@ public class ChiTietThuoc_Ctrl {
     public TextField txtQCDongGoi;
     public TextField txtSDK_GPNK;
     public TableView<ChiTietHoatChat> tblHoatChat;
-    public TableColumn<ChiTietHoatChat,String> colMaHoatChat;
-    public TableColumn<ChiTietHoatChat,String> colTenHoatChat;
-    public TableColumn<ChiTietHoatChat,String> colHamLuong;
+    public TableColumn<ChiTietHoatChat, String> colMaHoatChat;
+    public TableColumn<ChiTietHoatChat, String> colTenHoatChat;
+    public TableColumn<ChiTietHoatChat, String> colHamLuong;
     public TextField txtDuongDung;
     public TextField txtViTri;
     public TextField txtLoaiHang;
     public TextField txtNhomDuocLy;
     public ImageView imgThuoc;
 
-    public void initialize( Thuoc_SanPham thuoc) {
-        load(thuoc);
+    public void initialize() {
+        // No-op
+    }
 
+    public void initialize(Thuoc_SanPham thuoc) {
+        load(thuoc);
     }
 
     public void load(Thuoc_SanPham thuoc) {

@@ -30,8 +30,9 @@ public class ThemNhanVien_Ctrl{
     public ComboBox cbxGioiTinh;
     public TextField txtDiaChi;
     public DatePicker txtNgaySinh;
-    private NhanVien nhanVien;
+    private NhanVien nhanVien = new NhanVien();
     public DanhMucNhanVien_Ctrl danhMucNhanVien_Ctrl;
+
 
     public void initialize() {
         cbxGioiTinh.getItems().addAll("Chọn giới tính","Nam", "Nữ");
@@ -41,26 +42,34 @@ public class ThemNhanVien_Ctrl{
 
     public void btnThemTaiKhoan(ActionEvent actionEvent) {
         try {
+            NhanVien copy = (nhanVien != null) ? new NhanVien(nhanVien) : new NhanVien();
+
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNhanVien.ThemTaiKhoan_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhanVien.ThemTaiKhoan_Ctrl();
+
             Stage dialog = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNhanVien/SuataiKhoan_GUI.fxml"));
-            Parent root = loader.load();
-
-            SuaTaiKhoan_Ctrl ctrl = loader.getController();
-            ctrl.initialize(nhanVien);
-
-            if(ctrl.isSaved){
-                NhanVien updatedNV = ctrl.getUpdatedNhanVien();
-                if (updatedNV==null) return;
-                nhanVien.setTaiKhoan(updatedNV.getTaiKhoan());
-                nhanVien.setMatKhau(updatedNV.getMatKhau());
-            }
-
-            dialog.initOwner(txtDiaChi.getScene().getWindow());
+            dialog.initOwner(cbxGioiTinh.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Thêm tài khoản nhân viên");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
+            dialog.setTitle("Thêm tài khoản");
+
+            // build UI + bind controller (KHÔNG show ở đây)
+            gui.showWithController(dialog, ctrl);
+
+            // nạp dữ liệu (hoặc setup bản làm việc)
+            ctrl.loadTaiKhoan(copy);
+
+            // SHOW dialog
             dialog.showAndWait();
+
+            // user bấm Lưu → cập nhật về form “Thêm nhân viên”
+            if (ctrl.isSaved) {
+                NhanVien updated = ctrl.getUpdatedNhanVien();
+                if (updated != null) {
+                    if (nhanVien == null) nhanVien = new NhanVien();
+                    nhanVien.setTaiKhoan(updated.getTaiKhoan());
+                    nhanVien.setMatKhau(updated.getMatKhau());
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -108,6 +117,7 @@ public class ThemNhanVien_Ctrl{
                 nv.setNgayNghiLam(null);
                 nv.setTaiKhoan(nhanVien.getTaiKhoan());
                 nv.setMatKhau(nhanVien.getMatKhau());
+                nv.setTrangThaiXoa(false);
 
                 NhanVien_Dao nhanViendao = new NhanVien_Dao();
                 nhanViendao.insertNhanVienProc(nv);

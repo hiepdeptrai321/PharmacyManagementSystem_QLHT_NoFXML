@@ -3,6 +3,7 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKKhachH
 import com.example.pharmacymanagementsystem_qlht.dao.KhachHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KhachHang;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_GUI;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -22,57 +23,33 @@ import java.util.function.Consumer;
 
 public class TimKiemKhachHangTrongHD_Ctrl extends Application {
     // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
-    @FXML
-    private Button btnLamMoi;
-
-    @FXML
-    private Button btnTim;
-
-    @FXML
-    private ComboBox<String> cboTimKiem;
-
-    @FXML
-    private TableColumn<KhachHang, String> cotDiaChi;
-
-    @FXML
-    private TableColumn<KhachHang, String> cotEmail;
-
-    @FXML
-    private TableColumn<KhachHang, String> cotGT;
-
-    @FXML
-    private TableColumn<KhachHang, String> cotMaKH;
-
-    @FXML
-    private TableColumn<KhachHang, String> cotNgaySinh;
-
-    @FXML
-    private TableColumn<KhachHang, String> cotSDT;
-
-    @FXML
-    private TableColumn<KhachHang, String> cotTenKH;
-
-    @FXML
-    private TableColumn<KhachHang, String> cotSTT;
-
-    @FXML
-    private TableView<KhachHang> tbKhachHang;
-
-
-
-    @FXML
-    private Pane mainPane;
-
-    @FXML
-    private TextField txtTimKiem;
+    public Button btnLamMoi;
+    public Button btnTim;
+    public ComboBox<String> cboTimKiem;
+    public TableColumn<KhachHang, String> cotDiaChi;
+    public TableColumn<KhachHang, String> cotEmail;
+    public TableColumn<KhachHang, String> cotGT;
+    public TableColumn<KhachHang, String> cotMaKH;
+    public TableColumn<KhachHang, String> cotNgaySinh;
+    public TableColumn<KhachHang, String> cotSDT;
+    public TableColumn<KhachHang, String> cotTenKH;
+    public TableColumn<KhachHang, String> cotSTT;
+    public TableView<KhachHang> tbKhachHang;
+    public Pane mainPane;
+    public TextField txtTimKiem;
     private KhachHang_Dao khachHangDao = new KhachHang_Dao();
     private Consumer<KhachHang> onSelected;
 
     public void setOnSelected(Consumer<KhachHang> onSelected) {
         this.onSelected = onSelected;
     }
+    @Override
+    public void start(Stage stage) throws IOException {
+        TimKiemKhachHangTrongHD_GUI gui = new TimKiemKhachHangTrongHD_GUI();
+        gui.showWithController(stage, this);
+
+    }
     // 2. KHỞI TẠO (INITIALIZE)
-    @FXML
     public void initialize() {
         cboTimKiem.getItems().addAll(
                 "Theo mã, tên khách hàng",
@@ -124,14 +101,7 @@ public class TimKiemKhachHangTrongHD_Ctrl extends Application {
         }
     }
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKKhachHang/TKKhachHang_GUI.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemNhanVien.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
+
     // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
     public void loadTable() {
         List<KhachHang> list = khachHangDao.selectAll();
@@ -149,14 +119,12 @@ public class TimKiemKhachHangTrongHD_Ctrl extends Application {
         cotDiaChi.setCellValueFactory(new PropertyValueFactory<>("diaChi"));
         tbKhachHang.setItems(data);
     }
-    @FXML
-    private void LamMoi() {
+    public void LamMoi() {
         txtTimKiem.clear();
         cboTimKiem.setValue("Theo mã, tên khách hàng");
         loadTable();
     }
-    @FXML
-    private void TimKiem() {
+    public void TimKiem() {
         String criteria = cboTimKiem.getValue();
         String keyword = txtTimKiem.getText().trim().toLowerCase();
         List<KhachHang> list = khachHangDao.selectAll();

@@ -5,6 +5,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.PhieuDoiHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuTraHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.HoaDon;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon.TKHoaDon_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -41,26 +42,21 @@ public class TimKiemHoaDon_Ctrl extends Application {
     public TableColumn<HoaDon,Integer> colSLP;
     public TableColumn<HoaDon,String> colChiTiet;
 
-    @FXML
-    private ComboBox<String> cboTieuChiTimKiem;
-    @FXML
-    private TextField txtNoiDungTimKiem;
-    @FXML
-    private DatePicker dpTuNgay;
-    @FXML
-    private DatePicker dpDenNgay;
-    @FXML
-    private ComboBox<String> cboBoLocNhanh;
-    @FXML
-    private Button btnTimKiem;
-    @FXML
-    private Button btnHuyBo;
+    public ComboBox<String> cboTieuChiTimKiem;
+    public TextField txtNoiDungTimKiem;
+    public DatePicker dpTuNgay;
+    public DatePicker dpDenNgay;
+    public ComboBox<String> cboBoLocNhanh;
+    public Button btnTimKiem;
+    public Button btnHuyBo;
 
     private HoaDon_Dao hoaDonDao = new HoaDon_Dao();
     private PhieuDoiHang_Dao phieuDoiHangDao = new PhieuDoiHang_Dao();
     private PhieuTraHang_Dao phieuTraHangDao = new PhieuTraHang_Dao();
-
-    @FXML
+    @Override
+    public void start(Stage stage) throws Exception {
+        new TKHoaDon_GUI().start(stage);
+    }
     public void initialize() {
         // tiêu chí tìm kiếm
         cboTieuChiTimKiem.getItems().addAll(
@@ -105,13 +101,7 @@ public class TimKiemHoaDon_Ctrl extends Application {
             loadTable();
         });
     }
-    @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKHoaDon/TKHoaDon_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
+
 
     public void loadTable() {
         List<HoaDon> list = hoaDonDao.selectAll();

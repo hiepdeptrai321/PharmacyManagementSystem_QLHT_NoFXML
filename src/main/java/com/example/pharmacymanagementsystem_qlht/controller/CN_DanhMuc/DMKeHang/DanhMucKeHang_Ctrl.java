@@ -1,16 +1,18 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKeHang;
 
-import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKNhaCungCap.ChiTietNhaCungCap_Ctrl;
+// Import file GUI mới
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKeHang.DanhMucKeHang_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKeHang.ThemKe_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKeHang.XoaSuaKeHang_GUI;
+// Các import khác giữ nguyên
 import com.example.pharmacymanagementsystem_qlht.dao.KeHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KeHang;
-import com.example.pharmacymanagementsystem_qlht.model.NhaCungCap;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML; // Giữ nguyên
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,49 +23,50 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class DanhMucKeHang_Ctrl extends Application {
-    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
+
+    // *** THAY ĐỔI 1: Bỏ 'private' ***
     @FXML
-    private Button btnThem;
-
+    public Button btnThem;
     @FXML
-    private Button btnLamMoi;
-
+    public Button btnLamMoi;
     @FXML
-    private Button btnTim;
-
+    public Button btnTim;
     @FXML
-    private Button btnXoa;
-
+    public Button btnXoa; //
     @FXML
-    private TableColumn<KeHang, String> cotMaKe;
-
+    public TableColumn<KeHang, String> cotMaKe;
     @FXML
-    private TableColumn<KeHang, String> cotSTT;
-
+    public TableColumn<KeHang, String> cotSTT;
     @FXML
-    private TableColumn<KeHang, String> cotTenKe;
-
+    public TableColumn<KeHang, String> cotTenKe;
     @FXML
-    private TableColumn<KeHang, String> colChiTiet;
-
+    public TableColumn<KeHang, String> colChiTiet; // Giữ nguyên kiểu String như file của bạn
     @FXML
-    private TableView<KeHang> tblKeHang;
-
+    public TableView<KeHang> tblKeHang;
     @FXML
-    private TextField txtTimKiem;
+    public TextField txtTimKiem;
 
-    private KeHang_Dao keHangDao = new KeHang_Dao();
-
-    // 2. KHỞI TẠO (INITIALIZE)
+    private KeHang_Dao keHangDao = new KeHang_Dao(); //
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKeHang/DanhMucKeHang_GUI.fxml"));
+        // *** THAY ĐỔI 2: Thay thế FXMLLoader ***
+        // Parent root = FXMLLoader.load(getClass().getResource(".../DanhMucKeHang_GUI.fxml")); //
+
+        DanhMucKeHang_GUI gui = new DanhMucKeHang_GUI();
+        Parent root = gui.createContent(this); // Bơm component vào 'this'
+
+        // *** THAY ĐỔI 3: Gọi initialize() bằng tay ***
+        initialize();
+
+        // Phần còn lại giữ nguyên
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyKeHang.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyKeHang.css").toExternalForm()); //
         stage.setScene(scene);
         stage.show();
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void initialize() {
         btnTim.setOnAction(e -> TimKiem());
         btnLamMoi.setOnAction(e -> LamMoi());
@@ -73,7 +76,8 @@ public class DanhMucKeHang_Ctrl extends Application {
             loadTable();
         });
     }
-    // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     public void loadTable() {
         List<KeHang> list = keHangDao.selectAll();
         ObservableList<KeHang> data = FXCollections.observableArrayList(list);
@@ -86,13 +90,8 @@ public class DanhMucKeHang_Ctrl extends Application {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(item);
-                    setAlignment(Pos.CENTER_LEFT);
-                }
+                if (empty) { setText(null); setGraphic(null); }
+                else { setText(item); setAlignment(Pos.CENTER_LEFT); }
             }
         });
         colChiTiet.setCellFactory(col -> new TableCell<KeHang, String>() {
@@ -112,8 +111,9 @@ public class DanhMucKeHang_Ctrl extends Application {
             }
         });
         tblKeHang.setItems(data);
-
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     private void TimKiem() {
         String keyword = txtTimKiem.getText().trim().toLowerCase();
         List<KeHang> list = keHangDao.selectAll();
@@ -122,29 +122,36 @@ public class DanhMucKeHang_Ctrl extends Application {
             return;
         }
 
-
         List<KeHang> filtered = list.stream()
                 .filter(keHang ->
                         (keHang.getMaKe() != null && keHang.getMaKe().toLowerCase().contains(keyword)) ||
                                 (keHang.getTenKe() != null && keHang.getTenKe().toLowerCase().contains(keyword))
-
                 )
                 .toList();
-
         tblKeHang.setItems(FXCollections.observableArrayList(filtered));
     }
+
+    // HÀM NÀY GIỮ NGUYÊN 100%
     @FXML
     private void LamMoi() {
         txtTimKiem.clear();
         loadTable();
     }
+
+    // *** THAY ĐỔI 4: Sửa lại hàm mở cửa sổ con (Thêm) ***
     public void btnThemClick(KeHang ke) {
         try {
             Stage dialog = new Stage();
-            FXMLLoader loader =  new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKeHang/ThemKe.fxml"));
-            Parent root = loader.load();
-            //ChiTietNhaCungCap_Ctrl ctrl = loader.getController();
-            //ctrl.hienThiThongTin(ncc);
+
+            // 1. Tạo Controller mới
+            ThemKe_Ctrl ctrl = new ThemKe_Ctrl();
+            // 2. Tạo GUI và bơm component
+            ThemKe_GUI gui = new ThemKe_GUI();
+            Parent root = gui.createContent(ctrl);
+            // 3. Gọi initialize() của controller con
+            ctrl.initialize();
+
+            // Phần logic còn lại giữ nguyên
             dialog.initOwner(btnLamMoi.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
             dialog.setScene(new Scene(root));
@@ -156,12 +163,21 @@ public class DanhMucKeHang_Ctrl extends Application {
             e.printStackTrace();
         }
     }
+
+    // *** THAY ĐỔI 5: Sửa lại hàm mở cửa sổ con (Chi tiết) ***
     public void btnChiTietClick(KeHang kh) {
         try {
             Stage dialog = new Stage();
-            FXMLLoader loader =  new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKeHang/XoaSuakeHang.fxml"));
-            Parent root = loader.load();
-            XoaSuaKeHang_Ctrl ctrl = loader.getController();
+
+            // 1. Tạo Controller mới
+            XoaSuaKeHang_Ctrl ctrl = new XoaSuaKeHang_Ctrl();
+            // 2. Tạo GUI và bơm component
+            XoaSuaKeHang_GUI gui = new XoaSuaKeHang_GUI();
+            Parent root = gui.createContent(ctrl);
+            // 3. Gọi initialize() của controller con
+            ctrl.initialize();
+
+            // Phần logic còn lại giữ nguyên
             ctrl.hienThiThongTin(kh);
             dialog.initOwner(btnLamMoi.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);

@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NhanVien_Dao implements DaoInterface<NhanVien> {
-    private final String INSERT_SQL = "INSERT INTO NhanVien(MaNV, TenNV, SDT,Email, NgaySinh, GioiTinh, DiaChi, TrangThai, TaiKhoan,MatKhau, NgayVaoLam, NgayKetThuc, VaiTro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final String INSERT_SQL = "INSERT INTO NhanVien(MaNV, TenNV, SDT,Email, NgaySinh, GioiTinh, DiaChi, TrangThai, TaiKhoan,MatKhau, NgayVaoLam, NgayKetThuc, TrangThaiXoa, VaiTro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private final String UPDATE_SQL = "UPDATE NhanVien SET TenNV=?, SDT=?, Email=?, NgaySinh=?, GioiTinh=?, DiaChi=?, TrangThai=?, TaiKhoan=?, MatKhau=?, NgayVaoLam=?, NgayKetThuc=?, TrangThaiXoa =? WHERE MaNV=?";
     private final String DELETE_BY_ID = "DELETE FROM NhanVien WHERE MaNV = ?";
     private final String SELECT_BY_ID = "SELECT * FROM NhanVien WHERE MaNV=?";
-    private final String SELECT_ALL_SQL = "SELECT * FROM NhanVien";
+    private final String SELECT_ALL_SQL = "SELECT * FROM NhanVien WHERE TrangThaiXoa=0";
     private final String SELECT_BY_TAIKHOAN_MATKHAU = "SELECT * FROM NhanVien WHERE TaiKhoan=? AND MatKhau=?";
 
     @Override

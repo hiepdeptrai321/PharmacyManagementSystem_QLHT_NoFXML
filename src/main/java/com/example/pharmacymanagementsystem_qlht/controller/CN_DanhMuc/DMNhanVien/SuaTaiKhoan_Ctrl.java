@@ -16,14 +16,13 @@ public class SuaTaiKhoan_Ctrl{
     public NhanVien nhanVien;
     public boolean isSaved = false;
 
-    public void initialize(NhanVien nhanVien){
-        loadTaiKhoan(nhanVien);
-        this.nhanVien=nhanVien;
+    public void initialize() {
     }
 
     public void loadTaiKhoan(NhanVien nhanVien){
         txtTaiKhoan.setText(nhanVien.getTaiKhoan());
         txtMatKhau.setText(nhanVien.getMatKhau());
+        this.nhanVien=nhanVien;
     }
 
     public NhanVien getUpdatedNhanVien() {
