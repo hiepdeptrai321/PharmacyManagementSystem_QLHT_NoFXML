@@ -1,8 +1,10 @@
 package com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.TimKiemHoaDon_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.model.HoaDon;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -10,199 +12,267 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.TimKiemHoaDon_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.model.HoaDon;
 
+import java.sql.Date;
+import java.util.Objects;
+
+/**
+ * GUI Java thuần cho màn "Tìm kiếm hóa đơn"
+ * - Có showWithController(Stage, Ctrl) để mở riêng khi cần
+ * - Có buildForEmbed(Ctrl) để NHÚNG trực tiếp vào pnlChung (không mở dialog)
+ */
 public class TKHoaDon_GUI extends Application {
 
-    public Pane mainPane;
-    public TableView<HoaDon> tblHD;
-    public TableColumn<HoaDon, String> colMaHD;
-    public TableColumn<HoaDon, String> colNgayLap;
-    public TableColumn<HoaDon, String> colTenKH;
-    public TableColumn<HoaDon, String> colSdtKH;
-    public TableColumn<HoaDon, String> colTenNV;
-    public TableColumn<HoaDon, Integer> colSLP;
-    public TableColumn<HoaDon, String> colChiTiet;
-
-    public ComboBox<String> cboTieuChiTimKiem;
-    public TextField txtNoiDungTimKiem;
-    public DatePicker dpTuNgay;
-    public DatePicker dpDenNgay;
-    public ComboBox<String> cboBoLocNhanh;
-    public Button btnTimKiem;
-    public Button btnHuyBo;
-
+    // ===== Dùng khi chạy độc lập để test nhanh =====
     @Override
     public void start(Stage stage) {
-        mainPane = new Pane();
-        mainPane.setPrefSize(1646, 895);
-        mainPane.setStyle("-fx-font-size: 14px;");
+        ViewRefs v = buildUIForController();
 
-        VBox vbox = new VBox();
-        vbox.setLayoutX(10);
-        vbox.setLayoutY(14);
-        vbox.setPrefSize(1619, 871);
+        // test không controller: chỉ hiển thị form
+        Scene scene = new Scene(v.root, 1646, 895);
+        addStyles(scene, "/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css");
+        stage.setTitle("Tìm kiếm hóa đơn");
+        stage.setScene(scene);
+        stage.show();
+    }
 
-        // === Tiêu đề ===
+    // ===== Dùng trong app: mở ở Stage riêng (nếu thật sự muốn mở cửa sổ) =====
+    public void showWithController(Stage stage, TimKiemHoaDon_Ctrl ctrl) {
+        Parent root = buildForEmbed(ctrl); // tái sử dụng buildForEmbed
+        Scene scene = new Scene(root, 1646, 895);
+        addStyles(scene, "/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css");
+        stage.setTitle("Tìm kiếm hóa đơn");
+        stage.setScene(scene);
+        // stage.show(); // để caller quyết định có show hay không
+    }
+
+    // ===== Quan trọng: dùng để NHÚNG vào pnlChung (không mở dialog mới) =====
+    public Parent buildForEmbed(TimKiemHoaDon_Ctrl ctrl) {
+        ViewRefs v = buildUIForController();
+
+        // inject control sang controller – khớp fx:id trong FXML cũ
+        ctrl.cboTieuChiTimKiem = v.cboTieuChiTimKiem;
+        ctrl.txtNoiDungTimKiem = v.txtNoiDungTimKiem;
+        ctrl.dpTuNgay         = v.dpTuNgay;
+        ctrl.dpDenNgay        = v.dpDenNgay;
+        ctrl.cboBoLocNhanh    = v.cboBoLocNhanh;
+
+        ctrl.btnTimKiem       = v.btnTimKiem;
+        ctrl.btnHuyBo         = v.btnHuyBo;
+
+        ctrl.tblHD            = v.tblHD;
+        ctrl.colMaHD          = v.colMaHD;
+        ctrl.colNgayLap       = v.colNgayLap;
+        ctrl.colTenKH         = v.colTenKH;
+        ctrl.colSdtKH         = v.colSdtKH;
+        ctrl.colTenNV         = v.colTenNV;
+        ctrl.colSLP           = v.colSLP;
+        ctrl.colChiTiet       = v.colChiTiet;
+
+        // nếu controller có initialize() thì gọi
+        try { ctrl.initialize(); } catch (Exception ignore) {}
+
+        return v.root;
+    }
+
+    // ====== Builder UI: tạo toàn bộ node & tham chiếu control ======
+    private ViewRefs buildUIForController() {
+        ViewRefs v = new ViewRefs();
+
+        // root = Pane + VBox giống FXML
+        Pane root = new Pane();
+        root.setPrefSize(1646, 895);
+        root.setStyle("-fx-font-size: 14;");
+
+        VBox vb = new VBox();
+        vb.setLayoutX(10);
+        vb.setLayoutY(14);
+        vb.setPrefSize(1619, 871);
+
+        // ===== HBox Title =====
         HBox hbTitle = new HBox();
         hbTitle.setPrefSize(1544, 58);
 
         Label lbTimKiem = new Label("Tìm kiếm hóa đơn");
         lbTimKiem.setPrefSize(328, 53);
         lbTimKiem.getStyleClass().add("title");
-        lbTimKiem.setFont(new Font(36));
+        lbTimKiem.setFont(Font.font(36));
 
-        ImageView imgBill = new ImageView(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/bill-8854.png")));
-        imgBill.setFitHeight(46);
-        imgBill.setFitWidth(48);
-        imgBill.setPreserveRatio(true);
+        Region rgTitleSpacer = new Region();
+        HBox.setHgrow(rgTitleSpacer, Priority.ALWAYS);
 
-        hbTitle.getChildren().addAll(lbTimKiem, new Label(), imgBill);
+        ImageView ivBill = imageView("/com/example/pharmacymanagementsystem_qlht/img/bill-8854.png", 48, 46);
 
-        Separator separator = new Separator();
+        hbTitle.getChildren().addAll(lbTimKiem, new Label(), ivBill);
 
-        // === HBox tìm kiếm ===
-        HBox hbSearch = new HBox();
-        hbSearch.setPrefSize(1618, 63);
-        VBox.setMargin(hbSearch, new Insets(0, 0, 5, 0));
+        Separator sp = new Separator();
 
-        cboTieuChiTimKiem = new ComboBox<>();
-        cboTieuChiTimKiem.setPromptText("Tiêu chí tìm kiếm");
-        cboTieuChiTimKiem.setPrefSize(184, 40);
-        cboTieuChiTimKiem.getStyleClass().add("btntim");
-        HBox.setMargin(cboTieuChiTimKiem, new Insets(10, 5, 0, 0));
+        // ===== HBox filter line =====
+        HBox hbFilter = new HBox();
+        hbFilter.setPrefSize(1618, 63);
 
-        txtNoiDungTimKiem = new TextField();
-        txtNoiDungTimKiem.setPromptText("Nhập nội dung tìm kiếm");
-        txtNoiDungTimKiem.setPrefSize(260, 40);
-        txtNoiDungTimKiem.getStyleClass().add("tftim");
-        HBox.setMargin(txtNoiDungTimKiem, new Insets(10, 0, 0, 0));
+        v.cboTieuChiTimKiem = new ComboBox<>();
+        v.cboTieuChiTimKiem.setPromptText("Tiêu chí tìm kiếm");
+        v.cboTieuChiTimKiem.getStyleClass().add("btntim");
+        v.cboTieuChiTimKiem.setPrefSize(184, 40);
+        HBox.setMargin(v.cboTieuChiTimKiem, new Insets(10, 5, 0, 0));
 
-        Region rg1 = new Region();
-        rg1.setPrefSize(32, 63);
+        v.txtNoiDungTimKiem = new TextField();
+        v.txtNoiDungTimKiem.setPromptText("Nhập nội dung tìm kiếm");
+        v.txtNoiDungTimKiem.getStyleClass().add("tftim");
+        v.txtNoiDungTimKiem.setPrefSize(260, 40);
+        HBox.setMargin(v.txtNoiDungTimKiem, new Insets(10, 0, 0, 0));
 
-        ImageView imgTime = new ImageView(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png")));
-        imgTime.setFitHeight(34);
-        imgTime.setFitWidth(30);
-        imgTime.setPreserveRatio(true);
-        HBox.setMargin(imgTime, new Insets(16, 4, 0, 0));
+        Region rg1 = new Region(); rg1.setPrefSize(32, 63);
+
+        ImageView ivTime = imageView("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png", 30, 34);
+        HBox.setMargin(ivTime, new Insets(16, 4, 0, 0));
 
         Label lbTu = new Label("Từ: ");
-        lbTu.setPrefSize(32, 37);
         lbTu.getStyleClass().add("tftim");
-        lbTu.setFont(new Font(14));
+        lbTu.setPrefSize(32, 37);
+        lbTu.setFont(Font.font(14));
         HBox.setMargin(lbTu, new Insets(10, 0, 0, 0));
 
-        dpTuNgay = new DatePicker();
-        dpTuNgay.setPrefSize(125, 40);
-        dpTuNgay.getStyleClass().add("tftim");
-        HBox.setMargin(dpTuNgay, new Insets(10, 10, 0, 0));
+        v.dpTuNgay = new DatePicker();
+        v.dpTuNgay.getStyleClass().add("tftim");
+        v.dpTuNgay.setPrefSize(125, 40);
+        HBox.setMargin(v.dpTuNgay, new Insets(10, 10, 0, 0));
 
         Label lbDen = new Label("Đến: ");
-        lbDen.setPrefSize(38, 37);
         lbDen.getStyleClass().add("tftim");
-        lbDen.setFont(new Font(14));
+        lbDen.setPrefSize(38, 37);
+        lbDen.setFont(Font.font(14));
         HBox.setMargin(lbDen, new Insets(10, 0, 0, 0));
 
-        dpDenNgay = new DatePicker();
-        dpDenNgay.setPrefSize(125, 40);
-        dpDenNgay.getStyleClass().add("tftim");
-        HBox.setMargin(dpDenNgay, new Insets(10, 0, 0, 0));
+        v.dpDenNgay = new DatePicker();
+        v.dpDenNgay.getStyleClass().add("tftim");
+        v.dpDenNgay.setPrefSize(125, 40);
+        HBox.setMargin(v.dpDenNgay, new Insets(10, 0, 0, 0));
 
-        Region rg2 = new Region();
-        rg2.setPrefSize(25, 63);
+        Region rg2 = new Region(); rg2.setPrefSize(25, 63);
 
-        btnTimKiem = new Button("Tìm");
-        btnTimKiem.setPrefSize(72, 40);
-        btnTimKiem.getStyleClass().add("btntim");
-        btnTimKiem.setDefaultButton(true);
-        HBox.setMargin(btnTimKiem, new Insets(10, 0, 0, 8));
+        v.btnTimKiem = new Button("Tìm");
+        v.btnTimKiem.setDefaultButton(true);
+        v.btnTimKiem.getStyleClass().add("btntim");
+        v.btnTimKiem.setPrefSize(72, 40);
+        HBox.setMargin(v.btnTimKiem, new Insets(10, 0, 0, 8));
+        v.btnTimKiem.setGraphic(imageView("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png", 150, 20));
 
-        ImageView imgSearch = new ImageView(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png")));
-        imgSearch.setFitHeight(20);
-        imgSearch.setFitWidth(150);
-        imgSearch.setPreserveRatio(true);
-        imgSearch.setCursor(Cursor.DEFAULT);
-        btnTimKiem.setGraphic(imgSearch);
+        v.btnHuyBo = new Button();
+        v.btnHuyBo.setId("btnReset");
+        v.btnHuyBo.getStyleClass().add("btntim");
+        v.btnHuyBo.setPrefSize(52, 40);
+        HBox.setMargin(v.btnHuyBo, new Insets(10, 0, 0, 8));
+        v.btnHuyBo.setGraphic(imageView("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png", 40, 20));
 
-        btnHuyBo = new Button();
-        btnHuyBo.setPrefSize(52, 40);
-        btnHuyBo.getStyleClass().add("btntim");
-        btnHuyBo.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css").toExternalForm());
-        HBox.setMargin(btnHuyBo, new Insets(10, 0, 0, 8));
+        Region rg3 = new Region(); rg3.setPrefSize(395, 63);
+        HBox.setHgrow(rg3, Priority.ALWAYS);
 
-        ImageView imgRefresh = new ImageView(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")));
-        imgRefresh.setFitHeight(20);
-        imgRefresh.setFitWidth(40);
-        imgRefresh.setPreserveRatio(true);
-        btnHuyBo.setGraphic(imgRefresh);
+        v.cboBoLocNhanh = new ComboBox<>();
+        v.cboBoLocNhanh.setPromptText("⌛ Bộ lọc nhanh");
+        v.cboBoLocNhanh.getStyleClass().add("btntim");
+        v.cboBoLocNhanh.setPrefSize(222, 41);
+        HBox.setMargin(v.cboBoLocNhanh, new Insets(10, 0, 0, 0));
 
-        Region rg3 = new Region();
-        rg3.setPrefSize(395, 63);
-
-        cboBoLocNhanh = new ComboBox<>();
-        cboBoLocNhanh.setPromptText("⌛ Bộ lọc nhanh");
-        cboBoLocNhanh.setPrefSize(222, 41);
-        cboBoLocNhanh.getStyleClass().add("btntim");
-        HBox.setMargin(cboBoLocNhanh, new Insets(10, 0, 0, 0));
-
-        hbSearch.getChildren().addAll(
-                cboTieuChiTimKiem, txtNoiDungTimKiem, rg1,
-                imgTime, lbTu, dpTuNgay, lbDen, dpDenNgay,
-                rg2, btnTimKiem, btnHuyBo, rg3, cboBoLocNhanh
+        hbFilter.getChildren().addAll(
+                v.cboTieuChiTimKiem, v.txtNoiDungTimKiem,
+                rg1, ivTime, lbTu, v.dpTuNgay, lbDen, v.dpDenNgay,
+                rg2, v.btnTimKiem, v.btnHuyBo,
+                rg3, v.cboBoLocNhanh
         );
 
-        // === TableView ===
-        tblHD = new TableView<>();
-        tblHD.setPrefSize(1619, 735);
-        tblHD.setStyle("-fx-font-size: 14px;");
+        VBox.setMargin(hbFilter, new Insets(0, 0, 5, 0));
 
-        colMaHD = new TableColumn<>("Mã hóa đơn");
-        colMaHD.setPrefWidth(162);
-        colNgayLap = new TableColumn<>("Ngày lập");
-        colNgayLap.setPrefWidth(255);
-        colTenKH = new TableColumn<>("Khách hàng");
-        colTenKH.setPrefWidth(351);
-        colSdtKH = new TableColumn<>("SĐT");
-        colSdtKH.setPrefWidth(229);
-        colTenNV = new TableColumn<>("Nhân viên");
-        colTenNV.setPrefWidth(293);
-        colSLP = new TableColumn<>("Số lượng phiếu đổi trả");
-        colSLP.setPrefWidth(205);
-        colChiTiet = new TableColumn<>();
-        colChiTiet.setPrefWidth(105);
+        // ===== Bảng kết quả =====
+        v.tblHD = new TableView<>();
+        v.tblHD.setPrefSize(1619, 735);
+        v.tblHD.setStyle("-fx-font-size: 14;");
 
-        tblHD.getColumns().addAll(colMaHD, colNgayLap, colTenKH, colSdtKH, colTenNV, colSLP, colChiTiet);
+        v.colMaHD    = new TableColumn<>("Mã hóa đơn");
+        v.colMaHD.setPrefWidth(162.0);
+        v.colMaHD.setStyle("-fx-alignment: CENTER;");
 
-        vbox.getChildren().addAll(hbTitle, separator, hbSearch, tblHD);
-        mainPane.getChildren().add(vbox);
+        v.colNgayLap = new TableColumn<>("Ngày lập");
+        v.colNgayLap.setPrefWidth(255.0);
+        v.colNgayLap.setStyle("-fx-alignment: CENTER;");
 
-        Scene scene = new Scene(mainPane);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css").toExternalForm());
+        v.colTenKH   = new TableColumn<>("Khách hàng");
+        v.colTenKH.setPrefWidth(351.0);
 
-        stage.setScene(scene);
-        stage.setTitle("Tìm kiếm hóa đơn");
-        stage.show();
+        v.colSdtKH   = new TableColumn<>("SĐT");
+        v.colSdtKH.setPrefWidth(229.6);
+        v.colSdtKH.setStyle("-fx-alignment: CENTER;");
 
-        // Gắn controller xử lý logic
-        TimKiemHoaDon_Ctrl ctrl = new TimKiemHoaDon_Ctrl();
-        ctrl.tblHD = tblHD;
-        ctrl.colMaHD = colMaHD;
-        ctrl.colNgayLap = colNgayLap;
-        ctrl.colTenKH = colTenKH;
-        ctrl.colSdtKH = colSdtKH;
-        ctrl.colTenNV = colTenNV;
-        ctrl.colSLP = colSLP;
-        ctrl.colChiTiet = colChiTiet;
-        ctrl.cboTieuChiTimKiem = cboTieuChiTimKiem;
-        ctrl.txtNoiDungTimKiem = txtNoiDungTimKiem;
-        ctrl.dpTuNgay = dpTuNgay;
-        ctrl.dpDenNgay = dpDenNgay;
-        ctrl.cboBoLocNhanh = cboBoLocNhanh;
-        ctrl.btnTimKiem = btnTimKiem;
-        ctrl.btnHuyBo = btnHuyBo;
-        ctrl.initialize();
+        v.colTenNV   = new TableColumn<>("Nhân viên");
+        v.colTenNV.setPrefWidth(293.0);
+
+        v.colSLP     = new TableColumn<>("Số lượng phiếu đổi trả");
+        v.colSLP.setPrefWidth(205.0);
+        v.colSLP.setStyle("-fx-alignment: CENTER;");
+
+        v.colChiTiet = new TableColumn<>("");
+        v.colChiTiet.setPrefWidth(105.0);
+        v.colChiTiet.setStyle("-fx-alignment: CENTER;");
+
+        v.tblHD.getColumns().addAll(
+                v.colMaHD, v.colNgayLap, v.colTenKH, v.colSdtKH, v.colTenNV, v.colSLP, v.colChiTiet
+        );
+
+        // gom vào VBox
+        vb.getChildren().addAll(hbTitle, sp, hbFilter, v.tblHD);
+
+        // icon “icontime” rời (nếu cần)
+        ImageView iconTimeFloat = new ImageView();
+        iconTimeFloat.getStyleClass().add("icontime");
+        iconTimeFloat.setFitWidth(40);
+        iconTimeFloat.setFitHeight(35);
+        iconTimeFloat.setLayoutX(500);
+        iconTimeFloat.setLayoutY(-91);
+
+        // add vào root
+        root.getChildren().addAll(vb, iconTimeFloat);
+        v.root = root;
+
+        return v;
+    }
+
+    // ===== helpers =====
+    private static ImageView imageView(String res, double fitW, double fitH) {
+        var url = Objects.requireNonNull(
+                TKHoaDon_GUI.class.getResource(res),
+                "Missing resource: " + res
+        ).toExternalForm();
+        ImageView iv = new ImageView(new Image(url));
+        iv.setFitWidth(fitW);
+        iv.setFitHeight(fitH);
+        iv.setPickOnBounds(true);
+        iv.setPreserveRatio(true);
+        return iv;
+    }
+
+    private static void addStyles(Scene scene, String cssPath) {
+        var url = TKHoaDon_GUI.class.getResource(cssPath);
+        if (url != null) scene.getStylesheets().add(url.toExternalForm());
+        else System.err.println("CSS not found: " + cssPath);
+    }
+
+    /** Gói toàn bộ control để truyền controller (không lookup) */
+    private static class ViewRefs {
+        Pane root;
+
+        // filter controls
+        ComboBox<String> cboTieuChiTimKiem;
+        TextField txtNoiDungTimKiem;
+        DatePicker dpTuNgay, dpDenNgay;
+        ComboBox<String> cboBoLocNhanh;
+
+        Button btnTimKiem, btnHuyBo;
+
+        // table
+        TableView<HoaDon> tblHD;
+        TableColumn<HoaDon, String> colMaHD, colTenKH, colSdtKH, colTenNV, colChiTiet, colNgayLap;
+        TableColumn<HoaDon, Integer> colSLP;
     }
 
     public static void main(String[] args) {

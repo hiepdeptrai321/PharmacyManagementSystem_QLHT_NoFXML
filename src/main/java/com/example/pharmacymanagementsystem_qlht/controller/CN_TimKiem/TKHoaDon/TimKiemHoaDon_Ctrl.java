@@ -190,25 +190,22 @@ public class TimKiemHoaDon_Ctrl extends Application {
     private void btnChiTietClick(HoaDon hoaDon) {
         System.out.println("Xem chi tiết hóa đơn: " + hoaDon.getMaHD());
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKHoaDon/ChiTietHoaDon_GUI.fxml"));
-            Parent root = loader.load();
-
-            // Optionally pass data to the detail controller
-            com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl controller = loader.getController();
-            controller.setHoaDon(hoaDon);
-
+            // 1) Tạo GUI + Controller thuần Java
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon.ChiTietHoaDon_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl();
             Stage dialog = new Stage();
             dialog.initOwner(btnTimKiem.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
             dialog.setTitle("Chi tiết hóa đơn " + hoaDon.getMaHD());
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
+            gui.showWithController(dialog, ctrl);
+            ctrl.setHoaDon(hoaDon);
+             // GUI của bạn tự build Scene bên trong
             dialog.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private void timKiem() {
         String tieuChi = cboTieuChiTimKiem.getValue();

@@ -26,6 +26,8 @@ public class DangNhap_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Application.setUserAgentStylesheet(STYLESHEET_CASPIAN);
+        Application.setUserAgentStylesheet(null);
         new com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI()
                 .showWithController(stage, this);
     }
@@ -49,8 +51,8 @@ public class DangNhap_Ctrl extends Application {
             tfMatKhauAn.setText(savedPass);
             checkDangNhap.setSelected(true);
         }
-        btnAnMK .setOnAction(e->anmatkhau());
-        btnDangNhap.setOnAction(e-> btnDangNhapClick());
+        btnAnMK.setOnAction(e -> anmatkhau());
+        btnDangNhap.setOnAction(e -> btnDangNhapClick());
     }
 
     public void anmatkhau() {
@@ -77,41 +79,49 @@ public class DangNhap_Ctrl extends Application {
             return;
         }
 
-        NhanVien_Dao dao = new NhanVien_Dao();
-        NhanVien nv = new NhanVien_Dao().selectByTKVaMK(username,password);
-
-        if (nv != null) {
-            // Remember credentials if checked
-            if (checkDangNhap.isSelected()) {
-                prefs.put("username", username);
-                prefs.put("password", password);
-            } else {
-                prefs.remove("username");
-                prefs.remove("password");
-            }
-            user = nv;
-            String role = nv.getVaiTro();
-            try {
-                if ("Quản lý".compareTo(role) == 0) {
-                    CuaSoChinh_QuanLy_Ctrl ctrl = new CuaSoChinh_QuanLy_Ctrl();
-                    Stage stage = new Stage();
-                    new com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI()
-                            .showWithController(stage, ctrl);
-                }
-                else {
-                    CuaSoChinh_NhanVien_Ctrl ctrl = new CuaSoChinh_NhanVien_Ctrl();
-                    Stage stage = new Stage();
-                    new com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_NhanVien_GUI()
-                            .showWithController(stage, ctrl);
-                }
-                this.btnDangNhap.getScene().getWindow().hide();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
+        NhanVien nv = new NhanVien_Dao().selectByTKVaMK(username, password);
+        if (nv == null) {
             showAlert("Tên đăng nhập hoặc mật khẩu không chính xác.");
+            return;
+        }
+
+        if (checkDangNhap.isSelected()) {
+            prefs.put("username", username);
+            prefs.put("password", password);
+        } else {
+            prefs.remove("username");
+            prefs.remove("password");
+        }
+
+        user = nv;
+        String role = nv.getVaiTro();
+
+        try {
+            Stage loginStage = (Stage) btnDangNhap.getScene().getWindow();
+
+            Stage mainStage = new Stage();
+            if ("Quản lý".equals(role)) {
+                CuaSoChinh_QuanLy_Ctrl ctrl = new CuaSoChinh_QuanLy_Ctrl();
+                new com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI()
+                        .showWithController(mainStage, ctrl);
+            } else {
+                CuaSoChinh_NhanVien_Ctrl ctrl = new CuaSoChinh_NhanVien_Ctrl();
+                new com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_NhanVien_GUI()
+                        .showWithController(mainStage, ctrl);
+            }
+
+            // KHÔNG dùng showAndWait() -> dùng show()
+            mainStage.show();
+
+            // Đóng login ngay
+            loginStage.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Có lỗi khi mở cửa sổ chính.");
         }
     }
+
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);

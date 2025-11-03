@@ -177,6 +177,5 @@ public class TKHoatDong_GUI {
 
         stage.setTitle("Tìm kiếm hoạt động");
         stage.setScene(scene);
-        stage.show();
     }
 }

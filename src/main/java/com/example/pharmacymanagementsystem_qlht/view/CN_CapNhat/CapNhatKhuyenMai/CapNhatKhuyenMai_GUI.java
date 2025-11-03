@@ -139,6 +139,5 @@ public class CapNhatKhuyenMai_GUI {
 
         stage.setTitle("Cập nhật khuyến mãi");
         stage.setScene(scene);
-        stage.show();
     }
 }

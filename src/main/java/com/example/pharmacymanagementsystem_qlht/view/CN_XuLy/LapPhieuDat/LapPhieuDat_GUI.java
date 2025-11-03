@@ -350,6 +350,5 @@ public class LapPhieuDat_GUI {
 
         stage.setTitle("LẬP PHIẾU ĐẶT HÀNG");
         stage.setScene(scene);
-        stage.show();
     }
 }

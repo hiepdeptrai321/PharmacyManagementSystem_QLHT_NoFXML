@@ -4,8 +4,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.KhachHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KhachHang;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML; // (Có thể giữ lại)
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,59 +14,66 @@ import java.time.LocalDate;
 
 public class ChiTietKhachHang_Ctrl extends Application {
 
-    @FXML
-    private Button btnLuu;
-
-    @FXML
-    private Button btnHuy;
-
-    @FXML
-    private Button btnXoa;
-
-    @FXML
-    private TextField txtDiaChi;
-
-    @FXML
-    private TextField txtEmail;
-
-    @FXML
-    private DatePicker txtNgaySinh;
-
-    @FXML
-    private TextField txtSDT;
-
-    @FXML
-    private TextField txtTenKH;
-
-    @FXML
-    private ComboBox<String> cboGioiTinh;
-
-    @FXML
-    private Label errTenKH, errDiaChi, errEmail, errSDT;
+    // --- ĐÃ CHUYỂN SANG PUBLIC ---
+    public Button btnLuu;
+    public Button btnHuy;
+    public Button btnXoa;
+    public TextField txtDiaChi;
+    public TextField txtEmail;
+    public DatePicker txtNgaySinh;
+    public TextField txtSDT;
+    public TextField txtTenKH;
+    public ComboBox<String> cboGioiTinh;
+    public Label errTenKH, errDiaChi, errEmail, errSDT;
 
     private final KhachHang_Dao khachHangDao = new KhachHang_Dao();
-    private KhachHang khachHang;
+    private KhachHang khachHang; // Dữ liệu được truyền vào
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    // Main không cần thiết nếu không chạy file này độc lập
+    // public static void main(String[] args) {
+    //     launch(args);
+    // }
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhachHang/SuaXoaKhachHang_GUI.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ChiTietKhachHang.css").toExternalForm());
-        stage.setScene(scene);
+        // --- ĐÃ THAY THẾ FXML LOADER ---
+        // GỌI GUI TƯƠNG ỨNG (SuaXoaKhachHang_GUI)
+        new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.SuaXoaKhachHang_GUI()
+                .showWithController(stage, this);
+
+        stage.setTitle("Chi tiết khách hàng"); // Giữ title từ FXML
+        // CSS được load trong file GUI
         stage.show();
     }
 
+    // --- ĐÃ CẬP NHẬT LOGIC `initialize` VÀ `hienThiThongTin` ---
+
+    // 1. Gán sự kiện VÀ điền dữ liệu
     public void initialize() {
         cboGioiTinh.setItems(FXCollections.observableArrayList("Nam", "Nữ"));
         btnHuy.setOnAction(e -> HuyClick());
         btnXoa.setOnAction(e -> XoaClick());
         btnLuu.setOnAction(e -> LuuClick());
+
+        // Điền dữ liệu vào form (được gọi sau khi hienThiThongTin đã lưu khachHang)
+        if (khachHang != null) {
+            txtTenKH.setText(khachHang.getTenKH());
+            txtDiaChi.setText(khachHang.getDiaChi() != null ? khachHang.getDiaChi() : "");
+            txtEmail.setText(khachHang.getEmail() != null ? khachHang.getEmail() : "");
+            txtSDT.setText(khachHang.getSdt() != null ? khachHang.getSdt() : "");
+            txtNgaySinh.setValue(khachHang.getNgaySinh());
+            cboGioiTinh.setValue(Boolean.TRUE.equals(khachHang.getGioiTinh()) ? "Nam" : "Nữ");
+        }
     }
 
+    // 2. Chỉ lưu dữ liệu
+    public void hienThiThongTin(KhachHang kh) {
+        if (kh != null) {
+            this.khachHang = kh;
+        }
+    }
+
+    // --- LOGIC CÒN LẠI GIỮ NGUYÊN ---
 
     private boolean validateFields() {
         boolean isValid = true;
@@ -123,6 +129,8 @@ public class ChiTietKhachHang_Ctrl extends Application {
             }
 
             if (khachHang == null) {
+                // (Mặc dù trong luồng chi tiết thì KH không bao giờ null,
+                // nhưng đây là logic phòng vệ tốt)
                 khachHang = new KhachHang();
             }
 
@@ -132,10 +140,11 @@ public class ChiTietKhachHang_Ctrl extends Application {
             khachHang.setSdt(txtSDT.getText().trim());
             khachHang.setNgaySinh(txtNgaySinh.getValue() != null ? txtNgaySinh.getValue() : LocalDate.now());
             khachHang.setGioiTinh("Nam".equals(cboGioiTinh.getValue()));
-            khachHang.setTrangThai(true);
+            khachHang.setTrangThai(true); // Logic của bạn là luôn set true khi Lưu
 
             boolean success;
             if (khachHang.getMaKH() == null || khachHang.getMaKH().trim().isEmpty()) {
+                // Trường hợp này không nên xảy ra khi "Chi tiết"
                 success = khachHangDao.insert(khachHang);
             } else {
                 success = khachHangDao.update(khachHang);
@@ -183,20 +192,6 @@ public class ChiTietKhachHang_Ctrl extends Application {
     private void HuyClick() {
         dongCuaSo();
     }
-
-
-    public void hienThiThongTin(KhachHang kh) {
-        if (kh != null) {
-            khachHang = kh;
-            txtTenKH.setText(kh.getTenKH());
-            txtDiaChi.setText(kh.getDiaChi() != null ? kh.getDiaChi() : "");
-            txtEmail.setText(kh.getEmail() != null ? kh.getEmail() : "");
-            txtSDT.setText(kh.getSdt() != null ? kh.getSdt() : "");
-            txtNgaySinh.setValue(kh.getNgaySinh());
-            cboGioiTinh.setValue(Boolean.TRUE.equals(kh.getGioiTinh()) ? "Nam" : "Nữ");
-        }
-    }
-
 
     private void thongBao(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

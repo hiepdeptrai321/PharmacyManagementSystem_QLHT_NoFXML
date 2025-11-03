@@ -52,7 +52,6 @@ public class TKThuoc_GUI {
         scene.setCursor(Cursor.DEFAULT);
         stage.setTitle("Tìm Kiếm Thuốc");
         stage.setScene(scene);
-        stage.show();
     }
 
     // ================== XÂY UI & GIỮ THAM CHIẾU ==================

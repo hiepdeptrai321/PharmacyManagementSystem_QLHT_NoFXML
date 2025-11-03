@@ -132,6 +132,5 @@ public class CapNhatGiaThuoc_GUI {
 
         stage.setTitle("Cập nhật giá thuốc");
         stage.setScene(scene);
-        stage.show();
     }
 }

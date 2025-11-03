@@ -53,7 +53,6 @@ public class DanhMucNhaCungCap_GUI extends Application {
         addStyles(scene);
         stage.setTitle("Danh mục nhà cung cấp");
         stage.setScene(scene);
-        stage.show();
     }
 
     // ================== UI cho test độc lập (không controller) ==================
@@ -80,13 +79,14 @@ public class DanhMucNhaCungCap_GUI extends Application {
         lbTitle.setLayoutX(10);
         lbTitle.setLayoutY(2);
         lbTitle.setPrefSize(397, 37);
+        lbTitle.setStyle("-fx-font-size: 36;");
 
         ImageView ivTitle = new ImageView(new Image(Objects.requireNonNull(
                 getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/supplier-icon-png-9.jpg")
         ).toExternalForm()));
         ivTitle.setFitHeight(47);
         ivTitle.setFitWidth(54);
-        ivTitle.setLayoutX(303);
+        ivTitle.setLayoutX(400);
         ivTitle.setLayoutY(-6);
         ivTitle.setPickOnBounds(true);
         ivTitle.setPreserveRatio(true);

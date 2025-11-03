@@ -2,11 +2,8 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKeHang
 
 import com.example.pharmacymanagementsystem_qlht.dao.KeHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KeHang;
-// Import file GUI mới
-import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKeHang.ThemKe_GUI;
 import javafx.application.Application;
-import javafx.fxml.FXML; // Giữ nguyên
-import javafx.scene.Parent;
+import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -17,24 +14,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ThemKe_Ctrl extends Application {
-    // *** THAY ĐỔI 1: Bỏ 'private' để GUI có thể bơm component vào ***
-    @FXML
+    // ĐÃ CHUYỂN SANG PUBLIC
     public Button btnHuy;
-
-    @FXML
     public Button btnThem;
-
-    @FXML
     public TextArea txtMoTa;
-
-    @FXML
     public TextField txtTenKe;
 
-    private KeHang_Dao keHangDao = new KeHang_Dao(); //
+    private KeHang_Dao keHangDao = new KeHang_Dao();
 
-
-    // HÀM NÀY GIỮ NGUYÊN 100%
-    @FXML
+    // Gán sự kiện, được gọi bởi file GUI
     public void initialize() {
         btnThem.setOnAction(e -> themKe());
         btnHuy.setOnAction(e -> btnHuyClick());
@@ -42,31 +30,24 @@ public class ThemKe_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        // *** THAY ĐỔI 2: Thay thế FXMLLoader ***
-        // Parent root = FXMLLoader.load(getClass().getResource(".../ThemKe.fxml")); //
+        // Thay đổi để gọi GUI mới
+        new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKeHang.ThemKe_GUI()
+                .showWithController(stage, this);
 
-        ThemKe_GUI gui = new ThemKe_GUI();
-        Parent root = gui.createContent(this); // 'this' là controller
-
-        // *** THAY ĐỔI 3: Gọi initialize() bằng tay ***
-        initialize();
-
-        // Phần còn lại giữ nguyên
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThemNhaCungCap.css").toExternalForm()); //
-        stage.setScene(scene);
+        // Cần thêm stage.show() nếu bạn chạy file này độc lập
+        stage.setTitle("Thêm kệ hàng");
         stage.show();
     }
 
-    // HÀM NÀY GIỮ NGUYÊN 100%
+    // Logic của bạn được giữ nguyên
     public void btnHuyClick(){
         Stage stage = (Stage) txtTenKe.getScene().getWindow();
         stage.close();
     }
 
-    // HÀM NÀY GIỮ NGUYÊN 100%
-    @FXML
+    // Logic của bạn được giữ nguyên
     void themKe() {
+        // Sinh mã tự động
         String maKe = keHangDao.generateNewMaKeHang();
         String tenKe = txtTenKe.getText().trim();
         String moTa = txtMoTa.getText().trim();
@@ -89,7 +70,7 @@ public class ThemKe_Ctrl extends Application {
         }
     }
 
-    // HÀM NÀY GIỮ NGUYÊN 100%
+    // Logic của bạn được giữ nguyên
     private void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type);
         alert.setHeaderText(null);
@@ -97,7 +78,7 @@ public class ThemKe_Ctrl extends Application {
         alert.showAndWait();
     }
 
-    // HÀM NÀY GIỮ NGUYÊN 100%
+    // Logic của bạn được giữ nguyên
     private void dongCuaSo() {
         Stage stage = (Stage) txtTenKe.getScene().getWindow();
         stage.close();

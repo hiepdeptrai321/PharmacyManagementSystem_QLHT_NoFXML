@@ -6,6 +6,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
 import com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_NhanVien_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -426,14 +427,29 @@ public class CuaSoChinh_NhanVien_Ctrl extends Application {
     //  Hàm xử lý sự kiện đăng xuất
     public void btnDangXuatClick(ActionEvent actionEvent) {
         try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/DangNhap_GUI.fxml")));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Đăng nhập hệ thống quản lý nhà thuốc");
-            stage.show();
-            // Đóng cửa sổ hiện tại
-            pnlChung.getScene().getWindow().hide();
+            // (tuỳ bạn) xoá session hiện tại
+            DangNhap_Ctrl.user = null;
+
+            // Mở màn Login TRƯỚC
+            DangNhap_Ctrl loginCtrl = new DangNhap_Ctrl();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Đăng nhập hệ thống quản lý nhà thuốc");
+            new DangNhap_GUI().showWithController(loginStage, loginCtrl);
+            loginStage.centerOnScreen();
+            loginStage.show(); // bắt buộc phải show
+
+            // Tìm & đóng cửa sổ hiện tại: ưu tiên lấy từ actionEvent,
+            // nếu null thì fallback lấy từ pnlChung (hoặc bất kỳ control nào của cửa sổ hiện tại)
+            javafx.stage.Window currentWindow = null;
+            if (actionEvent != null && actionEvent.getSource() instanceof javafx.scene.Node n) {
+                if (n.getScene() != null) currentWindow = n.getScene().getWindow();
+            }
+            if (currentWindow == null && pnlChung != null && pnlChung.getScene() != null) {
+                currentWindow = pnlChung.getScene().getWindow();
+            }
+            if (currentWindow instanceof Stage s) {
+                s.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

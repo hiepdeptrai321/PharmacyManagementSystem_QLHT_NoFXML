@@ -104,7 +104,6 @@ public class CuaSoChinh_NhanVien_GUI extends Application {
         addStyles(scene);
         stage.setTitle("Cửa sổ chính – Nhân viên");
         stage.setScene(scene);
-        stage.show();
     }
 
     // ===================== XÂY UI & GIỮ THAM CHIẾU CONTROL =====================
@@ -348,6 +347,7 @@ public class CuaSoChinh_NhanVien_GUI extends Application {
         HBox hbRole = new HBox();
         hbRole.setPrefSize(307, 35);
         Label lbRole = new Label("Vai trò:");
+        lbRole.setLayoutY(15);
         Pane paneRole = new Pane();
         paneRole.setId("paneLabelThongTin");
         paneRole.setPrefSize(191, 30);

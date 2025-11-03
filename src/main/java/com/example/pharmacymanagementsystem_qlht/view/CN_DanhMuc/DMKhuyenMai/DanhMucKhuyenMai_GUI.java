@@ -29,14 +29,15 @@ public class DanhMucKhuyenMai_GUI {
         Label lbTitle = new Label("Danh mục khuyến mãi");
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutY(2);
-        lbTitle.setPrefSize(279, 36);
+        lbTitle.setPrefSize(450, 36);
+        lbTitle.setStyle("-fx-font-size: 36;");
 
         ImageView imgDiscount = new ImageView(
                 new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/discounts.png")).toExternalForm())
         );
         imgDiscount.setFitHeight(35);
         imgDiscount.setFitWidth(38);
-        imgDiscount.setLayoutX(272);
+        imgDiscount.setLayoutX(400);
         imgDiscount.setLayoutY(4);
         imgDiscount.setPickOnBounds(true);
         imgDiscount.setPreserveRatio(true);
@@ -145,6 +146,5 @@ public class DanhMucKhuyenMai_GUI {
 
         stage.setTitle("Danh mục khuyến mãi");
         stage.setScene(scene);
-        stage.show();
     }
 }

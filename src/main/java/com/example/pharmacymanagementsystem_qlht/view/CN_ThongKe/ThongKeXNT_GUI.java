@@ -1,9 +1,13 @@
 package com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe;
 
+// Import Controller
+import com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe.ThongKeXNT_Ctrl;
+
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeTonKho;
 import com.example.pharmacymanagementsystem_qlht.model.ThuocHetHan;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -11,53 +15,47 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-/**
- * Lớp View (Thay thế cho FXML)
- * Lớp này chỉ chịu trách nhiệm khởi tạo và sắp xếp bố cục các thành phần giao diện.
- * Nó KHÔNG chứa logic nghiệp vụ hay xử lý sự kiện.
- * Nó cung cấp các thành phần (public) để Controller có thể truy cập và gắn logic vào.
- */
 public class ThongKeXNT_GUI {
 
-    // --- Khai báo public các thành phần để Controller có thể truy cập ---
+    // Bỏ hết các khai báo public ở đây
 
-    // Bảng Tồn kho
-    public TableView<ThongKeTonKho> tbTon = new TableView<>();
-    public TableColumn<ThongKeTonKho, Integer> ColTDK = new TableColumn<>("Tồn đầu kỳ");
-    public TableColumn<ThongKeTonKho, String> colDVT = new TableColumn<>("ĐVT");
-    public TableColumn<ThongKeTonKho, String> colMaThuoc = new TableColumn<>("Mã thuốc");
-    public TableColumn<ThongKeTonKho, Integer> colNTK = new TableColumn<>("Nhập trong kỳ");
-    public TableColumn<ThongKeTonKho, String> colTenThuoc = new TableColumn<>("Tên thuốc");
-    public TableColumn<ThongKeTonKho, Integer> colTCK = new TableColumn<>("Tồn cuối kỳ");
-    public TableColumn<ThongKeTonKho, Integer> colXTK = new TableColumn<>("Xuất trong kỳ");
+    // Sửa lại phương thức:
+    @SuppressWarnings("unchecked")
+    public void showWithController(Stage stage, ThongKeXNT_Ctrl ctrl) {
 
-    // Bảng Hết hạn
-    public TableView<ThuocHetHan> tbHetHan = new TableView<>();
-    public TableColumn<ThuocHetHan, String> colMaThuocHH = new TableColumn<>("Mã Thuốc");
-    public TableColumn<ThuocHetHan, LocalDate> colNgayHH = new TableColumn<>("Ngày hết hạn");
-    public TableColumn<ThuocHetHan, Integer> colSoLuong = new TableColumn<>("Số Lượng");
-    public TableColumn<ThuocHetHan, String> cotTenThuocHH = new TableColumn<>("Tên Thuốc");
+        // --- Tạo các thành phần giao diện (dưới dạng biến cục bộ) ---
+        // Bảng Tồn kho
+        TableView<ThongKeTonKho> tbTon = new TableView<>();
+        TableColumn<ThongKeTonKho, Integer> ColTDK = new TableColumn<>("Tồn đầu kỳ");
+        TableColumn<ThongKeTonKho, String> colDVT = new TableColumn<>("ĐVT");
+        TableColumn<ThongKeTonKho, String> colMaThuoc = new TableColumn<>("Mã thuốc");
+        TableColumn<ThongKeTonKho, Integer> colNTK = new TableColumn<>("Nhập trong kỳ");
+        TableColumn<ThongKeTonKho, String> colTenThuoc = new TableColumn<>("Tên thuốc");
+        TableColumn<ThongKeTonKho, Integer> colTCK = new TableColumn<>("Tồn cuối kỳ");
+        TableColumn<ThongKeTonKho, Integer> colXTK = new TableColumn<>("Xuất trong kỳ");
 
-    // Panel bên trái
-    public Button btnXuat = new Button("Xuất File 💾");
-    public ComboBox<String> cboThoiGian = new ComboBox<>();
-    public ComboBox<String> cboXuat = new ComboBox<>();
-    public DatePicker dateDen = new DatePicker();
-    public DatePicker dateTu = new DatePicker();
-    public TextField txtTimNhanh = new TextField();
-    public Label lblTu = new Label("Từ:");
-    public Label lblDen = new Label("Đến:");
+        // Bảng Hết hạn
+        TableView<ThuocHetHan> tbHetHan = new TableView<>();
+        TableColumn<ThuocHetHan, String> colMaThuocHH = new TableColumn<>("Mã Thuốc");
+        TableColumn<ThuocHetHan, LocalDate> colNgayHH = new TableColumn<>("Ngày hết hạn");
+        TableColumn<ThuocHetHan, Integer> colSoLuong = new TableColumn<>("Số Lượng");
+        TableColumn<ThuocHetHan, String> cotTenThuocHH = new TableColumn<>("Tên Thuốc");
 
-    private Pane root; // Pane gốc
+        // Panel bên trái
+        Button btnXuat = new Button("Xuất File 💾");
+        ComboBox<String> cboThoiGian = new ComboBox<>();
+        ComboBox<String> cboXuat = new ComboBox<>();
+        DatePicker dateDen = new DatePicker();
+        DatePicker dateTu = new DatePicker();
+        TextField txtTimNhanh = new TextField();
+        Label lblTu = new Label("Từ:");
+        Label lblDen = new Label("Đến:");
 
-    /**
-     * Phương thức chính để dựng giao diện, tương đương với việc tải FXML
-     * @return một Parent node chứa toàn bộ giao diện
-     */
-    public Parent createContent() {
         // --- Cấu hình các cột cho bảng ---
         // Bảng Tồn kho
         colMaThuoc.setPrefWidth(92.33);
@@ -176,7 +174,7 @@ public class ThongKeXNT_GUI {
         HBox mainHBox = new HBox(leftVBox, rightVBox);
 
         // --- Dựng Pane gốc ---
-        root = new Pane();
+        Pane root = new Pane();
         root.setPrefHeight(895.0);
         root.setPrefWidth(1646.0);
 
@@ -185,6 +183,45 @@ public class ThongKeXNT_GUI {
         mainHBox.setLayoutY(14.0);
         root.getChildren().add(mainHBox);
 
-        return root;
+        // --- BƯỚC 1: Tiêm vào Controller ---
+        // Bảng Tồn kho
+        ctrl.tbTon = (TableView<ThongKeTonKho>) tbTon;
+        ctrl.ColTDK = ColTDK;
+        ctrl.colDVT = colDVT;
+        ctrl.colMaThuoc = colMaThuoc;
+        ctrl.colNTK = colNTK;
+        ctrl.colTenThuoc = colTenThuoc;
+        ctrl.colTCK = colTCK;
+        ctrl.colXTK = colXTK;
+        // Bảng Hết hạn
+        ctrl.tbHetHan = (TableView<ThuocHetHan>) tbHetHan;
+        ctrl.colMaThuocHH = colMaThuocHH;
+        ctrl.colNgayHH = colNgayHH;
+        ctrl.colSoLuong = colSoLuong;
+        ctrl.cotTenThuocHH = cotTenThuocHH;
+        // Panel bên trái
+        ctrl.btnXuat = btnXuat;
+        ctrl.cboThoiGian = cboThoiGian;
+        ctrl.cboXuat = cboXuat;
+        ctrl.dateDen = dateDen;
+        ctrl.dateTu = dateTu;
+        ctrl.txtTimNhanh = txtTimNhanh;
+        ctrl.lblTu = lblTu;
+        ctrl.lblDen = lblDen;
+
+        // --- BƯỚC 2: Tạo Scene, gọi initialize, và hiển thị ---
+        Scene scene = new Scene(root);
+        try {
+            String cssPath = getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThongKeBanHang.css").toExternalForm();
+            scene.getStylesheets().add(cssPath);
+        } catch (Exception e) {
+            System.err.println("Không thể tải file CSS: " + e.getMessage());
+        }
+
+        // BƯỚC 3: Gọi initialize của Controller
+        ctrl.initialize();
+
+        stage.setTitle("Báo cáo Xuất - Nhập - Tồn");
+        stage.setScene(scene);
     }
 }

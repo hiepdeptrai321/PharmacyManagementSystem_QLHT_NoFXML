@@ -132,6 +132,5 @@ public class CapNhatSoLuongThuoc_GUI {
 
         stage.setTitle("Cập nhật số lượng thuốc");
         stage.setScene(scene);
-        stage.show();
     }
 }
