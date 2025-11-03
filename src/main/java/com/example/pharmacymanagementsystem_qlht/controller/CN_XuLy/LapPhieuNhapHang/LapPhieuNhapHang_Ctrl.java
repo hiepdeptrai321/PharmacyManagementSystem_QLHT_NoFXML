@@ -5,6 +5,7 @@ import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhaCung
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMNCC.ThemNhaCungCap_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuNhapHang.LapPhieuNhapHang_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,15 +21,16 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-public class LapPhieuNhapHang_Ctrl extends Application{
+public class LapPhieuNhapHang_Ctrl extends Application {
 
-//  1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
+    //  1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colSTT;
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colMaThuoc;
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colTenThuoc;
@@ -55,7 +57,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
     public ListView<String> listViewNhaCungCap;
     public ListView<ChiTietDonViTinh> listViewChiTietDonViTinh;
 
-//  2. KHAI BÁO BIẾN TOÀN CỤC
+    //  2. KHAI BÁO BIẾN TOÀN CỤC
     private ObservableList<ChiTietDonViTinh> allChiTietDonViTinh;
     private ObservableList<NhaCungCap> listNCC;
     private NhaCungCap ncc = new NhaCungCap();
@@ -67,10 +69,9 @@ public class LapPhieuNhapHang_Ctrl extends Application{
     private List<PhieuNhap> allPhieuNhaps = phieuNhapDao.selectAll();
 
 
-
-//  3. PHƯƠNG THỨC KHỞI TẠO
+    //  3. PHƯƠNG THỨC KHỞI TẠO
     public void initialize() {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             loadTable();
             taiDanhSachNCC();
 //          Khởi tạo mã lô hàng hiện tại từ DB
@@ -100,7 +101,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
         });
     }
 
-//  4. PHƯƠNG THỨC XỬ LÝ SỰ KIỆN VÀ HÀM HỖ TRỢ
+    //  4. PHƯƠNG THỨC XỬ LÝ SỰ KIỆN VÀ HÀM HỖ TRỢ
 //  4.1. Tải danh sách nhà cung cấp vào ComboBox
     public void taiDanhSachNCC() {
 
@@ -118,7 +119,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
         cbxNCC.setEditable(true);
     }
 
-//  4.2. Tìm kiếm nhà cung cấp trong ComboBox
+    //  4.2. Tìm kiếm nhà cung cấp trong ComboBox
     public void timKiemNhaCungCap() {
 
 //      Chỉnh style cho list view nhà cung cấp
@@ -199,7 +200,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
 
     }
 
-//  4.3. Thiết lập chức năng tìm kiếm chi tiết đơn vị tính
+    //  4.3. Thiết lập chức năng tìm kiếm chi tiết đơn vị tính
     public void timKiemDonViTinh() {
 
 //      Lấy tất cả chi tiết đơn vị tính từ cơ sở dữ liệu và chỉnh style cho list view Chi Tiết Đơn Vị Tính
@@ -250,24 +251,36 @@ public class LapPhieuNhapHang_Ctrl extends Application{
         });
     }
 
-//  4.4. Chuyển giao diện xử lý thêm thuốc
+    //  4.4. Chuyển giao diện xử lý thêm thuốc
     public void btnThemThuocClick(MouseEvent mouseEvent) {
         try {
             Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_XuLy/LapPhieuNhapHang/ThemThuoc_LapPhieuNhapHang_GUI.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            ThemThuoc_LapPhieuNhapHang_Ctrl ctrl = loader.getController();
+
+            // (tuỳ chọn) set owner & modality như dialog
+            if (mouseEvent.getSource() instanceof javafx.scene.Node node) {
+                stage.initOwner(node.getScene().getWindow());
+                stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            }
+
+            // ✅ Không dùng FXML: tạo GUI + Controller thuần Java
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuNhapHang.ThemThuoc_LapPhieuNhapHang_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang.ThemThuoc_LapPhieuNhapHang_Ctrl();
+
+            // truyền parent controller như trước
             ctrl.setParentCtrl(this);
 
-            stage.setScene(scene);
-            stage.show();
+            // hiển thị và gán toàn bộ control cho ctrl (giống showWithController ở form NCC)
+            gui.showWithController(stage, ctrl);
+
+            stage.setTitle("Thêm thuốc");
+            stage.setResizable(false);
+            stage.centerOnScreen();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-//  4.5. Thiết lập bảng nhập thuốc
+    //  4.5. Thiết lập bảng nhập thuốc
     public void loadTable() {
         colSTT.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(tblNhapThuoc.getItems().indexOf(cellData.getValue()) + 1)));
         colMaThuoc.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getChiTietDonViTinh().getThuoc().getMaThuoc()));
@@ -771,8 +784,8 @@ public class LapPhieuNhapHang_Ctrl extends Application{
 
             // Tính tiền hàng, chiết khấu, thuế và tổng
             double tienHang = giaNhap * soLuong;
-            double tienCK = tienHang * (ck/100);
-            double tienThue = (tienHang - tienCK) * (thue/100);
+            double tienCK = tienHang * (ck / 100);
+            double tienThue = (tienHang - tienCK) * (thue / 100);
             double tong = tienHang - tienCK + tienThue;
 
             VNDFormatter vndFormatter = new VNDFormatter();
@@ -783,7 +796,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
         tblNhapThuoc.setItems(listNhapThuoc);
     }
 
-//  4.6. Thiết lập sự kiện thêm chi tiết đơn vị tính vào bảng
+    //  4.6. Thiết lập sự kiện thêm chi tiết đơn vị tính vào bảng
     public void suKienThemChiTietDonViTinhVaoBang() {
         listViewChiTietDonViTinh.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -793,33 +806,33 @@ public class LapPhieuNhapHang_Ctrl extends Application{
                 listViewChiTietDonViTinh.setVisible(false);
 
 //                  Tạo 3 đối tượng con
-                    ChiTietDonViTinh ctdvt = new ChiTietDonViTinh();
-                    ChiTietPhieuNhap ctpn = new ChiTietPhieuNhap();
-                    Thuoc_SP_TheoLo tsptl = new Thuoc_SP_TheoLo();
+                ChiTietDonViTinh ctdvt = new ChiTietDonViTinh();
+                ChiTietPhieuNhap ctpn = new ChiTietPhieuNhap();
+                Thuoc_SP_TheoLo tsptl = new Thuoc_SP_TheoLo();
 
-                    maLoHienTai++;
-                    String maLH = String.format("LH%05d", maLoHienTai);
+                maLoHienTai++;
+                String maLH = String.format("LH%05d", maLoHienTai);
 
 //                  Gán thông tin vào từng đối tượng
-                    ctdvt.setDvt(chiTietDonViTinh.getDvt());
-                    ctdvt.setThuoc(chiTietDonViTinh.getThuoc());
+                ctdvt.setDvt(chiTietDonViTinh.getDvt());
+                ctdvt.setThuoc(chiTietDonViTinh.getThuoc());
 
-                    tsptl.setThuoc(chiTietDonViTinh.getThuoc());
-                    tsptl.setMaLH(maLH);
+                tsptl.setThuoc(chiTietDonViTinh.getThuoc());
+                tsptl.setMaLH(maLH);
 
-                    ctpn.setThuoc(chiTietDonViTinh.getThuoc());
-                    ctpn.setMaLH(maLH);
+                ctpn.setThuoc(chiTietDonViTinh.getThuoc());
+                ctpn.setMaLH(maLH);
 
 //                  Gộp vào 1 đối tượng model tổng hợp
-                    CTPN_TSPTL_CHTDVT newItem = new CTPN_TSPTL_CHTDVT();
-                    newItem.setChiTietDonViTinh(ctdvt);
-                    newItem.setChiTietPhieuNhap(ctpn);
-                    newItem.setChiTietSP_theoLo(tsptl);
+                CTPN_TSPTL_CHTDVT newItem = new CTPN_TSPTL_CHTDVT();
+                newItem.setChiTietDonViTinh(ctdvt);
+                newItem.setChiTietPhieuNhap(ctpn);
+                newItem.setChiTietSP_theoLo(tsptl);
 
 //                  Thêm vào danh sách chính
-                    listNhapThuoc.add(newItem);
-                    tblNhapThuoc.setItems(listNhapThuoc);
-                    tblNhapThuoc.refresh();
+                listNhapThuoc.add(newItem);
+                tblNhapThuoc.setItems(listNhapThuoc);
+                tblNhapThuoc.refresh();
 
                 Platform.runLater(() -> {
                     listViewChiTietDonViTinh.getSelectionModel().clearSelection();
@@ -830,7 +843,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
 
     }
 
-//  4.7. Thiết lập sự kiện tính tổng khi thêm một dòng mới vào bảng
+    //  4.7. Thiết lập sự kiện tính tổng khi thêm một dòng mới vào bảng
     public void suKienThemMotDongMoiVaoBang() {
         double tongGiaNhap = 0.0;
         double tongTienChietKhau = 0.0;
@@ -851,8 +864,8 @@ public class LapPhieuNhapHang_Ctrl extends Application{
 
 //          Tính tiền hàng, chiết khấu, thuế và tổng
             double tienHang = giaNhap * soLuong;
-            double tienCK = tienHang * (ck/100);
-            double tienThue = (tienHang - tienCK) * (thue/100);
+            double tienCK = tienHang * (ck / 100);
+            double tienThue = (tienHang - tienCK) * (thue / 100);
             double tong = tienHang - tienCK + tienThue;
 
             tongGiaNhap += tienHang;
@@ -870,7 +883,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
         txtThanhTien.setText(vndFormatter.format(thanhTien));
     }
 
-//  4.8. Lưu phiếu nhập
+    //  4.8. Lưu phiếu nhập
     public void btnLuu(MouseEvent mouseEvent) {
 
 //      Kiểm tra điều kiện trước khi lưu
@@ -1026,7 +1039,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
         }
     }
 
-//  4.9. Hàm xóa tất cả dữ liệu và reset form
+    //  4.9. Hàm xóa tất cả dữ liệu và reset form
     private void clearAll() {
         txtMaPhieuNhap.clear();
         txtGhiChu.clear();
@@ -1038,7 +1051,7 @@ public class LapPhieuNhapHang_Ctrl extends Application{
         suKienThemMotDongMoiVaoBang();
     }
 
-//  4.10. Hủy phiếu nhập
+    //  4.10. Hủy phiếu nhập
     public void btnHuy(MouseEvent mouseEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Xác nhận hủy");
@@ -1059,18 +1072,19 @@ public class LapPhieuNhapHang_Ctrl extends Application{
         }
     }
 
-//  4.11. Thêm nhà cung cấp mới
+    //  4.11. Thêm nhà cung cấp mới
     public void btnThemNCCClick(MouseEvent mouseEvent) {
         try {
             Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMNCC/ThemNhaCungCap_GUI.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            ThemNhaCungCap_Ctrl ctrl = loader.getController();
-            ctrl.setLapPhieuNhapHang_Ctrl(this);
 
-            stage.setScene(scene);
-            stage.show();
+            // ✅ Không dùng FXML, gọi UI thuần Java:
+            ThemNhaCungCap_GUI gui = new ThemNhaCungCap_GUI();
+            ThemNhaCungCap_Ctrl ctrl = new ThemNhaCungCap_Ctrl();
+
+            gui.showWithController(stage, ctrl);
+
+            // Set reference tới LapPhieuNhapHang_Ctrl nếu cần
+            ctrl.setLapPhieuNhapHang_Ctrl(this);
         } catch (Exception e) {
             e.printStackTrace();
         }

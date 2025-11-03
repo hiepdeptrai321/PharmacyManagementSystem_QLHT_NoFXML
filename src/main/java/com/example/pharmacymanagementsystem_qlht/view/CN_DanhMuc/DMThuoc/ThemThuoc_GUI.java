@@ -77,7 +77,6 @@ public class ThemThuoc_GUI {
         addStyles(scene);
         stage.setScene(scene);
         stage.setTitle("Thêm thuốc");
-        stage.show();
     }
 
     /** Build UI tương đương FXML */

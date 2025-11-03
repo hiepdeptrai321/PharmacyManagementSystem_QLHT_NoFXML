@@ -5,11 +5,13 @@ import com.example.pharmacymanagementsystem_qlht.model.CTPN_TSPTL_CHTDVT;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietDonViTinh;
 import com.example.pharmacymanagementsystem_qlht.model.NhaCungCap;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -123,8 +125,13 @@ public class LapPhieuNhapHang_GUI extends Application {
         v.pnThemNCC.setLayoutX(286);
         v.pnThemNCC.setLayoutY(42);
         v.pnThemNCC.setPrefSize(30, 30);
+        Rectangle clip = new Rectangle(30, 30);
+        clip.setArcWidth(10);   // 10px radius → arcWidth = radius * 2
+        clip.setArcHeight(10);
+        v.pnThemNCC.setClip(clip);
         v.pnThemNCC.getStyleClass().add("btnThem");
         Label lblAddNCC = new Label("✚");
+        lblAddNCC.setAlignment(Pos.CENTER);
         lblAddNCC.setId("btnThem");
         lblAddNCC.setPrefSize(30, 30);
         lblAddNCC.setFont(Font.font(13));
@@ -158,6 +165,7 @@ public class LapPhieuNhapHang_GUI extends Application {
         lbThemThuocTitle.setLayoutY(15);
         lbThemThuocTitle.setFont(Font.font(17));
 
+
         v.txtTimKiemChiTietDonViTinh = new TextField();
         v.txtTimKiemChiTietDonViTinh.setLayoutX(688);
         v.txtTimKiemChiTietDonViTinh.setLayoutY(42);
@@ -174,8 +182,13 @@ public class LapPhieuNhapHang_GUI extends Application {
         pnThemThuoc.setLayoutX(1004);
         pnThemThuoc.setLayoutY(42);
         pnThemThuoc.setPrefSize(30, 30);
+        Rectangle clip2 = new Rectangle(30, 30);
+        clip2.setArcWidth(10);   // 10px radius → arcWidth = radius * 2
+        clip2.setArcHeight(10);
+        pnThemThuoc.setClip(clip2);
         pnThemThuoc.getStyleClass().add("btnThem");
         v.lblThemThuoc = new Label("✚");
+        v.lblThemThuoc.setAlignment(Pos.CENTER);
         v.lblThemThuoc.setId("btnThem");
         v.lblThemThuoc.setPrefSize(30, 30);
         v.lblThemThuoc.setFont(Font.font(13));
@@ -260,7 +273,7 @@ public class LapPhieuNhapHang_GUI extends Application {
         infoPane.getStyleClass().add("info-pane");
         infoPane.getStylesheets().add(req("/com/example/pharmacymanagementsystem_qlht/css/LapHoaDon.css"));
         infoPane.setLayoutX(43);
-        infoPane.setLayoutY(20);
+        infoPane.setLayoutY(65);
         infoPane.setPrefSize(280, 803);
 
         Label lbInfoTitle = new Label("Thông tin phiếu");

@@ -174,6 +174,7 @@ public class DanhMucThuoc_Ctrl extends Application {
 
             // 1) build UI + inject + initialize
             gui.showWithController(dialog, ctrl);
+            dialog.showAndWait();
             // 2) set parent để refresh bảng sau khi lưu/xóa
             ctrl.setParent(this);
             // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
