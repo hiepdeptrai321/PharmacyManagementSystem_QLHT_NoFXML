@@ -5,6 +5,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.PhieuDoiHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuTraHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.HoaDon;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon.ChiTietHoaDon_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon.TKHoaDon_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -55,7 +56,9 @@ public class TimKiemHoaDon_Ctrl extends Application {
     private PhieuTraHang_Dao phieuTraHangDao = new PhieuTraHang_Dao();
     @Override
     public void start(Stage stage) throws Exception {
-        new TKHoaDon_GUI().start(stage);
+        TKHoaDon_GUI gui = new TKHoaDon_GUI();
+        gui.showWithController(stage, this);
+        initialize();
     }
     public void initialize() {
         // tiêu chí tìm kiếm
@@ -169,7 +172,7 @@ public class TimKiemHoaDon_Ctrl extends Application {
             return new SimpleIntegerProperty(soLuong).asObject();
         });
         colChiTiet.setCellFactory(col -> new TableCell<HoaDon, String>() {
-            private final Button btn = new Button("Chi tiết");
+            private final Button btn = new Button("Xem");
             {
                 btn.setOnAction(event -> {
                     HoaDon hd = getTableView().getItems().get(getIndex());
@@ -191,8 +194,8 @@ public class TimKiemHoaDon_Ctrl extends Application {
         System.out.println("Xem chi tiết hóa đơn: " + hoaDon.getMaHD());
         try {
             // 1) Tạo GUI + Controller thuần Java
-            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon.ChiTietHoaDon_GUI();
-            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl();
+            var gui  = new ChiTietHoaDon_GUI();
+            var ctrl = new ChiTietHoaDon_Ctrl();
             Stage dialog = new Stage();
             dialog.initOwner(btnTimKiem.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
@@ -200,7 +203,7 @@ public class TimKiemHoaDon_Ctrl extends Application {
             gui.showWithController(dialog, ctrl);
             ctrl.setHoaDon(hoaDon);
              // GUI của bạn tự build Scene bên trong
-            dialog.showAndWait();
+            //dialog.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }

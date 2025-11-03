@@ -88,12 +88,14 @@ public class ChiTietHoaDon_Ctrl extends Application {
     private final Map<String, String> tenSpCache = new HashMap<>();
     @Override
     public void start(Stage stage) throws Exception {
-        ChiTietHoaDon_GUI.showWithController(stage, this);
+        ChiTietHoaDon_GUI gui = new ChiTietHoaDon_GUI();
+        gui.showWithController(stage, this);
+        initialize();
     }
 
     public void initialize() {
-        if (btnDong != null) btnDong.setOnAction(e -> ((Stage) btnDong.getScene().getWindow()).close());
-        if (btnInHoaDon != null) btnInHoaDon.setOnAction(e -> xuLyXuatPDF(e));
+        btnDong.setOnAction(e -> ((Stage) btnDong.getScene().getWindow()).close());
+        btnInHoaDon.setOnAction(e -> xuLyXuatPDF());
         Platform.runLater(()->{
             Stage dialog = (Stage) lblMaHoaDonValue.getScene().getWindow();
             dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
@@ -334,7 +336,7 @@ public class ChiTietHoaDon_Ctrl extends Application {
 
 
 
-    private void xuLyXuatPDF(ActionEvent event) {
+    public void xuLyXuatPDF() {
         // 1. Kiểm tra dữ liệu
         if (hoaDon == null || tblChiTietHoaDon.getItems() == null || tblChiTietHoaDon.getItems().isEmpty()) {
             hien(INFORMATION, "Không có dữ liệu", "Không có hóa đơn hoặc chi tiết hóa đơn để in.");

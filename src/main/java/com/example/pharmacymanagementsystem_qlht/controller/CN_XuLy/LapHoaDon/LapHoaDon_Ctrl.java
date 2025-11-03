@@ -125,10 +125,12 @@ public class LapHoaDon_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        LapHoaDon_GUI.showWithController(stage, this);
+        LapHoaDon_GUI gui = new LapHoaDon_GUI();
+        gui.showWithController(stage, this);
     }
 
     public void initialize() {
+        Platform.runLater(() -> txtTimThuoc.getParent().requestFocus());
         VND.setMaximumFractionDigits(0);
         dpNgayLap.setValue(LocalDate.now());
         xuLyPhuongThucTT();

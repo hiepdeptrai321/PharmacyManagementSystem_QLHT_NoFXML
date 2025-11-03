@@ -5,6 +5,7 @@ import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.TraHangItem;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuTra.LapPhieuTra_GUI;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,8 +31,8 @@ import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.WARNING;
 
 public class LapPhieuTraHang_Ctrl extends Application {
-    public TextField txtTimHoaDon;
-    public Button btnTimHoaDon;
+
+
     public TableView<ChiTietHoaDon> tblSanPhamHoaDon;
     public TableColumn<ChiTietHoaDon, String> colSTTGoc;
     public TableColumn<ChiTietHoaDon, String> colTenSPGoc;
@@ -51,6 +52,11 @@ public class LapPhieuTraHang_Ctrl extends Application {
     public Label lblVAT;
     public Label lblSoTienTraLai;
     public TextArea txtGhiChu;
+    public TextField txtTimHoaDon;
+    public Button btnTimHoaDon;
+    public Button btnTraHang;
+    public Button btnHuy;
+
 
 
 
@@ -79,10 +85,12 @@ public class LapPhieuTraHang_Ctrl extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         LapPhieuTra_GUI gui = new LapPhieuTra_GUI();
-        gui.start(stage);
+        gui.showWithController(stage, this);
     }
     public void initialize(URL location, ResourceBundle resources) {
         dpNgayLapPhieu.setValue(LocalDate.now());
+        txtTimHoaDon.setOnAction(e -> btnTimHoaDon.fire());
+        Platform.runLater(() -> txtTimHoaDon.getParent().requestFocus());
         if (tblSanPhamHoaDon != null) {
             tblSanPhamHoaDon.setItems(dsGoc);
             tblSanPhamHoaDon.setPlaceholder(new Label("Chưa có sản phẩm gốc"));
@@ -412,7 +420,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
     // ========== Nghiệp vụ ==========
 
-    public void xuLyTimHDGoc(ActionEvent actionEvent) {
+    public void xuLyTimHDGoc() {
         String ma = txtTimHoaDon.getText().trim();
         if (ma.isBlank()) {
             thongBaoTuyChinh(WARNING, "Thiếu thông tin", "Vui lòng nhập mã hóa đơn.");
@@ -502,10 +510,9 @@ public class LapPhieuTraHang_Ctrl extends Application {
         }
     }
 
-    public void xuLyTraHangVaIn(ActionEvent actionEvent) {
-    }
 
-    public void xuLyTraHang(ActionEvent actionEvent) {
+
+    public void xuLyTraHang() {
     }
     private void capNhatTienTra() {
         double tongTienTraHang = 0;
@@ -556,7 +563,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
         alert.showAndWait();
     }
 
-    public void xuLyHuy(ActionEvent actionEvent) {
+    public void xuLyHuy() {
         dsGoc.clear();
         dsTra.clear();
         lblMaHDGoc.setText("");
@@ -567,6 +574,5 @@ public class LapPhieuTraHang_Ctrl extends Application {
         txtTimHoaDon.clear();
         tblSanPhamHoaDon.getItems().clear();
         tblChiTietTraHang.getItems().clear();
-        txtTimHoaDon.requestFocus();
     }
 }
