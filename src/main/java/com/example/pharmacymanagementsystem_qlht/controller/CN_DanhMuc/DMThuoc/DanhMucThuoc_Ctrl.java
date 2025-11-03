@@ -5,6 +5,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.KhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.DanhMucThuoc_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -45,10 +46,7 @@ public class DanhMucThuoc_Ctrl extends Application {
 //  2. Khởi tạo
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMThuoc/DanhMucThuoc_GUI.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        new DanhMucThuoc_GUI().showWithController(stage, this);
     }
 
     public void initialize() {

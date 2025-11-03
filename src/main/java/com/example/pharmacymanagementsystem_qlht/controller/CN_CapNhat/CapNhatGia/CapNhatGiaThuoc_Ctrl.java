@@ -60,9 +60,13 @@ public class CapNhatGiaThuoc_Ctrl extends Application {
         List<Thuoc_SanPham> list = thuocDao.selectAllSLTheoDonViCoBan_ChiTietDVT_Ver2();
         ObservableList<Thuoc_SanPham> data = FXCollections.observableArrayList(list);
 
-        colSTT.setCellValueFactory(cellData ->
-                new SimpleStringProperty(String.valueOf(tbThuoc.getItems().indexOf(cellData.getValue()) + 1))
-        );
+        colSTT.setCellFactory(col -> new TableCell<>() {
+            @Override protected void updateItem(String it, boolean empty) {
+                super.updateItem(it, empty);
+                setText(empty ? null : Integer.toString(getIndex() + 1));
+                setGraphic(null);
+            }
+        });
         colMaThuoc.setCellValueFactory(new PropertyValueFactory<>("maThuoc"));
         colTenThuoc.setCellValueFactory(new PropertyValueFactory<>("tenThuoc"));
         NumberFormat vnFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
