@@ -34,14 +34,14 @@ public class DanhMucKhachHang_GUI {
         lbTitle.setLayoutY(2.0);
         lbTitle.setPrefHeight(36.0);
         lbTitle.setPrefWidth(306.0);
-        lbTitle.setFont(Font.font(48.0));
+        lbTitle.setFont(Font.font(36.0));
 
         ImageView imgTitle = new ImageView(
                 new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/three_16725211.png")).toExternalForm())
         );
         imgTitle.setFitHeight(37.0);
         imgTitle.setFitWidth(46.0);
-        imgTitle.setLayoutX(273.0);
+        imgTitle.setLayoutX(350.0);
         imgTitle.setLayoutY(1.0);
         imgTitle.setPickOnBounds(true);
         imgTitle.setPreserveRatio(true);
@@ -155,6 +155,5 @@ public class DanhMucKhachHang_GUI {
 
         stage.setTitle("Danh mục khách hàng");
         stage.setScene(scene);
-        stage.show();
     }
 }

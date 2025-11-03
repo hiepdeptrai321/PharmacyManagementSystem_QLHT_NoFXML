@@ -84,6 +84,7 @@ public class CuaSoChinh_QuanLy_GUI {
         v.miDMKhuyenMai.setOnAction(ctrl::danhMucKhuyenMai);
         v.miDMNCC.setOnAction(ctrl::danhMucNhaCungCap);
         v.miDMNhomDL.setOnAction(ctrl::danhMucNhomDuocLy);
+        v.miDMKhachHang.setOnAction(ctrl::danhMucKhachHang);
 
         // Menu CẬP NHẬT
         v.miCapNhatGia.setOnAction(ctrl::CapNhatGiaBan);
@@ -165,8 +166,9 @@ public class CuaSoChinh_QuanLy_GUI {
         v.miDMKhuyenMai = mi("Danh mục khuyến mãi");
         v.miDMNCC       = mi("Danh mục nhà cung cấp");
         v.miDMNhomDL    = mi("Danh mục nhóm dược lý");
+        v.miDMKhachHang = mi("Danh mục khách hàng");
         v.menuDanhMuc.getItems().addAll(
-                v.miDMThuoc, v.miDMNhanVien, v.miDMKeHang, v.miDMKhuyenMai, v.miDMNCC, v.miDMNhomDL
+                v.miDMThuoc, v.miDMNhanVien, v.miDMKeHang, v.miDMKhuyenMai, v.miDMNCC, v.miDMNhomDL, v.miDMKhachHang
         );
         v.menuDanhMuc.getStyleClass().add("m-danhmuc");
 
@@ -349,7 +351,7 @@ public class CuaSoChinh_QuanLy_GUI {
         v.paneMainTenSD.getChildren().add(v.txtNguoiDung);
 
         // gom tất cả
-        root.getChildren().addAll(menuBar, v.pnlChung, v.logo, paneMainThoiGian, v.pnlThongTin, v.paneMainTenSD);
+        root.getChildren().addAll(v.pnlChung, v.logo, v.pnlThongTin, v.paneMainTenSD, menuBar, paneMainThoiGian);
         AnchorPane.setLeftAnchor(menuBar, 0.0); AnchorPane.setRightAnchor(menuBar, 0.0);
         AnchorPane.setLeftAnchor(v.pnlChung, 0.0); AnchorPane.setRightAnchor(v.pnlChung, 0.0);
 
@@ -369,7 +371,7 @@ public class CuaSoChinh_QuanLy_GUI {
 
         // các MenuItem cần gắn handler
         MenuItem miTKHoaDon, miTKPhieuNhap, miTKPhieuDoi, miTKPhieuTra, miTKPhieuDat, miTKNCC, miTKHoatDong;
-        MenuItem miDMThuoc, miDMNhanVien, miDMKeHang, miDMKhuyenMai, miDMNCC, miDMNhomDL;
+        MenuItem miDMThuoc, miDMNhanVien, miDMKeHang, miDMKhuyenMai, miDMNCC, miDMNhomDL, miDMKhachHang;
         MenuItem miTKDoanhThu, miTKXNT;
         MenuItem miTimThuoc, miTimKhachHang;
         MenuItem miLapHoaDon, miLapPhieuDoi, miLapPhieuTra, miLapPhieuDatHang, miNhapHang;

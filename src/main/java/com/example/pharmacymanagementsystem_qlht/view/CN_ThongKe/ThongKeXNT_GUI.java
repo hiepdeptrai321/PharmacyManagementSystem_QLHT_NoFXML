@@ -223,6 +223,5 @@ public class ThongKeXNT_GUI {
 
         stage.setTitle("Báo cáo Xuất - Nhập - Tồn");
         stage.setScene(scene);
-        stage.show();
     }
 }

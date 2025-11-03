@@ -227,7 +227,6 @@ public class ThongKeBanHang_GUI {
         ctrl.initialize();
 
         stage.setScene(scene);
-        stage.show();
     }
 
     // Hàm trợ giúp (Giữ nguyên)

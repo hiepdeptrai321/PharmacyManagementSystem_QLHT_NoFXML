@@ -173,6 +173,5 @@ public class TimKiemNCC_GUI {
 
         stage.setTitle("Tìm kiếm nhà cung cấp");
         stage.setScene(scene);
-        stage.show();
     }
 }

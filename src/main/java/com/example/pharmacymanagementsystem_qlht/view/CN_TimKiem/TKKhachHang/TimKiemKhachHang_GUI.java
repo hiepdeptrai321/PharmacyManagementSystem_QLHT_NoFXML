@@ -178,6 +178,5 @@ public class TimKiemKhachHang_GUI {
 
         stage.setTitle("Tìm kiếm khách hàng"); // Lấy title từ logic
         stage.setScene(scene);
-        stage.show();
     }
 }

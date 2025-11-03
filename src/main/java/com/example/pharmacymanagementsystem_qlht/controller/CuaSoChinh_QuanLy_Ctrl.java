@@ -376,11 +376,11 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
                 new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhanVien.DanhMucNhanVien_Ctrl());
     }
 
-//    public void danhMucKhachHang(ActionEvent actionEvent) {
-//        loadViewEmbedded(2, "DM_KH",
-//                new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc..DanhMucKhachHang_GUI(),
-//                new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.DanhMucKhachHang_Ctrl());
-//    }
+    public void danhMucKhachHang(ActionEvent actionEvent) {
+        loadViewEmbedded(2, "DM_KH",
+                new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.DanhMucKhachHang_GUI(),
+                new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.DanhMucKhachHang_Ctrl());
+    }
 
     public void danhMucKeHang(ActionEvent actionEvent) {
         loadViewEmbedded(2, "DM_KE",
