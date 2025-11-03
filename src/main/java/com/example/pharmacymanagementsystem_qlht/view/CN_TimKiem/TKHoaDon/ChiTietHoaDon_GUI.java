@@ -21,7 +21,6 @@ public class ChiTietHoaDon_GUI extends Application {
 
         stage.setScene(scene);
         stage.setTitle("Chi tiết hóa đơn");
-        stage.show();
     }
 
     private static Pane buildPane(ChiTietHoaDon_Ctrl ctrl) {

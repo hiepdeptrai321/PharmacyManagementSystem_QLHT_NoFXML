@@ -78,7 +78,6 @@ public class LapPhieuNhapHang_GUI extends Application {
         addStyles(scene);
         stage.setTitle("Lập phiếu nhập hàng");
         stage.setScene(scene);
-        stage.show();
     }
 
     // ================== XÂY UI & GIỮ THAM CHIẾU ==================

@@ -75,7 +75,6 @@ public class DanhMucThuoc_GUI extends Application {
         addStyles(scene);
         stage.setTitle("Danh mục thuốc");
         stage.setScene(scene);
-        stage.show();
     }
 
     // ================== UI Builder ==================
@@ -94,13 +93,14 @@ public class DanhMucThuoc_GUI extends Application {
         lbTitle.setLayoutX(12);
         lbTitle.setLayoutY(2);
         lbTitle.setPrefSize(269, 36);
+        lbTitle.setStyle("-fx-font-size: 36;");
 
         ImageView icon = new ImageView(new Image(Objects.requireNonNull(
                 getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/pills-3941.png")
         ).toExternalForm()));
         icon.setFitHeight(38);
         icon.setFitWidth(36);
-        icon.setLayoutX(211);
+        icon.setLayoutX(300);
         icon.setLayoutY(3);
         icon.setPreserveRatio(true);
         icon.setPickOnBounds(true);

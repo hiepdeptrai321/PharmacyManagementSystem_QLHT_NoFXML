@@ -214,7 +214,6 @@ public class TKPhieuDoiHang_GUI {
         Scene scene = new Scene(mainPane);
         stage.setScene(scene);
         stage.setTitle("Tìm kiếm phiếu đổi hàng");
-        stage.show();
 
         // Liên kết controller
         ctrl.tblPD = this.tblPD;

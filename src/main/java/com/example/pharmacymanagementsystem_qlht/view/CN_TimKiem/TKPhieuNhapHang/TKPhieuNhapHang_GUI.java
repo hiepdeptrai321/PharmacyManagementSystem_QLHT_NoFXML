@@ -64,7 +64,6 @@ public class TKPhieuNhapHang_GUI extends Application {
         addStyles(scene);
         stage.setTitle("Tìm kiếm phiếu nhập hàng");
         stage.setScene(scene);
-        stage.show();
     }
 
     // ================== XÂY UI & GIỮ THAM CHIẾU ==================

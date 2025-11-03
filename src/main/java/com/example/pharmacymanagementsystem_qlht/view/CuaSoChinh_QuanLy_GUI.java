@@ -25,49 +25,87 @@ public class CuaSoChinh_QuanLy_GUI {
     public void showWithController(Stage stage, CuaSoChinh_QuanLy_Ctrl ctrl) {
         ViewRefs v = buildUIForController();
 
-        // inject controls sang controller (khớp tên fx:id cũ)
+        // 1) WIRE: inject tất cả control cần dùng trong controller
+        ctrlRef = ctrl; // lưu reference controller nếu cần
         ctrl.pnlChung = v.pnlChung;
+
         ctrl.menuTimKiem = v.menuTimKiem;
         ctrl.menuDanhMuc = v.menuDanhMuc;
         ctrl.menuCapNhat = v.menuCapNhat;
         ctrl.menuThongKe = v.menuThongKe;
-        ctrl.menuXuLy = v.menuXuLy;
-        ctrl.txtNguoiDung = v.txtNguoiDung;
+        ctrl.menuXuLy   = v.menuXuLy;
+
+        ctrl.txtNguoiDung    = v.txtNguoiDung;
         ctrl.txtNgayThangNam = v.txtNgayThangNam;
 
-        ctrl.tblThuocHetHan = v.tblThuocHetHan;
-        ctrl.colMaThuocHetHan = v.colMaThuocHetHan;
-        ctrl.colLoHangHetHan = v.colLoHangHetHan;
-        ctrl.colHSDHetHan = v.colHSDHetHan;
+        ctrl.tblThuocHetHan     = v.tblThuocHetHan;
+        ctrl.colMaThuocHetHan   = v.colMaThuocHetHan;
+        ctrl.colLoHangHetHan    = v.colLoHangHetHan;
+        ctrl.colHSDHetHan       = v.colHSDHetHan;
 
-        ctrl.tblThuocSapHetHan = v.tblThuocSapHetHan;
-        ctrl.colMaThuocSapHetHan = v.colMaThuocSapHetHan;
-        ctrl.colLoHangSapHetHan = v.colLoHangSapHetHan;
-        ctrl.colHSDSapHetHan = v.colHSDSapHetHan;
+        ctrl.tblThuocSapHetHan    = v.tblThuocSapHetHan;
+        ctrl.colMaThuocSapHetHan  = v.colMaThuocSapHetHan;
+        ctrl.colLoHangSapHetHan   = v.colLoHangSapHetHan;
+        ctrl.colHSDSapHetHan      = v.colHSDSapHetHan;
 
-        ctrl.lbl_SoLuongHangHetHan = v.lbl_SoLuongHangHetHan;
+        ctrl.lbl_SoLuongHangHetHan    = v.lbl_SoLuongHangHetHan;
         ctrl.lbl_SoLuongHangSapHetHan = v.lbl_SoLuongHangSapHetHan;
 
         ctrl.chartDoanhThuThangNay = v.chartDoanhThuThangNay;
         ctrl.lblDoanhThuThangTruoc = v.lblDoanhThuThangTruoc;
-        ctrl.lblDoanhThuThangNay = v.lblDoanhThuThangNay;
-        ctrl.lblHoaDonThangTruoc = v.lblHoaDonThangTruoc;
-        ctrl.lblHoaDonThangNay = v.lblHoaDonThangNay;
+        ctrl.lblDoanhThuThangNay   = v.lblDoanhThuThangNay;
+        ctrl.lblHoaDonThangTruoc   = v.lblHoaDonThangTruoc;
+        ctrl.lblHoaDonThangNay     = v.lblHoaDonThangNay;
 
         ctrl.pnlThongTin = v.pnlThongTin;
-        ctrl.lblVaiTro = v.lblVaiTro;
+        ctrl.lblVaiTro   = v.lblVaiTro;
+        // gán pnlNguoiDung = panel tên người dùng (panel bạn đang click)
+        ctrl.pnlNguoiDung = v.paneMainTenSD;
 
-        // handler sự kiện menu/logo/panel người dùng (gọi qua controller)
+        // 2) Gắn handler UI -> controller (sau khi có controller thật)
         v.logo.setOnMouseClicked(ctrl::AnhChuyenTrangChu);
         v.paneMainTenSD.setOnMouseClicked(ctrl::pnlNguoiDungClick);
 
-        // gọi initialize() thủ công vì không dùng FXML
-        try { ctrl.initialize(); } catch (Exception ignored) {}
+        // Menu TÌM KIẾM
+        v.miTKHoaDon.setOnAction(ctrl::timKiemHoaDon);
+        v.miTKPhieuNhap.setOnAction(ctrl::timKiemPhieuNhap);
+        v.miTKPhieuDoi.setOnAction(ctrl::timKiemPhieuDoiHang);
+        v.miTKPhieuTra.setOnAction(ctrl::timKiemPhieuTraHang);
+        v.miTKPhieuDat.setOnAction(ctrl::timKiemPhieuDatHang);
+        v.miTKNCC.setOnAction(ctrl::timKiemNhaCungCap);
+        v.miTimThuoc.setOnAction(ctrl::timKiemThuoc);
+        v.miTimKhachHang.setOnAction(ctrl::timKiemKhachHang);
+        v.miTKHoatDong.setOnAction(ctrl::timKiemHoatDong);
 
+        // Menu DANH MỤC
+        v.miDMThuoc.setOnAction(ctrl::danhMucThuoc);
+        v.miDMNhanVien.setOnAction(ctrl::danhMucNhanVien);
+        v.miDMKeHang.setOnAction(ctrl::danhMucKeHang);
+        v.miDMKhuyenMai.setOnAction(ctrl::danhMucKhuyenMai);
+        v.miDMNCC.setOnAction(ctrl::danhMucNhaCungCap);
+        v.miDMNhomDL.setOnAction(ctrl::danhMucNhomDuocLy);
+
+        // Menu CẬP NHẬT
+        v.miCapNhatGia.setOnAction(ctrl::CapNhatGiaBan);
+        v.miCapNhatTonKho.setOnAction(ctrl::capNhatTonKho);
+        v.miCapNhatKM.setOnAction(ctrl::capNhatKhuyenMai);
+
+        // Menu THỐNG KÊ
+        v.miTKDoanhThu.setOnAction(ctrl::thongKeDoanhThu);
+        v.miTKXNT.setOnAction(ctrl::thongKeXuatNhap);
+
+        // Menu XỬ LÝ
+        v.miLapHoaDon.setOnAction(ctrl::lapHoaDon);
+        v.miLapPhieuDoi.setOnAction(ctrl::lapPhieuDoiHang);
+        v.miLapPhieuTra.setOnAction(ctrl::lapPhieuTraHang);
+        v.miLapPhieuDatHang.setOnAction(ctrl::lapPhieuDatHang);
+        v.miNhapHang.setOnAction(ctrl::nhapHang);
+
+        // 3) Tạo Scene & CSS TRƯỚC
         Scene scene = new Scene(v.root, 1646, 1029);
         addStyles(scene, "/com/example/pharmacymanagementsystem_qlht/css/TrangChu.css");
 
-        // accelerators giống FXML
+        // Accelerators (phím tắt)
         v.miTimThuoc.setAccelerator(new KeyCodeCombination(KeyCode.F6));
         v.miTimKhachHang.setAccelerator(new KeyCodeCombination(KeyCode.F5));
         v.miLapHoaDon.setAccelerator(new KeyCodeCombination(KeyCode.F2));
@@ -78,10 +116,16 @@ public class CuaSoChinh_QuanLy_GUI {
 
         stage.setTitle("Trang chủ - Quản lý");
         stage.setScene(scene);
-        stage.show();
+
+        // 4) Đánh dấu đã wire + gọi initialize SAU KHI scene đã gán
+        ctrl.markViewWired();
+        ctrl.initialize();
+
+        // 5) (tuỳ bạn) show tại caller hoặc bật ở đây
+        // stage.show();
     }
 
-    // ================== UI Builder (giống pattern DanhMucNhaCungCap_GUI) ==================
+    // ================== UI Builder ==================
     private ViewRefs buildUIForController() {
         ViewRefs v = new ViewRefs();
 
@@ -94,87 +138,70 @@ public class CuaSoChinh_QuanLy_GUI {
         AnchorPane.setRightAnchor(menuBar, 0.0);
         menuBar.setLayoutY(86);
         menuBar.setPrefSize(1646, 50);
-        menuBar.setId("menuBar");                 // để CSS target riêng bar này
-        menuBar.getStyleClass().add("menu-bar");  // dùng selector chuẩn .menu-bar
+        menuBar.setId("menuBar");
+        menuBar.getStyleClass().add("menu-bar");
 
-// === Menus ===
+        // === Menus ===
         v.menuTimKiem = new Menu("⌕ Tìm kiếm");
-        {
-            MenuItem miTKHoaDon    = mi("Tìm hóa đơn",          e -> v.ctrl.timKiemHoaDon(e));
-            MenuItem miTKPhieuNhap = mi("Tìm phiếu nhập hàng",  e -> v.ctrl.timKiemPhieuNhap(e));
-            MenuItem miTKPhieuDoi  = mi("Tìm phiếu đổi hàng",   e -> v.ctrl.timKiemPhieuDoiHang(e));
-            MenuItem miTKPhieuTra  = mi("Tìm phiếu trả hàng",   e -> v.ctrl.timKiemPhieuTraHang(e));
-            MenuItem miTKPhieuDat  = v.miLapPhieuDatHangProxy = mi("Tìm phiếu đặt hàng", e -> v.ctrl.timKiemPhieuDatHang(e));
-            MenuItem miTKNCC       = mi("Tìm nhà cung cấp",     e -> v.ctrl.timKiemNhaCungCap(e));
-            v.miTimThuoc           = mi("Tìm thuốc",            e -> v.ctrl.timKiemThuoc(e));
-            v.miTimKhachHang       = mi("Tìm khách hàng",       e -> v.ctrl.timKiemKhachHang(e));
-            MenuItem miTKHoatDong  = mi("Tim kiếm hoạt động",   e -> v.ctrl.timKiemHoatDong(e));
-
-            v.menuTimKiem.getItems().addAll(
-                    miTKHoaDon, miTKPhieuNhap, miTKPhieuDoi, miTKPhieuTra, miTKPhieuDat,
-                    miTKNCC, v.miTimThuoc, v.miTimKhachHang, miTKHoatDong
-            );
-            // gắn style class cho menu top-level (được skin truyền sang .menu-button)
-            v.menuTimKiem.getStyleClass().add("m-timkiem");
-        }
+        v.miTKHoaDon    = mi("Tìm hóa đơn");
+        v.miTKPhieuNhap = mi("Tìm phiếu nhập hàng");
+        v.miTKPhieuDoi  = mi("Tìm phiếu đổi hàng");
+        v.miTKPhieuTra  = mi("Tìm phiếu trả hàng");
+        v.miTKPhieuDat  = mi("Tìm phiếu đặt hàng");
+        v.miTKNCC       = mi("Tìm nhà cung cấp");
+        v.miTimThuoc    = mi("Tìm thuốc");
+        v.miTimKhachHang= mi("Tìm khách hàng");
+        v.miTKHoatDong  = mi("Tìm kiếm hoạt động");
+        v.menuTimKiem.getItems().addAll(
+                v.miTKHoaDon, v.miTKPhieuNhap, v.miTKPhieuDoi, v.miTKPhieuTra,
+                v.miTKPhieuDat, v.miTKNCC, v.miTimThuoc, v.miTimKhachHang, v.miTKHoatDong
+        );
+        v.menuTimKiem.getStyleClass().add("m-timkiem");
 
         v.menuDanhMuc = new Menu("📁 Danh mục");
-        {
-            MenuItem miDMThuoc     = mi("Danh mục thuốc",        e -> v.ctrl.danhMucThuoc(e));
-            MenuItem miDMNhanVien  = mi("Danh mục nhân viên",    e -> v.ctrl.danhMucNhanVien(e));
-            MenuItem miDMKhachHang = mi("Danh mục khách hàng",   e -> v.ctrl.danhMucKhachHang(e));
-            MenuItem miDMKeHang    = mi("Danh mục kệ hàng",      e -> v.ctrl.danhMucKeHang(e));
-            MenuItem miDMKhuyenMai = mi("Danh mục khuyến mãi",   e -> v.ctrl.danhMucKhuyenMai(e));
-            MenuItem miDMNCC       = mi("Danh mục nhà cung cấp", e -> v.ctrl.danhMucNhaCungCap(e));
-            MenuItem miDMNhomDL    = mi("Danh mục nhóm dược lý", e -> v.ctrl.danhMucNhomDuocLy(e));
-
-            v.menuDanhMuc.getItems().addAll(
-                    miDMThuoc, miDMNhanVien, miDMKhachHang, miDMKeHang, miDMKhuyenMai, miDMNCC, miDMNhomDL
-            );
-            v.menuDanhMuc.getStyleClass().add("m-danhmuc");
-        }
+        v.miDMThuoc     = mi("Danh mục thuốc");
+        v.miDMNhanVien  = mi("Danh mục nhân viên");
+        v.miDMKeHang    = mi("Danh mục kệ hàng");
+        v.miDMKhuyenMai = mi("Danh mục khuyến mãi");
+        v.miDMNCC       = mi("Danh mục nhà cung cấp");
+        v.miDMNhomDL    = mi("Danh mục nhóm dược lý");
+        v.menuDanhMuc.getItems().addAll(
+                v.miDMThuoc, v.miDMNhanVien, v.miDMKeHang, v.miDMKhuyenMai, v.miDMNCC, v.miDMNhomDL
+        );
+        v.menuDanhMuc.getStyleClass().add("m-danhmuc");
 
         v.menuCapNhat = new Menu("🔄 Cập nhật");
-        {
-            v.miCapNhatGia    = mi("Cập nhật giá bán",  e -> v.ctrl.CapNhatGiaBan(e));
-            v.miCapNhatTonKho = mi("Cập nhật tồn kho",  e -> v.ctrl.capNhatTonKho(e));
-            MenuItem miCapNhatKM = mi("Cập nhật khuyến mãi", e -> v.ctrl.capNhatKhuyenMai(e));
-
-            v.menuCapNhat.getItems().addAll(v.miCapNhatGia, v.miCapNhatTonKho, miCapNhatKM);
-            v.menuCapNhat.getStyleClass().add("m-capnhat");
-        }
+        v.miCapNhatGia    = mi("Cập nhật giá bán");
+        v.miCapNhatTonKho = mi("Cập nhật tồn kho");
+        v.miCapNhatKM     = mi("Cập nhật khuyến mãi");
+        v.menuCapNhat.getItems().addAll(v.miCapNhatGia, v.miCapNhatTonKho, v.miCapNhatKM);
+        v.menuCapNhat.getStyleClass().add("m-capnhat");
 
         v.menuThongKe = new Menu("📊 Thống kê");
-        {
-            MenuItem miTKDoanhThu = mi("Thống kê doanh thu",     e -> v.ctrl.thongKeDoanhThu(e));
-            MenuItem miTKXNT      = mi("Thống kê xuất nhập tồn", e -> v.ctrl.thongKeXuatNhap(e));
-            v.menuThongKe.getItems().addAll(miTKDoanhThu, miTKXNT);
-            v.menuThongKe.getStyleClass().add("m-thongke");
-        }
+        v.miTKDoanhThu = mi("Thống kê doanh thu");
+        v.miTKXNT      = mi("Thống kê xuất nhập tồn");
+        v.menuThongKe.getItems().addAll(v.miTKDoanhThu, v.miTKXNT);
+        v.menuThongKe.getStyleClass().add("m-thongke");
 
         v.menuXuLy = new Menu("🛠 Xử lý");
-        {
-            Menu mBanHang = new Menu("Bán hàng");
-            v.miLapHoaDon   = mi("Lập hóa đơn",       e -> v.ctrl.lapHoaDon(e));
-            MenuItem miLapPhieuDoi = mi("Lập phiếu đổi hàng", e -> v.ctrl.lapPhieuDoiHang(e));
-            MenuItem miLapPhieuTra = mi("Lập phiếu trả hàng", e -> v.ctrl.lapPhieuTraHang(e));
-            v.miLapPhieuDatHang = mi("Lập phiếu đặt hàng",    e -> v.ctrl.lapPhieuDatHang(e));
-            mBanHang.getItems().addAll(v.miLapHoaDon, miLapPhieuDoi, miLapPhieuTra, v.miLapPhieuDatHang);
-
-            v.miNhapHang = mi("Nhập hàng", e -> v.ctrl.nhapHang(e));
-
-            v.menuXuLy.getItems().addAll(mBanHang, v.miNhapHang);
-            v.menuXuLy.getStyleClass().add("m-xuly");
-        }
+        Menu mBanHang = new Menu("Bán hàng");
+        v.miLapHoaDon   = mi("Lập hóa đơn");
+        v.miLapPhieuDoi = mi("Lập phiếu đổi hàng");
+        v.miLapPhieuTra = mi("Lập phiếu trả hàng");
+        v.miLapPhieuDatHang = mi("Lập phiếu đặt hàng");
+        mBanHang.getItems().addAll(v.miLapHoaDon, v.miLapPhieuDoi, v.miLapPhieuTra, v.miLapPhieuDatHang);
+        v.miNhapHang = mi("Nhập hàng");
+        v.menuXuLy.getItems().addAll(mBanHang, v.miNhapHang);
+        v.menuXuLy.getStyleClass().add("m-xuly");
 
         menuBar.getMenus().addAll(v.menuTimKiem, v.menuDanhMuc, v.menuCapNhat, v.menuThongKe, v.menuXuLy);
 
         // ===== pnlChung =====
-        v.pnlChung = new Pane();
+        v.pnlChung = new StackPane();
         v.pnlChung.setLayoutY(137);
         v.pnlChung.setPrefSize(1646, 895);
 
-        // ===== nội dung mặc định trên pnlChung (grid + panels) =====
+        // ===== nội dung mặc định trên pnlChung =====
         GridPane pnlGrid = new GridPane();
         pnlGrid.setId("pnlGrid");
         pnlGrid.setPrefSize(1646, 895);
@@ -214,18 +241,18 @@ public class CuaSoChinh_QuanLy_GUI {
         Pane paneMain11 = paneMain(509, 454); paneMain11.setLayoutX(31); paneMain11.setLayoutY(28);
         Label lbCB = bold("Cảnh báo hàng hóa", 35); lbCB.setLayoutX(135); lbCB.setLayoutY(22);
 
-        v.tblThuocHetHan = new TableView<Thuoc_SP_TheoLo>();
+        v.tblThuocHetHan = new TableView<>();
         v.tblThuocHetHan.setLayoutX(18); v.tblThuocHetHan.setLayoutY(116); v.tblThuocHetHan.setPrefSize(473, 139);
-        v.colMaThuocHetHan = new TableColumn<Thuoc_SP_TheoLo,String>("Mã thuốc"); v.colMaThuocHetHan.setPrefWidth(148);
-        v.colLoHangHetHan = new TableColumn<Thuoc_SP_TheoLo,String>("Lô hàng"); v.colLoHangHetHan.setPrefWidth(173.14);
-        v.colHSDHetHan = new TableColumn<Thuoc_SP_TheoLo,Date>("Hạn sử dụng"); v.colHSDHetHan.setPrefWidth(156);
+        v.colMaThuocHetHan = new TableColumn<>("Mã thuốc"); v.colMaThuocHetHan.setPrefWidth(148);
+        v.colLoHangHetHan = new TableColumn<>("Lô hàng"); v.colLoHangHetHan.setPrefWidth(173.14);
+        v.colHSDHetHan = new TableColumn<>("Hạn sử dụng"); v.colHSDHetHan.setPrefWidth(156);
         v.tblThuocHetHan.getColumns().addAll(v.colMaThuocHetHan, v.colLoHangHetHan, v.colHSDHetHan);
 
-        v.tblThuocSapHetHan = new TableView<Thuoc_SP_TheoLo>();
+        v.tblThuocSapHetHan = new TableView<>();
         v.tblThuocSapHetHan.setLayoutX(20); v.tblThuocSapHetHan.setLayoutY(291); v.tblThuocSapHetHan.setPrefSize(473, 141);
-        v.colMaThuocSapHetHan = new TableColumn<Thuoc_SP_TheoLo,String>("Mã thuốc"); v.colMaThuocSapHetHan.setPrefWidth(143.43);
-        v.colLoHangSapHetHan = new TableColumn<Thuoc_SP_TheoLo,String>("Lô hàng"); v.colLoHangSapHetHan.setPrefWidth(179.43);
-        v.colHSDSapHetHan = new TableColumn<Thuoc_SP_TheoLo, Date>("Hạn sử dụng"); v.colHSDSapHetHan.setPrefWidth(151.43);
+        v.colMaThuocSapHetHan = new TableColumn<>("Mã thuốc"); v.colMaThuocSapHetHan.setPrefWidth(143.43);
+        v.colLoHangSapHetHan = new TableColumn<>("Lô hàng"); v.colLoHangSapHetHan.setPrefWidth(179.43);
+        v.colHSDSapHetHan = new TableColumn<>("Hạn sử dụng"); v.colHSDSapHetHan.setPrefWidth(151.43);
         v.tblThuocSapHetHan.getColumns().addAll(v.colMaThuocSapHetHan, v.colLoHangSapHetHan, v.colHSDSapHetHan);
 
         v.lbl_SoLuongHangHetHan = bold("Hàng hết hạn: 0", 20); v.lbl_SoLuongHangHetHan.setLayoutX(18); v.lbl_SoLuongHangHetHan.setLayoutY(87);
@@ -295,19 +322,24 @@ public class CuaSoChinh_QuanLy_GUI {
         Label lbRole = new Label("Vai trò:"); lbRole.setPrefSize(52, 30); HBox.setMargin(lbRole, new Insets(0,0,0,35));
         Pane paneLabelThongTin = paneMain(191, 30);
         v.lblVaiTro = new Label(); v.lblVaiTro.setPrefSize(158, 30); v.lblVaiTro.setLayoutX(14); v.lblVaiTro.setLayoutY(1);
+        paneLabelThongTin.setId("paneLabelThongTin");
         paneLabelThongTin.getChildren().add(v.lblVaiTro);
         hbRole.getChildren().addAll(lbRole, paneLabelThongTin);
 
         Pane pDangXuat = new Pane(); pDangXuat.setPrefSize(307, 62);
         Button btnDangXuat = new Button("Đăng xuất"); btnDangXuat.setId("btnDangXuat");
         btnDangXuat.setLayoutX(110); btnDangXuat.setLayoutY(12);
-        btnDangXuat.setOnAction(e -> v.ctrl.btnDangXuatClick(e));
+        // handler sẽ set trong showWithController qua ctrl.btnDangXuatClick
         pDangXuat.getChildren().add(btnDangXuat);
+        // Đặt handler ngay tại đây để không quên:
+        btnDangXuat.setOnAction(e -> {
+            if (ctrlRef != null) ctrlRef.btnDangXuatClick(e);
+        });
 
         vbInfo.getChildren().addAll(hbRole, pDangXuat);
         v.pnlThongTin.getChildren().add(vbInfo);
 
-        // ===== Panel tên người dùng =====
+        // ===== Panel tên người dùng (click hiện pnlThongTin) =====
         v.paneMainTenSD = paneMain(337, 36);
         v.paneMainTenSD.setId("paneMainTenSD");
         v.paneMainTenSD.setLayoutX(1271); v.paneMainTenSD.setLayoutY(24);
@@ -321,22 +353,27 @@ public class CuaSoChinh_QuanLy_GUI {
         AnchorPane.setLeftAnchor(menuBar, 0.0); AnchorPane.setRightAnchor(menuBar, 0.0);
         AnchorPane.setLeftAnchor(v.pnlChung, 0.0); AnchorPane.setRightAnchor(v.pnlChung, 0.0);
 
-        // lưu root + controller proxy
         v.root = root;
         return v;
     }
 
-    // ================== Helpers ==================
+    // ====== helpers ======
+    // để nút Đăng xuất truy cập được controller thật sau khi showWithController chạy
+    private static CuaSoChinh_QuanLy_Ctrl ctrlRef;
+
     private static class ViewRefs {
         AnchorPane root;
 
-        // controller bridge
-        final CuaSoChinh_QuanLy_Ctrl ctrl = new CuaSoChinh_QuanLy_Ctrl(); // chỉ để tham chiếu method; sẽ bị ignore khi showWithController thật
-        // Nếu bạn muốn, có thể bỏ field này và set handler trực tiếp ở showWithController.
-
         // top bar
         Menu menuTimKiem, menuDanhMuc, menuCapNhat, menuThongKe, menuXuLy;
-        MenuItem miTimThuoc, miTimKhachHang, miLapHoaDon, miLapPhieuDatHang, miNhapHang, miCapNhatGia, miCapNhatTonKho, miLapPhieuDatHangProxy;
+
+        // các MenuItem cần gắn handler
+        MenuItem miTKHoaDon, miTKPhieuNhap, miTKPhieuDoi, miTKPhieuTra, miTKPhieuDat, miTKNCC, miTKHoatDong;
+        MenuItem miDMThuoc, miDMNhanVien, miDMKeHang, miDMKhuyenMai, miDMNCC, miDMNhomDL;
+        MenuItem miTKDoanhThu, miTKXNT;
+        MenuItem miTimThuoc, miTimKhachHang;
+        MenuItem miLapHoaDon, miLapPhieuDoi, miLapPhieuTra, miLapPhieuDatHang, miNhapHang;
+        MenuItem miCapNhatGia, miCapNhatTonKho, miCapNhatKM;
 
         // center
         Pane pnlChung;
@@ -360,10 +397,8 @@ public class CuaSoChinh_QuanLy_GUI {
         Label lblVaiTro;
     }
 
-    private static MenuItem mi(String text, javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
-        MenuItem m = new MenuItem(text);
-        m.setOnAction(handler);
-        return m;
+    private static MenuItem mi(String text) {
+        return new MenuItem(text); // handler gắn sau ở showWithController
     }
 
     private static Pane paneMain(double w, double h) {

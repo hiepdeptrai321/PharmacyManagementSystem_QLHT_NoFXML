@@ -85,4 +85,6 @@ module com.example.pharmacymanagementsystem_qlht {
 
 
     opens com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia to javafx.graphics;
+    exports com.example.pharmacymanagementsystem_qlht.view;
+    opens com.example.pharmacymanagementsystem_qlht.view to javafx.fxml;
 }

@@ -30,7 +30,6 @@ public class LapHoaDon_GUI extends Application {
         stage.setScene(scene);
         stage.setTitle("Lập Hóa Đơn");
         stage.getIcons().add(new Image(LapHoaDon_GUI.class.getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-        stage.show();
     }
 
     private AnchorPane buildPane(LapHoaDon_Ctrl ctrl) {

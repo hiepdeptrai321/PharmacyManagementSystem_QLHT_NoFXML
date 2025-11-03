@@ -75,7 +75,6 @@ public class DanhMucNhanVien_GUI {
         scene.getStylesheets().add(requireCss("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css"));
         stage.setScene(scene);
         stage.setTitle("Danh mục nhân viên");
-        stage.show();
     }
 
     private AnchorPane buildUI() {
@@ -103,13 +102,15 @@ public class DanhMucNhanVien_GUI {
 
         Label lbTitle = new Label("Danh mục nhân viên");
         lbTitle.setId("lbtitle");
-        lbTitle.setLayoutX(12); lbTitle.setLayoutY(2);
-        lbTitle.setPrefSize(244, 36);
+        lbTitle.setLayoutX(12);
+        lbTitle.setLayoutY(2);
+        lbTitle.setPrefSize(350, 36);
+        lbTitle.setStyle("-fx-font-size: 36;");
 
         ImageView ivOfficer = new ImageView(new Image(requireRes(
                 "/com/example/pharmacymanagementsystem_qlht/img/officer.png")));
         ivOfficer.setFitHeight(36); ivOfficer.setFitWidth(40);
-        ivOfficer.setLayoutX(265); ivOfficer.setLayoutY(2);
+        ivOfficer.setLayoutX(350); ivOfficer.setLayoutY(2);
         ivOfficer.setPreserveRatio(true); ivOfficer.setPickOnBounds(true);
 
         paneTitle.getChildren().addAll(lbTitle, ivOfficer);

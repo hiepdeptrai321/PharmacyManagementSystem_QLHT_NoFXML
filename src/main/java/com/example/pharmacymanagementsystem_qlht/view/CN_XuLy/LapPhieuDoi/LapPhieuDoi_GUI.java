@@ -17,6 +17,10 @@ public class LapPhieuDoi_GUI {
         this.ctrl = ctrl;
     }
 
+    public LapPhieuDoi_GUI() {
+        this.ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDoi.LapPhieuDoiHang_Ctrl();
+    }
+
     public void show(Stage stage) {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
