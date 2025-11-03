@@ -25,7 +25,6 @@ import com.itextpdf.io.font.constants.StandardFonts;
 import java.text.DecimalFormat;
 import javafx.scene.control.TableCell;
 import com.example.pharmacymanagementsystem_qlht.dao.ThongKe_Dao;
-// THÊM CÁC IMPORT CẦN THIẾT
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import com.example.pharmacymanagementsystem_qlht.model.HoaDonDisplay;
 
@@ -35,69 +34,91 @@ import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import java.time.LocalDate;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 
-// ĐÃ XÓA: import liên quan đến ChiTietHoaDon_Ctrl
-
-
 public class ThongKeBanHang_Ctrl extends Application {
 
-    private ThongKeBanHang_GUI view;
+    // --- 1. KHAI BÁO PUBLIC CÁC THÀNH PHẦN GIAO DIỆN ---
+    // Panel trái
+    public Button btnBang;
+    public Button btnBieuDo;
+    public Button btnXuat;
+    public ComboBox<String> cboThoiGian;
+    public ComboBox<String> cboXuatfile;
+    public DatePicker dateTu;
+    public DatePicker dateDen;
+    public Label lblTu;
+    public Label lblDen;
+    // Bảng Doanh Thu
+    public TableView<ThongKeBanHang> tableDoanhThu;
+    public TableColumn<ThongKeBanHang, String> cotTG;
+    public TableColumn<ThongKeBanHang, Integer> cotSLHoaDon;
+    public TableColumn<ThongKeBanHang, Double> cotTongGT;
+    public TableColumn<ThongKeBanHang, Double> cotGG;
+    public TableColumn<ThongKeBanHang, Integer> cotDT;
+    public TableColumn<ThongKeBanHang, Double> cotGTDonTra;
+    public TableColumn<ThongKeBanHang, Double> cotDoanhThu;
+    // Biểu đồ
+    public CategoryAxis xAxis;
+    public NumberAxis yAxis;
+    public BarChart<String, Number> chartDoanhThu;
+    // Bảng Hóa Đơn
+    public TableView<HoaDonDisplay> tableHoaDon;
+    public TableColumn<HoaDonDisplay, String> cotMaHoaDon;
+    public TableColumn<HoaDonDisplay, LocalDate> cotNgayLap;
+    public TableColumn<HoaDonDisplay, String> cotMaKhachHang;
+    public TableColumn<HoaDonDisplay, String> cotMaNhanVien;
+    public TableColumn<HoaDonDisplay, Double> cotTongTien;
+
+    // --- 2. CÁC BIẾN LOGIC (GIỮ NGUYÊN) ---
     private ThongKe_Dao tkDao = new ThongKe_Dao();
     private ObservableList<ThongKeBanHang> listThongKe;
     private ObservableList<HoaDonDisplay> listHoaDon;
     private DecimalFormat formatter;
 
+    // Bỏ `private ThongKeBanHang_GUI view;`
+    // Bỏ constructor
+
     @Override
     public void start(Stage stage) throws Exception {
-        view = new ThongKeBanHang_GUI();
-        Parent root = view.createContent();
-        setupLogic();
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThongKeBanHang.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
+        // --- ĐÃ THAY THẾ LOGIC start() ---
+        new ThongKeBanHang_GUI().showWithController(stage, this);
     }
 
-    public ThongKeBanHang_Ctrl(ThongKeBanHang_GUI view) {
-        this.view = view;
-        setupLogic();
-    }
-
-    public ThongKeBanHang_Ctrl() {}
-
-    private void setupLogic() {
-        // Gắn sự kiện
-        view.btnXuat.setOnAction(e -> xuatFile(e));
-        view.btnBang.setOnAction(e -> hienThiBang(e));
-        view.btnBieuDo.setOnAction(e -> hienThiBieuDo(e));
+    // Đổi tên `setupLogic()` thành `initialize()`
+    public void initialize() {
+        // Gắn sự kiện (đổi view.btnXuat -> btnXuat)
+        btnXuat.setOnAction(e -> xuatFile(e));
+        btnBang.setOnAction(e -> hienThiBang(e));
+        btnBieuDo.setOnAction(e -> hienThiBieuDo(e));
 
         // Binding
-        view.chartDoanhThu.managedProperty().bind(view.chartDoanhThu.visibleProperty());
-        view.tableDoanhThu.managedProperty().bind(view.tableDoanhThu.visibleProperty());
+        chartDoanhThu.managedProperty().bind(chartDoanhThu.visibleProperty());
+        tableDoanhThu.managedProperty().bind(tableDoanhThu.visibleProperty());
 
         formatter = new DecimalFormat("#,##0");
 
         // Setup ComboBoxes
-        view.cboThoiGian.getItems().addAll("Hôm nay", "Tuần này", "Tháng này", "Năm Nay", "Tùy chọn");
-        view.cboXuatfile.getItems().addAll("Excel", "PDF");
+        cboThoiGian.getItems().addAll("Hôm nay", "Tuần này", "Tháng này", "Năm Nay", "Tùy chọn");
+        cboXuatfile.getItems().addAll("Excel", "PDF");
 
         // Cấu hình biểu đồ
-        view.chartDoanhThu.setTitle("Biểu đồ Doanh thu");
-        view.xAxis.setLabel("Thời gian");
-        view.yAxis.setLabel("Doanh thu (VNĐ)");
-        view.yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(view.yAxis) {
+        chartDoanhThu.setTitle("Biểu đồ Doanh thu");
+        xAxis.setLabel("Thời gian");
+        yAxis.setLabel("Doanh thu (VNĐ)");
+        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
             @Override
             public String toString(Number object) {
                 return formatter.format(object.doubleValue());
@@ -107,23 +128,23 @@ public class ThongKeBanHang_Ctrl extends Application {
         setupTables();
 
         // Setup ẩn/hiện DatePicker
-        view.lblTu.setVisible(false);
-        view.dateTu.setVisible(false);
-        view.lblDen.setVisible(false);
-        view.dateDen.setVisible(false);
-        view.lblTu.managedProperty().bind(view.lblTu.visibleProperty());
-        view.dateTu.managedProperty().bind(view.dateTu.visibleProperty());
-        view.lblDen.managedProperty().bind(view.lblDen.visibleProperty());
-        view.dateDen.managedProperty().bind(view.dateDen.visibleProperty());
+        lblTu.setVisible(false);
+        dateTu.setVisible(false);
+        lblDen.setVisible(false);
+        dateDen.setVisible(false);
+        lblTu.managedProperty().bind(lblTu.visibleProperty());
+        dateTu.managedProperty().bind(dateTu.visibleProperty());
+        lblDen.managedProperty().bind(lblDen.visibleProperty());
+        dateDen.managedProperty().bind(dateDen.visibleProperty());
 
         // Gắn Listeners
-        view.cboThoiGian.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+        cboThoiGian.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             if (newValue != null) {
                 boolean isCustom = newValue.equals("Tùy chọn");
-                view.lblTu.setVisible(isCustom);
-                view.dateTu.setVisible(isCustom);
-                view.lblDen.setVisible(isCustom);
-                view.dateDen.setVisible(isCustom);
+                lblTu.setVisible(isCustom);
+                dateTu.setVisible(isCustom);
+                lblDen.setVisible(isCustom);
+                dateDen.setVisible(isCustom);
                 if (isCustom) {
                     attemptAutoLoadTuyChon();
                 } else {
@@ -131,38 +152,38 @@ public class ThongKeBanHang_Ctrl extends Application {
                 }
             }
         });
-        view.dateTu.valueProperty().addListener((options, oldValue, newValue) -> attemptAutoLoadTuyChon());
-        view.dateDen.valueProperty().addListener((options, oldValue, newValue) -> attemptAutoLoadTuyChon());
+        dateTu.valueProperty().addListener((options, oldValue, newValue) -> attemptAutoLoadTuyChon());
+        dateDen.valueProperty().addListener((options, oldValue, newValue) -> attemptAutoLoadTuyChon());
 
         // Tải dữ liệu ban đầu
-        view.cboThoiGian.setValue("Hôm nay");
-        view.chartDoanhThu.setAnimated(false);
+        cboThoiGian.setValue("Hôm nay");
+        chartDoanhThu.setAnimated(false);
     }
 
     private void setupTables() {
         // --- Setup Bảng Doanh Thu ---
-        view.cotTG.setCellValueFactory(new PropertyValueFactory<>("thoiGian"));
-        view.cotSLHoaDon.setCellValueFactory(new PropertyValueFactory<>("soLuongHoaDon"));
-        view.cotTongGT.setCellValueFactory(new PropertyValueFactory<>("tongGiaTri"));
-        view.cotTongGT.setCellFactory(col -> createFormattedCell(formatter));
-        view.cotGG.setCellValueFactory(new PropertyValueFactory<>("giamGia"));
-        view.cotGG.setCellFactory(col -> createFormattedCell(formatter));
-        view.cotDT.setCellValueFactory(new PropertyValueFactory<>("soLuongDonTra"));
-        view.cotGTDonTra.setCellValueFactory(new PropertyValueFactory<>("giaTriDonTra"));
-        view.cotGTDonTra.setCellFactory(col -> createFormattedCell(formatter));
-        view.cotDoanhThu.setCellValueFactory(new PropertyValueFactory<>("doanhThu"));
-        view.cotDoanhThu.setCellFactory(col -> createFormattedCell(formatter));
+        cotTG.setCellValueFactory(new PropertyValueFactory<>("thoiGian"));
+        cotSLHoaDon.setCellValueFactory(new PropertyValueFactory<>("soLuongHoaDon"));
+        cotTongGT.setCellValueFactory(new PropertyValueFactory<>("tongGiaTri"));
+        cotTongGT.setCellFactory(col -> createFormattedCell(formatter));
+        cotGG.setCellValueFactory(new PropertyValueFactory<>("giamGia"));
+        cotGG.setCellFactory(col -> createFormattedCell(formatter));
+        cotDT.setCellValueFactory(new PropertyValueFactory<>("soLuongDonTra"));
+        cotGTDonTra.setCellValueFactory(new PropertyValueFactory<>("giaTriDonTra"));
+        cotGTDonTra.setCellFactory(col -> createFormattedCell(formatter));
+        cotDoanhThu.setCellValueFactory(new PropertyValueFactory<>("doanhThu"));
+        cotDoanhThu.setCellFactory(col -> createFormattedCell(formatter));
 
         // --- Setup Bảng Hóa Đơn ---
-        view.cotMaHoaDon.setCellValueFactory(new PropertyValueFactory<>("maHD"));
-        view.cotNgayLap.setCellValueFactory(new PropertyValueFactory<>("ngayLap"));
-        view.cotMaKhachHang.setCellValueFactory(new PropertyValueFactory<>("maKH"));
-        view.cotMaNhanVien.setCellValueFactory(new PropertyValueFactory<>("maNV"));
-        view.cotTongTien.setCellValueFactory(new PropertyValueFactory<>("tongTien"));
-        view.cotTongTien.setCellFactory(col -> createFormattedCell(formatter));
-
-        // ĐÃ XÓA: Logic nút "Chi tiết"
+        cotMaHoaDon.setCellValueFactory(new PropertyValueFactory<>("maHD"));
+        cotNgayLap.setCellValueFactory(new PropertyValueFactory<>("ngayLap"));
+        cotMaKhachHang.setCellValueFactory(new PropertyValueFactory<>("maKH"));
+        cotMaNhanVien.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+        cotTongTien.setCellValueFactory(new PropertyValueFactory<>("tongTien"));
+        cotTongTien.setCellFactory(col -> createFormattedCell(formatter));
     }
+
+    // --- TẤT CẢ CÁC HÀM LOGIC CÒN LẠI GIỮ NGUYÊN (CHỈ BỎ `view.`) ---
 
     private <T> TableCell<T, Double> createFormattedCell(DecimalFormat formatter) {
         return new TableCell<T, Double>() {
@@ -174,40 +195,36 @@ public class ThongKeBanHang_Ctrl extends Application {
         };
     }
 
-    // ĐÃ XÓA: Hàm hienThiChiTietHoaDon()
-
-    // --- 5. CÁC HÀM LOGIC (SỬA ĐỔI) ---
-
     private void loadData(String thoiGian) {
         listThongKe = FXCollections.observableArrayList(tkDao.getThongKeBanHang(thoiGian));
-        view.tableDoanhThu.setItems(listThongKe);
+        tableDoanhThu.setItems(listThongKe);
 
         listHoaDon = tkDao.getHoaDonTheoThoiGian(thoiGian);
-        view.tableHoaDon.setItems(listHoaDon);
+        tableHoaDon.setItems(listHoaDon);
 
         updateChart(listThongKe);
-        view.chartDoanhThu.setVisible(false);
-        view.tableDoanhThu.setVisible(true);
+        chartDoanhThu.setVisible(false);
+        tableDoanhThu.setVisible(true);
 
         if (listThongKe.size() > 12) {
-            view.xAxis.setTickLabelRotation(-90);
+            xAxis.setTickLabelRotation(-90);
         } else {
-            view.xAxis.setTickLabelRotation(-20);
+            xAxis.setTickLabelRotation(-20);
         }
     }
 
     private void attemptAutoLoadTuyChon() {
-        String selectedTime = view.cboThoiGian.getValue();
+        String selectedTime = cboThoiGian.getValue();
         if (selectedTime == null || !selectedTime.equals("Tùy chọn")) return;
 
-        LocalDate tuNgay = view.dateTu.getValue();
-        LocalDate denNgay = view.dateDen.getValue();
+        LocalDate tuNgay = dateTu.getValue();
+        LocalDate denNgay = dateDen.getValue();
         if (tuNgay == null || denNgay == null) return;
 
         if (tuNgay.isAfter(denNgay)) {
-            view.tableDoanhThu.getItems().clear();
-            view.tableHoaDon.getItems().clear();
-            view.chartDoanhThu.getData().clear();
+            tableDoanhThu.getItems().clear();
+            tableHoaDon.getItems().clear();
+            chartDoanhThu.getData().clear();
             return;
         }
         loadDataTuyChon(tuNgay, denNgay);
@@ -215,25 +232,25 @@ public class ThongKeBanHang_Ctrl extends Application {
 
     private void loadDataTuyChon(LocalDate tuNgay, LocalDate denNgay) {
         listThongKe = FXCollections.observableArrayList(tkDao.getThongKeBanHang_TuyChon(tuNgay, denNgay));
-        view.tableDoanhThu.setItems(listThongKe);
+        tableDoanhThu.setItems(listThongKe);
 
         listHoaDon = tkDao.getHoaDonTheoTuyChon(tuNgay, denNgay);
-        view.tableHoaDon.setItems(listHoaDon);
+        tableHoaDon.setItems(listHoaDon);
 
         updateChart(listThongKe);
-        view.chartDoanhThu.setVisible(false);
-        view.tableDoanhThu.setVisible(true);
+        chartDoanhThu.setVisible(false);
+        tableDoanhThu.setVisible(true);
 
         if (listThongKe.size() > 12) {
-            view.xAxis.setTickLabelRotation(-90);
+            xAxis.setTickLabelRotation(-90);
         } else {
-            view.xAxis.setTickLabelRotation(-20);
+            xAxis.setTickLabelRotation(-20);
         }
     }
 
     private void updateChart(ObservableList<ThongKeBanHang> data) {
-        view.chartDoanhThu.getData().clear();
-        if (view.xAxis != null) view.xAxis.getCategories().clear();
+        chartDoanhThu.getData().clear();
+        if (xAxis != null) xAxis.getCategories().clear();
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Doanh thu");
@@ -282,14 +299,12 @@ public class ThongKeBanHang_Ctrl extends Application {
             series.getData().add(dataPoint);
         }
 
-        if (view.xAxis != null) view.xAxis.setCategories(categories);
-        view.chartDoanhThu.getData().add(series);
+        if (xAxis != null) xAxis.setCategories(categories);
+        chartDoanhThu.getData().add(series);
     }
 
-
-    // --- 6. CÁC HÀM XUẤT FILE ---
     private void xuatFile(ActionEvent event) {
-        String selectedFormat = view.cboXuatfile.getValue();
+        String selectedFormat = cboXuatfile.getValue();
         if (selectedFormat == null) {
             showAlert(Alert.AlertType.WARNING, "Chưa chọn định dạng", "Vui lòng chọn định dạng file (Excel hoặc PDF) để xuất.");
             return;
@@ -305,7 +320,7 @@ public class ThongKeBanHang_Ctrl extends Application {
 
         if (selectedFormat.equals("Excel")) {
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx"));
-            File file = fileChooser.showSaveDialog(view.btnXuat.getScene().getWindow());
+            File file = fileChooser.showSaveDialog(btnXuat.getScene().getWindow());
             if (file != null) {
                 try {
                     xuatExcel(file);
@@ -317,7 +332,7 @@ public class ThongKeBanHang_Ctrl extends Application {
             }
         } else if (selectedFormat.equals("PDF")) {
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files (*.pdf)", "*.pdf"));
-            File file = fileChooser.showSaveDialog(view.btnXuat.getScene().getWindow());
+            File file = fileChooser.showSaveDialog(btnXuat.getScene().getWindow());
             if (file != null) {
                 try {
                     xuatPDF(file);
@@ -339,11 +354,10 @@ public class ThongKeBanHang_Ctrl extends Application {
             CellStyle dateCellStyle = workbook.createCellStyle();
             dateCellStyle.setDataFormat(workbook.getCreationHelper().createDataFormat().getFormat("dd/mm/yyyy"));
 
-            // --- Sheet 1: Thống kê Doanh thu ---
             Sheet sheetDT = workbook.createSheet("Thong ke Doanh thu");
             String[] headersDT = {
-                    view.cotTG.getText(), view.cotSLHoaDon.getText(), view.cotTongGT.getText(),
-                    view.cotGG.getText(), view.cotDT.getText(), view.cotGTDonTra.getText(), view.cotDoanhThu.getText()
+                    cotTG.getText(), cotSLHoaDon.getText(), cotTongGT.getText(),
+                    cotGG.getText(), cotDT.getText(), cotGTDonTra.getText(), cotDoanhThu.getText()
             };
             Row headerRowDT = sheetDT.createRow(0);
             for (int i = 0; i < headersDT.length; i++) {
@@ -366,11 +380,10 @@ public class ThongKeBanHang_Ctrl extends Application {
                 sheetDT.autoSizeColumn(i);
             }
 
-            // --- Sheet 2: Danh sách Hóa đơn ---
             Sheet sheetHD = workbook.createSheet("Danh sach Hoa don");
             String[] headersHD = {
-                    view.cotMaHoaDon.getText(), view.cotNgayLap.getText(),
-                    view.cotMaKhachHang.getText(), view.cotMaNhanVien.getText(), view.cotTongTien.getText()
+                    cotMaHoaDon.getText(), cotNgayLap.getText(),
+                    cotMaKhachHang.getText(), cotMaNhanVien.getText(), cotTongTien.getText()
             };
             Row headerRowHD = sheetHD.createRow(0);
             for (int i = 0; i < headersHD.length; i++) {
@@ -421,7 +434,6 @@ public class ThongKeBanHang_Ctrl extends Application {
                 .setBold()
                 .setTextAlignment(TextAlignment.CENTER));
 
-        // Phần 1: Thống kê Doanh thu
         document.add(new Paragraph("I. Thống kê Doanh thu")
                 .setFontSize(14)
                 .setBold()
@@ -429,13 +441,13 @@ public class ThongKeBanHang_Ctrl extends Application {
         float[] columnWidthsDT = {2, 1, 1, 1, 1, 1, 1};
         Table tableDT = new Table(UnitValue.createPercentArray(columnWidthsDT));
         tableDT.setWidth(UnitValue.createPercentValue(100));
-        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotTG.getText()).setBold()));
-        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotSLHoaDon.getText()).setBold()));
-        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotTongGT.getText()).setBold()));
-        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotGG.getText()).setBold()));
-        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotDT.getText()).setBold()));
-        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotGTDonTra.getText()).setBold()));
-        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotDoanhThu.getText()).setBold()));
+        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotTG.getText()).setBold()));
+        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotSLHoaDon.getText()).setBold()));
+        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotTongGT.getText()).setBold()));
+        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotGG.getText()).setBold()));
+        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotDT.getText()).setBold()));
+        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotGTDonTra.getText()).setBold()));
+        tableDT.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotDoanhThu.getText()).setBold()));
         for (ThongKeBanHang tk : listThongKe) {
             tableDT.addCell(tk.getThoiGian());
             tableDT.addCell(String.valueOf(tk.getSoLuongHoaDon()));
@@ -447,7 +459,6 @@ public class ThongKeBanHang_Ctrl extends Application {
         }
         document.add(tableDT);
 
-        // Phần 2: Danh sách Hóa đơn
         document.add(new Paragraph("II. Danh sách Hóa đơn")
                 .setFontSize(14)
                 .setBold()
@@ -455,16 +466,16 @@ public class ThongKeBanHang_Ctrl extends Application {
         float[] columnWidthsHD = {2, 2, 2, 2, 2}; // 5 cột
         Table tableHD = new Table(UnitValue.createPercentArray(columnWidthsHD));
         tableHD.setWidth(UnitValue.createPercentValue(100));
-        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotMaHoaDon.getText()).setBold()));
-        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotNgayLap.getText()).setBold()));
-        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotMaKhachHang.getText()).setBold()));
-        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotMaNhanVien.getText()).setBold()));
-        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(view.cotTongTien.getText()).setBold()));
+        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotMaHoaDon.getText()).setBold()));
+        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotNgayLap.getText()).setBold()));
+        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotMaKhachHang.getText()).setBold()));
+        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotMaNhanVien.getText()).setBold()));
+        tableHD.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(cotTongTien.getText()).setBold()));
         for (HoaDonDisplay hd : listHoaDon) {
             tableHD.addCell(hd.getMaHD());
             tableHD.addCell(hd.getNgayLap().toString());
-            tableHD.addCell(hd.getMaKH() != null ? hd.getMaKH() : ""); // Kiểm tra null
-            tableHD.addCell(hd.getMaNV() != null ? hd.getMaNV() : ""); // Kiểm tra null
+            tableHD.addCell(hd.getMaKH() != null ? hd.getMaKH() : "");
+            tableHD.addCell(hd.getMaNV() != null ? hd.getMaNV() : "");
             tableHD.addCell(formatter.format(hd.getTongTien()));
         }
         document.add(tableHD);
@@ -481,15 +492,14 @@ public class ThongKeBanHang_Ctrl extends Application {
         alert.showAndWait();
     }
 
-    // --- 7. XỬ LÝ SỰ KIỆN GIAO DIỆN (Giữ nguyên) ---
     private void hienThiBieuDo(ActionEvent event) {
-        view.chartDoanhThu.setVisible(true);
-        view.tableDoanhThu.setVisible(false);
+        chartDoanhThu.setVisible(true);
+        tableDoanhThu.setVisible(false);
     }
 
     private void hienThiBang(ActionEvent event) {
-        view.chartDoanhThu.setVisible(false);
-        view.tableDoanhThu.setVisible(true);
+        chartDoanhThu.setVisible(false);
+        tableDoanhThu.setVisible(true);
     }
 
     public static void main(String[] args) {

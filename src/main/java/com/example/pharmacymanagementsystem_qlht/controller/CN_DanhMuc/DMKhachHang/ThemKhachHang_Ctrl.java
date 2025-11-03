@@ -4,8 +4,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.KhachHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KhachHang;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML; // (Có thể giữ lại)
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,45 +24,45 @@ public class ThemKhachHang_Ctrl extends Application implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(ThemKhachHang_Ctrl.class.getName());
 
-    @FXML private TextField txtTenKH;
-    @FXML private DatePicker dpNgaySinh;
-    @FXML private TextField txtSDT;
-    @FXML private TextField txtEmail;
-    @FXML private TextField txtDiaChi;
-    @FXML private ComboBox<String> cbGioiTinh;
-    @FXML private ComboBox<String> cbTrangThai;
-    @FXML private Label lblMessage;
-    @FXML private Button btnThem;
-    @FXML private Button btnHuy;
+    // --- ĐÃ CHUYỂN SANG PUBLIC ---
+    public TextField txtTenKH;
+    public DatePicker dpNgaySinh;
+    public TextField txtSDT;
+    public TextField txtEmail;
+    public TextField txtDiaChi;
+    public ComboBox<String> cbGioiTinh;
+    public ComboBox<String> cbTrangThai; // Vẫn là null vì không có trong FXML
+    public Label lblMessage;
+    public Button btnThem;
+    public Button btnHuy;
 
-
-    // Per-field error labels (add matching labels in FXML)
-    @FXML private Label errTenKH;
-    @FXML private Label errNgaySinh;
-    @FXML private Label errSDT;
-    @FXML private Label errEmail;
-    @FXML private Label errDiaChi;
-    @FXML private Label errGioiTinh;
+    // Per-field error labels
+    public Label errTenKH;
+    public Label errNgaySinh;
+    public Label errSDT;
+    public Label errEmail;
+    public Label errDiaChi;
+    public Label errGioiTinh;
 
 
     private final KhachHang_Dao khDao = new KhachHang_Dao();
 
-    // Optional callback that caller can set to receive the created KhachHang
     private Consumer<KhachHang> onSaved;
 
     public void setOnSaved(Consumer<KhachHang> onSaved) {
         this.onSaved = onSaved;
     }
 
+    // --- LOGIC GIỮ NGUYÊN ---
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Populate gender and status combos
         if (cbGioiTinh != null) {
             cbGioiTinh.getItems().clear();
             cbGioiTinh.getItems().addAll("Nam", "Nữ");
-            cbGioiTinh.setValue("Nam");
+            // cbGioiTinh.setValue("Nam"); // Bỏ setValue để prompt text hiển thị
         }
-        if (cbTrangThai != null) {
+        if (cbTrangThai != null) { // Code này vẫn an toàn dù cbTrangThai là null
             cbTrangThai.getItems().clear();
             cbTrangThai.getItems().addAll("Hoạt động", "Không hoạt động");
             cbTrangThai.setValue("Hoạt động");
@@ -109,6 +108,7 @@ public class ThemKhachHang_Ctrl extends Application implements Initializable {
             lbl.setManaged(true);
         }
     }
+
     @FXML
     public void handleSave(ActionEvent event) {
         try {
@@ -167,9 +167,9 @@ public class ThemKhachHang_Ctrl extends Application implements Initializable {
                 setError(errSDT, "Số điện thoại không được để trống.");
                 valid = false;
             } else {
-                String digits = sdt.replaceAll("\\D", "");
-                if (digits.length() < 7 || digits.length() > 15) {
-                    setError(errSDT, "Số điện thoại không hợp lệ.");
+                // Sửa logic validate SĐT theo FXML `SuaXoa` (10 số)
+                if (!sdt.matches("\\d{10}")) {
+                    setError(errSDT, "Số điện thoại không hợp lệ (10 số).");
                     valid = false;
                 }
             }
@@ -192,9 +192,8 @@ public class ThemKhachHang_Ctrl extends Application implements Initializable {
             // If any invalid, show a summary message and stop
             if (!valid) {
                 if (lblMessage != null) {
-                    // Clear the bottom summary label — errors are shown next to each field
                     lblMessage.setStyle("-fx-text-fill: red;");
-                    lblMessage.setText("");
+                    lblMessage.setText(""); // Lỗi hiển thị bên cạnh trường
                 }
                 return;
             }
@@ -210,7 +209,7 @@ public class ThemKhachHang_Ctrl extends Application implements Initializable {
             if (gioiTinh != null) {
                 kh.setGioiTinh(gioiTinh.equals("Nam")); // "Nam" → true, "Nữ" → false
             }
-            kh.setTrangThai(true);
+            kh.setTrangThai(true); // Mặc định là true khi thêm mới
             boolean ok = khDao.insert(kh);
             if (!ok) {
                 showError("Thêm khách hàng thất bại (lỗi cơ sở dữ liệu).");
@@ -250,10 +249,10 @@ public class ThemKhachHang_Ctrl extends Application implements Initializable {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhachHang/ThemKhachHang_GUI.fxml"));
+        // --- ĐÃ THAY THẾ FXML LOADER ---
+        new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.ThemKhachHang_GUI()
+                .showWithController(stage, this);
         stage.setTitle("Thêm Khách Hàng");
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
         stage.show();
     }
 }
