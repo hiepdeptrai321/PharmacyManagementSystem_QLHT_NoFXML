@@ -141,6 +141,5 @@ public class DanhMucNhomDuocLy_GUI {
 
         stage.setTitle("Danh mục nhóm dược lý");
         stage.setScene(scene);
-        stage.show();
     }
 }

@@ -328,7 +328,6 @@ public class LapPhieuTra_GUI {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Lập Phiếu Trả Hàng");
-        stage.show();
 
         // ===== Ngăn TextField tự động focus =====
         Platform.runLater(() -> txtTimHoaDon.getParent().requestFocus());

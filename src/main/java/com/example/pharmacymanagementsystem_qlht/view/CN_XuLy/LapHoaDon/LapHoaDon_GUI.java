@@ -383,6 +383,5 @@ public class LapHoaDon_GUI {
 
         stage.setTitle("Lập hóa đơn");
         stage.setScene(scene);
-        stage.show();
     }
 }
