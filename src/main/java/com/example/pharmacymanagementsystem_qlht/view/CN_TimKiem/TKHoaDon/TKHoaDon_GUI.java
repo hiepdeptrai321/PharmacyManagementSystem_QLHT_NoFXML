@@ -218,7 +218,6 @@ public class TKHoaDon_GUI {
         Scene scene = new Scene(mainPane);
         stage.setTitle("Tìm kiếm hóa đơn");
         stage.setScene(scene);
-        stage.show();
     }
 }
 

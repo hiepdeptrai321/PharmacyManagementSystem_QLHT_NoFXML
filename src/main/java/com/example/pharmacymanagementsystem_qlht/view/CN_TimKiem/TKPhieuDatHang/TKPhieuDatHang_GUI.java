@@ -217,6 +217,5 @@ public class TKPhieuDatHang_GUI {
 
         stage.setTitle("Tìm kiếm phiếu đặt hàng");
         stage.setScene(scene);
-        stage.show();
     }
 }
