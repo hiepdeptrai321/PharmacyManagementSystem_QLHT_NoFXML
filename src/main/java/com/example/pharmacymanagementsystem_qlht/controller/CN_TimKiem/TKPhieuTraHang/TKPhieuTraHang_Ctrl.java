@@ -43,7 +43,9 @@ public class TKPhieuTraHang_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        new TKPhieuTraHang_GUI().showWithController(stage, this);
+        TKPhieuTraHang_GUI gui = new TKPhieuTraHang_GUI();
+        gui.showWithController(stage, this);
+        initialize();
 
     }
     public void initialize() {

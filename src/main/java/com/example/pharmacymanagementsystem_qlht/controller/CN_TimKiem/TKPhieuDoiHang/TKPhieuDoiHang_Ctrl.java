@@ -4,6 +4,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.PhieuDoiHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuDoiHang;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuTraHang;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi.ChiTietPhieuDoiHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi.TKPhieuDoiHang_GUI;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -25,6 +26,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import java.util.List;
@@ -149,19 +151,24 @@ public class TKPhieuDoiHang_Ctrl extends Application {
 
     private void btnChiTietClick(PhieuDoiHang pDoi) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuDoiHang/ChiTietPhieuDoiHang_GUI.fxml"));
-            Parent root = loader.load();
-            this.getClass();
-            com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDoiHang.ChiTietPhieuDoiHang_Ctrl ctrl = loader.getController();
-            ctrl.setPhieuDoiHang(pDoi);
+            ChiTietPhieuDoiHang_Ctrl ctrl = new ChiTietPhieuDoiHang_Ctrl();
+
 
             Stage dialog = new Stage();
             dialog.initOwner(btnTimKiem.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
+
+            ChiTietPhieuDoiHang_GUI gui = new ChiTietPhieuDoiHang_GUI();
+
+            gui.showWithController(dialog, ctrl);
+            ctrl.setPhieuDoiHang(pDoi);
+
+            // Cài đặt thông tin cơ bản cho cửa sổ
             dialog.setTitle("Chi tiết phiếu đổi hàng");
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-            dialog.showAndWait();
+            dialog.getIcons().add(new Image(
+                    getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
+            //dialog.showAndWait();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -36,7 +36,6 @@ public class ChiTietPhieuDoiHang_Ctrl extends Application {
     public Label lblTenKhachHangValue;
     public Label lblTenNhanVienValue;
 
-
     public TableView<ChiTietPhieuDoiHang> tblChiTietPhieuDoi;
 
     private PhieuDoiHang phieuDoiHang;

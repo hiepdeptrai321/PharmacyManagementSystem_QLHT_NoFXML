@@ -44,10 +44,9 @@ public class TimKiemKhachHangTrongHD_Ctrl extends Application {
         this.onSelected = onSelected;
     }
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws Exception{
         TimKiemKhachHangTrongHD_GUI gui = new TimKiemKhachHangTrongHD_GUI();
         gui.showWithController(stage, this);
-
     }
     // 2. KHỞI TẠO (INITIALIZE)
     public void initialize() {

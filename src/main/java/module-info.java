@@ -36,6 +36,8 @@ module com.example.pharmacymanagementsystem_qlht {
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuNhapHang;
     exports com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon;
+    opens com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi to javafx.graphics;
+    exports com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi;
 
 
     requires javafx.base;

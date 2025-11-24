@@ -6,6 +6,7 @@ import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.DoiHangItem;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuDoi.LapPhieuDoi_GUI;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,8 +27,7 @@ import java.util.*;
 import static javafx.scene.control.Alert.AlertType.*;
 
 public class LapPhieuDoiHang_Ctrl extends Application {
-    public TextField txtTimHoaDonGoc;
-    public Button btnTimHD;
+
     public TableView<ChiTietHoaDon> tblSanPhamGoc;
     public TableColumn<ChiTietHoaDon, String> colSTTGoc;
     public TableColumn<ChiTietHoaDon, String> colTenSPGoc;
@@ -46,6 +46,10 @@ public class LapPhieuDoiHang_Ctrl extends Application {
     public TableColumn<DoiHangItem, String> colLyDo;
     public TableColumn<DoiHangItem, Void> colBo;
 
+    public TextField txtTimHoaDonGoc;
+    public Button btnTimHD;
+    public Button btnDoi;
+    public Button btnHuy;
     public TextField lblMaHDGoc;
     public TextField lblTenKH;
     public TextField lblSDT;
@@ -64,12 +68,17 @@ public class LapPhieuDoiHang_Ctrl extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        LapPhieuDoi_GUI gui = new LapPhieuDoi_GUI(this);
-        gui.show(stage);
+        LapPhieuDoi_GUI gui = new LapPhieuDoi_GUI();
+        gui.showWithController(stage, this);
     }
     public void initialize() {
         dpNgayLapPhieu.setValue(LocalDate.now());
+        txtTimHoaDonGoc.setOnAction(e -> btnTimHD.fire());
+        Platform.runLater(() -> txtTimHoaDonGoc.getParent().requestFocus());
         guiMacDinh();
+        btnTimHD.setOnAction(e-> xuLyTimHoaDonGoc());
+        btnDoi.setOnAction(e-> xuLyDoiHang());
+        btnHuy.setOnAction(e-> xuLyHuy());
     }
 
     private void xuLyChuyenSangDoi(ChiTietHoaDon cthdGoc) {
@@ -522,7 +531,6 @@ public class LapPhieuDoiHang_Ctrl extends Application {
             txtGhiChu.clear();
             tblSanPhamGoc.getItems().clear();
             tblSanPhamDoi.getItems().clear();
-            txtTimHoaDonGoc.requestFocus();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -588,6 +596,6 @@ public class LapPhieuDoiHang_Ctrl extends Application {
         tblSanPhamGoc.getItems().clear();
         tblSanPhamDoi.getItems().clear();
         txtTimHoaDonGoc.clear();
-        txtTimHoaDonGoc.requestFocus();
+        txtTimHoaDonGoc.setPromptText("Nhập mã hóa đơn gốc...");
     }
 }

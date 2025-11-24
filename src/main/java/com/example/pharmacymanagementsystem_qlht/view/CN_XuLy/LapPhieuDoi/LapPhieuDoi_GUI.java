@@ -1,6 +1,8 @@
 package com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuDoi;
 
-import javafx.geometry.Insets;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDoi.LapPhieuDoiHang_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.model.ChiTietHoaDon;
+import com.example.pharmacymanagementsystem_qlht.service.DoiHangItem;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -9,38 +11,36 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class LapPhieuDoi_GUI {
 
-    private final com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDoi.LapPhieuDoiHang_Ctrl ctrl;
-
-    public LapPhieuDoi_GUI(com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDoi.LapPhieuDoiHang_Ctrl ctrl) {
-        this.ctrl = ctrl;
-    }
-
-    public LapPhieuDoi_GUI() {
-        this.ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDoi.LapPhieuDoiHang_Ctrl();
-    }
-
-    public void show(Stage stage) {
+    public void showWithController(Stage stage, LapPhieuDoiHang_Ctrl ctrl) {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
         root.setStyle("-fx-font-size: 13px;");
 
-        // ===== Header =====
+        // ===== Header Pane =====
         Pane headerPane = new Pane();
-        headerPane.setPrefSize(1598, 54);
         headerPane.getStyleClass().add("header-pane");
+        headerPane.setLayoutX(28);
+        headerPane.setPrefSize(1598, 54);
         AnchorPane.setTopAnchor(headerPane, 8.0);
         AnchorPane.setLeftAnchor(headerPane, 28.0);
         AnchorPane.setRightAnchor(headerPane, 20.0);
 
-        ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/exchange_6049036.png")));
-        img.setFitWidth(61);
-        img.setFitHeight(44);
-        img.setLayoutX(288);
-        img.setLayoutY(5);
-        headerPane.getChildren().add(img);
+        ImageView imgHeader = new ImageView(new Image(
+                Objects.requireNonNull(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/exchange_6049036.png"))
+        ));
+        imgHeader.setFitHeight(44);
+        imgHeader.setFitWidth(61);
+        imgHeader.setLayoutX(288);
+        imgHeader.setLayoutY(5);
+        imgHeader.setPickOnBounds(true);
+        imgHeader.setPreserveRatio(true);
+        headerPane.getChildren().add(imgHeader);
 
+        // ===== Title =====
         Label lblTitle = new Label("LẬP PHIẾU ĐỔI HÀNG");
         lblTitle.getStyleClass().add("title-label");
         lblTitle.setLayoutX(40);
@@ -57,165 +57,234 @@ public class LapPhieuDoi_GUI {
         AnchorPane.setRightAnchor(searchPane, 449.0);
 
         Label lblTimHD = new Label("Tìm hóa đơn gốc:");
-        lblTimHD.setFont(Font.font("System Bold", 13));
         lblTimHD.setLayoutX(20);
         lblTimHD.setLayoutY(20);
+        lblTimHD.setFont(Font.font("System Bold", 13));
 
-        ctrl.txtTimHoaDonGoc = new TextField();
-        ctrl.txtTimHoaDonGoc.setPromptText("Nhập mã hóa đơn hoặc tên khách hàng ...");
-        ctrl.txtTimHoaDonGoc.setLayoutX(140);
-        ctrl.txtTimHoaDonGoc.setLayoutY(15);
-        ctrl.txtTimHoaDonGoc.setPrefSize(939, 29);
+        TextField txtTimHoaDonGoc = new TextField();
+        txtTimHoaDonGoc.setId("txtTimHoaDonGoc");
+        txtTimHoaDonGoc.setLayoutX(140);
+        txtTimHoaDonGoc.setLayoutY(15);
+        txtTimHoaDonGoc.setPrefSize(939, 29);
+        txtTimHoaDonGoc.setPromptText("Nhập mã hóa đơn gốc vào đây...");
 
-        ctrl.btnTimHD = new Button("Tìm");
-        ctrl.btnTimHD.setLayoutX(1098);
-        ctrl.btnTimHD.setLayoutY(15);
-        ctrl.btnTimHD.setPrefSize(54, 28);
-        ctrl.btnTimHD.setOnAction(e -> ctrl.xuLyTimHoaDonGoc());
+        Button btnTimHD = new Button("Tìm");
+        btnTimHD.setId("btnTimHD");
+        btnTimHD.setLayoutX(1098);
+        btnTimHD.setLayoutY(15);
+        btnTimHD.setPrefSize(54, 28);
 
-        searchPane.getChildren().addAll(lblTimHD, ctrl.txtTimHoaDonGoc, ctrl.btnTimHD);
+        searchPane.getChildren().addAll(lblTimHD, txtTimHoaDonGoc, btnTimHD);
 
         // ===== Hint =====
         Label lblHint = new Label("Chọn hóa đơn gốc để bắt đầu đổi hàng");
         lblHint.getStyleClass().add("hint-label");
+        lblHint.setLayoutX(40);
+        lblHint.setLayoutY(150);
         AnchorPane.setTopAnchor(lblHint, 150.0);
         AnchorPane.setLeftAnchor(lblHint, 40.0);
 
-        // ===== Table sản phẩm gốc =====
+        // ===== Table: Sản phẩm gốc =====
         Label lblSPGoc = new Label("Sản phẩm trong hóa đơn gốc");
         lblSPGoc.getStyleClass().add("section-label");
+        lblSPGoc.setLayoutX(40);
+        lblSPGoc.setLayoutY(180);
         AnchorPane.setTopAnchor(lblSPGoc, 180.0);
         AnchorPane.setLeftAnchor(lblSPGoc, 40.0);
 
-        ctrl.tblSanPhamGoc = new TableView<>();
-        ctrl.tblSanPhamGoc.setPrefSize(1156, 248);
-        ctrl.tblSanPhamGoc.getStyleClass().add("main-table");
-        AnchorPane.setTopAnchor(ctrl.tblSanPhamGoc, 210.0);
-        AnchorPane.setLeftAnchor(ctrl.tblSanPhamGoc, 40.0);
-        AnchorPane.setRightAnchor(ctrl.tblSanPhamGoc, 450.0);
+        TableView<ChiTietHoaDon> tblSanPhamGoc = new TableView<>();
+        tblSanPhamGoc.setId("tblSanPhamGoc");
+        tblSanPhamGoc.setPrefSize(1156, 248);
+        tblSanPhamGoc.getStyleClass().add("main-table");
+        AnchorPane.setTopAnchor(tblSanPhamGoc, 210.0);
+        AnchorPane.setLeftAnchor(tblSanPhamGoc, 40.0);
+        AnchorPane.setRightAnchor(tblSanPhamGoc, 450.0);
 
-        ctrl.colSTTGoc = new TableColumn<>("STT");
-        ctrl.colTenSPGoc = new TableColumn<>("Tên sản phẩm");
-        ctrl.colSoLuongGoc = new TableColumn<>("Số lượng");
-        ctrl.colDonViGoc = new TableColumn<>("Đơn vị");
-        ctrl.colDonGiaGoc = new TableColumn<>("Đơn giá");
-        ctrl.colGiamGiaGoc = new TableColumn<>("Giảm giá");
-        ctrl.colThanhTienGoc = new TableColumn<>("Thành tiền");
-        ctrl.colDoi = new TableColumn<>("Đổi");
+        TableColumn<ChiTietHoaDon, String> colSTTGoc = new TableColumn<>("STT");
+        colSTTGoc.setPrefWidth(50);
 
-        ctrl.tblSanPhamGoc.getColumns().addAll(
-                ctrl.colSTTGoc, ctrl.colTenSPGoc, ctrl.colSoLuongGoc, ctrl.colDonViGoc,
-                ctrl.colDonGiaGoc, ctrl.colGiamGiaGoc, ctrl.colThanhTienGoc, ctrl.colDoi
-        );
+        TableColumn<ChiTietHoaDon, String> colTenSPGoc = new TableColumn<>("Tên sản phẩm");
+        colTenSPGoc.setPrefWidth(374);
 
-        // ===== Table sản phẩm đổi =====
-        Label lblSPDoi = new Label("Sản phẩm đổi");
-        lblSPDoi.getStyleClass().add("section-label");
-        AnchorPane.setTopAnchor(lblSPDoi, 474.0);
-        AnchorPane.setLeftAnchor(lblSPDoi, 43.0);
+        TableColumn<ChiTietHoaDon, String> colSoLuongGoc = new TableColumn<>("Số lượng");
+        colSoLuongGoc.setPrefWidth(110);
 
-        ctrl.tblSanPhamDoi = new TableView<>();
-        ctrl.tblSanPhamDoi.setPrefSize(1160, 263);
-        ctrl.tblSanPhamDoi.getStyleClass().add("main-table");
-        AnchorPane.setTopAnchor(ctrl.tblSanPhamDoi, 510.0);
-        AnchorPane.setLeftAnchor(ctrl.tblSanPhamDoi, 38.0);
-        AnchorPane.setRightAnchor(ctrl.tblSanPhamDoi, 451.6);
-        AnchorPane.setBottomAnchor(ctrl.tblSanPhamDoi, 122.8);
+        TableColumn<ChiTietHoaDon, String> colDonViGoc = new TableColumn<>("Đơn vị");
+        colDonViGoc.setPrefWidth(132);
 
-        ctrl.colSTTDoi = new TableColumn<>("STT");
-        ctrl.colTenSPDoi = new TableColumn<>("Tên sản phẩm");
-        ctrl.colSoLuongDoi = new TableColumn<>("Số lượng đổi");
-        ctrl.colDonViDoi = new TableColumn<>("Đơn vị");
-        ctrl.colLyDo = new TableColumn<>("Lý do đổi");
-        ctrl.colBo = new TableColumn<>("Bỏ");
+        TableColumn<ChiTietHoaDon, String> colDonGiaGoc = new TableColumn<>("Đơn giá");
+        colDonGiaGoc.setPrefWidth(151.67);
 
-        ctrl.tblSanPhamDoi.getColumns().addAll(
-                ctrl.colSTTDoi, ctrl.colTenSPDoi, ctrl.colSoLuongDoi,
-                ctrl.colDonViDoi, ctrl.colLyDo, ctrl.colBo
-        );
+        TableColumn<ChiTietHoaDon, String> colGiamGiaGoc = new TableColumn<>("Giảm giá");
+        colGiamGiaGoc.setPrefWidth(143.67);
 
-        // ===== Info Panel (phải) =====
+        TableColumn<ChiTietHoaDon, String> colThanhTienGoc = new TableColumn<>("Thành tiền");
+        colThanhTienGoc.setPrefWidth(131.33);
+
+        TableColumn<ChiTietHoaDon, Void> colDoi = new TableColumn<>("Đổi");
+        colDoi.setPrefWidth(61);
+
+        tblSanPhamGoc.getColumns().addAll(colSTTGoc, colTenSPGoc, colSoLuongGoc, colDonViGoc,
+                colDonGiaGoc, colGiamGiaGoc, colThanhTienGoc, colDoi);
+
+        // ===== Table: Sản phẩm đổi =====
+        Label lblSPMoi = new Label("Sản phẩm đổi");
+        lblSPMoi.getStyleClass().add("section-label");
+        AnchorPane.setTopAnchor(lblSPMoi, 474.0);
+        AnchorPane.setLeftAnchor(lblSPMoi, 43.0);
+
+        TableView<DoiHangItem> tblSanPhamDoi = new TableView<>();
+        tblSanPhamDoi.setId("tblSanPhamDoi");
+        tblSanPhamDoi.setPrefSize(1160, 263);
+        tblSanPhamDoi.getStyleClass().add("main-table");
+        AnchorPane.setTopAnchor(tblSanPhamDoi, 510.0);
+        AnchorPane.setLeftAnchor(tblSanPhamDoi, 38.0);
+        AnchorPane.setRightAnchor(tblSanPhamDoi, 451.6);
+        AnchorPane.setBottomAnchor(tblSanPhamDoi, 122.8);
+
+        TableColumn<DoiHangItem, String> colSTTDoi = new TableColumn<>("STT");
+        colSTTDoi.setPrefWidth(50);
+
+        TableColumn<DoiHangItem, String> colTenSPDoi = new TableColumn<>("Tên sản phẩm");
+        colTenSPDoi.setPrefWidth(445.6);
+
+        TableColumn<DoiHangItem, Number> colSoLuongDoi = new TableColumn<>("Số lượng đổi");
+        colSoLuongDoi.setPrefWidth(124.33);
+
+        TableColumn<DoiHangItem, String> colDonViDoi = new TableColumn<>("Đơn vị");
+        colDonViDoi.setPrefWidth(92.67);
+
+        TableColumn<DoiHangItem, String> colLyDo = new TableColumn<>("Lý do đổi");
+        colLyDo.setPrefWidth(370.33);
+
+        TableColumn<DoiHangItem, Void> colBo = new TableColumn<>("Bỏ");
+        colBo.setPrefWidth(68.67);
+
+        tblSanPhamDoi.getColumns().addAll(colSTTDoi, colTenSPDoi, colSoLuongDoi, colDonViDoi, colLyDo, colBo);
+
+        // ===== Info Pane (bên phải) =====
         Pane infoPane = new Pane();
-        infoPane.setPrefWidth(391);
         infoPane.getStyleClass().add("info-pane");
+        infoPane.setPrefWidth(391);
         AnchorPane.setTopAnchor(infoPane, 70.0);
-        AnchorPane.setRightAnchor(infoPane, 30.0);
         AnchorPane.setBottomAnchor(infoPane, 120.0);
+        AnchorPane.setRightAnchor(infoPane, 30.0);
 
         Label lblInfoTitle = new Label("THÔNG TIN PHIẾU ĐỔI HÀNG");
         lblInfoTitle.getStyleClass().add("bold-label");
         lblInfoTitle.setLayoutX(30);
         lblInfoTitle.setLayoutY(61);
 
-        ctrl.lblMaHDGoc = new TextField();
-        ctrl.lblMaHDGoc.setEditable(false);
-        ctrl.lblMaHDGoc.setLayoutX(170);
-        ctrl.lblMaHDGoc.setLayoutY(95);
-        ctrl.lblMaHDGoc.setPrefWidth(140);
+        Label lblMaHDGocText = new Label("Mã hóa đơn gốc:");
+        lblMaHDGocText.setLayoutX(30);
+        lblMaHDGocText.setLayoutY(100);
 
-        ctrl.lblTenKH = new TextField();
-        ctrl.lblTenKH.setEditable(false);
-        ctrl.lblTenKH.setLayoutX(170);
-        ctrl.lblTenKH.setLayoutY(136);
-        ctrl.lblTenKH.setPrefWidth(140);
+        TextField lblMaHDGoc = new TextField();
+        lblMaHDGoc.setEditable(false);
+        lblMaHDGoc.setLayoutX(170);
+        lblMaHDGoc.setLayoutY(95);
+        lblMaHDGoc.setPrefWidth(140);
 
-        ctrl.lblSDT = new TextField();
-        ctrl.lblSDT.setEditable(false);
-        ctrl.lblSDT.setLayoutX(170);
-        ctrl.lblSDT.setLayoutY(183);
-        ctrl.lblSDT.setPrefWidth(140);
+        Label lblTenKHText = new Label("Tên khách hàng:");
+        lblTenKHText.setLayoutX(31);
+        lblTenKHText.setLayoutY(141);
 
-        ctrl.dpNgayLapPhieu = new DatePicker();
-        ctrl.dpNgayLapPhieu.setLayoutX(170);
-        ctrl.dpNgayLapPhieu.setLayoutY(227);
-        ctrl.dpNgayLapPhieu.setPrefWidth(140);
+        TextField lblTenKH = new TextField();
+        lblTenKH.setEditable(false);
+        lblTenKH.setLayoutX(170);
+        lblTenKH.setLayoutY(136);
+        lblTenKH.setPrefWidth(140);
 
-        ctrl.txtGhiChu = new TextArea();
-        ctrl.txtGhiChu.setLayoutX(30);
-        ctrl.txtGhiChu.setLayoutY(315);
-        ctrl.txtGhiChu.setPrefSize(322, 172);
+        Label lblSDTText = new Label("Số điện thoại:");
+        lblSDTText.setLayoutX(30);
+        lblSDTText.setLayoutY(189);
+
+        TextField lblSDT = new TextField();
+        lblSDT.setEditable(false);
+        lblSDT.setLayoutX(170);
+        lblSDT.setLayoutY(183);
+        lblSDT.setPrefWidth(140);
+
+        Label lblNgayLapText = new Label("Ngày lập phiếu:");
+        lblNgayLapText.setLayoutX(30);
+        lblNgayLapText.setLayoutY(233);
+
+        DatePicker dpNgayLapPhieu = new DatePicker();
+        dpNgayLapPhieu.setLayoutX(170);
+        dpNgayLapPhieu.setLayoutY(227);
+        dpNgayLapPhieu.setPrefWidth(140);
+
+        Label lblGhiChuText = new Label("Ghi chú:");
+        lblGhiChuText.setLayoutX(30);
+        lblGhiChuText.setLayoutY(269);
+
+        TextArea txtGhiChu = new TextArea();
+        txtGhiChu.setLayoutX(30);
+        txtGhiChu.setLayoutY(315);
+        txtGhiChu.setPrefSize(322, 207);
 
         Button btnDoi = new Button("Đổi hàng");
         btnDoi.getStyleClass().add("success-btn");
-        btnDoi.setPrefSize(327, 44);
         btnDoi.setLayoutX(29);
-        btnDoi.setLayoutY(532);
-        btnDoi.setOnAction(e -> ctrl.xuLyDoiHang());
-
-        Button btnIn = new Button("Đổi hàng và in phiếu đổi");
-        btnIn.getStyleClass().add("print-btn");
-        btnIn.setPrefSize(327, 44);
-        btnIn.setLayoutX(30);
-        btnIn.setLayoutY(584);
-        btnIn.setOnAction(e -> ctrl.xuLyInPhieuDoi());
+        btnDoi.setLayoutY(570);
+        btnDoi.setPrefSize(327, 44);
+        btnDoi.setFont(Font.font(14));
 
         Button btnHuy = new Button("Hủy");
-        btnHuy.setStyle("-fx-background-color: red;");
-        btnHuy.setPrefSize(331, 44);
         btnHuy.setLayoutX(28);
-        btnHuy.setLayoutY(636);
-        btnHuy.setOnAction(e -> ctrl.xuLyHuy());
+        btnHuy.setLayoutY(625);
+        btnHuy.setPrefSize(331, 44);
+        btnHuy.setStyle("-fx-background-color: red;");
+        btnHuy.getStyleClass().add("print-btn");
+        btnHuy.setFont(Font.font(14));
 
-        infoPane.getChildren().addAll(lblInfoTitle,
-                new Label("Mã hóa đơn gốc:") {{ setLayoutX(30); setLayoutY(100); }},
-                ctrl.lblMaHDGoc,
-                new Label("Tên khách hàng:") {{ setLayoutX(31); setLayoutY(141); }},
-                ctrl.lblTenKH,
-                new Label("Số điện thoại:") {{ setLayoutX(30); setLayoutY(189); }},
-                ctrl.lblSDT,
-                new Label("Ngày lập phiếu:") {{ setLayoutX(30); setLayoutY(233); }},
-                ctrl.dpNgayLapPhieu,
-                new Label("Ghi chú:") {{ setLayoutX(30); setLayoutY(269); }},
-                ctrl.txtGhiChu, btnDoi, btnIn, btnHuy
-        );
+        infoPane.getChildren().addAll(lblInfoTitle, lblMaHDGocText, lblMaHDGoc, lblTenKHText, lblTenKH,
+                lblSDTText, lblSDT, lblNgayLapText, dpNgayLapPhieu, lblGhiChuText, txtGhiChu, btnDoi, btnHuy);
 
-        // ===== Add all to root =====
-        root.getChildren().addAll(headerPane, lblTitle, searchPane, lblHint, lblSPGoc, ctrl.tblSanPhamGoc, lblSPDoi, ctrl.tblSanPhamDoi, infoPane);
+        // ===== Assemble all =====
+        root.getChildren().addAll(headerPane, lblTitle, searchPane, lblHint, lblSPGoc, tblSanPhamGoc,
+                lblSPMoi, tblSanPhamDoi, infoPane);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDoiHang.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDoiHang.css")
+        ).toExternalForm());
+
+        // ===== Inject to controller =====
+        ctrl.tblSanPhamGoc = tblSanPhamGoc;
+        ctrl.colSTTGoc = colSTTGoc;
+        ctrl.colTenSPGoc = colTenSPGoc;
+        ctrl.colSoLuongGoc = colSoLuongGoc;
+        ctrl.colDonViGoc = colDonViGoc;
+        ctrl.colDonGiaGoc = colDonGiaGoc;
+        ctrl.colGiamGiaGoc = colGiamGiaGoc;
+        ctrl.colThanhTienGoc = colThanhTienGoc;
+        ctrl.colDoi = colDoi;
+
+        ctrl.tblSanPhamDoi = tblSanPhamDoi;
+        ctrl.colSTTDoi = colSTTDoi;
+        ctrl.colTenSPDoi = colTenSPDoi;
+        ctrl.colSoLuongDoi = colSoLuongDoi;
+        ctrl.colDonViDoi = colDonViDoi;
+        ctrl.colLyDo = colLyDo;
+        ctrl.colBo = colBo;
+
+        ctrl.txtTimHoaDonGoc = txtTimHoaDonGoc;
+        ctrl.btnTimHD = btnTimHD;
+        ctrl.btnDoi = btnDoi;
+        ctrl.btnHuy = btnHuy;
+        ctrl.lblMaHDGoc = lblMaHDGoc;
+        ctrl.lblTenKH = lblTenKH;
+        ctrl.lblSDT = lblSDT;
+        ctrl.dpNgayLapPhieu = dpNgayLapPhieu;
+        ctrl.txtGhiChu = txtGhiChu;
+
+        // Gọi initialize() nếu có logic khởi tạo
+        ctrl.initialize();
+
+        stage.setTitle("Lập phiếu đổi hàng");
         stage.setScene(scene);
-        stage.setTitle("Lập Phiếu Đổi Hàng");
         stage.show();
     }
 }
+

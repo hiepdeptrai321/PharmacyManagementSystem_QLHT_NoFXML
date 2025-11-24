@@ -36,7 +36,7 @@
                       <Font name="System Bold" size="13.0" />
                    </font></Label>
                 <TextField fx:id="txtTimHoaDon" layoutX="130.0" layoutY="15.0" prefHeight="27.0" prefWidth="563.0" promptText="Nhập mã hóa đơn hoặc tên khách hàng ..." />
-            <Button layoutX="702.0" layoutY="16.0" mnemonicParsing="false" onAction="#xuLyTimHDGoc" text="Tìm" />
+            <Button fx:id="btnTimHD" layoutX="702.0" layoutY="16.0" mnemonicParsing="false" onAction="#xuLyTimHDGoc" text="Tìm" />
             </children>
         </Pane>
 
@@ -75,31 +75,26 @@
         <!-- Thông tin phiếu trả và tổng hợp bên phải -->
         <Pane fx:id="infoPane" prefHeight="786.0" prefWidth="391.0" styleClass="info-pane" AnchorPane.bottomAnchor="39.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="70.0">
             <children>
-                <Label layoutX="32.0" layoutY="55.0" text="Mã hóa đơn gốc:" />
+                <Label fx:id="lblMaHDGocText" layoutX="32.0" layoutY="55.0" text="Mã hóa đơn gốc:" />
                 <TextField fx:id="lblMaHDGoc" editable="false" layoutX="211.0" layoutY="49.0" prefWidth="120.0" />
 
-                <Label layoutX="36.0" layoutY="194.0" text="Ngày lập phiếu:" />
+                <Label fx:id="lblNgayLapText" layoutX="36.0" layoutY="194.0" text="Ngày lập phiếu:" />
 
-                <Label layoutX="28.0" layoutY="270.0" text="Thành tiền gốc::" />
+                <Label fx:id="lblThanhTienGocText" layoutX="28.0" layoutY="270.0" text="Thành tiền gốc::" />
                 <Label fx:id="lblTongTienGoc" layoutX="207.0" layoutY="269.0" styleClass="value-label" text="0 VNĐ" />
 
-                <Label layoutX="28.0" layoutY="310.0" text="Tổng tiền hàng trả lại:" />
+                <Label fx:id="lblTongTraLaiText" layoutX="28.0" layoutY="310.0" text="Tổng tiền hàng trả lại:" />
                 <Label fx:id="lblTongTienTraLai" layoutX="207.0" layoutY="309.0" styleClass="value-label" text="0 VNĐ" />
 
-                <Label layoutX="27.0" layoutY="351.0" text="Thuế(VAT) hoàn lại:" />
+                <Label fx:id="lblVATText" layoutX="27.0" layoutY="351.0" text="Thuế(VAT) hoàn lại:" />
                 <Label fx:id="lblVAT" layoutX="207.0" layoutY="349.0" styleClass="value-label" text="0 VNĐ" />
 
-                <Label layoutX="28.0" layoutY="400.0" styleClass="bold-label" text="Số tiền trả lại:" />
+                <Label fx:id="lblTienTraLaiText" layoutX="28.0" layoutY="400.0" styleClass="bold-label" text="Số tiền trả lại:" />
                 <Label fx:id="lblSoTienTraLai" layoutX="207.0" layoutY="399.0" styleClass="main-value-label" text="0 VNĐ" />
 
-                <Label layoutX="34.0" layoutY="454.0" text="Ghi chú:" />
-                <TextArea fx:id="txtGhiChu" layoutX="110.0" layoutY="449.0" prefHeight="128.0" prefWidth="247.0" />
-
-                <Button fx:id="btnInPhieuTra" layoutX="30.0" layoutY="657.0" onAction="#xuLyTraHangVaIn" prefHeight="44.0" prefWidth="325.0" styleClass="print-btn" text="Trả hàng và in phiếu trả">
-               <font>
-                  <Font size="14.0" />
-               </font></Button>
-                <Button fx:id="btnTraHang" layoutX="28.0" layoutY="603.0" onAction="#xuLyTraHang" prefHeight="44.0" prefWidth="329.0" styleClass="success-btn" text="Trả hàng">
+                <Label fx:id="lblGhiChuText" layoutX="34.0" layoutY="454.0" text="Ghi chú:" />
+                <TextArea fx:id="txtGhiChu" layoutX="110.0" layoutY="449.0" prefHeight="148.0" prefWidth="247.0" />
+                <Button fx:id="btnTraHang" layoutX="32.0" layoutY="652.0" onAction="#xuLyTraHang" prefHeight="44.0" prefWidth="325.0" styleClass="success-btn" text="Trả hàng">
                <font>
                   <Font size="14.0" />
                </font></Button>
@@ -109,9 +104,9 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Label layoutX="34.0" layoutY="100.0" text="Tên khách hàng:" />
+            <Label fx:id="lblTenKHText" layoutX="34.0" layoutY="100.0" text="Tên khách hàng:" />
             <Label fx:id="lblTenKH" layoutX="213.0" layoutY="94.0" prefWidth="120.0" />
-            <Label layoutX="35.0" layoutY="145.0" text="Số điện thoại:" />
+            <Label fx:id="lblSDTText" layoutX="35.0" layoutY="145.0" text="Số điện thoại:" />
             <Label fx:id="lblSDT" layoutX="214.0" layoutY="139.0" prefWidth="120.0" />
             <DatePicker fx:id="dpNgayLapPhieu" layoutX="215.0" layoutY="193.0" prefHeight="27.0" prefWidth="119.0" />
             </children>

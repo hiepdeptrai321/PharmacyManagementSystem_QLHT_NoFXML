@@ -2,11 +2,11 @@ package com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuTra;
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang.TKPhieuTraHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuTraHang;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang.TKPhieuTraHang_Ctrl;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,303 +14,199 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.util.Objects;
-
 public class TKPhieuTraHang_GUI extends Application {
 
-    // ===================== Entry cho test độc lập =====================
-    @Override
-    public void start(Stage stage) {
-        // Demo mở bằng Stage riêng
-        TKPhieuTraHang_Ctrl ctrl = new TKPhieuTraHang_Ctrl();
-        showWithController(stage, ctrl);
+    // Controller reference
+    private TKPhieuTraHang_Ctrl ctrl;
+
+    // Constructor
+    public TKPhieuTraHang_GUI() {}
+
+    // showWithController for real usage
+    public void showWithController(Stage stage, TKPhieuTraHang_Ctrl ctrl) {
+        this.ctrl = ctrl;
+        Pane root = createUI(ctrl);
+        Scene scene = new Scene(root, 1646, 895);
+        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css").toExternalForm());
+        stage.setScene(scene);
+        stage.setTitle("Tìm kiếm phiếu trả hàng");
         stage.show();
     }
 
-    // ===================== 1) MỞ BẰNG STAGE RIÊNG =====================
-    /** Mở cửa sổ mới, vẫn giữ nguyên UI/ID/css, wire hết control vào controller */
-    public void showWithController(Stage stage, TKPhieuTraHang_Ctrl ctrl) {
-        ViewRefs v = buildUI();       // tạo toàn bộ UI + control
-        wireToController(v, ctrl);    // gán control sang ctrl + gọi initialize()
-
-        Scene scene = new Scene(v.root, 1646, 895);
-        addStyles(scene);
-
-        stage.setTitle("Tìm kiếm phiếu trả hàng");
-        stage.setScene(scene);
-        // (để caller .show() hoặc bạn có thể stage.show() ngay tại đây)
+    @Override
+    public void start(Stage stage) {
+        showWithController(stage, new TKPhieuTraHang_Ctrl());
     }
 
-    // ===================== 2) NHÚNG VÀO pnlChung =====================
-    /** Trả về Node đã build và wire sẵn controller để gắn vào pnlChung (KHÔNG mở Stage) */
-    public Parent createContentForEmbed(TKPhieuTraHang_Ctrl ctrl) {
-        ViewRefs v = buildUI();       // tạo UI
-        wireToController(v, ctrl);    // gán control -> ctrl + initialize()
-        // Trả về root để Main Controller setAll() vào pnlChung
-        return v.root;
-    }
+    private Pane createUI(TKPhieuTraHang_Ctrl ctrl) {
+        Pane mainPane = new Pane();
+        mainPane.setPrefSize(1646, 895);
+        mainPane.setStyle("-fx-font-size: 14px;");
 
-    // ===================== BUILD UI (giữ nguyên layout/IDs) =====================
-    private ViewRefs buildUI() {
-        ViewRefs v = new ViewRefs();
-
-        v.root = new Pane();
-        v.root.setId("mainPane");
-        v.root.setPrefSize(1646, 895);
-        v.root.setStyle("-fx-font-size: 14px;");
-
-        VBox vbox = new VBox();
+        VBox vbox = new VBox(5);
         vbox.setLayoutX(10);
         vbox.setLayoutY(14);
 
-        // ======== HBox Tiêu đề ========
-        HBox hbTitle = new HBox();
-        hbTitle.setPrefSize(782, 46);
+        // --- Tiêu đề ---
+        HBox titleBox = new HBox();
+        titleBox.setPrefSize(782, 46);
 
         Label lbTimKiem = new Label("Tìm kiếm phiếu trả hàng");
-        lbTimKiem.setId("lbTimKiem");
         lbTimKiem.setPrefSize(449, 53);
         lbTimKiem.getStyleClass().add("title");
         lbTimKiem.setFont(new Font(36));
 
-        Label lbEmpty = new Label();
+        ImageView imgTitle = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/bill-8854.png").toExternalForm()));
+        imgTitle.setFitWidth(48);
+        imgTitle.setFitHeight(46);
+        imgTitle.setPreserveRatio(true);
 
-        ImageView imgBill = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/bill-8854.png")).toExternalForm())
-        );
-        imgBill.setFitHeight(46);
-        imgBill.setFitWidth(48);
-        imgBill.setPreserveRatio(true);
-        imgBill.setPickOnBounds(true);
+        titleBox.getChildren().addAll(lbTimKiem, new Label(), imgTitle);
 
-        hbTitle.getChildren().addAll(lbTimKiem, lbEmpty, imgBill);
+        Separator sep = new Separator();
+        sep.setPrefWidth(200);
 
-        Separator separator = new Separator();
-        separator.setPrefWidth(200);
+        // --- Thanh tìm kiếm ---
+        HBox searchBox = new HBox();
+        searchBox.setPrefSize(1607, 68);
 
-        // ======== HBox tìm kiếm ========
-        HBox hbSearch = new HBox();
-        hbSearch.setPrefSize(1607, 68);
+        ctrl.cboTimKiem = new ComboBox<>();
+        ctrl.cboTimKiem.setPromptText("Tìm theo");
+        ctrl.cboTimKiem.setPrefSize(140, 40);
+        ctrl.cboTimKiem.getStyleClass().add("btntim");
+        HBox.setMargin(ctrl.cboTimKiem, new Insets(10, 5, 0, 0));
 
-        v.cboTimKiem = new ComboBox<>();
-        v.cboTimKiem.setId("cboTimKiem");
-        v.cboTimKiem.setPrefSize(140, 40);
-        v.cboTimKiem.setPromptText("Tìm theo");
-        v.cboTimKiem.getStyleClass().add("btntim");
-        HBox.setMargin(v.cboTimKiem, new Insets(10, 5, 0, 0));
-
-        v.txtNoiDungTimKiem = new TextField();
-        v.txtNoiDungTimKiem.setId("txtNoiDungTimKiem");
-        v.txtNoiDungTimKiem.setPrefSize(251, 40);
-        v.txtNoiDungTimKiem.setPromptText("Nhập thông tin phiếu trả");
-        v.txtNoiDungTimKiem.getStyleClass().add("tftim");
-        HBox.setMargin(v.txtNoiDungTimKiem, new Insets(10, 0, 0, 0));
+        ctrl.txtNoiDungTimKiem = new TextField();
+        ctrl.txtNoiDungTimKiem.setPromptText("Nhập thông tin phiếu trả");
+        ctrl.txtNoiDungTimKiem.setPrefSize(251, 40);
+        ctrl.txtNoiDungTimKiem.getStyleClass().add("tftim");
+        HBox.setMargin(ctrl.txtNoiDungTimKiem, new Insets(10, 0, 0, 0));
 
         Region rg1 = new Region();
         rg1.setPrefSize(30, 51);
 
-        ImageView imgTime = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png")).toExternalForm())
-        );
-        imgTime.setFitHeight(27);
-        imgTime.setFitWidth(28);
-        imgTime.setPreserveRatio(true);
-        imgTime.setPickOnBounds(true);
-        HBox.setMargin(imgTime, new Insets(16, 4, 0, 0));
+        ImageView iconTime = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png").toExternalForm()));
+        iconTime.setFitWidth(28);
+        iconTime.setFitHeight(27);
+        iconTime.setPreserveRatio(true);
+        HBox.setMargin(iconTime, new Insets(16, 4, 0, 0));
 
-        Label lbTu = new Label("Từ: ");
-        lbTu.setPrefSize(27, 37);
-        lbTu.getStyleClass().add("tftim");
-        HBox.setMargin(lbTu, new Insets(10, 0, 0, 0));
+        Label lblTu = new Label("Từ: ");
+        lblTu.setPrefSize(27, 37);
+        lblTu.getStyleClass().add("tftim");
+        HBox.setMargin(lblTu, new Insets(10, 0, 0, 0));
 
-        v.dpTuNgay = new DatePicker();
-        v.dpTuNgay.setId("dpTuNgay");
-        v.dpTuNgay.setPrefSize(125, 40);
-        v.dpTuNgay.getStyleClass().add("tftim");
-        HBox.setMargin(v.dpTuNgay, new Insets(10, 10, 0, 0));
+        ctrl.dpTuNgay = new DatePicker();
+        ctrl.dpTuNgay.setPrefSize(125, 40);
+        ctrl.dpTuNgay.getStyleClass().add("tftim");
+        HBox.setMargin(ctrl.dpTuNgay, new Insets(10, 10, 0, 0));
 
-        Label lbDen = new Label("Đến: ");
-        lbDen.setPrefSize(35, 37);
-        lbDen.getStyleClass().add("tftim");
-        HBox.setMargin(lbDen, new Insets(10, 0, 0, 0));
+        Label lblDen = new Label("Đến: ");
+        lblDen.setPrefSize(35, 37);
+        lblDen.getStyleClass().add("tftim");
+        HBox.setMargin(lblDen, new Insets(10, 0, 0, 0));
 
-        v.dpDenNgay = new DatePicker();
-        v.dpDenNgay.setId("dpDenNgay");
-        v.dpDenNgay.setPrefSize(125, 40);
-        v.dpDenNgay.getStyleClass().add("tftim");
-        HBox.setMargin(v.dpDenNgay, new Insets(10, 0, 0, 0));
+        ctrl.dpDenNgay = new DatePicker();
+        ctrl.dpDenNgay.setPrefSize(125, 40);
+        ctrl.dpDenNgay.getStyleClass().add("tftim");
+        HBox.setMargin(ctrl.dpDenNgay, new Insets(10, 0, 0, 0));
 
         Region rg2 = new Region();
         rg2.setPrefSize(30, 51);
 
-        v.btnTimKiem = new Button("Tìm");
-        v.btnTimKiem.setId("btnTimKiem");
-        v.btnTimKiem.setPrefSize(78, 40);
-        v.btnTimKiem.setDefaultButton(true);
-        v.btnTimKiem.getStyleClass().add("btntim");
-        v.btnTimKiem.setContentDisplay(ContentDisplay.RIGHT);
-        HBox.setMargin(v.btnTimKiem, new Insets(10, 0, 0, 8));
+        ctrl.btnTimKiem = new Button("Tìm");
+        ctrl.btnTimKiem.setPrefSize(78, 40);
+        ctrl.btnTimKiem.setDefaultButton(true);
+        ctrl.btnTimKiem.getStyleClass().add("btntim");
+        HBox.setMargin(ctrl.btnTimKiem, new Insets(10, 8, 0, 8));
 
-        ImageView imgSearch = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png")).toExternalForm())
-        );
+        ImageView imgSearch = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png").toExternalForm()));
+        imgSearch.setFitWidth(20);
         imgSearch.setFitHeight(20);
-        imgSearch.setFitWidth(150);
-        imgSearch.setPreserveRatio(true);
-        imgSearch.setPickOnBounds(true);
         imgSearch.setCursor(Cursor.DEFAULT);
-        v.btnTimKiem.setGraphic(imgSearch);
+        ctrl.btnTimKiem.setGraphic(imgSearch);
 
-        v.btnHuyBo = new Button();
-        v.btnHuyBo.setId("btnHuyBo");
-        v.btnHuyBo.setPrefSize(52, 40);
-        v.btnHuyBo.getStyleClass().add("btntim");
-        v.btnHuyBo.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css")).toExternalForm());
-        HBox.setMargin(v.btnHuyBo, new Insets(10, 0, 0, 8));
+        ctrl.btnHuyBo = new Button();
+        ctrl.btnHuyBo.setPrefSize(52, 40);
+        ctrl.btnHuyBo.getStyleClass().add("btntim");
+        HBox.setMargin(ctrl.btnHuyBo, new Insets(10, 8, 0, 8));
 
-        ImageView imgRefresh = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")).toExternalForm())
-        );
-        imgRefresh.setFitHeight(20);
+        ImageView imgRefresh = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png").toExternalForm()));
         imgRefresh.setFitWidth(34);
-        imgRefresh.setPreserveRatio(true);
-        imgRefresh.setPickOnBounds(true);
-        v.btnHuyBo.setGraphic(imgRefresh);
+        imgRefresh.setFitHeight(20);
+        ctrl.btnHuyBo.setGraphic(imgRefresh);
 
         Region rg3 = new Region();
         rg3.setPrefSize(465, 68);
 
-        v.cbLoc = new ComboBox<>();
-        v.cbLoc.setId("cbLoc");
-        v.cbLoc.setPrefSize(185, 41);
-        v.cbLoc.setPromptText("⌛ Bộ lọc nhanh");
-        v.cbLoc.getStyleClass().add("btntim");
-        HBox.setMargin(v.cbLoc, new Insets(10, 0, 0, 0));
+        ctrl.cbLoc = new ComboBox<>();
+        ctrl.cbLoc.setPromptText("⌛ Bộ lọc nhanh");
+        ctrl.cbLoc.setPrefSize(185, 41);
+        ctrl.cbLoc.getStyleClass().add("btntim");
+        HBox.setMargin(ctrl.cbLoc, new Insets(10, 0, 0, 0));
 
-        hbSearch.getChildren().addAll(
-                v.cboTimKiem, v.txtNoiDungTimKiem, rg1, imgTime, lbTu, v.dpTuNgay, lbDen, v.dpDenNgay,
-                rg2, v.btnTimKiem, v.btnHuyBo, rg3, v.cbLoc
-        );
-        VBox.setMargin(hbSearch, new Insets(0, 0, 5, 0));
-
-        // ======== TableView ========
-        v.tblPT = new TableView<>();
-        v.tblPT.setId("tblPT");
-        v.tblPT.setPrefSize(1605, 749);
-
-        v.colSTT = new TableColumn<>("STT");
-        v.colSTT.setId("colSTT");
-        v.colSTT.setPrefWidth(51);
-        v.colSTT.setStyle("-fx-alignment: CENTER;");
-
-        v.colMaPT = new TableColumn<>("Mã phiếu trả");
-        v.colMaPT.setId("colMaPT");
-        v.colMaPT.setPrefWidth(189.33);
-        v.colMaPT.setStyle("-fx-alignment: CENTER;");
-
-        v.colMaHD = new TableColumn<>("Mã hóa đơn");
-        v.colMaHD.setId("colMaHD");
-        v.colMaHD.setPrefWidth(182.66);
-        v.colMaHD.setStyle("-fx-alignment: CENTER;");
-
-        v.colNgayLap = new TableColumn<>("Ngày lập");
-        v.colNgayLap.setId("colNgayLap");
-        v.colNgayLap.setPrefWidth(216.33);
-        v.colNgayLap.setStyle("-fx-alignment: CENTER;");
-
-        v.colTenKH = new TableColumn<>("Khách hàng");
-        v.colTenKH.setId("colTenKH");
-        v.colTenKH.setPrefWidth(285);
-
-        v.colSdtKH = new TableColumn<>("SĐT");
-        v.colSdtKH.setId("colSdtKH");
-        v.colSdtKH.setPrefWidth(243);
-        v.colSdtKH.setStyle("-fx-alignment: CENTER;");
-
-        v.colTenNV = new TableColumn<>("Nhân viên");
-        v.colTenNV.setId("colTenNV");
-        v.colTenNV.setPrefWidth(337);
-
-        v.colChiTiet = new TableColumn<>("Chi tiết");
-        v.colChiTiet.setId("colChiTiet");
-        v.colChiTiet.setPrefWidth(84);
-        v.colChiTiet.setStyle("-fx-alignment: CENTER;");
-
-        v.tblPT.getColumns().addAll(
-                v.colSTT, v.colMaPT, v.colMaHD, v.colNgayLap, v.colTenKH, v.colSdtKH, v.colTenNV, v.colChiTiet
+        searchBox.getChildren().addAll(
+                ctrl.cboTimKiem, ctrl.txtNoiDungTimKiem, rg1,
+                iconTime, lblTu, ctrl.dpTuNgay, lblDen, ctrl.dpDenNgay,
+                rg2, ctrl.btnTimKiem, ctrl.btnHuyBo, rg3, ctrl.cbLoc
         );
 
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(v.tblPT);
+        // --- Bảng ---
+        ctrl.tblPT = new TableView<>();
+        ctrl.tblPT.setPrefSize(1605, 749);
 
-        vbox.getChildren().addAll(hbTitle, separator, hbSearch, scrollPane);
+        ctrl.colSTT = new TableColumn<>("STT");
+        ctrl.colSTT.setPrefWidth(51);
+        ctrl.colSTT.setStyle("-fx-alignment: CENTER;");
 
-        ImageView imgTimeIcon = new ImageView();
-        imgTimeIcon.setFitHeight(35);
-        imgTimeIcon.setFitWidth(40);
-        imgTimeIcon.setLayoutX(500);
-        imgTimeIcon.setLayoutY(-91);
-        imgTimeIcon.setPreserveRatio(true);
-        imgTimeIcon.getStyleClass().add("icontime");
+        ctrl.colMaPT = new TableColumn<>("Mã phiếu trả");
+        ctrl.colMaPT.setPrefWidth(189.33);
+        ctrl.colMaPT.setStyle("-fx-alignment: CENTER;");
 
-        v.root.getChildren().addAll(vbox, imgTimeIcon);
+        ctrl.colMaHD = new TableColumn<>("Mã hóa đơn");
+        ctrl.colMaHD.setPrefWidth(182.66);
+        ctrl.colMaHD.setStyle("-fx-alignment: CENTER;");
 
-        return v;
-    }
+        ctrl.colNgayLap = new TableColumn<>("Ngày lập");
+        ctrl.colNgayLap.setPrefWidth(216.33);
+        ctrl.colNgayLap.setStyle("-fx-alignment: CENTER;");
 
-    // ===================== GÁN CONTROL -> CONTROLLER =====================
-    private void wireToController(ViewRefs v, TKPhieuTraHang_Ctrl ctrl) {
-        // Combo & textfields & datepickers & buttons
-        ctrl.cboTimKiem         = v.cboTimKiem;
-        ctrl.txtNoiDungTimKiem  = v.txtNoiDungTimKiem;
-        ctrl.dpTuNgay           = v.dpTuNgay;
-        ctrl.dpDenNgay          = v.dpDenNgay;
-        ctrl.btnTimKiem         = v.btnTimKiem;
-        ctrl.btnHuyBo           = v.btnHuyBo;
-        ctrl.cbLoc              = v.cbLoc;
+        ctrl.colTenKH = new TableColumn<>("Khách hàng");
+        ctrl.colTenKH.setPrefWidth(285);
 
-        // Table & columns (kiểu dữ liệu khớp controller của bạn)
-        ctrl.tblPT              = v.tblPT;
-        // bạn đang dùng Number hay String cho STT? Ở đây set Number cho phổ biến:
-        ctrl.colSTT             = new TableColumn<>("STT");
-        // Nếu controller của bạn đã khai báo sẵn colSTT là Number, dùng v.colSTT luôn:
-        // ctrl.colSTT = v.colSTT;
+        ctrl.colSdtKH = new TableColumn<>("SĐT");
+        ctrl.colSdtKH.setPrefWidth(243);
+        ctrl.colSdtKH.setStyle("-fx-alignment: CENTER;");
 
-        ctrl.colSTT             = (TableColumn<PhieuTraHang, Number>) (TableColumn<?, ?>) v.colSTT;
-        ctrl.colMaPT            = v.colMaPT;
-        ctrl.colMaHD            = v.colMaHD;
-        ctrl.colNgayLap         = v.colNgayLap;
-        ctrl.colTenKH           = v.colTenKH;
-        ctrl.colSdtKH           = v.colSdtKH;
-        ctrl.colTenNV           = v.colTenNV;
-        ctrl.colChiTiet         = v.colChiTiet;
+        ctrl.colTenNV = new TableColumn<>("Nhân viên");
+        ctrl.colTenNV.setPrefWidth(337);
 
-        // Gọi initialize() sau khi đã gán đủ control
-        try { ctrl.initialize(); } catch (Exception ignore) {}
-    }
+        ctrl.colChiTiet = new TableColumn<>();
+        ctrl.colChiTiet.setPrefWidth(84);
+        ctrl.colChiTiet.setStyle("-fx-alignment: CENTER;");
 
-    // ===================== CSS =====================
-    private void addStyles(Scene scene) {
-        var css = getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css");
-        if (css != null) scene.getStylesheets().add(css.toExternalForm());
-        else System.err.println("Không tìm thấy TimKiemHoaDon.css");
-    }
+        ctrl.tblPT.getColumns().addAll(
+                ctrl.colSTT, ctrl.colMaPT, ctrl.colMaHD, ctrl.colNgayLap,
+                ctrl.colTenKH, ctrl.colSdtKH, ctrl.colTenNV, ctrl.colChiTiet
+        );
 
-    // ===================== Holder cho toàn bộ control =====================
-    private static class ViewRefs {
-        Pane root;
+        ScrollPane scrollPane = new ScrollPane(ctrl.tblPT);
 
-        // search bar controls
-        ComboBox<String> cboTimKiem;
-        TextField txtNoiDungTimKiem;
-        DatePicker dpTuNgay, dpDenNgay;
-        Button btnTimKiem, btnHuyBo;
-        ComboBox<String> cbLoc;
+        // --- Gộp bố cục ---
+        vbox.getChildren().addAll(titleBox, sep, searchBox, scrollPane);
+        mainPane.getChildren().add(vbox);
 
-        // table
-        TableView<PhieuTraHang> tblPT;
-        TableColumn<PhieuTraHang, Number> colSTT;
-        TableColumn<PhieuTraHang, String> colMaPT, colMaHD, colNgayLap, colTenKH, colSdtKH, colTenNV, colChiTiet;
+        // Icon góc
+        ImageView iconTime2 = new ImageView();
+        iconTime2.setLayoutX(500);
+        iconTime2.setLayoutY(-91);
+        iconTime2.setFitWidth(40);
+        iconTime2.setFitHeight(35);
+        iconTime2.setPreserveRatio(true);
+        iconTime2.getStyleClass().add("icontime");
+        mainPane.getChildren().add(iconTime2);
+
+        return mainPane;
     }
 
     public static void main(String[] args) {

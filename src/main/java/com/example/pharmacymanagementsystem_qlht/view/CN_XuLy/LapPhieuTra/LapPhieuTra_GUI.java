@@ -1,11 +1,10 @@
 package com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuTra;
 
-import com.example.pharmacymanagementsystem_qlht.dao.ChiTietHoaDon_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.HoaDon_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.KhachHang_Dao;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuTra.LapPhieuTraHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietHoaDon;
 import com.example.pharmacymanagementsystem_qlht.service.TraHangItem;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -13,67 +12,42 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import java.time.LocalDate;
 
-public class LapPhieuTra_GUI extends Application {
+import static javafx.application.Application.launch;
 
-    // === Khai báo các control ===
-    private AnchorPane root;
-    public TextField txtTimHoaDon, lblMaHDGoc;
-    public Button btnTimHoaDon, btnTraHang, btnInPhieuTra, btnHuy;
-    public TableView<ChiTietHoaDon> tblSanPhamHoaDon;
-    public TableColumn<ChiTietHoaDon, String> colSTTGoc, colTenSPGoc, colSLGoc, colDonViGoc, colDonGiaGoc, colThanhTienGoc;
-    public TableColumn<ChiTietHoaDon, Void> colTra;
+public class LapPhieuTra_GUI {
 
-    public TableView<TraHangItem> tblChiTietTraHang;
-    public TableColumn<TraHangItem, String> colSTTTra, colTenSPTra, colDonViTra, colLyDo;
-    public TableColumn<TraHangItem, Number> colSLTra;
-    public TableColumn<TraHangItem, Double> colDonGiaTra, colThanhTienTra;
-    public TableColumn<TraHangItem, Void> colBo;
+    public void showWithController(Stage stage, LapPhieuTraHang_Ctrl ctrl) {
 
-    public Label lblTenKH, lblSDT, lblTongTienGoc, lblTongTienTraLai, lblVAT, lblSoTienTraLai;
-    public TextArea txtGhiChu;
-    public DatePicker dpNgayLapPhieu;
-
-
-    @Override
-    public void start(Stage stage) {
-        root = new AnchorPane();
+        // ===== Root =====
+        AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
         root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuTraHang.css").toExternalForm());
-        taoGiaoDien();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Lập Phiếu Trả Hàng");
-        stage.show();
-    }
 
-    private void taoGiaoDien() {
-        // ===== HEADER =====
+        // ===== Header =====
         Pane headerPane = new Pane();
-        headerPane.getStyleClass().add("header-pane");
         headerPane.setPrefSize(1587, 54);
+        headerPane.getStyleClass().add("header-pane");
         AnchorPane.setTopAnchor(headerPane, 8.0);
         AnchorPane.setLeftAnchor(headerPane, 28.0);
         AnchorPane.setRightAnchor(headerPane, 31.0);
 
-        ImageView img = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/return_11153370.png").toExternalForm()));
-        img.setFitHeight(53);
-        img.setFitWidth(67);
-        img.setLayoutX(297);
-        img.setLayoutY(1);
-        img.setPreserveRatio(true);
-        headerPane.getChildren().add(img);
+        ImageView ivIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/return_11153370.png")));
+        ivIcon.setFitHeight(53);
+        ivIcon.setFitWidth(67);
+        ivIcon.setLayoutX(297);
+        ivIcon.setLayoutY(1);
+        headerPane.getChildren().add(ivIcon);
 
-        // ===== TIÊU ĐỀ =====
         Label lblTitle = new Label("LẬP PHIẾU TRẢ HÀNG");
         lblTitle.getStyleClass().add("title-label");
+        lblTitle.setLayoutX(40);
+        lblTitle.setLayoutY(21);
         AnchorPane.setTopAnchor(lblTitle, 18.0);
         AnchorPane.setLeftAnchor(lblTitle, 40.0);
 
-        // ===== KHUNG TÌM HÓA ĐƠN =====
+        // ===== Search Pane =====
         Pane searchPane = new Pane();
         searchPane.getStyleClass().add("search-pane");
         searchPane.setPrefSize(766, 70);
@@ -81,59 +55,79 @@ public class LapPhieuTra_GUI extends Application {
         AnchorPane.setLeftAnchor(searchPane, 30.0);
         AnchorPane.setRightAnchor(searchPane, 850.0);
 
-        Label lblTim = new Label("Tìm hóa đơn gốc:");
-        lblTim.setFont(Font.font("System", FontWeight.BOLD, 13));
-        lblTim.setLayoutX(20);
-        lblTim.setLayoutY(20);
+        Label lblSearch = new Label("Tìm hóa đơn gốc:");
+        lblSearch.setLayoutX(20);
+        lblSearch.setLayoutY(20);
+        lblSearch.setFont(Font.font("System Bold", 13));
 
-        txtTimHoaDon = new TextField();
+        TextField txtTimHoaDon = new TextField();
+        txtTimHoaDon.setPromptText("Nhập mã hóa đơn hoặc tên khách hàng ...");
         txtTimHoaDon.setLayoutX(130);
         txtTimHoaDon.setLayoutY(15);
         txtTimHoaDon.setPrefSize(563, 27);
-        txtTimHoaDon.setPromptText("Nhập mã hóa đơn hoặc tên khách hàng ...");
 
-        btnTimHoaDon = new Button("Tìm");
-        btnTimHoaDon.setLayoutX(702);
-        btnTimHoaDon.setLayoutY(16);
-        btnTimHoaDon.setOnAction(e -> xuLyTimHDGoc());
+        Button btnTimHD = new Button("Tìm");
+        btnTimHD.setLayoutX(702);
+        btnTimHD.setLayoutY(16);
+        btnTimHD.setOnAction(e -> ctrl.xuLyTimHDGoc());
 
-        searchPane.getChildren().addAll(lblTim, txtTimHoaDon, btnTimHoaDon);
+        searchPane.getChildren().addAll(lblSearch, txtTimHoaDon, btnTimHD);
 
-        // ===== HƯỚNG DẪN =====
+        // ===== Hint =====
         Label lblHint = new Label("Chọn hóa đơn gốc để bắt đầu trả hàng");
         lblHint.getStyleClass().add("hint-label");
+        lblHint.setLayoutX(40);
+        lblHint.setLayoutY(150);
         AnchorPane.setTopAnchor(lblHint, 150.0);
         AnchorPane.setLeftAnchor(lblHint, 40.0);
 
-        // ===== BẢNG SẢN PHẨM GỐC =====
+        // ===== Bảng sản phẩm gốc =====
+        // ===== Bảng sản phẩm trong hóa đơn gốc =====
         Label lblSPGoc = new Label("Sản phẩm trong hóa đơn gốc");
         lblSPGoc.getStyleClass().add("section-label");
-        AnchorPane.setTopAnchor(lblSPGoc, 180.0);
-        AnchorPane.setLeftAnchor(lblSPGoc, 40.0);
+        lblSPGoc.setLayoutX(40);
+        lblSPGoc.setLayoutY(180);
 
-        tblSanPhamHoaDon = new TableView<>();
+        TableView<ChiTietHoaDon> tblSanPhamHoaDon = new TableView<>();
         tblSanPhamHoaDon.getStyleClass().add("main-table");
         tblSanPhamHoaDon.setPrefSize(1156, 304);
         AnchorPane.setTopAnchor(tblSanPhamHoaDon, 210.0);
         AnchorPane.setLeftAnchor(tblSanPhamHoaDon, 40.0);
         AnchorPane.setRightAnchor(tblSanPhamHoaDon, 450.0);
 
-        colSTTGoc = new TableColumn<>("STT");
-        colTenSPGoc = new TableColumn<>("Tên sản phẩm");
-        colSLGoc = new TableColumn<>("Số lượng");
-        colDonViGoc = new TableColumn<>("Đơn vị");
-        colDonGiaGoc = new TableColumn<>("Đơn giá");
-        colThanhTienGoc = new TableColumn<>("Thành tiền");
-        colTra = new TableColumn<>("Trả");
-        tblSanPhamHoaDon.getColumns().addAll(colSTTGoc, colTenSPGoc, colSLGoc, colDonViGoc, colDonGiaGoc, colThanhTienGoc, colTra);
+// Các cột
+        TableColumn<ChiTietHoaDon, String> colSTTGoc = new TableColumn<>("STT");
+        colSTTGoc.setPrefWidth(40.0);
 
-        // ===== BẢNG TRẢ HÀNG =====
-        Label lblTra = new Label("Chi tiết trả hàng");
-        lblTra.getStyleClass().add("section-label");
-        AnchorPane.setTopAnchor(lblTra, 528.0);
-        AnchorPane.setLeftAnchor(lblTra, 40.0);
+        TableColumn<ChiTietHoaDon, String> colTenSPGoc = new TableColumn<>("Tên sản phẩm");
+        colTenSPGoc.setPrefWidth(481.6666564941406);
 
-        tblChiTietTraHang = new TableView<>();
+        TableColumn<ChiTietHoaDon, String> colSLGoc = new TableColumn<>("Số lượng");
+        colSLGoc.setPrefWidth(148.33334350585938);
+
+        TableColumn<ChiTietHoaDon, String> colDonViGoc = new TableColumn<>("Đơn vị");
+        colDonViGoc.setPrefWidth(124.0);
+
+        TableColumn<ChiTietHoaDon, String> colDonGiaGoc = new TableColumn<>("Đơn giá");
+        colDonGiaGoc.setPrefWidth(146.66668701171875);
+
+        TableColumn<ChiTietHoaDon, String> colThanhTienGoc = new TableColumn<>("Thành tiền");
+        colThanhTienGoc.setPrefWidth(144.6666259765625);
+
+        TableColumn<ChiTietHoaDon, Void> colTra = new TableColumn<>("Trả");
+        colTra.setPrefWidth(61.66668701171875);
+
+        tblSanPhamHoaDon.getColumns().setAll(
+                colSTTGoc, colTenSPGoc, colSLGoc, colDonViGoc, colDonGiaGoc, colThanhTienGoc, colTra
+        );
+
+// ===== Bảng chi tiết trả hàng =====
+        Label lblChiTietTra = new Label("Chi tiết trả hàng");
+        lblChiTietTra.getStyleClass().add("section-label");
+        lblChiTietTra.setLayoutX(40);
+        lblChiTietTra.setLayoutY(528);
+
+        TableView<TraHangItem> tblChiTietTraHang = new TableView<>();
         tblChiTietTraHang.getStyleClass().add("main-table");
         tblChiTietTraHang.setPrefSize(1160, 295);
         AnchorPane.setTopAnchor(tblChiTietTraHang, 559.0);
@@ -141,17 +135,37 @@ public class LapPhieuTra_GUI extends Application {
         AnchorPane.setRightAnchor(tblChiTietTraHang, 446.0);
         AnchorPane.setBottomAnchor(tblChiTietTraHang, 41.0);
 
-        colSTTTra = new TableColumn<>("STT");
-        colTenSPTra = new TableColumn<>("Tên sản phẩm");
-        colSLTra = new TableColumn<>("Số lượng");
-        colDonViTra = new TableColumn<>("Đơn vị");
-        colDonGiaTra = new TableColumn<>("Đơn giá");
-        colThanhTienTra = new TableColumn<>("Thành tiền");
-        colLyDo = new TableColumn<>("Lý do trả");
-        colBo = new TableColumn<>("Bỏ");
-        tblChiTietTraHang.getColumns().addAll(colSTTTra, colTenSPTra, colSLTra, colDonViTra, colDonGiaTra, colThanhTienTra, colLyDo, colBo);
+// Các cột
+        TableColumn<TraHangItem, String> colSTTTra = new TableColumn<>("STT");
+        colSTTTra.setPrefWidth(40.0);
 
-        // ===== PANE THÔNG TIN PHIẾU TRẢ =====
+        TableColumn<TraHangItem, String> colTenSPTra = new TableColumn<>("Tên sản phẩm");
+        colTenSPTra.setPrefWidth(401.6666564941406);
+
+        TableColumn<TraHangItem, Number> colSLTra = new TableColumn<>("Số lượng");
+        colSLTra.setPrefWidth(108.33334350585938);
+
+        TableColumn<TraHangItem, String> colDonViTra = new TableColumn<>("Đơn vị");
+        colDonViTra.setPrefWidth(93.66668701171875);
+
+        TableColumn<TraHangItem, Double> colDonGiaTra = new TableColumn<>("Đơn giá");
+        colDonGiaTra.setPrefWidth(115.6666259765625);
+
+        TableColumn<TraHangItem, Double> colThanhTienTra = new TableColumn<>("Thành tiền");
+        colThanhTienTra.setPrefWidth(122.33331298828125);
+
+        TableColumn<TraHangItem, String> colLyDo = new TableColumn<>("Lý do trả");
+        colLyDo.setPrefWidth(212.66668701171875);
+
+        TableColumn<TraHangItem, Void> colBo = new TableColumn<>("Bỏ");
+        colBo.setPrefWidth(61.20009765624991);
+
+        tblChiTietTraHang.getColumns().setAll(
+                colSTTTra, colTenSPTra, colSLTra, colDonViTra,
+                colDonGiaTra, colThanhTienTra, colLyDo, colBo
+        );
+
+        // ===== Info Pane (bên phải) =====
         Pane infoPane = new Pane();
         infoPane.getStyleClass().add("info-pane");
         infoPane.setPrefSize(391, 786);
@@ -159,16 +173,16 @@ public class LapPhieuTra_GUI extends Application {
         AnchorPane.setRightAnchor(infoPane, 30.0);
         AnchorPane.setBottomAnchor(infoPane, 39.0);
 
-        Label lblHeader = new Label("THÔNG TIN PHIẾU TRẢ HÀNG");
-        lblHeader.getStyleClass().add("bold-label");
-        lblHeader.setLayoutX(30);
-        lblHeader.setLayoutY(14);
+        Label lblHeaderInfo = new Label("THÔNG TIN PHIẾU TRẢ HÀNG");
+        lblHeaderInfo.getStyleClass().add("bold-label");
+        lblHeaderInfo.setLayoutX(30);
+        lblHeaderInfo.setLayoutY(14);
 
-        Label lblMaHDText = new Label("Mã hóa đơn gốc:");
-        lblMaHDText.setLayoutX(32);
-        lblMaHDText.setLayoutY(55);
+        Label lblMaHDGocText = new Label("Mã hóa đơn gốc:");
+        lblMaHDGocText.setLayoutX(32);
+        lblMaHDGocText.setLayoutY(55);
 
-        lblMaHDGoc = new TextField();
+        TextField lblMaHDGoc = new TextField();
         lblMaHDGoc.setEditable(false);
         lblMaHDGoc.setLayoutX(211);
         lblMaHDGoc.setLayoutY(49);
@@ -177,8 +191,7 @@ public class LapPhieuTra_GUI extends Application {
         Label lblTenKHText = new Label("Tên khách hàng:");
         lblTenKHText.setLayoutX(34);
         lblTenKHText.setLayoutY(100);
-
-        lblTenKH = new Label();
+        Label lblTenKH = new Label();
         lblTenKH.setLayoutX(213);
         lblTenKH.setLayoutY(94);
         lblTenKH.setPrefWidth(120);
@@ -186,8 +199,7 @@ public class LapPhieuTra_GUI extends Application {
         Label lblSDTText = new Label("Số điện thoại:");
         lblSDTText.setLayoutX(35);
         lblSDTText.setLayoutY(145);
-
-        lblSDT = new Label();
+        Label lblSDT = new Label();
         lblSDT.setLayoutX(214);
         lblSDT.setLayoutY(139);
         lblSDT.setPrefWidth(120);
@@ -196,44 +208,40 @@ public class LapPhieuTra_GUI extends Application {
         lblNgayLapText.setLayoutX(36);
         lblNgayLapText.setLayoutY(194);
 
-        dpNgayLapPhieu = new DatePicker(LocalDate.now());
+        DatePicker dpNgayLapPhieu = new DatePicker();
         dpNgayLapPhieu.setLayoutX(215);
         dpNgayLapPhieu.setLayoutY(193);
         dpNgayLapPhieu.setPrefSize(119, 27);
 
-        Label lblTongGocText = new Label("Thành tiền gốc:");
-        lblTongGocText.setLayoutX(28);
-        lblTongGocText.setLayoutY(270);
-
-        lblTongTienGoc = new Label("0 VNĐ");
+        Label lblThanhTienGocText = new Label("Thành tiền gốc:");
+        lblThanhTienGocText.setLayoutX(28);
+        lblThanhTienGocText.setLayoutY(270);
+        Label lblTongTienGoc = new Label("0 VNĐ");
         lblTongTienGoc.getStyleClass().add("value-label");
         lblTongTienGoc.setLayoutX(207);
         lblTongTienGoc.setLayoutY(269);
 
-        Label lblTongTraText = new Label("Tổng tiền hàng trả lại:");
-        lblTongTraText.setLayoutX(28);
-        lblTongTraText.setLayoutY(310);
-
-        lblTongTienTraLai = new Label("0 VNĐ");
+        Label lblTongTraLaiText = new Label("Tổng tiền hàng trả lại:");
+        lblTongTraLaiText.setLayoutX(28);
+        lblTongTraLaiText.setLayoutY(310);
+        Label lblTongTienTraLai = new Label("0 VNĐ");
         lblTongTienTraLai.getStyleClass().add("value-label");
         lblTongTienTraLai.setLayoutX(207);
         lblTongTienTraLai.setLayoutY(309);
 
-        Label lblVatText = new Label("Thuế (VAT) hoàn lại:");
-        lblVatText.setLayoutX(27);
-        lblVatText.setLayoutY(351);
-
-        lblVAT = new Label("0 VNĐ");
+        Label lblVATText = new Label("Thuế(VAT) hoàn lại:");
+        lblVATText.setLayoutX(27);
+        lblVATText.setLayoutY(351);
+        Label lblVAT = new Label("0 VNĐ");
         lblVAT.getStyleClass().add("value-label");
         lblVAT.setLayoutX(207);
         lblVAT.setLayoutY(349);
 
-        Label lblSoTienText = new Label("Số tiền trả lại:");
-        lblSoTienText.getStyleClass().add("bold-label");
-        lblSoTienText.setLayoutX(28);
-        lblSoTienText.setLayoutY(400);
-
-        lblSoTienTraLai = new Label("0 VNĐ");
+        Label lblTienTraLaiText = new Label("Số tiền trả lại:");
+        lblTienTraLaiText.getStyleClass().add("bold-label");
+        lblTienTraLaiText.setLayoutX(28);
+        lblTienTraLaiText.setLayoutY(400);
+        Label lblSoTienTraLai = new Label("0 VNĐ");
         lblSoTienTraLai.getStyleClass().add("main-value-label");
         lblSoTienTraLai.setLayoutX(207);
         lblSoTienTraLai.setLayoutY(399);
@@ -242,49 +250,93 @@ public class LapPhieuTra_GUI extends Application {
         lblGhiChuText.setLayoutX(34);
         lblGhiChuText.setLayoutY(454);
 
-        txtGhiChu = new TextArea();
+        TextArea txtGhiChu = new TextArea();
         txtGhiChu.setLayoutX(110);
         txtGhiChu.setLayoutY(449);
-        txtGhiChu.setPrefSize(247, 128);
+        txtGhiChu.setPrefSize(247, 148);
 
-        btnTraHang = new Button("Trả hàng");
+        Button btnTraHang = new Button("Trả hàng");
+        btnTraHang.setLayoutX(32);
+        btnTraHang.setLayoutY(652);
         btnTraHang.getStyleClass().add("success-btn");
-        btnTraHang.setLayoutX(28);
-        btnTraHang.setLayoutY(603);
-        btnTraHang.setPrefSize(329, 44);
-        btnTraHang.setFont(Font.font(14));
+        btnTraHang.setPrefSize(325, 44);
+        btnTraHang.setOnAction(e -> ctrl.xuLyTraHang());
 
-        btnInPhieuTra = new Button("Trả hàng và in phiếu trả");
-        btnInPhieuTra.getStyleClass().add("print-btn");
-        btnInPhieuTra.setLayoutX(30);
-        btnInPhieuTra.setLayoutY(657);
-        btnInPhieuTra.setPrefSize(325, 44);
-        btnInPhieuTra.setFont(Font.font(14));
-
-        btnHuy = new Button("Hủy");
-        btnHuy.getStyleClass().add("print-btn");
-        btnHuy.setStyle("-fx-background-color: red;");
+        Button btnHuy = new Button("Hủy");
         btnHuy.setLayoutX(32);
         btnHuy.setLayoutY(710);
         btnHuy.setPrefSize(325, 44);
-        btnHuy.setFont(Font.font(14));
+        btnHuy.setStyle("-fx-background-color: red;");
+        btnHuy.getStyleClass().add("print-btn");
+        btnHuy.setOnAction(e -> ctrl.xuLyHuy());
 
-        infoPane.getChildren().addAll(lblHeader, lblMaHDText, lblMaHDGoc, lblTenKHText, lblTenKH, lblSDTText, lblSDT,
-                lblNgayLapText, dpNgayLapPhieu, lblTongGocText, lblTongTienGoc, lblTongTraText, lblTongTienTraLai,
-                lblVatText, lblVAT, lblSoTienText, lblSoTienTraLai, lblGhiChuText, txtGhiChu, btnTraHang, btnInPhieuTra, btnHuy);
+        infoPane.getChildren().addAll(
+                lblHeaderInfo, lblMaHDGocText, lblMaHDGoc,
+                lblTenKHText, lblTenKH, lblSDTText, lblSDT,
+                lblNgayLapText, dpNgayLapPhieu,
+                lblThanhTienGocText, lblTongTienGoc,
+                lblTongTraLaiText, lblTongTienTraLai,
+                lblVATText, lblVAT,
+                lblTienTraLaiText, lblSoTienTraLai,
+                lblGhiChuText, txtGhiChu,
+                btnTraHang, btnHuy
+        );
 
-        // ===== ADD TO ROOT =====
-        root.getChildren().addAll(headerPane, lblTitle, searchPane, lblHint, lblSPGoc, tblSanPhamHoaDon,
-                lblTra, tblChiTietTraHang, infoPane);
+        // ===== Add all to root =====
+        root.getChildren().addAll(
+                headerPane, lblTitle, searchPane,
+                lblHint, lblSPGoc, tblSanPhamHoaDon,
+                lblChiTietTra, tblChiTietTraHang,
+                infoPane
+        );
+
+        // ===== Gán control vào controller =====
+        ctrl.txtTimHoaDon = txtTimHoaDon;
+        ctrl.btnTimHoaDon = btnTimHD;
+        ctrl.btnTraHang = btnTraHang;
+        ctrl.btnHuy = btnHuy;
+        ctrl.lblMaHDGoc = lblMaHDGoc;
+        ctrl.lblTenKH = lblTenKH;
+        ctrl.lblSDT = lblSDT;
+        ctrl.lblTongTienGoc = lblTongTienGoc;
+        ctrl.lblTongTienTraLai = lblTongTienTraLai;
+        ctrl.lblVAT = lblVAT;
+        ctrl.lblSoTienTraLai = lblSoTienTraLai;
+        ctrl.txtGhiChu = txtGhiChu;
+        ctrl.dpNgayLapPhieu = dpNgayLapPhieu;
+
+        ctrl.tblSanPhamHoaDon = tblSanPhamHoaDon;
+        ctrl.colSTTGoc = colSTTGoc;
+        ctrl.colTenSPGoc = colTenSPGoc;
+        ctrl.colSLGoc = colSLGoc;
+        ctrl.colDonViGoc = colDonViGoc;
+        ctrl.colDonGiaGoc = colDonGiaGoc;
+        ctrl.colThanhTienGoc = colThanhTienGoc;
+        ctrl.colTra = colTra;
+
+        ctrl.tblChiTietTraHang = tblChiTietTraHang;
+        ctrl.colSTTTra = colSTTTra;
+        ctrl.colTenSPTra = colTenSPTra;
+        ctrl.colSLTra = colSLTra;
+        ctrl.colDonViTra = colDonViTra;
+        ctrl.colDonGiaTra = colDonGiaTra;
+        ctrl.colThanhTienTra = colThanhTienTra;
+        ctrl.colLyDo = colLyDo;
+        ctrl.colBo = colBo;
+
+        // ===== Scene setup =====
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Lập Phiếu Trả Hàng");
+        stage.show();
+
+        // ===== Ngăn TextField tự động focus =====
+        Platform.runLater(() -> txtTimHoaDon.getParent().requestFocus());
     }
 
-    // ==================== CÁC XỬ LÝ GIẢ LẬP ====================
-    private void xuLyTimHDGoc() {
-        System.out.println("Đang tìm hóa đơn gốc: " + txtTimHoaDon.getText());
-    }
-
-    // ==================== MAIN ====================
     public static void main(String[] args) {
         launch(args);
     }
 }
+
+
