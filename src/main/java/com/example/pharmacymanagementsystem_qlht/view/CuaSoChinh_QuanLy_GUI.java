@@ -351,7 +351,7 @@ public class CuaSoChinh_QuanLy_GUI {
         v.paneMainTenSD.getChildren().add(v.txtNguoiDung);
 
         // gom tất cả
-        root.getChildren().addAll(menuBar, paneMainThoiGian,v.pnlChung,v.pnlThongTin,v.paneMainTenSD, v.logo);
+        root.getChildren().addAll(v.pnlChung, menuBar, paneMainThoiGian,v.pnlThongTin,v.paneMainTenSD, v.logo);
         AnchorPane.setLeftAnchor(menuBar, 0.0); AnchorPane.setRightAnchor(menuBar, 0.0);
         AnchorPane.setLeftAnchor(v.pnlChung, 0.0); AnchorPane.setRightAnchor(v.pnlChung, 0.0);
 

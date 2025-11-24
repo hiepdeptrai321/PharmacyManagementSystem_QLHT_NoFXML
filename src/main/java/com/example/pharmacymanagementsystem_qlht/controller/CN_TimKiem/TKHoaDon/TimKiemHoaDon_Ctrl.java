@@ -54,11 +54,10 @@ public class TimKiemHoaDon_Ctrl extends Application {
     private HoaDon_Dao hoaDonDao = new HoaDon_Dao();
     private PhieuDoiHang_Dao phieuDoiHangDao = new PhieuDoiHang_Dao();
     private PhieuTraHang_Dao phieuTraHangDao = new PhieuTraHang_Dao();
+
     @Override
     public void start(Stage stage) throws Exception {
-        TKHoaDon_GUI gui = new TKHoaDon_GUI();
-        gui.showWithController(stage, this);
-        initialize();
+        new TKHoaDon_GUI().showWithController(stage, this);
     }
     public void initialize() {
         // tiêu chí tìm kiếm
