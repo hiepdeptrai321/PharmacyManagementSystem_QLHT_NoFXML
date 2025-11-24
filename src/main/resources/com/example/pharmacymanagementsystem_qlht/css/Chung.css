@@ -1,0 +1,19 @@
+.btnTim{
+    -fx-text-fill: white;
+    -fx-background-color: #007bff;
+}
+
+.btnXoa{
+    -fx-text-fill: white;
+    -fx-background-color: #ff0000;
+}
+
+.btnXoaRong{
+    -fx-text-fill: #000000;
+    -fx-background-color: #e0e0e0;
+}
+
+.label.title {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
