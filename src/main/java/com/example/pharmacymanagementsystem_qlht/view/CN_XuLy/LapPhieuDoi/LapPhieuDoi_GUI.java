@@ -284,7 +284,6 @@ public class LapPhieuDoi_GUI {
 
         stage.setTitle("Lập phiếu đổi hàng");
         stage.setScene(scene);
-        stage.show();
     }
 }
 

@@ -205,7 +205,6 @@ public class TKPhieuDoiHang_GUI extends Application {
         // --- Hiển thị ---
         stage.setScene(new Scene(mainPane));
         stage.setTitle("Tìm kiếm phiếu đổi hàng");
-        stage.show();
     }
 
     public static void main(String[] args) {
