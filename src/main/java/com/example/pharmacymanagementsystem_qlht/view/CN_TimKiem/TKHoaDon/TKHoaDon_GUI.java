@@ -214,6 +214,8 @@ public class TKHoaDon_GUI {
         ctrl.btnTimKiem = btnTimKiem;
         ctrl.btnHuyBo = btnHuyBo;
 
+        ctrl.initialize();
+
         // ===== Scene =====
         Scene scene = new Scene(mainPane);
         stage.setTitle("Tìm kiếm hóa đơn");

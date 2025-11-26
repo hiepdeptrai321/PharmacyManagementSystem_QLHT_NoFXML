@@ -49,6 +49,7 @@ public class TimKiemPhieuNhap_Ctrl extends Application {
     public TitledPane tpBoLoc;
     private ObservableList<PhieuNhap> duLieuChinh = FXCollections.observableArrayList();
     private FilteredList<PhieuNhap> duLieu;
+    private boolean tpBoLocOnClick = false;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -84,6 +85,14 @@ public class TimKiemPhieuNhap_Ctrl extends Application {
         });
         Platform.runLater(()->{
             loadTable();
+        });
+        tpBoLoc.setOnMouseClicked(event -> {
+            tpBoLocOnClick = !tpBoLocOnClick;
+            if(tpBoLocOnClick){
+                tblPhieuNhap.setPrefSize(1613, 667);
+            }else{
+                tblPhieuNhap.setPrefSize(1613, 707);
+            }
         });
     }
 

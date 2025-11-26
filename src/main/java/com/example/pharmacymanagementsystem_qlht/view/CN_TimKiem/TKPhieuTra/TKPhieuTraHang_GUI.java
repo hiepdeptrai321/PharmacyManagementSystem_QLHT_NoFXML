@@ -30,6 +30,7 @@ public class TKPhieuTraHang_GUI extends Application {
         scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Tìm kiếm phiếu trả hàng");
+        ctrl.initialize();
     }
 
     @Override

@@ -387,7 +387,7 @@ public class CuaSoChinh_NhanVien_GUI extends Application {
 
         // ====== Add vào AnchorPane ======
 //        root.getChildren().addAll(menuBar, paneMainThoiGian,v.pnlChung,v.pnlThongTin,v.paneMainTenSD, v.logo);
-        ap.getChildren().addAll(menuBar, paneTime, v.pnlChung, v.imgLogo, v.pnlThongTin ,v.pnlTenNguoiDung);
+        ap.getChildren().addAll(v.pnlChung, menuBar, paneTime, v.imgLogo, v.pnlThongTin ,v.pnlTenNguoiDung);
 
         // Neo AnchorPane vào root
         v.root.getChildren().add(ap);
