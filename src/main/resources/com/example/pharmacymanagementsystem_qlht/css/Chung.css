@@ -13,7 +13,11 @@
     -fx-background-color: #e0e0e0;
 }
 
-.label.title {
+.label, .title {
     -fx-font-size: 36px;
     -fx-font-weight: bold;
+    -fx-margin-bottom: 3px;
+    -fx-border-style: solid;
+    -fx-border-color: transparent transparent #d1d9e6 transparent;
+    -fx-border-width: 0 0 1 0; /* thin bottom line (1px) */
 }

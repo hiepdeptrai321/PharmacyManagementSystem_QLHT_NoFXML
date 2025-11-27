@@ -31,7 +31,10 @@ public class ThietLapDonViTinh_Them_GUI {
         VBox leftVBox = new VBox();
         leftVBox.setLayoutX(21);
         leftVBox.setLayoutY(35);
+        leftVBox.setLayoutY(52);
         leftVBox.setPrefSize(99, 213);
+        leftVBox.setSpacing(31);
+
 
         Label lblDVT = new Label("Đơn vị tính");
         lblDVT.setStyle("-fx-text-fill: #005711; -fx-font-size: 15;");
@@ -66,7 +69,7 @@ public class ThietLapDonViTinh_Them_GUI {
         btnThemDVT.setLayoutX(222);
         btnThemDVT.setLayoutY(-1);
         btnThemDVT.setPrefSize(41, 36);
-        btnThemDVT.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
+        btnThemDVT.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-text-fill: white; -fx-background-color: green");
 
         comboPane.getChildren().addAll(cbDVT, btnThemDVT);
 

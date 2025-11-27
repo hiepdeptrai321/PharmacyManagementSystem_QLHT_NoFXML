@@ -23,7 +23,7 @@ public class CapNhatKhuyenMai_GUI {
         TextField tfTimKM = new TextField();
         tfTimKM.setId("tfTimKM");
         tfTimKM.setLayoutX(12);
-        tfTimKM.setLayoutY(47);
+        tfTimKM.setLayoutY(59);
         tfTimKM.setPrefHeight(40);
         tfTimKM.setPrefWidth(762);
         tfTimKM.setPromptText("Tìm theo mã, tên khuyến mãi");
@@ -31,7 +31,7 @@ public class CapNhatKhuyenMai_GUI {
         Button btnTimKM = new Button("🔍 Tìm");
         btnTimKM.setId("btntim");
         btnTimKM.setLayoutX(789);
-        btnTimKM.setLayoutY(47);
+        btnTimKM.setLayoutY(59);
         btnTimKM.setPrefHeight(40);
         btnTimKM.setPrefWidth(76);
         btnTimKM.setStyle("-fx-font-size: 14;");
@@ -39,8 +39,8 @@ public class CapNhatKhuyenMai_GUI {
         TableView<Object> tbKM = new TableView<>();
         tbKM.setId("tablethuoc");
         tbKM.setLayoutX(12);
-        tbKM.setLayoutY(92);
-        tbKM.setPrefSize(1622, 796);
+        tbKM.setLayoutY(104);
+        tbKM.setPrefSize(1622, 784);
 
         TableColumn<Object, String> colSTT = new TableColumn<>("STT");
         colSTT.setPrefWidth(68);
@@ -85,16 +85,21 @@ public class CapNhatKhuyenMai_GUI {
         Label lbTitle = new Label("Cập nhật khuyến mãi");
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutX(15);
-        lbTitle.setLayoutY(2);
-        lbTitle.setPrefSize(307, 36);
+        lbTitle.setLayoutY(0);
+        lbTitle.setPrefSize(1655, 36);
+
+        lbTitle.getStyleClass().add("title");
+        lbTitle.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css")
+        ).toExternalForm());
 
         ImageView imgCoupon = new ImageView(
                 new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/discounts.png")).toExternalForm())
         );
-        imgCoupon.setFitHeight(65);
+        imgCoupon.setFitHeight(50);
         imgCoupon.setFitWidth(122);
-        imgCoupon.setLayoutX(272);
-        imgCoupon.setLayoutY(-12);
+        imgCoupon.setLayoutX(390);
+        imgCoupon.setLayoutY(3);
         imgCoupon.setPickOnBounds(true);
         imgCoupon.setPreserveRatio(true);
 
@@ -103,11 +108,11 @@ public class CapNhatKhuyenMai_GUI {
         Button btnReset = new Button();
         btnReset.setId("btnReset");
         btnReset.setLayoutX(874);
-        btnReset.setLayoutY(47);
+        btnReset.setLayoutY(59);
         btnReset.setPrefHeight(40);
         btnReset.setPrefWidth(44);
         ImageView imgRefresh = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/discounts.png")).toExternalForm())
+                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")).toExternalForm())
         );
         imgRefresh.setFitHeight(20);
         imgRefresh.setFitWidth(34);
