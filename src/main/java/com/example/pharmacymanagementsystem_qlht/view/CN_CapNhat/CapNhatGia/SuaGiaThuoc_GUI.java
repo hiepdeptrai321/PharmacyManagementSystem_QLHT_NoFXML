@@ -24,7 +24,7 @@ public class SuaGiaThuoc_GUI {
         lbTitle.setLayoutX(14);
         lbTitle.setLayoutY(8);
         lbTitle.setPrefSize(932, 31);
-        lbTitle.getStyleClass().add("lbtitle");
+        lbTitle.getStyleClass().add("title");
 
         // Main VBox
         VBox mainVBox = new VBox();
@@ -80,12 +80,12 @@ public class SuaGiaThuoc_GUI {
         Label lbInfo = new Label("Đơn vị tính & giá bán");
         lbInfo.setLayoutY(-2);
         lbInfo.setPrefSize(942, 16);
-        lbInfo.getStyleClass().add("lbtitle");
+        lbInfo.getStyleClass().add("title");
 
         Button btnThietLapGia = new Button("✚Thiết lập giá bán & đơn vị tính");
         btnThietLapGia.setId("btnthemdvt");
         btnThietLapGia.setLayoutX(707);
-        btnThietLapGia.setLayoutY(-9);
+        btnThietLapGia.setLayoutY(-11);
         btnThietLapGia.setPrefSize(225, 32);
         btnThietLapGia.setMinHeight(30);
 
@@ -132,14 +132,14 @@ public class SuaGiaThuoc_GUI {
 
         // Buttons Lưu and Hủy
         Button btnLuu = new Button("Lưu");
-        btnLuu.setId("btnLuu");
+        btnLuu.setId("btnluu");
         btnLuu.setLayoutX(872);
         btnLuu.setLayoutY(343);
         btnLuu.getStyleClass().add("btnthemhuy");
         btnLuu.setPrefSize(69, 32);
 
         Button btnHuy = new Button("Hủy");
-        btnHuy.setId("btnHuy");
+        btnHuy.setId("btnhuy");
         btnHuy.setLayoutX(793);
         btnHuy.setLayoutY(343);
         btnHuy.getStyleClass().add("btnthemhuy");
