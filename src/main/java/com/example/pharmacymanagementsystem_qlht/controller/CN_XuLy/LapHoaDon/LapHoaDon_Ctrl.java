@@ -1051,8 +1051,6 @@ public class LapHoaDon_Ctrl extends Application {
     }
 
 
-
-
     //-----Xu Ly giao dich
 
     private String cur(BigDecimal v) { return VND.format(v.max(BigDecimal.ZERO)); }
