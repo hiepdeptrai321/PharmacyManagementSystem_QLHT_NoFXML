@@ -19,6 +19,7 @@ public class LapPhieuDoi_GUI {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
         root.setStyle("-fx-font-size: 13px;");
+        root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDoiHang.css").toExternalForm());
 
         // ===== Header Pane =====
         Pane headerPane = new Pane();
@@ -246,9 +247,9 @@ public class LapPhieuDoi_GUI {
                 lblSPMoi, tblSanPhamDoi, infoPane);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(
-                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDoiHang.css")
-        ).toExternalForm());
+//        scene.getStylesheets().add(Objects.requireNonNull(
+//                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDoiHang.css")
+//        ).toExternalForm());
 
         // ===== Inject to controller =====
         ctrl.tblSanPhamGoc = tblSanPhamGoc;
