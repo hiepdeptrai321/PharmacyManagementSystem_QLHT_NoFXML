@@ -18,6 +18,7 @@ public class LapPhieuDat_GUI {
     public void showWithController(Stage stage, LapPhieuDatHang_Ctrl ctrl) {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
+        root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDatHang.css").toExternalForm());
 
         // Header decorative pane (kept simple)
         Pane headerPane = new Pane();
@@ -307,9 +308,6 @@ public class LapPhieuDat_GUI {
         root.getChildren().addAll(headerPane, title, searchPane, leftBox, infoPane);
 
         Scene scene = new Scene(root);
-        try {
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDatHang.css")).toExternalForm());
-        } catch (Exception ignored) {}
 
         // Inject controls into controller (best-effort unchecked casts similar to existing pattern)
         try {

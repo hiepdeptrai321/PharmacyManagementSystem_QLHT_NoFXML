@@ -12,6 +12,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.application.Platform;
+import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -231,19 +232,28 @@ public class LapPhieuDatHang_Ctrl extends Application {
 
                 HBox row = new HBox(8);
                 row.setPrefWidth(menuWidth);
+                row.setFillHeight(true);
+                row.getStyleClass().add("suggestion-row");
 
                 Label nameLbl = new Label(name);
                 nameLbl.getStyleClass().add("suggestion-name");
+                nameLbl.setWrapText(true);
+
                 Label infoLbl = new Label(infoText.isEmpty() ? "" : " | " + infoText);
                 infoLbl.getStyleClass().add("suggestion-detail");
+                infoLbl.setWrapText(true);
 
                 Region spacer = new Region();
-                HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+                HBox.setHgrow(spacer, Priority.ALWAYS);
 
                 row.getChildren().addAll(nameLbl, infoLbl, spacer);
 
                 CustomMenuItem mi = new CustomMenuItem(row, true);
-                if (index < results.size() - 1) mi.getStyleClass().add("has-separator");
+                mi.getStyleClass().add("suggestion-item");
+
+                if (index < results.size() - 1) {
+                    mi.getStyleClass().add("has-separator");
+                }
 
                 final String chosen = name;
                 final String chosenUnit = parseDonVi(infoText);
@@ -423,36 +433,53 @@ public class LapPhieuDatHang_Ctrl extends Application {
         }
     }
 
-    private void taiCSSGoiYThuoc() {
-        // ensure the menu has the base style class
-        if (!goiYMenu.getStyleClass().contains("suggestion-menu")) {
-            goiYMenu.getStyleClass().add("suggestion-menu");
-        }
+//    private void taiCSSGoiYThuoc() {
+//        // ensure the menu has the base style class
+//        if (!goiYMenu.getStyleClass().contains("suggestion-menu")) {
+//            goiYMenu.getStyleClass().add("suggestion-menu");
+//        }
+//
+//        // handler: when the popup's scene is available, add stylesheet to it
+//        goiYMenu.setOnShowing(e -> {
+//            var url = getClass().getResource(GoiY_css);
+//            if (url == null) return;
+//
+//            var scene = goiYMenu.getScene();
+//            if (scene != null) {
+//                String css = url.toExternalForm();
+//                if (!scene.getStylesheets().contains(css)) {
+//                    scene.getStylesheets().add(css);
+//                }
+//                return;
+//            }
+//
+//            // fallback: attach stylesheet to the owner control's scene so styles apply to children
+//            if (tfTimSanPham != null && tfTimSanPham.getScene() != null) {
+//                String css = url.toExternalForm();
+//                var ownerScene = tfTimSanPham.getScene();
+//                if (!ownerScene.getStylesheets().contains(css)) {
+//                    ownerScene.getStylesheets().add(css);
+//                }
+//            }
+//        });
+//    }
+        private void taiCSSGoiYThuoc() {
+            String css = getClass().getResource(GoiY_css).toExternalForm();
 
-        // handler: when the popup's scene is available, add stylesheet to it
-        goiYMenu.setOnShowing(e -> {
-            var url = getClass().getResource(GoiY_css);
-            if (url == null) return;
+            goiYMenu.setOnShown(e -> {
+                Scene sc = goiYMenu.getScene();
+                if (sc != null && !sc.getStylesheets().contains(css)) {
+                    sc.getStylesheets().add(css);
+                }
+            });
 
-            var scene = goiYMenu.getScene();
-            if (scene != null) {
-                String css = url.toExternalForm();
-                if (!scene.getStylesheets().contains(css)) {
+            // đảm bảo owner scene cũng có css
+            tfTimSanPham.sceneProperty().addListener((obs, old, scene) -> {
+                if (scene != null && !scene.getStylesheets().contains(css)) {
                     scene.getStylesheets().add(css);
                 }
-                return;
-            }
-
-            // fallback: attach stylesheet to the owner control's scene so styles apply to children
-            if (tfTimSanPham != null && tfTimSanPham.getScene() != null) {
-                String css = url.toExternalForm();
-                var ownerScene = tfTimSanPham.getScene();
-                if (!ownerScene.getStylesheets().contains(css)) {
-                    ownerScene.getStylesheets().add(css);
-                }
-            }
-        });
-    }
+            });
+        }
     // java
     private void cauHinhCotBang() {
         if (tbSanPham == null) return;
