@@ -20,7 +20,7 @@ public class DangNhap_GUI {
         TextField tfTaiKhoan = new TextField();
         tfTaiKhoan.setId("tfTaiKhoan");
         tfTaiKhoan.setLayoutX(93);
-        tfTaiKhoan.setLayoutY(261);
+        tfTaiKhoan.setLayoutY(263);
         tfTaiKhoan.setPrefSize(318, 26);
 
         PasswordField tfMatKhauAn = new PasswordField();
@@ -32,16 +32,17 @@ public class DangNhap_GUI {
         TextField tfMatKhau = new TextField();
         tfMatKhau.setId("tfMatKhau");
         tfMatKhau.setLayoutX(93);
-        tfMatKhau.setLayoutY(325);
+        tfMatKhau.setLayoutY(327);
         tfMatKhau.setPrefSize(318, 26);
         tfMatKhau.setVisible(false);
 
-        Button btnAnMK = new Button("👁");
+        Button btnAnMK = new Button("\uD83D\uDC41\uFE0F\u200D\uD83D\uDDE8\uFE0F");
         btnAnMK.setId("btnAnMK");
         btnAnMK.setLayoutX(373);
-        btnAnMK.setLayoutY(323);
+        btnAnMK.setLayoutY(325);
         btnAnMK.setPrefSize(38, 27);
         btnAnMK.setMinWidth(37);
+        btnAnMK.setStyle("-fx-background-color: transparent;");
 
         CheckBox checkDangNhap = new CheckBox("Ghi nhớ đăng nhập");
         checkDangNhap.setId("checkDangNhap");
@@ -54,14 +55,18 @@ public class DangNhap_GUI {
         btnDangNhap.setLayoutX(168);
         btnDangNhap.setLayoutY(406);
         btnDangNhap.setPrefSize(165, 38);
+        btnDangNhap.setStyle("-fx-text-fill: white; -fx-background-color: #007bff;");
 
         Label lbTaiKhoan = new Label("Tài khoản");
         lbTaiKhoan.setLayoutX(93);
         lbTaiKhoan.setLayoutY(243);
+        lbTaiKhoan.setStyle("-fx-text-fill: #676767;");
 
         Label lbMatKhau = new Label("Mật khẩu");
         lbMatKhau.setLayoutX(93);
         lbMatKhau.setLayoutY(307);
+        lbMatKhau.setStyle("-fx-text-fill: #676767;");
+
 
         Label lbhotline = new Label("Hotline: 1800 6868 ");
         lbhotline.setId("lbhotline");
@@ -69,16 +74,16 @@ public class DangNhap_GUI {
         lbhotline.setLayoutY(365);
 
         Label lbFooter = new Label("Nhóm 2_DHKTPM19BTT_Khoa Công nghệ thông tin_Trường DHCN TPHCM");
-        lbFooter.setLayoutX(62);
+        lbFooter.setLayoutX(65);
         lbFooter.setLayoutY(627);
         lbFooter.setStyle("-fx-font-size: 11;");
 
         ImageView logo = new ImageView(
                 new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/LogoDung.png")).toExternalForm())
         );
-        logo.setFitWidth(175);
-        logo.setFitHeight(193);
-        logo.setLayoutX(168);
+        logo.setFitWidth(177);
+        logo.setFitHeight(195);
+        logo.setLayoutX(160);
         logo.setLayoutY(58);
         logo.setPreserveRatio(true);
         logo.setPickOnBounds(true);

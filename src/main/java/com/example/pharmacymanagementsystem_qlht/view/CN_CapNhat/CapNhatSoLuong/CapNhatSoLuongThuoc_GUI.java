@@ -35,6 +35,10 @@ public class CapNhatSoLuongThuoc_GUI {
         btnTimThuoc.setPrefHeight(40);
         btnTimThuoc.setPrefWidth(81);
         btnTimThuoc.setStyle("-fx-font-size: 14;");
+        btnTimThuoc.getStyleClass().add("btnTim");
+        btnTimThuoc.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css")
+        ).toExternalForm());
 
         Pane lblPaneTitle = new Pane();
         lblPaneTitle.setId("lblpaneTitle");

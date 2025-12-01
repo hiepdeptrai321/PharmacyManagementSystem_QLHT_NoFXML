@@ -35,6 +35,10 @@ public class CapNhatKhuyenMai_GUI {
         btnTimKM.setPrefHeight(40);
         btnTimKM.setPrefWidth(76);
         btnTimKM.setStyle("-fx-font-size: 14;");
+        btnTimKM.getStyleClass().add("btnTim");
+        btnTimKM.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css")
+        ).toExternalForm());
 
         TableView<Object> tbKM = new TableView<>();
         tbKM.setId("tablethuoc");
