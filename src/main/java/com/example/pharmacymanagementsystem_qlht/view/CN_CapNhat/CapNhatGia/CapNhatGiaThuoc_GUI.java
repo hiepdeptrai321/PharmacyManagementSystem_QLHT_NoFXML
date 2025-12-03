@@ -63,6 +63,10 @@ public class CapNhatGiaThuoc_GUI {
         btnTimThuoc.setPrefSize(78, 40);
         btnTimThuoc.setStyle("-fx-font-size: 14;");
         btnTimThuoc.getStyleClass().add("btnTim");
+        btnTimThuoc.getStyleClass().add("btnTim");
+        btnTimThuoc.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css")
+        ).toExternalForm());
 
         Button btnReset = new Button();
         btnReset.setId("btnReset");

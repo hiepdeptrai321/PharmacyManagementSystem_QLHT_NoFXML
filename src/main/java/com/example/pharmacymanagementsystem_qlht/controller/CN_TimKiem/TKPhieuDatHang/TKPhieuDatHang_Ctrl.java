@@ -2,20 +2,13 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuD
 
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.PhieuNhap_Dao;
-import com.example.pharmacymanagementsystem_qlht.model.NhaCungCap;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuDatHang;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
@@ -26,53 +19,33 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.scene.control.DatePicker;
-
-import java.io.IOException;
 import java.util.List;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
 
-public class TKPhieuDatHang_Ctrl extends Application {
-    @FXML
+public class TKPhieuDatHang_Ctrl {
     public TableView<PhieuDatHang> tblPD;
-    @FXML
     public TableColumn<PhieuDatHang, Number> colSTT;
-    @FXML
     public TableColumn<PhieuDatHang, String> colMaPD;
-    @FXML
     public TableColumn<PhieuDatHang, String> colNgayLap;
-    @FXML
     public TableColumn<PhieuDatHang, String> colTenKH;
-    @FXML
     public TableColumn<PhieuDatHang, String> colSdtKH;
-    @FXML
     public TableColumn<PhieuDatHang, String> colTenNV;
-    @FXML
     public TableColumn<PhieuDatHang, String> colSoTienCoc;
-    @FXML
     public TableColumn<PhieuDatHang, String> colTT;
-    @FXML
     public TableColumn<PhieuDatHang, String> colChiTiet;
-    @FXML
     public ComboBox<String> cboTimKiem; //
-    @FXML
     public TextField txtNoiDungTimKiem; //
-    @FXML
     public DatePicker dpTuNgay;
-    @FXML
     public DatePicker dpDenNgay;
-    @FXML
     public ComboBox<String> cbLoc;
-    @FXML
     public Button btnTimKiem;
-    @FXML
     public Button btnHuyBo;
 
     private final PhieuDatHang_Dao phieuDatHangDao = new PhieuDatHang_Dao();
 
-    @FXML
     public void initialize() {
         cboTimKiem.getItems().addAll(
-            "Mã phiếu đặt", "Tên khách hàng", "SĐT khách hàng", "Tên nhân viên", "Ngày lập"
+            "Mã phiếu đặt", "Tên khách hàng", "SĐT khách hàng", "Tên nhân viên"
         );
         cboTimKiem.setValue("Tiêu chí");
         cbLoc.getItems().addAll(
@@ -149,6 +122,7 @@ public class TKPhieuDatHang_Ctrl extends Application {
                     PhieuDatHang pdh = getTableView().getItems().get(getIndex());
                     btnChiTietClick(pdh);
                 });
+                btn.setStyle("-fx-background-color: #188dfb; -fx-text-fill: white");
             }
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -211,9 +185,6 @@ public class TKPhieuDatHang_Ctrl extends Application {
                 case "Tên nhân viên":
                     match = pd.getNhanVien() != null && pd.getNhanVien().getTenNV().toLowerCase().contains(noiDung);
                     break;
-                case "Ngày lập":
-                    match = pd.getNgayLap() != null && DoiNgay.dinhDangThoiGian(pd.getNgayLap()).contains(noiDung);
-                    break;
             }
             if (tuNgay != null && pd.getNgayLap() != null) {
                 match = match && !pd.getNgayLap().toLocalDateTime().toLocalDate().isBefore(tuNgay);
@@ -264,9 +235,4 @@ public class TKPhieuDatHang_Ctrl extends Application {
         timKiem();
     }
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.TKPhieuDatHang_GUI()
-                .showWithController(primaryStage, this);
-    }
 }

@@ -1,19 +1,13 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatSoLuong;
 
-import com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatGia.SuaGiaThuoc_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
-import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -21,7 +15,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class CapNhatSoLuongThuoc_Ctrl extends Application {
-    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
+    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN
     public TextField tfTimThuoc;
     public Button btnTimThuoc;
     public TableView<Thuoc_SP_TheoLo> tbThuoc;
@@ -123,7 +117,7 @@ public class CapNhatSoLuongThuoc_Ctrl extends Application {
             e.printStackTrace();
         }
     }
-    @FXML
+
     private void LamMoi() {
         tfTimThuoc.clear();
         loadTable();

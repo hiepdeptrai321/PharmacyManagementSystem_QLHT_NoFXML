@@ -2,6 +2,7 @@ package com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang.TKPhieuDatHang_Ctrl;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -34,6 +35,7 @@ public class TKPhieuDatHang_GUI {
         lbTimKiem.setPrefWidth(449);
         lbTimKiem.setStyle("-fx-font-size: 36px;");
         Region spacer1 = new Region();
+        spacer1.setPrefWidth(20);
         ImageView imgBill = new ImageView();
         imgBill.setFitHeight(46);
         imgBill.setFitWidth(48);
@@ -42,14 +44,14 @@ public class TKPhieuDatHang_GUI {
         try {
             imgBill.setImage(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/bill-8854.png")).toExternalForm()));
         } catch (Exception ignored) {}
-        titleBox.getChildren().addAll(lbTimKiem, spacer1, imgBill);
+        titleBox.getChildren().addAll(lbTimKiem, imgBill);
 
         Separator sep = new Separator();
         sep.setPrefWidth(200);
 
         // Search HBox
         HBox searchBox = new HBox();
-        searchBox.setPrefHeight(67);
+        searchBox.setPrefHeight(60);
         searchBox.setSpacing(8);
         searchBox.setPadding(new Insets(0,0,0,0));
 
@@ -79,6 +81,7 @@ public class TKPhieuDatHang_GUI {
         dpTuNgay.setPrefHeight(40);
         dpTuNgay.setPrefWidth(125);
 
+
         Label lbDen = new Label("Đến: ");
         DatePicker dpDenNgay = new DatePicker();
         dpDenNgay.setPrefHeight(40);
@@ -90,6 +93,7 @@ public class TKPhieuDatHang_GUI {
         Button btnTimKiem = new Button("Tìm");
         btnTimKiem.setPrefHeight(40);
         btnTimKiem.setPrefWidth(74);
+        btnTimKiem.setStyle("-fx-background-color: #188dfb; -fx-text-fill: white");
         // set graphic for search button if available
         try {
             ImageView imgSearch = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png")).toExternalForm()));
@@ -104,24 +108,20 @@ public class TKPhieuDatHang_GUI {
         // reset graphic
         try {
             ImageView imgRefresh = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")).toExternalForm()));
-            imgRefresh.setFitHeight(20);
-            imgRefresh.setFitWidth(34);
+            imgRefresh.setFitHeight(25);
+            imgRefresh.setFitWidth(25);
             btnHuyBo.setGraphic(imgRefresh);
         } catch (Exception ignored) {}
 
         Region spacer4 = new Region();
-        spacer4.setPrefWidth(479);
+        spacer4.setPrefWidth(420);
 
         ComboBox<String> cbLoc = new ComboBox<>();
         cbLoc.setPrefHeight(41);
         cbLoc.setPrefWidth(175);
         cbLoc.setPromptText("⌛ Bộ lọc nhanh");
 
-        HBox.setHgrow(spacer1, Priority.ALWAYS);
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
-        HBox.setHgrow(spacer3, Priority.ALWAYS);
-        HBox.setHgrow(spacer4, Priority.ALWAYS);
-
+        searchBox.setAlignment(Pos.CENTER_LEFT);
         searchBox.getChildren().addAll(cboTimKiem, txtNoiDungTimKiem, spacer2, imgTime, lbTu, dpTuNgay, lbDen, dpDenNgay, spacer3, btnTimKiem, btnHuyBo, spacer4, cbLoc);
 
         // ScrollPane with TableView
@@ -173,18 +173,6 @@ public class TKPhieuDatHang_GUI {
         mainVBox.getChildren().addAll(titleBox, sep, searchBox, scroll);
         root.getChildren().add(mainVBox);
 
-        // optional decorative ImageView (keeps same id/position if needed)
-        ImageView decor = new ImageView();
-        decor.setFitHeight(35);
-        decor.setFitWidth(40);
-        decor.setLayoutX(500);
-        decor.setLayoutY(-91);
-        decor.setPickOnBounds(true);
-        decor.setPreserveRatio(true);
-        try {
-            decor.setImage(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png")).toExternalForm()));
-        } catch (Exception ignored) {}
-        root.getChildren().add(decor);
 
         Scene scene = new Scene(root);
         try {

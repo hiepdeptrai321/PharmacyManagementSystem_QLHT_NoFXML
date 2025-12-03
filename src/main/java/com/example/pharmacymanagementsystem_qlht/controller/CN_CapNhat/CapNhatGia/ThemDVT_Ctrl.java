@@ -2,7 +2,6 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatG
 
 import com.example.pharmacymanagementsystem_qlht.dao.DonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.DonViTinh;
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -10,21 +9,11 @@ import javafx.stage.Stage;
 
 
 public class ThemDVT_Ctrl{
-    @FXML
     public Button btnHuy;
-
-    @FXML
     public Button btnThem;
-
-    @FXML
     public TextField txtKyHieu;
-    @FXML
     public TextField txtTenDVT;
-
     private DonViTinh_Dao donViTinh_dao = new DonViTinh_Dao();
-
-
-    @FXML
     public void initialize() {
         btnThem.setOnAction(e -> themDVT());
         btnHuy.setOnAction(e -> btnHuyClick());
@@ -35,7 +24,6 @@ public class ThemDVT_Ctrl{
         stage.close();
     }
 
-    @FXML
     void themDVT() {
         // Sinh mã tự động
         String maDVT = donViTinh_dao.generatekeyDonViTinh();
