@@ -56,7 +56,7 @@
                        <TableColumn fx:id="colNSL" prefWidth="130.0" style="-fx-alignment: CENTER;" text="Số lượng" />
                        <TableColumn fx:id="colNDonVi" prefWidth="103.0" style="-fx-alignment: CENTER;" text="Đơn vị" />
                        <TableColumn fx:id="colNDonGia" prefWidth="170.0" style="-fx-alignment: CENTER;" text="Đơn giá" />
-                       <TableColumn fx:id="colNChietKhau" prefWidth="148.0" style="-fx-alignment: CENTER;" text="Giảm giá" />
+                           <TableColumn fx:id="colNChietKhau" prefWidth="148.0" style="-fx-alignment: CENTER;" text="Giảm giá" />
                        <TableColumn fx:id="colNThanhTien" prefWidth="149.0" style="-fx-alignment: CENTER;" text="Thành tiền" />
                    </columns>
                    <columnResizePolicy>

@@ -50,6 +50,7 @@ public class TimKiemKhachHangTrongHD_Ctrl extends Application {
     }
     // 2. KHỞI TẠO (INITIALIZE)
     public void initialize() {
+
         cboTimKiem.getItems().addAll(
                 "Theo mã, tên khách hàng",
                 "Theo email",
@@ -88,6 +89,7 @@ public class TimKiemKhachHangTrongHD_Ctrl extends Application {
             });
             return row;
         });
+
 
     }
     public void chonKhachHang(KhachHang kh) {

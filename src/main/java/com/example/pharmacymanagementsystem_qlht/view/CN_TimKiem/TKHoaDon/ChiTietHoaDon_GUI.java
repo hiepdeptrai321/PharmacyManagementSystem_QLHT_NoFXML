@@ -2,8 +2,6 @@ package com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon;
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl;
 import javafx.application.Application;
-import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl;
-import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,21 +12,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class ChiTietHoaDon_GUI extends Application {
-    @Override
-    public void start(Stage stage) {
-        showWithController(stage, new ChiTietHoaDon_Ctrl());
-    }
+public class ChiTietHoaDon_GUI {
+
     public void showWithController(Stage stage, ChiTietHoaDon_Ctrl ctrl) {
         AnchorPane root = buildUI(ctrl);
         Scene scene = new Scene(root, 1646, 895);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ChiTietHoaDon.css").toExternalForm());
+        try {
+            String css = "/com/example/pharmacymanagementsystem_qlht/css/ChiTietHoaDon.css";
+            if (getClass().getResource(css) != null)
+                scene.getStylesheets().add(getClass().getResource(css).toExternalForm());
+        } catch (Exception ignored) {
+        }
         stage.setScene(scene);
         stage.setTitle("Chi Tiết Hóa Đơn");
         stage.show();
     }
-
-
 
     private AnchorPane buildUI(ChiTietHoaDon_Ctrl ctrl) {
         AnchorPane root = new AnchorPane();
@@ -38,12 +36,13 @@ public class ChiTietHoaDon_GUI extends Application {
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.HORIZONTAL);
         splitPane.setDividerPositions(0.69647);
+
         AnchorPane.setTopAnchor(splitPane, 0.0);
         AnchorPane.setBottomAnchor(splitPane, 0.0);
         AnchorPane.setLeftAnchor(splitPane, 0.0);
         AnchorPane.setRightAnchor(splitPane, 0.0);
 
-        // ===== Left Pane =====
+        // ---------------- Left pane ----------------
         AnchorPane leftAnchor = new AnchorPane();
         Pane leftPane = new Pane();
         AnchorPane.setTopAnchor(leftPane, 0.0);
@@ -51,7 +50,7 @@ public class ChiTietHoaDon_GUI extends Application {
         AnchorPane.setLeftAnchor(leftPane, 0.0);
         AnchorPane.setRightAnchor(leftPane, 0.0);
 
-        // Header info
+        // Header pane (labels)
         Pane headerPane = new Pane();
         headerPane.setLayoutX(6);
         headerPane.setLayoutY(43);
@@ -60,6 +59,8 @@ public class ChiTietHoaDon_GUI extends Application {
         Label lblMaHoaDon = new Label("Mã hóa đơn: ");
         lblMaHoaDon.getStyleClass().add("bold-label");
         lblMaHoaDon.setFont(Font.font(13));
+        lblMaHoaDon.setLayoutX(5);
+        lblMaHoaDon.setLayoutY(0);
 
         ctrl.lblMaHoaDonValue = new Label("HD012345");
         ctrl.lblMaHoaDonValue.setLayoutX(93.6);
@@ -94,8 +95,7 @@ public class ChiTietHoaDon_GUI extends Application {
         ctrl.lblMaDonThuocValue.getStyleClass().add("value-label");
         ctrl.lblMaDonThuocValue.setFont(Font.font(13));
 
-        headerPane.getChildren().addAll(lblMaHoaDon, ctrl.lblMaHoaDonValue, lblNgayLap, ctrl.lblNgayLapValue,
-                ctrl.lblLoaiHoaDon, ctrl.lblMaDonThuocValue);
+        headerPane.getChildren().addAll(lblMaHoaDon, ctrl.lblMaHoaDonValue, lblNgayLap, ctrl.lblNgayLapValue, ctrl.lblLoaiHoaDon, ctrl.lblMaDonThuocValue);
 
         Label lblDanhSachSP = new Label("DANH SÁCH SẢN PHẨM");
         lblDanhSachSP.setLayoutX(5);
@@ -139,8 +139,7 @@ public class ChiTietHoaDon_GUI extends Application {
         ctrl.colNThanhTien.setPrefWidth(149);
         ctrl.colNThanhTien.setStyle("-fx-alignment: CENTER;");
 
-        ctrl.tblChiTietHoaDon.getColumns().addAll(ctrl.colNSTT, ctrl.colNTen, ctrl.colNSL, ctrl.colNDonVi,
-                ctrl.colNDonGia, ctrl.colNChietKhau, ctrl.colNThanhTien);
+        ctrl.tblChiTietHoaDon.getColumns().addAll(ctrl.colNSTT, ctrl.colNTen, ctrl.colNSL, ctrl.colNDonVi, ctrl.colNDonGia, ctrl.colNChietKhau, ctrl.colNThanhTien);
 
         Label lblTitle = new Label("CHI TIẾT HÓA ĐƠN");
         lblTitle.setLayoutX(10);
@@ -150,7 +149,7 @@ public class ChiTietHoaDon_GUI extends Application {
         leftPane.getChildren().addAll(headerPane, lblDanhSachSP, ctrl.tblChiTietHoaDon, lblTitle);
         leftAnchor.getChildren().add(leftPane);
 
-        // ===== Right Pane =====
+        // ---------------- Right pane ----------------
         AnchorPane rightAnchor = new AnchorPane();
         rightAnchor.getStyleClass().add("right-pane-bg");
 
@@ -165,7 +164,7 @@ public class ChiTietHoaDon_GUI extends Application {
         Label lblTTGD = new Label("THÔNG TIN GIAO DỊCH");
         lblTTGD.setFont(Font.font("Arial Bold", 24));
 
-        // Thông tin nhân viên, khách hàng
+        // Info pane
         Pane infoPane = new Pane();
         infoPane.setLayoutY(41);
         infoPane.setPrefSize(453, 213);
@@ -213,13 +212,11 @@ public class ChiTietHoaDon_GUI extends Application {
         ctrl.lblGhiChuValue.getStyleClass().add("value-label");
         ctrl.lblGhiChuValue.setWrapText(true);
 
-        infoPane.getChildren().addAll(lblTenNV, ctrl.lblTenNhanVienValue, lblTenKH, ctrl.lblTenKhachHangValue,
-                lblSDT, ctrl.lblSDTKhachHangValue, lblGhiChu, ctrl.lblGhiChuValue);
+        infoPane.getChildren().addAll(lblTenNV, ctrl.lblTenNhanVienValue, lblTenKH, ctrl.lblTenKhachHangValue, lblSDT, ctrl.lblSDTKhachHangValue, lblGhiChu, ctrl.lblGhiChuValue);
 
         Separator sep = new Separator();
         sep.setLayoutY(216);
 
-        // Tóm tắt thanh toán
         Label lblTongKet = new Label("TÓM TẮT THANH TOÁN");
         lblTongKet.setLayoutY(297.4);
         lblTongKet.setStyle("-fx-font-weight: bold; -fx-font-size: 24;");
@@ -230,11 +227,11 @@ public class ChiTietHoaDon_GUI extends Application {
         summaryPane.setPrefSize(452, 361);
         summaryPane.getStyleClass().add("summary-pane");
 
-        Label lblGiamSP = new Label("Giảm theo sản phẩm:");
-        lblGiamSP.setLayoutX(5);
-        lblGiamSP.setLayoutY(76);
-        lblGiamSP.getStyleClass().add("label-normal");
-        lblGiamSP.setFont(Font.font("System Bold", 14));
+        Label lblGiamSPTitle = new Label("Giảm theo sản phẩm:");
+        lblGiamSPTitle.setLayoutX(5);
+        lblGiamSPTitle.setLayoutY(76);
+        lblGiamSPTitle.getStyleClass().add("label-normal");
+        lblGiamSPTitle.setFont(Font.font("System Bold", 14));
 
         ctrl.lblGiamTheoSP = new Label("0 VNĐ");
         ctrl.lblGiamTheoSP.setLayoutX(240);
@@ -242,11 +239,11 @@ public class ChiTietHoaDon_GUI extends Application {
         ctrl.lblGiamTheoSP.getStyleClass().addAll("bold-label", "value-label");
         ctrl.lblGiamTheoSP.setFont(Font.font(13));
 
-        Label lblTongHang = new Label("Tổng tiền hàng (trước VAT):");
-        lblTongHang.setLayoutX(5);
-        lblTongHang.setLayoutY(130);
-        lblTongHang.setFont(Font.font("System Bold", 14));
-        lblTongHang.getStyleClass().add("label-normal");
+        Label lblTongHangTitle = new Label("Tổng tiền hàng (trước VAT):");
+        lblTongHangTitle.setLayoutX(5);
+        lblTongHangTitle.setLayoutY(130);
+        lblTongHangTitle.setFont(Font.font("System Bold", 14));
+        lblTongHangTitle.getStyleClass().add("label-normal");
 
         ctrl.lblTongTienHang = new Label("0 VNĐ");
         ctrl.lblTongTienHang.setLayoutX(240);
@@ -266,21 +263,21 @@ public class ChiTietHoaDon_GUI extends Application {
         ctrl.lblVAT.getStyleClass().addAll("bold-label", "value-label");
         ctrl.lblVAT.setFont(Font.font(13));
 
-        Label lblGiamHD = new Label("Giảm theo hóa đơn:");
-        lblGiamHD.setLayoutX(6);
-        lblGiamHD.setLayoutY(230);
-        lblGiamHD.getStyleClass().add("label-normal");
-        lblGiamHD.setFont(Font.font("System Bold", 14));
+        Separator sep2 = new Separator();
+        sep2.setLayoutY(263);
+        sep2.setPrefWidth(549);
+
+        Label lblGiamHDTitle = new Label("Giảm theo hóa đơn:");
+        lblGiamHDTitle.setLayoutX(6);
+        lblGiamHDTitle.setLayoutY(230);
+        lblGiamHDTitle.getStyleClass().add("label-normal");
+        lblGiamHDTitle.setFont(Font.font("System Bold", 14));
 
         ctrl.lblGiamTheoHD = new Label("0 VNĐ");
         ctrl.lblGiamTheoHD.setLayoutX(241);
         ctrl.lblGiamTheoHD.setLayoutY(230);
         ctrl.lblGiamTheoHD.getStyleClass().addAll("bold-label", "value-label");
         ctrl.lblGiamTheoHD.setFont(Font.font(13));
-
-        Separator sep2 = new Separator();
-        sep2.setLayoutY(263);
-        sep2.setPrefWidth(549);
 
         Label lblTongTT = new Label("TỔNG THANH TOÁN:");
         lblTongTT.setLayoutX(5);
@@ -294,8 +291,13 @@ public class ChiTietHoaDon_GUI extends Application {
         ctrl.lblTongThanhToan.getStyleClass().addAll("main-value-label", "grand-total-value", "bold-label", "value-label");
         ctrl.lblTongThanhToan.setFont(Font.font(15));
 
-        summaryPane.getChildren().addAll(lblGiamSP, ctrl.lblGiamTheoSP, lblTongHang, ctrl.lblTongTienHang,
-                lblVATTitle, ctrl.lblVAT, lblGiamHD, ctrl.lblGiamTheoHD, sep2, lblTongTT, ctrl.lblTongThanhToan);
+        summaryPane.getChildren().addAll(
+                lblGiamSPTitle, ctrl.lblGiamTheoSP,
+                lblTongHangTitle, ctrl.lblTongTienHang,
+                lblVATTitle, ctrl.lblVAT,
+                lblGiamHDTitle, ctrl.lblGiamTheoHD,
+                sep2, lblTongTT, ctrl.lblTongThanhToan
+        );
 
         // Buttons
         Pane buttonPane = new Pane();
@@ -310,8 +312,8 @@ public class ChiTietHoaDon_GUI extends Application {
         ctrl.btnInHoaDon.setFont(Font.font("System Bold", 14));
         DropShadow ds1 = new DropShadow();
         ds1.setColor(Color.color(0.65, 0.65, 0.65));
-        ctrl.btnInHoaDon.setOnAction(e -> ctrl.xuLyXuatPDF());
         ctrl.btnInHoaDon.setEffect(ds1);
+        ctrl.btnInHoaDon.setOnAction(e -> ctrl.xuLyXuatPDF());
 
         ctrl.btnDong = new Button("Hoàn Tất");
         ctrl.btnDong.setLayoutX(11);
@@ -321,10 +323,8 @@ public class ChiTietHoaDon_GUI extends Application {
         ctrl.btnDong.setFont(Font.font("System Bold", 14));
         DropShadow ds2 = new DropShadow();
         ds2.setColor(Color.color(0.65, 0.65, 0.65));
-        ctrl.btnDong.setOnAction(e -> ((Stage) ctrl.btnDong.getScene().getWindow()).close());
         ctrl.btnDong.setEffect(ds2);
-
-
+        ctrl.btnDong.setOnAction(e -> ((Stage) ctrl.btnDong.getScene().getWindow()).close());
 
         buttonPane.getChildren().addAll(ctrl.btnInHoaDon, ctrl.btnDong);
 
@@ -332,12 +332,22 @@ public class ChiTietHoaDon_GUI extends Application {
         rightAnchor.getChildren().add(rightPane);
 
         splitPane.getItems().addAll(leftAnchor, rightAnchor);
+
         root.getChildren().add(splitPane);
 
         return root;
     }
 
     public static void main(String[] args) {
-        launch();
+        Application.launch(ChiTietHoaDon_GUI_TestApp.class, args);
+    }
+
+    public static class ChiTietHoaDon_GUI_TestApp extends Application {
+        @Override
+        public void start(Stage stage) {
+            ChiTietHoaDon_Ctrl ctrl = new ChiTietHoaDon_Ctrl();
+            new ChiTietHoaDon_GUI().showWithController(stage, ctrl);
+            try { ctrl.initialize(); } catch (Exception ignored) {}
+        }
     }
 }
