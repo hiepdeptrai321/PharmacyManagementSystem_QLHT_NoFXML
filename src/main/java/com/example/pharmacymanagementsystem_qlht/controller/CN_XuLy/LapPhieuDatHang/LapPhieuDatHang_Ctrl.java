@@ -217,7 +217,6 @@ public class LapPhieuDatHang_Ctrl extends Application {
             }
             taiCSSGoiYThuoc();
             goiYMenu.getItems().clear();
-            final double menuWidth = Math.max(300, tfTimSanPham.getWidth());
             int index = 0;
             for (String detail : results) {
                 String name;
@@ -231,7 +230,8 @@ public class LapPhieuDatHang_Ctrl extends Application {
                 }
 
                 HBox row = new HBox(8);
-                row.setPrefWidth(menuWidth);
+                row.setPrefWidth(950);
+                row.setStyle("-fx-alignment: CENTER; -fx-margin: 10 0 10 0;");
                 row.setFillHeight(true);
                 row.getStyleClass().add("suggestion-row");
 
@@ -433,54 +433,25 @@ public class LapPhieuDatHang_Ctrl extends Application {
         }
     }
 
-//    private void taiCSSGoiYThuoc() {
-//        // ensure the menu has the base style class
-//        if (!goiYMenu.getStyleClass().contains("suggestion-menu")) {
-//            goiYMenu.getStyleClass().add("suggestion-menu");
-//        }
-//
-//        // handler: when the popup's scene is available, add stylesheet to it
-//        goiYMenu.setOnShowing(e -> {
-//            var url = getClass().getResource(GoiY_css);
-//            if (url == null) return;
-//
-//            var scene = goiYMenu.getScene();
-//            if (scene != null) {
-//                String css = url.toExternalForm();
-//                if (!scene.getStylesheets().contains(css)) {
-//                    scene.getStylesheets().add(css);
-//                }
-//                return;
-//            }
-//
-//            // fallback: attach stylesheet to the owner control's scene so styles apply to children
-//            if (tfTimSanPham != null && tfTimSanPham.getScene() != null) {
-//                String css = url.toExternalForm();
-//                var ownerScene = tfTimSanPham.getScene();
-//                if (!ownerScene.getStylesheets().contains(css)) {
-//                    ownerScene.getStylesheets().add(css);
-//                }
-//            }
-//        });
-//    }
-        private void taiCSSGoiYThuoc() {
-            String css = getClass().getResource(GoiY_css).toExternalForm();
+    private void taiCSSGoiYThuoc() {
+        String css = getClass().getResource(GoiY_css).toExternalForm();
 
-            goiYMenu.setOnShown(e -> {
-                Scene sc = goiYMenu.getScene();
-                if (sc != null && !sc.getStylesheets().contains(css)) {
-                    sc.getStylesheets().add(css);
-                }
-            });
+        goiYMenu.setOnShown(e -> {
+            Scene sc = goiYMenu.getScene();
+            if (sc != null && !sc.getStylesheets().contains(css)) {
+                sc.getStylesheets().add(css);
+            }
+        });
 
-            // đảm bảo owner scene cũng có css
-            tfTimSanPham.sceneProperty().addListener((obs, old, scene) -> {
-                if (scene != null && !scene.getStylesheets().contains(css)) {
-                    scene.getStylesheets().add(css);
-                }
-            });
-        }
-    // java
+        // đảm bảo owner scene cũng có css
+        tfTimSanPham.sceneProperty().addListener((obs, old, scene) -> {
+            if (scene != null && !scene.getStylesheets().contains(css)) {
+                scene.getStylesheets().add(css);
+            }
+        });
+    }
+
+
     private void cauHinhCotBang() {
         if (tbSanPham == null) return;
 
