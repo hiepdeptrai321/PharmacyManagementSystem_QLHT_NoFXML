@@ -93,6 +93,7 @@ public class TKPhieuDatHang_GUI {
         Button btnTimKiem = new Button("Tìm");
         btnTimKiem.setPrefHeight(40);
         btnTimKiem.setPrefWidth(74);
+        btnTimKiem.setStyle("-fx-background-color: #188dfb; -fx-text-fill: white");
         // set graphic for search button if available
         try {
             ImageView imgSearch = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png")).toExternalForm()));

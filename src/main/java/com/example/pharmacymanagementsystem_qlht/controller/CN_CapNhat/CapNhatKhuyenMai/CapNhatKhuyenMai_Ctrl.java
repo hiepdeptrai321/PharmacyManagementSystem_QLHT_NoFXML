@@ -1,49 +1,33 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatKhuyenMai;
 
-import com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatSoLuong.SuaSoLuongThuoc_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietKhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.KhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TangKem_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KhuyenMai;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.util.List;
 
-public class CapNhatKhuyenMai_Ctrl extends Application {
+public class CapNhatKhuyenMai_Ctrl{
 
-    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
-    @FXML
+    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN
     public TableView<KhuyenMai> tbKM;
     public TextField tfTimKM;
     public Button btnTimKM;
-    @FXML
     public TableColumn<KhuyenMai, String> colChiTiet;
-    @FXML
     public TableColumn<KhuyenMai, String> colSTT;
-    @FXML
     public TableColumn<KhuyenMai, String> colMaKM;
-    @FXML
     public TableColumn<KhuyenMai, String> colTenKM;
-    @FXML
     public TableColumn<KhuyenMai, String> colLoaiKM;
-    @FXML
     public TableColumn<KhuyenMai, Float> colGiaTri;
-    @FXML
     public TableColumn<KhuyenMai, java.sql.Date> colNBD;
-    @FXML
     public TableColumn<KhuyenMai, java.sql.Date> colNKT;
-    @FXML
     public Button btnReset;
     private KhuyenMai_Dao khuyenMaiDao = new KhuyenMai_Dao();
 
@@ -59,11 +43,6 @@ public class CapNhatKhuyenMai_Ctrl extends Application {
         btnTimKM.setOnAction(e-> timKhuyenMai());
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatKhuyenMai.CapNhatKhuyenMai_GUI()
-                .showWithController(stage, this);
-    }
     // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
 
     public void loadTable() {
@@ -135,7 +114,7 @@ public class CapNhatKhuyenMai_Ctrl extends Application {
         ObservableList<KhuyenMai> data = FXCollections.observableArrayList(dsKMLoc);
         tbKM.setItems(data);
     }
-    @FXML
+
     private void LamMoi() {
         tfTimKM.clear();
         loadTable();

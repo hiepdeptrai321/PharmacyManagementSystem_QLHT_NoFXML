@@ -99,6 +99,7 @@ public class LapPhieuDat_GUI {
         sectionLabel.getStyleClass().add("section-label");
 
         TableView<Object> tbSanPham = new TableView<>();
+        tbSanPham.setStyle("-fx-alignment: CENTER;");
         tbSanPham.setId("tbSanPham");
         tbSanPham.setPrefSize(1137, 701);
         tbSanPham.getStyleClass().add("main-table");
@@ -114,9 +115,16 @@ public class LapPhieuDat_GUI {
         TableColumn<Object, String> colDonGia = new TableColumn<>("Đơn giá");
         colDonGia.setPrefWidth(174);
         TableColumn<Object, String> colThanhTien = new TableColumn<>("Thành tiền");
-        colThanhTien.setPrefWidth(221);
+        colThanhTien.setPrefWidth(238);
         TableColumn<Object, String> colXoa = new TableColumn<>("");
-        colXoa.setPrefWidth(61);
+        colXoa.setPrefWidth(45);
+
+        colDonGia.setStyle("-fx-alignment: CENTER;");
+        colThanhTien.setStyle("-fx-alignment: CENTER;");
+        colXoa.setStyle("-fx-alignment: CENTER;");
+        colSTT.setStyle("-fx-alignment: CENTER;");
+        colDonVi.setStyle("-fx-alignment: CENTER;");
+        colTenSP.setStyle("-fx-alignment: CENTER-LEFT;");
 
         tbSanPham.getColumns().addAll(colSTT, colTenSP, colSoLuong, colDonVi, colDonGia, colThanhTien, colXoa);
 

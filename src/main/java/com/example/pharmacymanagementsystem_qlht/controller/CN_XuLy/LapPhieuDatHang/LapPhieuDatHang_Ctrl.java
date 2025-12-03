@@ -584,6 +584,35 @@ public class LapPhieuDatHang_Ctrl extends Application {
         dsChiTietPD.addListener((javafx.collections.ListChangeListener<ChiTietPhieuDatHang>) c -> {
             if (tbSanPham != null) tbSanPham.refresh();
         });
+        if(colXoa != null) {
+            colXoa.setCellFactory(tc -> new TableCell<>() {
+                private final Button btnXoa = new Button("X");
+
+                {
+                    btnXoa.setOnAction(e -> {
+                        int idx = getIndex();
+                        if (idx < 0 || idx >= getTableView().getItems().size()) return;
+                        ChiTietPhieuDatHang row = getTableView().getItems().get(idx);
+                        if (row != null) {
+                            dsChiTietPD.remove(row);
+                            dvtTheoDong.remove(row);
+                            capNhatTongTienPhieuDat();
+                        }
+                    });
+                    btnXoa.setStyle("-fx-background-color: #d80202; -fx-text-fill: white; -fx-font-weight: bold");
+                }
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) { setGraphic(null); setText(null); }
+                    else {
+                        setGraphic(btnXoa);
+                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    }
+                }
+            });
+        }
     }
 
     private void xuLyTimKhachHang() {

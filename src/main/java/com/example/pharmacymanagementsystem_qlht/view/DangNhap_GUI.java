@@ -26,7 +26,7 @@ public class DangNhap_GUI {
         PasswordField tfMatKhauAn = new PasswordField();
         tfMatKhauAn.setId("tfMatKhauAn");
         tfMatKhauAn.setLayoutX(93);
-        tfMatKhauAn.setLayoutY(325);
+        tfMatKhauAn.setLayoutY(327);
         tfMatKhauAn.setPrefSize(318, 26);
 
         TextField tfMatKhau = new TextField();
