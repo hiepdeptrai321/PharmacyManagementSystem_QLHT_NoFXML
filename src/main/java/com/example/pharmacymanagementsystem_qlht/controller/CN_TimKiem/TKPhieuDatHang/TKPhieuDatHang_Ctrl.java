@@ -19,7 +19,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.scene.control.DatePicker;
-
 import java.util.List;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
 

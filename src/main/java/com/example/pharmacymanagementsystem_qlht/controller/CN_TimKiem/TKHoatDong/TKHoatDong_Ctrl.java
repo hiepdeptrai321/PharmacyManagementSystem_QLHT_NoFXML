@@ -2,16 +2,11 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoatDong;
 
 import com.example.pharmacymanagementsystem_qlht.dao.HoatDong_Dao;
-import com.example.pharmacymanagementsystem_qlht.model.HoaDon;
 import com.example.pharmacymanagementsystem_qlht.model.HoatDong;
 import com.example.pharmacymanagementsystem_qlht.model.NhanVien;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
@@ -24,36 +19,21 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-public class TKHoatDong_Ctrl extends javafx.application.Application {
+public class TKHoatDong_Ctrl {
 
-    @FXML
     public TextField tfTim;
-    @FXML
     public Button btnTim;
-    @FXML
     public Button btnLamMoi;
-    @FXML
     public TableView<HoatDong> tbHoatDong;
-    @FXML
     public TableColumn<HoatDong, String> colSTT;
-    @FXML
     public TableColumn<HoatDong, String> colMa;
-    @FXML
     public TableColumn<HoatDong, String> colLoai;
-    @FXML
     public TableColumn<HoatDong, String> colBang;
-    @FXML
     public TableColumn<HoatDong, String> colThoiGian;
-    @FXML
     public TableColumn<HoatDong, String> colNguoi;
-    @FXML
     public TableColumn<HoatDong, String> colChiTiet;
-
-    @FXML
     public DatePicker dpTuNgay;
-    @FXML
     public DatePicker dpDenNgay;
-    @FXML
     public ComboBox<String> cbBoLoc;
 
     private final HoatDong_Dao dao = new HoatDong_Dao();
@@ -235,15 +215,10 @@ public class TKHoatDong_Ctrl extends javafx.application.Application {
             e.printStackTrace();
         }
     }
-    @FXML
+
     private void LamMoi() {
         tfTim.clear();
         loadTable();
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoatDong.TKHoatDong_GUI()
-                .showWithController(stage, this);
-    }
 }
