@@ -4,10 +4,6 @@ import com.example.pharmacymanagementsystem_qlht.dao.DonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietDonViTinh;
 import com.example.pharmacymanagementsystem_qlht.model.DonViTinh;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -17,7 +13,7 @@ import java.util.function.Consumer;
 
 public class ThietLapDonViTinh_Them_Ctrl {
 
-    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
+    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN
 
     public CheckBox checkDVCB;
     public TextField tfHeSo;

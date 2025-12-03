@@ -1,43 +1,27 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoatDong;
 
 import com.example.pharmacymanagementsystem_qlht.model.HoatDong;
-import com.example.pharmacymanagementsystem_qlht.model.NhanVien;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ResourceBundle;
+
 
 public class ChiTietHoatDong_Ctrl extends Application {
 
-    @FXML
     public TextField tfMaHD;
-    @FXML
     public TextField tfLoaiHD;
-    @FXML
     public TextField tfThoiGian;
-    @FXML
     public TextField tfMaNV;
-    @FXML
     public TextField tfTenNV;
-    @FXML
     public TextField tfBang;
-    @FXML
     public TextArea tfNoiDung;
-    @FXML
     public Button btnHuy;
 
     private final SimpleDateFormat tsFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");

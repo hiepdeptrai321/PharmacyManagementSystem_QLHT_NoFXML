@@ -7,10 +7,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -21,7 +17,7 @@ import java.util.Locale;
 
 public class CapNhatGiaThuoc_Ctrl extends Application {
 
-    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
+    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN
 
     public TextField tfTimThuoc;
     public Button btnTimThuoc;
@@ -59,7 +55,6 @@ public class CapNhatGiaThuoc_Ctrl extends Application {
         Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
         List<Thuoc_SanPham> list = thuocDao.selectAllSLTheoDonViCoBan_ChiTietDVT_Ver2();
         ObservableList<Thuoc_SanPham> data = FXCollections.observableArrayList(list);
-
         colSTT.setCellFactory(col -> new TableCell<>() {
             @Override protected void updateItem(String it, boolean empty) {
                 super.updateItem(it, empty);
@@ -135,22 +130,7 @@ public class CapNhatGiaThuoc_Ctrl extends Application {
         tbThuoc.setItems(data);
     }
 
-//    private void showSuaGiaThuoc(Thuoc_SanPham thuoc) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-//                    "/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatGia/SuaGiaThuoc_GUI.fxml"));
-//            Parent root = loader.load();
-//            SuaGiaThuoc_Ctrl controller = loader.getController();
-//            controller.setThuoc(thuoc); // Implement setThuoc in SuaGiaThuoc_Ctrl
-//            Stage stage = new Stage();
-//            stage.setTitle("Sửa giá thuốc");
-//            stage.setScene(new Scene(root));
-//            stage.showAndWait();
-//            stage.setOnHidden(e-> loadTable());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+
     private void showSuaGiaThuoc(Thuoc_SanPham thuoc) {
         try {
             // create controller and pass the selected model
@@ -170,7 +150,7 @@ public class CapNhatGiaThuoc_Ctrl extends Application {
             e.printStackTrace();
         }
     }
-    @FXML
+
     private void LamMoi() {
         tfTimThuoc.clear();
         loadTable();

@@ -25,7 +25,7 @@ public class TKHoatDong_GUI {
         TextField tfTim = new TextField();
         tfTim.setId("tfTim");
         tfTim.setLayoutX(14);
-        tfTim.setLayoutY(87);
+        tfTim.setLayoutY(91);
         tfTim.setPrefSize(353, 40);
         tfTim.setPromptText("Tìm theo mã, tên nhân viên");
 
@@ -33,43 +33,44 @@ public class TKHoatDong_GUI {
         Button btnTim = new Button("🔍 Tìm");
         btnTim.setId("btntim");
         btnTim.setLayoutX(756);
-        btnTim.setLayoutY(87);
+        btnTim.setLayoutY(91);
         btnTim.setPrefSize(69, 40);
-        btnTim.setStyle("-fx-font-size: 14;");
+        btnTim.setStyle("-fx-font-size: 14; -fx-text-fill: white; -fx-background-color: #007bff;");
+
 
         DatePicker dpTuNgay = new DatePicker();
         dpTuNgay.setId("dpTuNgay");
         dpTuNgay.setLayoutX(447);
-        dpTuNgay.setLayoutY(87);
+        dpTuNgay.setLayoutY(91);
         dpTuNgay.setPrefSize(125, 40);
 
         DatePicker dpDenNgay = new DatePicker();
         dpDenNgay.setId("dpDenNgay");
         dpDenNgay.setLayoutX(619);
-        dpDenNgay.setLayoutY(87);
+        dpDenNgay.setLayoutY(91);
         dpDenNgay.setPrefSize(125, 40);
 
         Label lbTu = new Label("Từ:");
         lbTu.setLayoutX(419);
-        lbTu.setLayoutY(91);
+        lbTu.setLayoutY(98);
         Label lbDen = new Label("Đến:");
         lbDen.setLayoutX(585);
-        lbDen.setLayoutY(90);
+        lbDen.setLayoutY(98);
 
         // Quick filter combo
         ComboBox<String> cbBoLoc = new ComboBox<>();
         cbBoLoc.setId("cbBoLoc");
         cbBoLoc.setLayoutX(1449);
-        cbBoLoc.setLayoutY(85);
+        cbBoLoc.setLayoutY(91);
         cbBoLoc.setPrefSize(173, 40);
         cbBoLoc.setPromptText("⌛ Bộ lọc nhanh");
 
         // Table
         TableView<HoatDong> tbHoatDong = new TableView<>();
         tbHoatDong.setId("tablethuoc");
-        tbHoatDong.setLayoutX(5);
+        tbHoatDong.setLayoutX(12);
         tbHoatDong.setLayoutY(142);
-        tbHoatDong.setPrefSize(1617, 772);
+        tbHoatDong.setPrefSize(1608, 772);
 
         TableColumn<HoatDong, String> colSTT = new TableColumn<>("STT");
         colSTT.setPrefWidth(68);
@@ -95,7 +96,7 @@ public class TKHoatDong_GUI {
         colNguoi.setPrefWidth(337);
 
         TableColumn<HoatDong, String> colChiTiet = new TableColumn<>("");
-        colChiTiet.setPrefWidth(100);
+        colChiTiet.setPrefWidth(90);
         colChiTiet.setStyle("-fx-alignment: CENTER;");
 
         tbHoatDong.getColumns().addAll(colSTT, colMa, colLoai, colBang, colThoiGian, colNguoi, colChiTiet);
@@ -109,15 +110,15 @@ public class TKHoatDong_GUI {
 
         Label lbTitle = new Label("Tìm kiếm hoạt động");
         lbTitle.setId("lbtitle");
-        lbTitle.setLayoutY(2);
+        lbTitle.setLayoutY(-2);
         lbTitle.setPrefSize(457, 70);
         lbTitle.setStyle("-fx-font-size: 36px; -fx-font-weight: bold;");
 
         ImageView imgLog = new ImageView();
-        imgLog.setFitWidth(61);
-        imgLog.setFitHeight(53);
-        imgLog.setLayoutX(351);
-        imgLog.setLayoutY(11);
+        imgLog.setFitWidth(50);
+        imgLog.setFitHeight(50);
+        imgLog.setLayoutX(360);
+        imgLog.setLayoutY(14);
         imgLog.setPickOnBounds(true);
         imgLog.setPreserveRatio(true);
         try {
@@ -135,7 +136,7 @@ public class TKHoatDong_GUI {
         Button btnLamMoi = new Button();
         btnLamMoi.setId("btnReset");
         btnLamMoi.setLayoutX(837);
-        btnLamMoi.setLayoutY(87);
+        btnLamMoi.setLayoutY(91);
         btnLamMoi.setPrefSize(50, 40);
         ImageView imgRefresh = new ImageView();
         imgRefresh.setFitWidth(34);

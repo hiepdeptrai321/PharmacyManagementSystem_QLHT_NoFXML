@@ -3,14 +3,9 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatG
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietDonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietDonViTinh;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
-import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -26,30 +21,18 @@ import java.util.stream.Collectors;
 public class SuaGiaThuoc_Ctrl {
     public Button btnThietLapGia;
 
-    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
+    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN
 
-    @FXML
     public TextField tfMaThuoc;
-    @FXML
     public TextField tfTenThuoc;
-    @FXML
     public TextField tfLoaiHang;
-
-    @FXML
     public TableView<ChiTietDonViTinh> tbDVT;
-    @FXML
     public TableColumn<ChiTietDonViTinh, String> colDVT;
-    @FXML
     public TableColumn<ChiTietDonViTinh, String> colKH;
-    @FXML
     public TableColumn<ChiTietDonViTinh, Object> colHeSo;
-    @FXML
     public TableColumn<ChiTietDonViTinh, String> colGiaNhap;
-    @FXML
     public TableColumn<ChiTietDonViTinh, String> colGiaBan;
-    @FXML
     public TableColumn<ChiTietDonViTinh, String> colDVCB;
-    @FXML
     public TableColumn<ChiTietDonViTinh, Void> colXoa;
     public Button btnLuu;
     public Button btnHuy;
@@ -59,8 +42,6 @@ public class SuaGiaThuoc_Ctrl {
 
 
     // 2. KHỞI TẠO (INITIALIZE)
-
-    @FXML
     public void initialize() {
         colDVT.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDvt().getTenDonViTinh()));
         colKH.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDvt().getKiHieu()));
