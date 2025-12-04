@@ -133,7 +133,7 @@ public class TKPhieuDoiHang_Ctrl extends Application {
             }
         });
         colChiTiet.setCellFactory(col -> new TableCell<PhieuDoiHang, String>() {
-            private final Button btn = new Button("Chi tiết");
+            private final Button btn = new Button("Xem");
             {
                 btn.setOnAction(event -> {
                     PhieuDoiHang pd = getTableView().getItems().get(getIndex());

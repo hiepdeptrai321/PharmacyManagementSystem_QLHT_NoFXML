@@ -172,7 +172,7 @@ public class TKPhieuDoiHang_GUI extends Application {
         colTenNV = new TableColumn<>("Nhân viên");
         colTenNV.setPrefWidth(262);
 
-        colChiTiet = new TableColumn<>();
+        colChiTiet = new TableColumn<>("Chi tiết");
         colChiTiet.setPrefWidth(95);
         colChiTiet.setStyle("-fx-alignment: CENTER;");
 

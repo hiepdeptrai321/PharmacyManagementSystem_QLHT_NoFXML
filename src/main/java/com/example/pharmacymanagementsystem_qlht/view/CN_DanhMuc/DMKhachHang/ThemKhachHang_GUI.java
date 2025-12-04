@@ -152,12 +152,11 @@ public class ThemKhachHang_GUI {
         ctrl.txtEmail = txtEmail;
         ctrl.txtDiaChi = txtDiaChi;
         ctrl.cbGioiTinh = cbGioiTinh;
-        ctrl.cbTrangThai = null; // Không có trong FXML này
+
         ctrl.lblMessage = lblMessage;
         ctrl.btnThem = btnThem;
         ctrl.btnHuy = btnHuy;
 
-        // Tiêm error labels
         ctrl.errTenKH = errTenKH;
         ctrl.errNgaySinh = errNgaySinh;
         ctrl.errSDT = errSDT;
@@ -165,10 +164,8 @@ public class ThemKhachHang_GUI {
         ctrl.errDiaChi = errDiaChi;
         ctrl.errGioiTinh = errGioiTinh;
 
-        // --- Khởi chạy Controller ---
-        ctrl.initialize(null, null); // Vì nó implement Initializable
+        ctrl.init();
 
-        // Gán Scene cho Stage
         stage.setScene(scene);
     }
 }
