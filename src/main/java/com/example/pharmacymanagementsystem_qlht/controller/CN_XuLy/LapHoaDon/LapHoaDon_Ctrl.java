@@ -1,6 +1,7 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon;
 
 import com.example.pharmacymanagementsystem_qlht.connectDB.ConnectDB;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.ThemKhachHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
@@ -8,6 +9,9 @@ import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.ApDungKhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.service.DichVuKhuyenMai;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.ThemKhachHang_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon.ChiTietHoaDon_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -19,7 +23,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
@@ -773,65 +776,98 @@ public class LapHoaDon_Ctrl extends Application {
 
 //------------Xử lý khách hàng ----------------
 
+//    public void xuLyTimKhachHang() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKKhachHang/TKKhachHang_GUI.fxml"));
+//            Parent root = loader.load();
+//            TimKiemKhachHangTrongHD_Ctrl ctrl = loader.getController();
+//
+//            Stage stage = new Stage();
+//            ctrl.setOnSelected((KhachHang kh) -> {
+//                if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
+//                if (txtSDT != null) txtSDT.setText(kh.getSdt());
+//                stage.close();
+//            });
+//
+//            stage.setScene(new Scene(root));
+//            stage.show();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
     public void xuLyTimKhachHang() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKKhachHang/TKKhachHang_GUI.fxml"));
-            Parent root = loader.load();
-            TimKiemKhachHangTrongHD_Ctrl ctrl = loader.getController();
+        Stage stage = new Stage();
+        TimKiemKhachHangTrongHD_Ctrl ctrl = new TimKiemKhachHangTrongHD_Ctrl();
 
-            Stage stage = new Stage();
-            ctrl.setOnSelected((KhachHang kh) -> {
-                if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
-                if (txtSDT != null) txtSDT.setText(kh.getSdt());
-                stage.close();
-            });
+        // Tạo GUI Java code
+        TimKiemKhachHangTrongHD_GUI gui = new TimKiemKhachHangTrongHD_GUI();
 
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Truyền stage + controller cho GUI để GUI tự tạo scene
+        gui.showWithController(stage, ctrl);
+
+        // Lắng nghe kết quả chọn khách hàng
+        ctrl.setOnSelected(kh -> {
+            if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
+            if (txtSDT != null) txtSDT.setText(kh.getSdt());
+            stage.close();
+        });
+
+        stage.show();
     }
 
-    public void xuLyThemKH() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhachHang/ThemKhachHang_GUI.fxml"));
-            Parent root = loader.load();
-            Object ctrl = loader.getController();
+//    public void xuLyThemKH() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+//                    "/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhachHang/ThemKhachHang_GUI.fxml"));
+//            Parent root = loader.load();
+//            Object ctrl = loader.getController();
+//
+//            Stage st = new Stage();
+//            st.setScene(new Scene(root));
+//            if (btnThemKH != null && btnThemKH.getScene() != null) {
+//                st.initOwner(btnThemKH.getScene().getWindow());
+//            }
+//
+//            st.setOnHidden(e -> {
+//                try {
+//                    Object o = null;
+//                    try {
+//                        java.lang.reflect.Method m1 = ctrl.getClass().getMethod("getKhachHangMoi");
+//                        o = m1.invoke(ctrl);
+//                    } catch (NoSuchMethodException ignore) {
+//                        try {
+//                            java.lang.reflect.Method m2 = ctrl.getClass().getMethod("getSavedKhachHang");
+//                            o = m2.invoke(ctrl);
+//                        } catch (NoSuchMethodException ignored) { }
+//                    }
+//                    if (o instanceof KhachHang kh) {
+//                        Platform.runLater(() -> {
+//                            if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
+//                            if (txtSDT != null) txtSDT.setText(kh.getSdt());
+//                        });
+//                    }
+//                } catch (Exception ignored) {
+//                }
+//            });
+//            st.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+public void xuLyThemKH() {
+    Stage stage = new Stage();
+    ThemKhachHang_Ctrl ctrl = new ThemKhachHang_Ctrl();
+    ThemKhachHang_GUI view = new ThemKhachHang_GUI();
+    view.showWithController(stage, ctrl);
 
-            Stage st = new Stage();
-            st.setScene(new Scene(root));
-            if (btnThemKH != null && btnThemKH.getScene() != null) {
-                st.initOwner(btnThemKH.getScene().getWindow());
-            }
+    ctrl.setOnSaved(kh -> {
+        if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
+        if (txtSDT != null) txtSDT.setText(kh.getSdt());
+    });
 
-            st.setOnHidden(e -> {
-                try {
-                    Object o = null;
-                    try {
-                        java.lang.reflect.Method m1 = ctrl.getClass().getMethod("getKhachHangMoi");
-                        o = m1.invoke(ctrl);
-                    } catch (NoSuchMethodException ignore) {
-                        try {
-                            java.lang.reflect.Method m2 = ctrl.getClass().getMethod("getSavedKhachHang");
-                            o = m2.invoke(ctrl);
-                        } catch (NoSuchMethodException ignored) { }
-                    }
-                    if (o instanceof KhachHang kh) {
-                        Platform.runLater(() -> {
-                            if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
-                            if (txtSDT != null) txtSDT.setText(kh.getSdt());
-                        });
-                    }
-                } catch (Exception ignored) {
-                }
-            });
-            st.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    stage.initOwner(btnThemKH.getScene().getWindow());
+    stage.show();
+}
     //----------Xử lý tbao SLTon ---------------
     private double heSo(ChiTietDonViTinh dvt) {
         return (dvt == null || dvt.getHeSoQuyDoi() <= 0) ? 1.0 : dvt.getHeSoQuyDoi();
@@ -1049,8 +1085,6 @@ public class LapHoaDon_Ctrl extends Application {
         if (tblChiTietHD != null) tblChiTietHD.refresh();
         tinhTongTien();
     }
-
-
 
 
     //-----Xu Ly giao dich
@@ -1331,22 +1365,19 @@ public class LapHoaDon_Ctrl extends Application {
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                            "/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKHoaDon/ChiTietHoaDon_GUI.fxml"));
-                    Parent root = loader.load();
-
-                    // Lấy controller để truyền dữ liệu hóa đơn
-                    ChiTietHoaDon_Ctrl ctrl = loader.getController();
-                    ctrl.setHoaDon(hdMoi);
+                    // Tạo controller
+                    ChiTietHoaDon_Ctrl ctrl = new ChiTietHoaDon_Ctrl();
+                    ChiTietHoaDon_GUI gui = new ChiTietHoaDon_GUI();
 
                     Stage stage = new Stage();
                     stage.setTitle("Chi tiết hóa đơn " + maHD);
-                    stage.setScene(new Scene(root));
-                    stage.setResizable(false);
-                    stage.show();
-                   // ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).close();
 
-                } catch (IOException e) {
+                    gui.showWithController(stage, ctrl);
+
+                    ctrl.initialize();
+                    ctrl.setHoaDon(hdMoi);
+
+                } catch ( Exception e) {
                     hien(ERROR, "Lỗi",
                             "Không thể mở giao diện chi tiết hóa đơn:\n" + e.getMessage());
                     e.printStackTrace();
@@ -1440,39 +1471,6 @@ public class LapHoaDon_Ctrl extends Application {
         this.baseQtyMap = baseQtyToReduce;
 
     }
-
-//    @FXML
-//    private void xuLyXuatPDF(ActionEvent event) {
-//        // 1. Kiểm tra dữ liệu
-//        if (dsChiTietHD == null || dsChiTietHD.isEmpty()) {
-//            hien(WARNING, "Không có dữ liệu", "Chưa có chi tiết hóa đơn nào để xuất.");
-//            return;
-//        }
-//
-//        // 2. Mở FileChooser
-//        FileChooser fileChooser = new FileChooser();
-//        fileChooser.setTitle("Lưu Hóa Đơn PDF");
-//        fileChooser.setInitialFileName("HoaDon_" + LocalDate.now());
-//        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files (*.pdf)", "*.pdf"));
-//
-//        Stage stage = null;
-//        if (btnThanhToanVaIn != null && btnThanhToanVaIn.getScene() != null) {
-//            stage = (Stage) btnThanhToanVaIn.getScene().getWindow();
-//        }
-//
-//        File file = fileChooser.showSaveDialog(stage);
-//
-//        // 3. Gọi hàm xuất PDF
-//        if (file != null) {
-//            try {
-//                xuatHoaDonPDF(file);
-//                hien(INFORMATION, "Thành công", "Hóa đơn đã được xuất ra file PDF:\n" + file.getAbsolutePath());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                hien(ERROR, "Lỗi", "Có lỗi xảy ra khi xuất file PDF:\n" + e.getMessage());
-//            }
-//        }
-//    }
 
 
     private void xuatHoaDonPDF(File file) throws IOException {

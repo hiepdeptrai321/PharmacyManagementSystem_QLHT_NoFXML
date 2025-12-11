@@ -2,7 +2,6 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDat
 
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKKhachHang.TimKiemKhachHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
@@ -12,6 +11,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.application.Platform;
+import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -216,7 +216,6 @@ public class LapPhieuDatHang_Ctrl extends Application {
             }
             taiCSSGoiYThuoc();
             goiYMenu.getItems().clear();
-            final double menuWidth = Math.max(300, tfTimSanPham.getWidth());
             int index = 0;
             for (String detail : results) {
                 String name;
@@ -230,20 +229,30 @@ public class LapPhieuDatHang_Ctrl extends Application {
                 }
 
                 HBox row = new HBox(8);
-                row.setPrefWidth(menuWidth);
+                row.setPrefWidth(950);
+                row.setStyle("-fx-alignment: CENTER; -fx-margin: 10 0 10 0;");
+                row.setFillHeight(true);
+                row.getStyleClass().add("suggestion-row");
 
                 Label nameLbl = new Label(name);
                 nameLbl.getStyleClass().add("suggestion-name");
+                nameLbl.setWrapText(true);
+
                 Label infoLbl = new Label(infoText.isEmpty() ? "" : " | " + infoText);
                 infoLbl.getStyleClass().add("suggestion-detail");
+                infoLbl.setWrapText(true);
 
                 Region spacer = new Region();
-                HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+                HBox.setHgrow(spacer, Priority.ALWAYS);
 
                 row.getChildren().addAll(nameLbl, infoLbl, spacer);
 
                 CustomMenuItem mi = new CustomMenuItem(row, true);
-                if (index < results.size() - 1) mi.getStyleClass().add("has-separator");
+                mi.getStyleClass().add("suggestion-item");
+
+                if (index < results.size() - 1) {
+                    mi.getStyleClass().add("has-separator");
+                }
 
                 final String chosen = name;
                 final String chosenUnit = parseDonVi(infoText);
@@ -424,36 +433,24 @@ public class LapPhieuDatHang_Ctrl extends Application {
     }
 
     private void taiCSSGoiYThuoc() {
-        // ensure the menu has the base style class
-        if (!goiYMenu.getStyleClass().contains("suggestion-menu")) {
-            goiYMenu.getStyleClass().add("suggestion-menu");
-        }
+        String css = getClass().getResource(GoiY_css).toExternalForm();
 
-        // handler: when the popup's scene is available, add stylesheet to it
-        goiYMenu.setOnShowing(e -> {
-            var url = getClass().getResource(GoiY_css);
-            if (url == null) return;
-
-            var scene = goiYMenu.getScene();
-            if (scene != null) {
-                String css = url.toExternalForm();
-                if (!scene.getStylesheets().contains(css)) {
-                    scene.getStylesheets().add(css);
-                }
-                return;
+        goiYMenu.setOnShown(e -> {
+            Scene sc = goiYMenu.getScene();
+            if (sc != null && !sc.getStylesheets().contains(css)) {
+                sc.getStylesheets().add(css);
             }
+        });
 
-            // fallback: attach stylesheet to the owner control's scene so styles apply to children
-            if (tfTimSanPham != null && tfTimSanPham.getScene() != null) {
-                String css = url.toExternalForm();
-                var ownerScene = tfTimSanPham.getScene();
-                if (!ownerScene.getStylesheets().contains(css)) {
-                    ownerScene.getStylesheets().add(css);
-                }
+        // đảm bảo owner scene cũng có css
+        tfTimSanPham.sceneProperty().addListener((obs, old, scene) -> {
+            if (scene != null && !scene.getStylesheets().contains(css)) {
+                scene.getStylesheets().add(css);
             }
         });
     }
-    // java
+
+
     private void cauHinhCotBang() {
         if (tbSanPham == null) return;
 
@@ -586,6 +583,35 @@ public class LapPhieuDatHang_Ctrl extends Application {
         dsChiTietPD.addListener((javafx.collections.ListChangeListener<ChiTietPhieuDatHang>) c -> {
             if (tbSanPham != null) tbSanPham.refresh();
         });
+        if(colXoa != null) {
+            colXoa.setCellFactory(tc -> new TableCell<>() {
+                private final Button btnXoa = new Button("X");
+
+                {
+                    btnXoa.setOnAction(e -> {
+                        int idx = getIndex();
+                        if (idx < 0 || idx >= getTableView().getItems().size()) return;
+                        ChiTietPhieuDatHang row = getTableView().getItems().get(idx);
+                        if (row != null) {
+                            dsChiTietPD.remove(row);
+                            dvtTheoDong.remove(row);
+                            capNhatTongTienPhieuDat();
+                        }
+                    });
+                    btnXoa.setStyle("-fx-background-color: #d80202; -fx-text-fill: white; -fx-font-weight: bold");
+                }
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) { setGraphic(null); setText(null); }
+                    else {
+                        setGraphic(btnXoa);
+                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    }
+                }
+            });
+        }
     }
 
     private void xuLyTimKhachHang() {

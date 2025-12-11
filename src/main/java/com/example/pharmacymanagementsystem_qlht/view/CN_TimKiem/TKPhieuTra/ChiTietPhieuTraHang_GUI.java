@@ -210,9 +210,6 @@ public class ChiTietPhieuTraHang_GUI extends Application {
         lblGhiChuValue.setPrefWidth(200.0); lblGhiChuValue.getStyleClass().add("value-label");
         lblGhiChuValue.setWrapText(true);
 
-        // NOTE: FXML có 2 sets of labels cho NV/KH/SDT. Tôi sẽ ưu tiên set có ID được Controller dùng (lblTenNV, lblTenKH, lblSDTKH) và set cố định FXML (lblTenNhanVienValue/lblTenKhachHangValue/lblSDTKhachHangValue) cho việc gán ID.
-        // Tuy nhiên, FXML đang gán text cho lblTenNV/lblTenKH/lblSDTKH là trống, và FXML có 3 labels khác không có ID nhưng có text: "Tên nhân viên lập:", "Tên khách hàng:", "SĐT Khách hàng:", và 3 labels có ID nhưng không có text ban đầu: lblTenNhanVienValue/lblTenKhachHangValue/lblSDTKhachHangValue.
-        // Để đảm bảo mapping đúng FXML, tôi sẽ tạo tất cả IDs.
 
         // FXML Labels (redundant but need to be mapped)
         Label lblTenNhanVienValue = new Label();

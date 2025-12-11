@@ -18,6 +18,7 @@ public class LapPhieuDat_GUI {
     public void showWithController(Stage stage, LapPhieuDatHang_Ctrl ctrl) {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
+        root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDatHang.css").toExternalForm());
 
         // Header decorative pane (kept simple)
         Pane headerPane = new Pane();
@@ -98,6 +99,7 @@ public class LapPhieuDat_GUI {
         sectionLabel.getStyleClass().add("section-label");
 
         TableView<Object> tbSanPham = new TableView<>();
+        tbSanPham.setStyle("-fx-alignment: CENTER;");
         tbSanPham.setId("tbSanPham");
         tbSanPham.setPrefSize(1137, 701);
         tbSanPham.getStyleClass().add("main-table");
@@ -113,9 +115,16 @@ public class LapPhieuDat_GUI {
         TableColumn<Object, String> colDonGia = new TableColumn<>("Đơn giá");
         colDonGia.setPrefWidth(174);
         TableColumn<Object, String> colThanhTien = new TableColumn<>("Thành tiền");
-        colThanhTien.setPrefWidth(221);
+        colThanhTien.setPrefWidth(238);
         TableColumn<Object, String> colXoa = new TableColumn<>("");
-        colXoa.setPrefWidth(61);
+        colXoa.setPrefWidth(45);
+
+        colDonGia.setStyle("-fx-alignment: CENTER;");
+        colThanhTien.setStyle("-fx-alignment: CENTER;");
+        colXoa.setStyle("-fx-alignment: CENTER;");
+        colSTT.setStyle("-fx-alignment: CENTER;");
+        colDonVi.setStyle("-fx-alignment: CENTER;");
+        colTenSP.setStyle("-fx-alignment: CENTER-LEFT;");
 
         tbSanPham.getColumns().addAll(colSTT, colTenSP, colSoLuong, colDonVi, colDonGia, colThanhTien, colXoa);
 
@@ -307,9 +316,6 @@ public class LapPhieuDat_GUI {
         root.getChildren().addAll(headerPane, title, searchPane, leftBox, infoPane);
 
         Scene scene = new Scene(root);
-        try {
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDatHang.css")).toExternalForm());
-        } catch (Exception ignored) {}
 
         // Inject controls into controller (best-effort unchecked casts similar to existing pattern)
         try {

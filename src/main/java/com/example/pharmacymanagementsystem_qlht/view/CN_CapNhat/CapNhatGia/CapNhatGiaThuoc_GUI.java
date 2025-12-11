@@ -23,21 +23,27 @@ public class CapNhatGiaThuoc_GUI {
         Pane lblPaneTitle = new Pane();
         lblPaneTitle.setId("lblpaneTitle");
         lblPaneTitle.setLayoutX(-1);
-        lblPaneTitle.setPrefSize(1646, 40);
+        lblPaneTitle.setPrefSize(1646, 53);
+
 
         Label lbTitle = new Label("Cập nhật giá thuốc");
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutX(15);
-        lbTitle.setLayoutY(2);
-        lbTitle.setPrefSize(307, 36);
+        lbTitle.setLayoutY(0);
+        lbTitle.setPrefSize(1646, 40);
+        lbTitle.getStyleClass().add("title");
+        lbTitle.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css")
+        ).toExternalForm());
+
 
         ImageView imgIncrease = new ImageView(
                 new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/increase.png")).toExternalForm())
         );
         imgIncrease.setFitHeight(39);
         imgIncrease.setFitWidth(47);
-        imgIncrease.setLayoutX(249);
-        imgIncrease.setLayoutY(-1);
+        imgIncrease.setLayoutX(345);
+        imgIncrease.setLayoutY(4);
         imgIncrease.setPickOnBounds(true);
         imgIncrease.setPreserveRatio(true);
 
@@ -46,22 +52,28 @@ public class CapNhatGiaThuoc_GUI {
         TextField tfTimThuoc = new TextField();
         tfTimThuoc.setId("tfTimThuoc");
         tfTimThuoc.setLayoutX(12);
-        tfTimThuoc.setLayoutY(47);
+        tfTimThuoc.setLayoutY(59);
         tfTimThuoc.setPrefSize(793, 40);
         tfTimThuoc.setPromptText("Tìm theo mã, tên thuốc");
 
         Button btnTimThuoc = new Button("🔍 Tìm");
         btnTimThuoc.setId("btntim");
         btnTimThuoc.setLayoutX(817);
-        btnTimThuoc.setLayoutY(47);
+        btnTimThuoc.setLayoutY(59);
         btnTimThuoc.setPrefSize(78, 40);
         btnTimThuoc.setStyle("-fx-font-size: 14;");
+        btnTimThuoc.getStyleClass().add("btnTim");
+        btnTimThuoc.getStyleClass().add("btnTim");
+        btnTimThuoc.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css")
+        ).toExternalForm());
 
         Button btnReset = new Button();
         btnReset.setId("btnReset");
         btnReset.setLayoutX(906);
-        btnReset.setLayoutY(47);
+        btnReset.setLayoutY(59);
         btnReset.setPrefSize(45, 40);
+        btnReset.getStyleClass().add("btnXoaRong");
 
         ImageView imgRefresh = new ImageView(
                 new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")).toExternalForm())
@@ -75,8 +87,8 @@ public class CapNhatGiaThuoc_GUI {
         TableView<Object> tbThuoc = new TableView<>();
         tbThuoc.setId("tablethuoc");
         tbThuoc.setLayoutX(12);
-        tbThuoc.setLayoutY(96);
-        tbThuoc.setPrefSize(1623, 791);
+        tbThuoc.setLayoutY(106);
+        tbThuoc.setPrefSize(1623, 781);
         tbThuoc.setStyle("-fx-font-size: 14;");
 
         TableColumn<Object, String> colSTT = new TableColumn<>("STT");

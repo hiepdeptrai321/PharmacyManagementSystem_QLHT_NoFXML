@@ -1,16 +1,9 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatSoLuong;
 
-import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.dao.HoatDong_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -21,15 +14,10 @@ public class SuaSoLuongThuoc_Ctrl {
 
     public Button btnLuu;
     public Button btnHuy;
-    @FXML
     public TextField tfMaThuoc;
-    @FXML
     public TextField tfTenThuoc;
-    @FXML
     public TextField tfSoLuongTon;
-    @FXML
     public ComboBox<String> cbViTri;
-    @FXML
     public ComboBox<String> cbLoaiHang;
 
     private Thuoc_SP_TheoLo thuoc_sp_theoLo;
@@ -47,14 +35,12 @@ public class SuaSoLuongThuoc_Ctrl {
         btnLuu.setOnAction(e -> btnLuuClick());
     }
 
-    @FXML
     public void initialize() {
         Platform.runLater(() -> {
             tfSoLuongTon.requestFocus();
         });
     }
 
-    @FXML
     private void btnLuuClick() {
         if (thuoc_sp_theoLo != null) {
             try {
@@ -70,7 +56,6 @@ public class SuaSoLuongThuoc_Ctrl {
         }
     }
 
-    @FXML
     private void btnHuyClick() {
         closeWindow();
     }

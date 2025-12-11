@@ -91,11 +91,15 @@ public class TKPhieuTraHang_Ctrl extends Application {
                 return new SimpleStringProperty(pt.getHoaDon().getMaHD());
             } else {
                 // null
-                return new SimpleStringProperty("---");
+                return new SimpleStringProperty("");
             }
         });
         colNgayLap.setCellValueFactory(cellData -> new SimpleStringProperty(DoiNgay.dinhDangThoiGian(cellData.getValue().getNgayLap())));
-        colTenKH.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKhachHang().getTenKH()));
+        colTenKH.setCellValueFactory(cellData -> {
+            var kh = cellData.getValue().getKhachHang();
+            String name = (kh != null && kh.getTenKH() != null) ? kh.getTenKH() : "";
+            return new SimpleStringProperty(name);
+        });
         colTenKH.setCellFactory(col -> new TableCell<PhieuTraHang, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -109,8 +113,18 @@ public class TKPhieuTraHang_Ctrl extends Application {
                 }
             }
         });
-        colSdtKH.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKhachHang().getSdt()));
-        colTenNV.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNhanVien().getTenNV()));
+
+        colSdtKH.setCellValueFactory(cellData -> {
+            var kh = cellData.getValue().getKhachHang();
+            String sdt = (kh != null && kh.getSdt() != null) ? kh.getSdt() : "";
+            return new SimpleStringProperty(sdt);
+        });
+
+        colTenNV.setCellValueFactory(cellData -> {
+            var nv = cellData.getValue().getNhanVien();
+            String ten = (nv != null && nv.getTenNV() != null) ? nv.getTenNV() : "";
+            return new SimpleStringProperty(ten);
+        });
         colTenNV.setCellFactory(col -> new TableCell<PhieuTraHang, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {

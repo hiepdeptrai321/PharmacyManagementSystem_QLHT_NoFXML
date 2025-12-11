@@ -23,7 +23,7 @@ public class CapNhatSoLuongThuoc_GUI {
         TextField tfTimThuoc = new TextField();
         tfTimThuoc.setId("tfTimThuoc");
         tfTimThuoc.setLayoutX(12);
-        tfTimThuoc.setLayoutY(47);
+        tfTimThuoc.setLayoutY(59);
         tfTimThuoc.setPrefHeight(40);
         tfTimThuoc.setPrefWidth(767);
         tfTimThuoc.setPromptText("Tìm theo mã, tên thuốc");
@@ -31,10 +31,14 @@ public class CapNhatSoLuongThuoc_GUI {
         Button btnTimThuoc = new Button("🔍 Tìm");
         btnTimThuoc.setId("btntim");
         btnTimThuoc.setLayoutX(789);
-        btnTimThuoc.setLayoutY(47);
+        btnTimThuoc.setLayoutY(59);
         btnTimThuoc.setPrefHeight(40);
         btnTimThuoc.setPrefWidth(81);
         btnTimThuoc.setStyle("-fx-font-size: 14;");
+        btnTimThuoc.getStyleClass().add("btnTim");
+        btnTimThuoc.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css")
+        ).toExternalForm());
 
         Pane lblPaneTitle = new Pane();
         lblPaneTitle.setId("lblpaneTitle");
@@ -44,16 +48,20 @@ public class CapNhatSoLuongThuoc_GUI {
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutX(12);
         lbTitle.setLayoutY(2);
-        lbTitle.setPrefSize(353, 36);
+        lbTitle.setPrefSize(1646, 36);
+        lbTitle.getStyleClass().add("title");
+        lbTitle.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css")
+        ).toExternalForm());
 
         ImageView imgSyringe = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/noimage.jpg")).toExternalForm())
+                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/boxes-11430.png")).toExternalForm())
         );
 
-        imgSyringe.setFitHeight(39);
-        imgSyringe.setFitWidth(40);
-        imgSyringe.setLayoutX(314);
-        imgSyringe.setLayoutY(1);
+        imgSyringe.setFitHeight(50);
+        imgSyringe.setFitWidth(50);
+        imgSyringe.setLayoutX(445);
+        imgSyringe.setLayoutY(4);
         imgSyringe.setPickOnBounds(true);
         imgSyringe.setPreserveRatio(true);
 
@@ -62,8 +70,8 @@ public class CapNhatSoLuongThuoc_GUI {
         TableView<Object> tbThuoc = new TableView<>();
         tbThuoc.setId("tablethuoc");
         tbThuoc.setLayoutX(12);
-        tbThuoc.setLayoutY(97);
-        tbThuoc.setPrefSize(1621, 790);
+        tbThuoc.setLayoutY(107);
+        tbThuoc.setPrefSize(1621, 780);
 
         TableColumn<Object, String> colSTT = new TableColumn<>("STT");
         colSTT.setPrefWidth(48.83333206176758);
@@ -97,7 +105,7 @@ public class CapNhatSoLuongThuoc_GUI {
         Button btnLamMoi = new Button();
         btnLamMoi.setId("btnLamMoi");
         btnLamMoi.setLayoutX(882);
-        btnLamMoi.setLayoutY(47);
+        btnLamMoi.setLayoutY(59);
         btnLamMoi.setPrefHeight(40);
         btnLamMoi.setPrefWidth(47);
         ImageView imgRefresh = new ImageView(

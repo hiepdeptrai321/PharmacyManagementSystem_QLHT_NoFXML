@@ -12,7 +12,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
@@ -26,72 +25,36 @@ public class SuaKhuyenMai_Ctrl {
 
     public Tab tabThuoc;
     public Button btnLuu;
-    // FXML controls
-    @FXML
+    // controls
     public Button btnHuy;
-
-    @FXML
     public TableView<ChiTietKhuyenMai> tbDSThuoc;
-    @FXML
     public TableColumn<ChiTietKhuyenMai, String>  colMaThuoc;
-    @FXML
     public TableColumn<ChiTietKhuyenMai, String>  colTenThuoc;
-    @FXML
     public TableColumn<ChiTietKhuyenMai, Integer> colSLAP;
-    @FXML
     public TableColumn<ChiTietKhuyenMai, Integer> colSLTD;
-    @FXML
     public TableColumn<ChiTietKhuyenMai, Void>    colXoaCT;
-
-    @FXML
     public TabPane tabPaneProducts;
-    @FXML
     public Tab tabTangKem;
-    @FXML
     public Tab tabHoaDon;
-
-    @FXML
     public TableView<Thuoc_SP_TangKem> tbTangKem;
-    @FXML
     public TableColumn<Thuoc_SP_TangKem, String>  colMaQua;
-    @FXML
     public TableColumn<Thuoc_SP_TangKem, String>  colTenQua;
-    @FXML
     public TableColumn<Thuoc_SP_TangKem, Integer> colSLTang;
-    @FXML
     public TableColumn<Thuoc_SP_TangKem, Void>    colXoaQua;
-    @FXML
     public TableColumn<ChiTietKhuyenMai, String>    colDonVi;
-    @FXML
     public TableColumn<Thuoc_SP_TangKem, String>    colDonViQua;
-
-    @FXML
     public TextField tfTimThuoc;
-    @FXML
     public ListView<Thuoc_SanPham> listViewThuoc;
-
-    @FXML
     public TextField tfTimQua;
-    @FXML
     public ListView<Thuoc_SanPham> listViewQua;
-
-    @FXML
     public TextField tfTenKM;
-    @FXML
     public TextField tfMaKM;
-    @FXML
     public ComboBox<String> cbLoaiKM;
-    @FXML
     public TextField tfGiaTri;
-    @FXML
     public DatePicker dpTuNgay;
-    @FXML
     public DatePicker dpDenNgay;
-    @FXML
     public TextField tfMoTa;
 
-    // New invoice-related fields
-    @FXML
     public TextField tfGiaTriHoaDon;
 
     // Data sources
@@ -107,7 +70,6 @@ public class SuaKhuyenMai_Ctrl {
     private final Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
     private final java.util.Map<String, String> dvtCache = new java.util.HashMap<>();
 
-    @FXML
     public void initialize() {
         // Load thuốc source once
         loadAllThuoc();
