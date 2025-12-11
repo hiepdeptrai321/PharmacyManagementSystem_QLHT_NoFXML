@@ -22,12 +22,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -35,16 +30,12 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
-import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Date;
 import java.sql.Timestamp;
-import javafx.stage.FileChooser;
 import java.io.File;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -73,7 +64,7 @@ import static javafx.scene.control.Alert.AlertType.*;
 
 public class LapHoaDon_Ctrl extends Application {
     public static final String FONT_PATH = "C:/Windows/Fonts/arial.ttf";
-    private final ObservableList<ChiTietHoaDon> dsChiTietHD = FXCollections.observableArrayList();
+    public ObservableList<ChiTietHoaDon> dsChiTietHD = FXCollections.observableArrayList();
     private final IdentityHashMap<ChiTietHoaDon, ChiTietDonViTinh> dvtTheoDong = new IdentityHashMap<>();
     private final AtomicLong demTruyVan = new AtomicLong(0);
 
@@ -773,28 +764,6 @@ public class LapHoaDon_Ctrl extends Application {
 
 
 
-
-//------------Xử lý khách hàng ----------------
-
-//    public void xuLyTimKhachHang() {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKKhachHang/TKKhachHang_GUI.fxml"));
-//            Parent root = loader.load();
-//            TimKiemKhachHangTrongHD_Ctrl ctrl = loader.getController();
-//
-//            Stage stage = new Stage();
-//            ctrl.setOnSelected((KhachHang kh) -> {
-//                if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
-//                if (txtSDT != null) txtSDT.setText(kh.getSdt());
-//                stage.close();
-//            });
-//
-//            stage.setScene(new Scene(root));
-//            stage.show();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
     public void xuLyTimKhachHang() {
         Stage stage = new Stage();
         TimKiemKhachHangTrongHD_Ctrl ctrl = new TimKiemKhachHangTrongHD_Ctrl();
