@@ -158,4 +158,8 @@ public class PhieuNhap_Dao implements DaoInterface<PhieuNhap>{
         }
         return key;
     }
+
+    public boolean existsByMaPN(String maPN) {
+        return selectBySql("SELECT 1 FROM PhieuNhap WHERE MaPN = ?").get(0).equals(maPN);
+    }
 }

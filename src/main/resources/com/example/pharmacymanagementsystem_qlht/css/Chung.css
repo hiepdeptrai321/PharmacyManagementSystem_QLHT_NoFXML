@@ -13,6 +13,11 @@
     -fx-background-color: #e0e0e0;
 }
 
+.btnHuy{
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #d3c871;
+}
+
 .label.title {
     -fx-font-size: 36px;
     -fx-font-weight: bold;
