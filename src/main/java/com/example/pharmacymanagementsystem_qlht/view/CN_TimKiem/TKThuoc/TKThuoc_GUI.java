@@ -126,7 +126,7 @@ public class TKThuoc_GUI {
         v.cbxXuatSu = new ComboBox<>();
         v.cbxXuatSu.setLayoutX(951);
         v.cbxXuatSu.setLayoutY(9);
-        v.cbxXuatSu.setPrefSize(165, 44);
+        v.cbxXuatSu.setPrefSize(165, 40);
         v.cbxXuatSu.setPromptText("Chọn xuất xứ");
 
         Label lbHamLuong = new Label("Hàm lượng:");
