@@ -112,26 +112,26 @@ public class DanhMucThuoc_GUI extends Application {
         tfTimThuoc.setId("tfTimThuoc");
         tfTimThuoc.setLayoutX(12);
         tfTimThuoc.setLayoutY(48);
-        tfTimThuoc.setPrefSize(353, 36);
+        tfTimThuoc.setPrefSize(353, 40);
         tfTimThuoc.setPromptText("Tìm theo mã, tên thuốc");
 
         btnTimThuoc = new Button("🔍 Tìm");
         btnTimThuoc.setId("btnTimThuoc");
         btnTimThuoc.setLayoutX(375);
         btnTimThuoc.setLayoutY(46);
-        btnTimThuoc.setPrefSize(69, 16);
+        btnTimThuoc.setPrefSize(69, 40);
 
         btnThemThuoc = new Button("✚Thêm thuốc");
         btnThemThuoc.setId("btnThemThuoc");
         btnThemThuoc.setLayoutX(1440);
         btnThemThuoc.setLayoutY(46.285714285714285);
-        btnThemThuoc.setPrefSize(144, 30);
+        btnThemThuoc.setPrefSize(144, 40);
 
         btnNhapExcel = new Button("📥");
         btnNhapExcel.setId("btnNhapExcel");
         btnNhapExcel.setLayoutX(1594);
         btnNhapExcel.setLayoutY(46.285714285714285);
-        btnNhapExcel.setPrefSize(45, 30);
+        btnNhapExcel.setPrefSize(45, 40);
         btnNhapExcel.setMinWidth(46);
 
         btnLamMoi = new Button();

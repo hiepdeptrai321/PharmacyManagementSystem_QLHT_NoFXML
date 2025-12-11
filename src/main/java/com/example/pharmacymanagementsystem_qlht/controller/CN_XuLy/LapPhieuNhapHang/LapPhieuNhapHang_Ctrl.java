@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -22,6 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -66,39 +68,33 @@ public class LapPhieuNhapHang_Ctrl extends Application {
     private ChiTietPhieuNhap_Dao ctpn_dao = new ChiTietPhieuNhap_Dao();
     private ObservableList<CTPN_TSPTL_CHTDVT> listNhapThuoc = FXCollections.observableArrayList();
     private PhieuNhap_Dao phieuNhapDao = new PhieuNhap_Dao();
-    private List<PhieuNhap> allPhieuNhaps = phieuNhapDao.selectAll();
-
 
     //  3. PHƯƠNG THỨC KHỞI TẠO
     public void initialize() {
-        Platform.runLater(() -> {
-            loadTable();
-            taiDanhSachNCC();
-//          Khởi tạo mã lô hàng hiện tại từ DB
-            String lastMaLH = ctpn_dao.generateMaLH();
-            if (lastMaLH != null && lastMaLH.startsWith("LH")) {
-                maLoHienTai = Integer.parseInt(lastMaLH.substring(2)) - 1;
-            } else {
-                maLoHienTai = 0;
+        loadTable();         // chấp nhận block nhẹ nếu không quá nặng
+        taiDanhSachNCC();    // như trên
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                String lastMaLH = ctpn_dao.generateMaLH();
+                int maLoTmp = 0;
+                if (lastMaLH != null && lastMaLH.startsWith("LH")) {
+                    maLoTmp = Integer.parseInt(lastMaLH.substring(2)) - 1;
+                }
+                final int maLoFinal = maLoTmp;
+
+                Platform.runLater(() -> maLoHienTai = maLoFinal);
+                return null;
             }
-        });
+        };
+        new Thread(task).start();
+
         timKiemNhaCungCap();
         timKiemDonViTinh();
         suKienThemChiTietDonViTinhVaoBang();
         suKienThemMotDongMoiVaoBang();
-
-        listNhapThuoc.addListener((javafx.collections.ListChangeListener<CTPN_TSPTL_CHTDVT>) change -> {
-            boolean shouldUpdate = false;
-            while (change.next()) {
-                if (change.wasAdded() || change.wasRemoved() || change.wasUpdated()) {
-                    shouldUpdate = true;
-                }
-            }
-            if (shouldUpdate) {
-                // đảm bảo chạy trên UI thread
-                Platform.runLater(this::suKienThemMotDongMoiVaoBang);
-            }
-        });
+        listenerListNhapThuoc();
     }
 
     //  4. PHƯƠNG THỨC XỬ LÝ SỰ KIỆN VÀ HÀM HỖ TRỢ
@@ -282,7 +278,17 @@ public class LapPhieuNhapHang_Ctrl extends Application {
 
     //  4.5. Thiết lập bảng nhập thuốc
     public void loadTable() {
-        colSTT.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(tblNhapThuoc.getItems().indexOf(cellData.getValue()) + 1)));
+        colSTT.setCellFactory(col -> new TableCell<CTPN_TSPTL_CHTDVT, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getIndex() + 1));
+                }
+            }
+        });
         colMaThuoc.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getChiTietDonViTinh().getThuoc().getMaThuoc()));
         colTenThuoc.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getChiTietDonViTinh().getThuoc().getTenThuoc()));
         colDonViNhap.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getChiTietDonViTinh().getDvt().getTenDonViTinh()));
@@ -446,7 +452,6 @@ public class LapPhieuNhapHang_Ctrl extends Application {
                 btn.setOnAction(event -> {
                     CTPN_TSPTL_CHTDVT item = getTableView().getItems().get(getIndex());
                     getTableView().getItems().remove(item);
-                    suKienThemMotDongMoiVaoBang();
                 });
                 btn.setStyle("-fx-background-color:#de2c2c ; -fx-text-fill: white;");
                 btn.getStyleClass().add("btn");
@@ -956,9 +961,9 @@ public class LapPhieuNhapHang_Ctrl extends Application {
             phieuNhap.setNgayNhap(txtNgayNhap.getEditor().getText().isEmpty() ? LocalDate.now() : txtNgayNhap.getValue());
             String maPN = txtMaPhieuNhap.getText().trim();
 
-//          Kiểm tra mã phiếu nhập đã tồn tại chưa
-            for (PhieuNhap pn : allPhieuNhaps) {
-                if (pn.getMaPN().equals(maPN)) {
+            if (!maPN.isEmpty()) {
+                // viết 1 hàm trong DAO: boolean existsByMaPN(String maPN)
+                if (phieuNhapDao.existsByMaPN(maPN)) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Thông báo");
                     alert.setHeaderText(null);
@@ -1093,5 +1098,41 @@ public class LapPhieuNhapHang_Ctrl extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         new LapPhieuNhapHang_GUI().showWithController(stage, this);
+    }
+
+    private void listenerListNhapThuoc(){
+        listNhapThuoc.addListener((javafx.collections.ListChangeListener<CTPN_TSPTL_CHTDVT>) change -> {
+            boolean shouldUpdate = false;
+            while (change.next()) {
+                if (change.wasAdded() || change.wasRemoved() || change.wasUpdated()) {
+                    shouldUpdate = true;
+                }
+            }
+            if (shouldUpdate) {
+                // đảm bảo chạy trên UI thread
+                suKienThemMotDongMoiVaoBang();
+            }
+        });
+    }
+
+    public void btnThemThuocByExcel(MouseEvent mouseEvent) {
+        try{
+            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuNhapHang.NhapHangBangExcel_GUI();
+            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang.NhapHangBangExcel_Ctrl();
+
+            Stage dialog = new Stage();
+            dialog.initOwner(tblNhapThuoc.getScene().getWindow());
+            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            dialog.setTitle("Nhập thuốc bằng Excel");
+
+            // 1) build UI + inject + initialize
+            gui.showWithController(dialog, ctrl);
+            // 2) set parent để refresh bảng sau khi lưu/xóa
+            ctrl.setLapPhieuNhapHangCtrl(this);
+            // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }

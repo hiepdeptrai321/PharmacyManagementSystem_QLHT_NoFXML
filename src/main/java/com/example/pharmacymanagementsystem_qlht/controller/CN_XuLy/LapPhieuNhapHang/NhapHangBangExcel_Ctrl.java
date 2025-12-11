@@ -2,8 +2,7 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNha
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.DanhMucThuoc_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
-import com.example.pharmacymanagementsystem_qlht.model.ChiTietHoatChat;
-import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
+import com.example.pharmacymanagementsystem_qlht.model.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -30,6 +29,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,19 +39,21 @@ public class NhapHangBangExcel_Ctrl {
     public Label lblThongTinFile;
     public ImageView btnXoa;
     public Button btnLuu;
-    private DanhMucThuoc_Ctrl danhMucThuocCtrl;
+    private LapPhieuNhapHang_Ctrl lapPhieuNhapHangCtrl;
 
-    public List<Thuoc_SanPham> danhSachThuoc = new ArrayList<>();
+//    public List<Thuoc_SanPham> danhSachThuoc = new ArrayList<>();
 
     //  ==================================================================Khởi tạo
     public void initialize() {
         lblThongTinFile.setText("Kéo & thả file Excel vào đây");
         btnXoa.setVisible(false);
     }
-    //  ==================================================================hàm xử lý
-    public void setDanhMucThuocCtrl(DanhMucThuoc_Ctrl ctrl){
-        this.danhMucThuocCtrl = ctrl;
+
+    public void setLapPhieuNhapHangCtrl(LapPhieuNhapHang_Ctrl ctrl){
+        this.lapPhieuNhapHangCtrl = ctrl;
     }
+
+    //  ==================================================================hàm xử lý
     //  Thả file dữ liệu
     public void thaFileDuLieu(DragEvent dragEvent) {
         Dragboard db = dragEvent.getDragboard();
@@ -61,12 +64,12 @@ public class NhapHangBangExcel_Ctrl {
             for (File file : db.getFiles()) {
                 if (file.getName().endsWith(".xlsx") || file.getName().endsWith(".xls")) {
                     try {
-                        lblThongTinFile.setText("File đã tải: "+file.getName());
+                        lblThongTinFile.setText("File đã tải: " + file.getName());
                         btnXoa.setVisible(true);
                         try (FileInputStream fis = new FileInputStream(file)) {
                             lblThongTinFile.setText("File đã chọn: " + file.getName());
                             btnXoa.setVisible(true);
-                            importExcel(file);
+//                            importExcel(file);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -106,77 +109,194 @@ public class NhapHangBangExcel_Ctrl {
             try (FileInputStream fis = new FileInputStream(file)) {
                 lblThongTinFile.setText("File đã chọn: " + file.getName());
                 btnXoa.setVisible(true);
-                importExcel(file);
+//                importExcel(file);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
     //  Xóa file đã chọn
     public void btnXoaClick(MouseEvent mouseEvent) {
         lblThongTinFile.setText("Kéo & thả file Excel vào đây");
         btnXoa.setVisible(false);
-        danhSachThuoc.clear();
+//        danhSachThuoc.clear();
     }
 
     //  Nhập dữ liệu từ file Excel
-    public void importExcel(File excelFile) {
+//    public void importExcel(File excelFile) {
+//        try (FileInputStream fis = new FileInputStream(excelFile);
+//             Workbook workbook = new XSSFWorkbook(fis)) {
+//
+//            Sheet sheet = workbook.getSheetAt(0);
+//            int count = 0;
+//
+//
+//
+//            for (Row row : sheet) {
+//                if (row.getRowNum() == 0) continue; // Bỏ dòng tiêu đề
+//
+//                Thuoc_SanPham sp = new Thuoc_SanPham();
+//                sp.setTenThuoc(getString(row.getCell(0)));
+//                sp.setHamLuong((int) getNumeric(row.getCell(1)));
+//                sp.setDonViHamLuong(getString(row.getCell(2)));
+//                sp.setDuongDung(getString(row.getCell(3)));
+//                sp.setQuyCachDongGoi(getString(row.getCell(4)));
+//                sp.setSDK_GPNK(getString(row.getCell(5)));
+//                sp.setHangSX(getString(row.getCell(6)));
+//                sp.setNuocSX(getString(row.getCell(7)));
+//
+//                // Lấy các entity liên kết
+//                String maNDL = getString(row.getCell(8));
+//                String maLoaiHang = getString(row.getCell(9));
+//                String viTri = getString(row.getCell(10));
+//
+//                sp.setNhomDuocLy(new NhomDuocLy_Dao().selectById(maNDL));
+//                sp.setLoaiHang(new LoaiHang_Dao().selectById(maLoaiHang));
+//                sp.setVitri(new KeHang_Dao().selectById(viTri));
+//
+
+    /// /                danhSachThuoc.add(sp);
+//                count++;
+//            }
+//
+//            System.out.println("✅ Đã thêm " + count + " thuốc từ Excel!");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+    public void importPhieuNhapExcel(File excelFile) {
         try (FileInputStream fis = new FileInputStream(excelFile);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
             Sheet sheet = workbook.getSheetAt(0);
             int count = 0;
 
+            String maNCC = getString(sheet.getRow(0).getCell(1));
+            String maPN = getString(sheet.getRow(1).getCell(1));
+            LocalDate ngayNhap = getLocalDate(sheet.getRow(2).getCell(1));
+            String ghiChu = getString(sheet.getRow(3).getCell(1));
+
+            NhaCungCap ncc = new NhaCungCap_Dao().selectById(maNCC);
+
+            PhieuNhap phieuNhap = new PhieuNhap();
+            phieuNhap.setMaPN(maPN);
+            phieuNhap.setNgayNhap(ngayNhap);
+            phieuNhap.setNhaCungCap(ncc);
+            phieuNhap.setGhiChu(ghiChu);
+
+            // ===== 2. Đọc bảng chi tiết từ dòng 5 (index = 4) trở xuống =====
             for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Bỏ dòng tiêu đề
+                // bỏ 4 dòng đầu: 0,1,2 (thông tin lẻ) + 3 (header bảng)
+                if (row.getRowNum() <= 4) continue;
+                if (isRowEmpty(row)) continue;
 
-                Thuoc_SanPham sp = new Thuoc_SanPham();
-                sp.setTenThuoc(getString(row.getCell(0)));
-                sp.setHamLuong((int) getNumeric(row.getCell(1)));
-                sp.setDonViHamLuong(getString(row.getCell(2)));
-                sp.setDuongDung(getString(row.getCell(3)));
-                sp.setQuyCachDongGoi(getString(row.getCell(4)));
-                sp.setSDK_GPNK(getString(row.getCell(5)));
-                sp.setHangSX(getString(row.getCell(6)));
-                sp.setNuocSX(getString(row.getCell(7)));
+                String tenThuoc = getString(row.getCell(0));
+                float hamLuong = (float) getNumeric(row.getCell(1));
+                String donViHamLuong = getString(row.getCell(2));
+                String duongDung = getString(row.getCell(3));
+                String quyCach = getString(row.getCell(4));
+                String sdkGpnk = getString(row.getCell(5));
+                String hangSX = getString(row.getCell(6));
+                String xuatXu = getString(row.getCell(7));
+                LocalDate nsx = getLocalDate(row.getCell(8));
+                LocalDate hsd = getLocalDate(row.getCell(9));
+                String loHang = getString(row.getCell(10));
+                String donViNhap = getString(row.getCell(11));
+                int soLuong = (int) getNumeric(row.getCell(12));
+                double donGiaNhap = getNumeric(row.getCell(13));
+                double chietKhau = getNumeric(row.getCell(14));
 
-                // Lấy các entity liên kết
-                String maNDL = getString(row.getCell(8));
-                String maLoaiHang = getString(row.getCell(9));
-                String viTri = getString(row.getCell(10));
+                // ===== 3. Map sang các entity giống style bạn đang dùng =====
 
-                sp.setNhomDuocLy(new NhomDuocLy_Dao().selectById(maNDL));
-                sp.setLoaiHang(new LoaiHang_Dao().selectById(maLoaiHang));
-                sp.setVitri(new KeHang_Dao().selectById(viTri));
+                // Thuốc theo lô
+                CTPN_TSPTL_CHTDVT ctc = new CTPN_TSPTL_CHTDVT();
+                ChiTietDonViTinh chiTietDonViTinh = new ChiTietDonViTinh();
 
-                danhSachThuoc.add(sp);
+                Thuoc_SP_TheoLo spTheoLo = new Thuoc_SP_TheoLo();
+
+                Thuoc_SanPham tsp = new Thuoc_SanPham();
+                tsp.setTenThuoc(tenThuoc);
+                tsp.setHamLuong(hamLuong);
+                tsp.setDonViHamLuong(donViHamLuong);
+                tsp.setDuongDung(duongDung);
+                tsp.setQuyCachDongGoi(quyCach);
+                tsp.setSDK_GPNK(sdkGpnk);
+                tsp.setHangSX(hangSX);
+                tsp.setNuocSX(xuatXu);
+
+                ChiTietDonViTinh ctdvt = new ChiTietDonViTinh();
+                ctdvt.setThuoc(tsp);
+
+//                ChiTietPhieuNhap ctPN = new ChiTietPhieuNhap();
+//                ctPN.setPhieuNhap(phieuNhap);
+//                ctPN.setThuocTheoLo(spTheoLo);
+//                ctPN.setSoLuong(soLuong);
+//                ctPN.setDonGiaNhap(donGiaNhap);
+//                ctPN.setChietKhau(chietKhau);
+
+//                CTPN_TSPTL_CHTDVT dong = new CTPN_TSPTL_CHTDVT(ctdvt, ctPN, spTheoLo);
+
+                // TODO: lưu chi tiết vào DB hoặc add vào list
+                // chiTietDao.insert(dong);
+                // danhSachChiTiet.add(dong);
+
                 count++;
             }
 
-            System.out.println("✅ Đã thêm " + count + " thuốc từ Excel!");
+            System.out.println("✅ Đã import " + count + " dòng chi tiết cho phiếu nhập " + maPN);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //  Hàm hỗ trợ đọc dữ liệu từ ô Excel
+
     private String getString(Cell cell) {
         if (cell == null) return "";
         cell.setCellType(CellType.STRING);
         return cell.getStringCellValue().trim();
     }
 
-    //  Lấy giá trị số từ ô Excel
     private double getNumeric(Cell cell) {
         if (cell == null) return 0;
-        if (cell.getCellType() == CellType.NUMERIC) return cell.getNumericCellValue();
+        if (cell.getCellType() == CellType.NUMERIC) {
+            return cell.getNumericCellValue();
+        }
         try {
-            return Double.parseDouble(cell.getStringCellValue());
+            return Double.parseDouble(cell.getStringCellValue().trim());
         } catch (Exception e) {
             return 0;
         }
     }
+
+    private LocalDate getLocalDate(Cell cell) {
+        if (cell == null) return null;
+        if (DateUtil.isCellDateFormatted(cell)) {
+            return cell.getLocalDateTimeCellValue().toLocalDate();
+        }
+        // trường hợp để text "dd/MM/yyyy"
+        try {
+            String s = cell.getStringCellValue().trim();
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return LocalDate.parse(s, f);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private boolean isRowEmpty(Row row) {
+        if (row == null) return true;
+        for (Cell cell : row) {
+            if (cell != null && cell.getCellType() != CellType.BLANK &&
+                    !getString(cell).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     //  Lưu dữ liệu vào database
     public void btnLuuClick(ActionEvent actionEvent) {
@@ -202,10 +322,9 @@ public class NhapHangBangExcel_Ctrl {
 //      Tạo luồng riêng để xử lý cập nhật (tránh lag UI)
         new Thread(() -> {
             Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
-            for(Thuoc_SanPham thuoc : danhSachThuoc){
-                thuocDao.insertThuocProc(thuoc);
-            }
-            danhMucThuocCtrl.loadTable();
+//            for(Thuoc_SanPham thuoc : danhSachThuoc){
+//                thuocDao.insertThuocProc(thuoc);
+//            }
             // Quay lại luồng giao diện để loại bỏ overlay
             Platform.runLater(() -> {
                 root.getChildren().remove(overlay);

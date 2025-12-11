@@ -1,6 +1,7 @@
 package com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuNhapHang;
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.ThemThuocBangFileExcel;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang.NhapHangBangExcel_Ctrl;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,7 +25,7 @@ public class NhapHangBangExcel_GUI {
     public Button btnTaiFileMau, btnChonTapTin, btnLuu;
 
     /** Hiển thị + inject controller + gắn handlers (thay cho onAction / onDragOver / onDragDropped trong FXML) */
-    public void showWithController(Stage stage, ThemThuocBangFileExcel ctrl) {
+    public void showWithController(Stage stage, NhapHangBangExcel_Ctrl ctrl) {
         AnchorPane root = buildUI();
 
         // --- inject sang controller nếu controller có field trùng tên ---
