@@ -2322,8 +2322,119 @@ go
 --================================================================================================================================================================================================
 --XỬ LÝ ĐƠN ĐẶT HÀNG
 
---Trigger – Cập nhật trạng thái Phiếu Đặt Hàng khi thay đổi tồn
+----Trigger – Cập nhật trạng thái Phiếu Đặt Hàng khi thay đổi tồn
 
+--CREATE OR ALTER TRIGGER trg_CapNhatTrangThaiDatHang
+--ON Thuoc_SP_TheoLo
+--AFTER INSERT, UPDATE
+--AS
+--BEGIN
+--    SET NOCOUNT ON;
+
+--    DECLARE @MaThuoc VARCHAR(10);
+
+--    DECLARE cur CURSOR FOR
+--        SELECT DISTINCT MaThuoc FROM inserted;
+--    OPEN cur;
+--    FETCH NEXT FROM cur INTO @MaThuoc;
+--    WHILE @@FETCH_STATUS = 0
+--    BEGIN
+--        DECLARE @TongTon INT = (
+--            SELECT SUM(SoLuongTon)
+--            FROM Thuoc_SP_TheoLo
+--            WHERE MaThuoc = @MaThuoc
+--        );
+
+--        -- Cập nhật trạng thái từng chi tiết phiếu đặt có liên quan
+--        UPDATE ctpd
+--        SET TrangThai =
+--            CASE
+--                WHEN @TongTon >= CEILING(ctpd.SoLuong *
+--                    ISNULL(
+--                        (SELECT HeSoQuyDoi FROM ChiTietDonViTinh dvt
+--                         WHERE dvt.MaThuoc = ctpd.MaThuoc AND dvt.MaDVT = ctpd.MaDVT),
+--                        1
+--                    )
+--                )
+--                THEN 1
+--                ELSE 0
+--            END
+--        FROM ChiTietPhieuDatHang ctpd
+--        WHERE ctpd.MaThuoc = @MaThuoc;
+
+--        -- Nếu tất cả chi tiết đủ hàng thì cập nhật phiếu
+--        UPDATE pd
+--        SET TrangThai =
+--            CASE
+--                WHEN NOT EXISTS (
+--                    SELECT 1 FROM ChiTietPhieuDatHang
+--                    WHERE MaPDat = pd.MaPDat AND TrangThai = 0
+--                ) THEN 1
+--                ELSE 0
+--            END
+--        FROM PhieuDatHang pd
+--        WHERE EXISTS (
+--            SELECT 1 FROM ChiTietPhieuDatHang ctpd
+--            WHERE ctpd.MaPDat = pd.MaPDat AND ctpd.MaThuoc = @MaThuoc
+--        );
+
+--        FETCH NEXT FROM cur INTO @MaThuoc;
+--    END
+--    CLOSE cur;
+--    DEALLOCATE cur;
+--END;
+--GO
+
+
+CREATE OR ALTER PROCEDURE sp_CapNhatTrangThaiDatHang @MaThuoc VARCHAR(10)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TongTon INT = (
+        SELECT SUM(SoLuongTon)
+        FROM Thuoc_SP_TheoLo
+        WHERE MaThuoc = @MaThuoc
+    );
+
+    -- Cập nhật trạng thái từng chi tiết phiếu đặt có liên quan
+    UPDATE ctpd
+    SET TrangThai =
+        CASE
+            WHEN @TongTon >= CEILING(ctpd.SoLuong *
+                ISNULL(
+                    (SELECT HeSoQuyDoi FROM ChiTietDonViTinh dvt
+                     WHERE dvt.MaThuoc = ctpd.MaThuoc AND dvt.MaDVT = ctpd.MaDVT),
+                    1
+                )
+            )
+            THEN 1
+            ELSE 0
+        END
+    FROM ChiTietPhieuDatHang ctpd
+    WHERE ctpd.MaThuoc = @MaThuoc;
+
+    -- Nếu tất cả chi tiết đủ hàng thì cập nhật phiếu
+    UPDATE pd
+    SET TrangThai =
+        CASE
+            WHEN NOT EXISTS (
+                SELECT 1 FROM ChiTietPhieuDatHang
+                WHERE MaPDat = pd.MaPDat AND TrangThai = 0
+            ) THEN 1
+            ELSE 0
+        END
+    FROM PhieuDatHang pd
+    WHERE EXISTS (
+        SELECT 1
+        FROM ChiTietPhieuDatHang ctpd
+        WHERE ctpd.MaPDat = pd.MaPDat AND ctpd.MaThuoc = @MaThuoc
+    );
+END;
+GO
+
+--====================================================================================
+--====================================================================================
 CREATE OR ALTER TRIGGER trg_CapNhatTrangThaiDatHang
 ON Thuoc_SP_TheoLo
 AFTER INSERT, UPDATE
@@ -2335,8 +2446,37 @@ BEGIN
 
     DECLARE cur CURSOR FOR
         SELECT DISTINCT MaThuoc FROM inserted;
+    OPEN cur; FETCH NEXT FROM cur INTO @MaThuoc;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        EXEC sp_CapNhatTrangThaiDatHang @MaThuoc;
+        FETCH NEXT FROM cur INTO @MaThuoc;
+    END
+
+    CLOSE cur; DEALLOCATE cur;
+END;
+GO
+
+--====================================================================================
+--====================================================================================
+
+CREATE OR ALTER TRIGGER trg_CapNhatTrangThaiPhieuDatHang_WhenInsertCT
+ON ChiTietPhieuDatHang
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @MaPDat VARCHAR(10);
+    DECLARE @MaThuoc VARCHAR(10);
+
+    DECLARE cur CURSOR FOR
+        SELECT DISTINCT MaPDat, MaThuoc FROM inserted;
+
     OPEN cur;
-    FETCH NEXT FROM cur INTO @MaThuoc;
+    FETCH NEXT FROM cur INTO @MaPDat, @MaThuoc;
+
     WHILE @@FETCH_STATUS = 0
     BEGIN
         DECLARE @TongTon INT = (
@@ -2345,45 +2485,44 @@ BEGIN
             WHERE MaThuoc = @MaThuoc
         );
 
-        -- Cập nhật trạng thái từng chi tiết phiếu đặt có liên quan
+        -- Cập nhật trạng thái từng chi tiết
         UPDATE ctpd
         SET TrangThai =
             CASE
                 WHEN @TongTon >= CEILING(ctpd.SoLuong *
                     ISNULL(
-                        (SELECT HeSoQuyDoi FROM ChiTietDonViTinh dvt
+                        (SELECT HeSoQuyDoi 
+                         FROM ChiTietDonViTinh dvt
                          WHERE dvt.MaThuoc = ctpd.MaThuoc AND dvt.MaDVT = ctpd.MaDVT),
                         1
-                    )
-                )
-                THEN 1
-                ELSE 0
-            END
+                    ))
+                THEN 1 ELSE 0 END
         FROM ChiTietPhieuDatHang ctpd
-        WHERE ctpd.MaThuoc = @MaThuoc;
+        WHERE ctpd.MaPDat = @MaPDat AND ctpd.MaThuoc = @MaThuoc;
 
-        -- Nếu tất cả chi tiết đủ hàng thì cập nhật phiếu
+        -- Cập nhật trạng thái phiếu (1 nếu tất cả chi tiết đủ hàng)
         UPDATE pd
         SET TrangThai =
-            CASE
-                WHEN NOT EXISTS (
-                    SELECT 1 FROM ChiTietPhieuDatHang
-                    WHERE MaPDat = pd.MaPDat AND TrangThai = 0
-                ) THEN 1
-                ELSE 0
-            END
+        CASE 
+            WHEN NOT EXISTS (
+                SELECT 1 
+                FROM ChiTietPhieuDatHang 
+                WHERE MaPDat = @MaPDat AND TrangThai = 0
+            )
+            THEN 1 ELSE 0 END
         FROM PhieuDatHang pd
-        WHERE EXISTS (
-            SELECT 1 FROM ChiTietPhieuDatHang ctpd
-            WHERE ctpd.MaPDat = pd.MaPDat AND ctpd.MaThuoc = @MaThuoc
-        );
+        WHERE pd.MaPDat = @MaPDat;
 
-        FETCH NEXT FROM cur INTO @MaThuoc;
+        FETCH NEXT FROM cur INTO @MaPDat, @MaThuoc;
     END
+
     CLOSE cur;
     DEALLOCATE cur;
 END;
 GO
+
+
+
 
 --Procedure – Duyệt Phiếu Đặt (Giữ hàng theo lô FEFO)
 CREATE OR ALTER PROCEDURE sp_DuyetPhieuDatHang
@@ -2544,12 +2683,6 @@ GO
 --EXEC sp_add_jobserver
 --    @job_name = N'Job_TuDongTraHangHetHan';
 --GO
-
--- XÓA SP CŨ NẾU BẠN ĐÃ TẠO
-DROP PROCEDURE IF EXISTS sp_GetHoaDonTheoThoiGian;
-GO
-DROP PROCEDURE IF EXISTS sp_GetHoaDonTheoTuyChon;
-GO
 
 -- STORED PROCEDURE 1: (Đã cập nhật VAT)
 CREATE PROCEDURE sp_GetHoaDonTheoThoiGian

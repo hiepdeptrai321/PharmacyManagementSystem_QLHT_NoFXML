@@ -70,6 +70,7 @@ public class LapPhieuNhapHang_GUI extends Application {
         v.lblThemThuoc.setOnMouseClicked(ctrl::btnThemThuocClick);
         v.btnHuyPane.setOnMouseClicked(ctrl::btnHuy);
         v.btnLuuPane.setOnMouseClicked(ctrl::btnLuu);
+        v.btnNhapHangExcelPane.setOnMouseClicked(ctrl::btnThemThuocByExcel);
 
         // Nếu controller có initialize()
         try { ctrl.initialize(); } catch (Exception ignore) {}
@@ -195,11 +196,14 @@ public class LapPhieuNhapHang_GUI extends Application {
         pnThemThuoc.getChildren().add(v.lblThemThuoc);
 
         // Excel area (chỉ UI)
-        Pane pnExcel = new Pane();
-        pnExcel.setId("btnExcel");
-        pnExcel.setLayoutX(1063);
-        pnExcel.setLayoutY(42);
-        pnExcel.setPrefSize(247, 30);
+        v.btnNhapHangExcelPane = new Pane();
+        v.btnNhapHangExcelPane.setId("btnExcel");
+        v.btnNhapHangExcelPane.setLayoutX(1063);
+        v.btnNhapHangExcelPane.setLayoutY(42);
+        v.btnNhapHangExcelPane.setPrefSize(247, 30);
+        v.btnNhapHangExcelPane.setStyle("-fx-background-color: #ffffff;" + "-fx-background-radius: 5px");
+        v.btnNhapHangExcelPane.setOnMousePressed(e -> {v.btnNhapHangExcelPane.setStyle("-fx-background-color: #d9d9d9;" + "-fx-background-radius: 5px;");});
+        v.btnNhapHangExcelPane.setOnMouseReleased(e -> {v.btnNhapHangExcelPane.setStyle("-fx-background-color: #ffffff;" + "-fx-background-radius: 5px;");});
         Label lbExcel = new Label("Thêm phiếu nhập hàng bằng excel");
         lbExcel.setId("lblExcel");
         lbExcel.setLayoutX(35);
@@ -208,7 +212,7 @@ public class LapPhieuNhapHang_GUI extends Application {
         ImageView ivExcel = imageView("/com/example/pharmacymanagementsystem_qlht/img/logoExcel.svg.png", 22, 40, true);
         ivExcel.setLayoutX(5);
         ivExcel.setLayoutY(5);
-        pnExcel.getChildren().addAll(lbExcel, ivExcel);
+        v.btnNhapHangExcelPane.getChildren().addAll(lbExcel, ivExcel);
 
         // Label tiêu đề nhóm
         Label lbNccTitle = new Label("Nhà cung cấp:");
@@ -221,7 +225,7 @@ public class LapPhieuNhapHang_GUI extends Application {
                 v.txtMaPhieuNhap, lbMaPN,
                 v.txtNgayNhap, lbNgay,
                 lbThemThuocTitle, v.txtTimKiemChiTietDonViTinh, pnThemThuoc,
-                pnExcel, lbNccTitle,
+                v.btnNhapHangExcelPane, lbNccTitle,
                 v.listViewChiTietDonViTinh
         );
 
@@ -286,11 +290,15 @@ public class LapPhieuNhapHang_GUI extends Application {
         v.btnLuuPane.setLayoutX(15);
         v.btnLuuPane.setLayoutY(653);
         v.btnLuuPane.setPrefSize(250, 57);
+        v.btnLuuPane.setStyle("-fx-background-color: #007bff;" + "-fx-background-radius: 10px;");
+        v.btnLuuPane.setOnMousePressed(e-> {v.btnLuuPane.setStyle("-fx-background-color: #0056b3;" + "-fx-background-radius: 10px;");});
+        v.btnLuuPane.setOnMouseReleased(e-> {v.btnLuuPane.setStyle("-fx-background-color: #007bff;" + "-fx-background-radius: 10px;");});
         Label lbLapPhieu = new Label("Lập phiếu");
         lbLapPhieu.setId("lblTrang");
         lbLapPhieu.setLayoutX(71);
         lbLapPhieu.setLayoutY(12);
         lbLapPhieu.setFont(Font.font("System Bold", 21));
+        lbLapPhieu.setStyle("-fx-text-fill: white;"+"-fx-font-weight: bold;");
         v.btnLuuPane.getChildren().add(lbLapPhieu);
 
         v.btnHuyPane = new Pane();
@@ -299,11 +307,15 @@ public class LapPhieuNhapHang_GUI extends Application {
         v.btnHuyPane.setLayoutX(15);
         v.btnHuyPane.setLayoutY(730);
         v.btnHuyPane.setPrefSize(250, 57);
+        v.btnHuyPane.setStyle("-fx-background-color: #dc3545;" + "-fx-background-radius: 10px;");
+        v.btnHuyPane.setOnMousePressed(e-> {v.btnHuyPane.setStyle("-fx-background-color: #a71d2a;" + "-fx-background-radius: 10px;");});
+        v.btnHuyPane.setOnMouseReleased(e-> {v.btnHuyPane.setStyle("-fx-background-color: #dc3545;" + "-fx-background-radius: 10px;");});
         Label lbHuy = new Label("Hủy");
         lbHuy.setId("lblTrang");
         lbHuy.setLayoutX(102);
         lbHuy.setLayoutY(12);
         lbHuy.setFont(Font.font("System Bold", 21));
+        lbHuy.setStyle("-fx-text-fill: white;"+"-fx-font-weight: bold;");
         v.btnHuyPane.getChildren().add(lbHuy);
 
         v.txtTongGiaNhap = new TextField();
@@ -427,7 +439,7 @@ public class LapPhieuNhapHang_GUI extends Application {
         // cột phải
         TextField txtTongGiaNhap, txtTongTienChietKhau, txtTongTienThue, txtThanhTien;
         TextArea txtGhiChu;
-        Pane btnHuyPane, btnLuuPane;
+        Pane btnHuyPane, btnLuuPane, btnNhapHangExcelPane;
 
         // list gợi ý NCC
         ListView<String> listViewNhaCungCap;

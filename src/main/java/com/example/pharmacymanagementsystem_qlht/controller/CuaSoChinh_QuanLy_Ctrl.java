@@ -80,6 +80,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
 
     //  3. HÀM KHỞI TẠO
     public void initialize() {
+        instance = this;
         setNgayGio(txtNgayThangNam);
         loadTableThuocHetHan();
         loadTableThuocSapHetHan();
@@ -95,6 +96,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     // trong CuaSoChinh_QuanLy_Ctrl
     private Node currentEmbedded;
 
+//  Hàm hiển thị nội dung vào pane chính
     private void showInMainPane(Parent content) {
         if (pnlChung == null || content == null) return;
 
@@ -124,7 +126,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         pnlChung.layout();
     }
 
-
+//  Hàm load view vào pane chính
     private void loadViewEmbedded(int menuIndex, String cacheKey, Object gui, Object ctrl) {
         viTri = menuIndex;
         selectMenu(viTri);
@@ -136,6 +138,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     }
 
     // ----------------------- BẢNG HẾT HẠN / THỐNG KÊ -----------------------
+//  Hàm tải dữ liệu vào bảng thuốc hết hạn
     public void loadTableThuocHetHan() {
         ObservableList<Thuoc_SP_TheoLo> data = tblThuocHetHan.getItems();
         if (data == null) {
@@ -159,6 +162,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         });
     }
 
+//  Hàm load dữ liệu thuốc sắp hết hạn
     public void loadTableThuocSapHetHan() {
         ObservableList<Thuoc_SP_TheoLo> data = tblThuocSapHetHan.getItems();
         if (data == null) {
@@ -182,6 +186,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         });
     }
 
+//  Hàm thiết lập ngày giờ hiện tại lên nhãn
     private void setNgayGio(Label lblNgayGio) {
         var localeVN = new java.util.Locale("vi", "VN");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd/MM/yyyy HH:mm:ss", localeVN);
@@ -196,6 +201,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         timeline.play();
     }
 
+//  Hàm thiết lập dữ liệu và nhãn cho phần thống kê
     private void setThongKeLabelsAndData() {
         if (lblHoaDonThangNay == null || lblHoaDonThangTruoc == null
                 || lblDoanhThuThangNay == null || lblDoanhThuThangTruoc == null

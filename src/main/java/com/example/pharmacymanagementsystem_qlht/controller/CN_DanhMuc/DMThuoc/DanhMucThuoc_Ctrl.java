@@ -1,27 +1,16 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc;
 
-import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuoc.ChiTietThuoc_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.dao.KhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
-import com.example.pharmacymanagementsystem_qlht.model.KhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
 import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.DanhMucThuoc_GUI;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class DanhMucThuoc_Ctrl extends Application {
@@ -42,6 +31,7 @@ public class DanhMucThuoc_Ctrl extends Application {
     public Button btnLamMoi;
     Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
     List<Thuoc_SanPham> list;
+    ObservableList<Thuoc_SanPham> data;
 
 //  2. Khởi tạo
     @Override
@@ -59,7 +49,7 @@ public class DanhMucThuoc_Ctrl extends Application {
 //  3. Tải bảng
     public void loadTable() {
         list = thuocDao.selectAll();
-        ObservableList<Thuoc_SanPham> data = FXCollections.observableArrayList(list);
+        data = FXCollections.observableArrayList(list);
         colSTT.setCellFactory(col -> new TableCell<>() {
             @Override protected void updateItem(String it, boolean empty) {
                 super.updateItem(it, empty);
@@ -151,10 +141,23 @@ public class DanhMucThuoc_Ctrl extends Application {
         tbl_Thuoc.setItems(data);
     }
 
-    public void timThuoc(){
+    public void timThuoc() {
+        data.clear();
+        if( tfTimThuoc.getText().isEmpty()) {
+            data.addAll(list);
+            tbl_Thuoc.setItems(data);
+            return;
+        }
         String keyword = tfTimThuoc.getText().trim().toLowerCase();
-        Thuoc_SanPham_Dao ts_dao = new Thuoc_SanPham_Dao();
-        List<Thuoc_SanPham> dsTSLoc = ts_dao.selectByTuKhoa(keyword);
+
+        List<Thuoc_SanPham> dsTSLoc = list.stream()
+                .filter(ts -> {
+                    String ten = ts.getTenThuoc() != null ? ts.getTenThuoc().toLowerCase() : "";
+                    String ma  = ts.getMaThuoc()  != null ? ts.getMaThuoc().toLowerCase()  : "";
+                    return ten.contains(keyword) || ma.contains(keyword);
+                })
+                .toList();
+
         ObservableList<Thuoc_SanPham> data = FXCollections.observableArrayList(dsTSLoc);
         tbl_Thuoc.setItems(data);
     }
@@ -215,7 +218,7 @@ public class DanhMucThuoc_Ctrl extends Application {
     @FXML
     private void LamMoi() {
         tfTimThuoc.clear();
-        loadTable();
+        timThuoc();
     }
 
     public void btnThemThuocByExcel() {
