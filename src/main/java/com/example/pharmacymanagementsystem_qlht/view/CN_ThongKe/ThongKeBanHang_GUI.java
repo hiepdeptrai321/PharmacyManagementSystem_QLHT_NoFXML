@@ -221,7 +221,7 @@ public class ThongKeBanHang_GUI {
         // --- BƯỚC 2: Tạo Scene, gọi initialize, và hiển thị ---
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThongKeBanHang.css")).toExternalForm());
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css")).toExternalForm());
+
 
         // BƯỚC 3: Gọi initialize của Controller
         ctrl.initialize();
