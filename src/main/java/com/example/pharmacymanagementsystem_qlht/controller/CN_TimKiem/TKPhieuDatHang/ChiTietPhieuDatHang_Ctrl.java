@@ -1,6 +1,9 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang;
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_NhanVien_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_QuanLy_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.DonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
@@ -19,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -32,6 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hien;
+import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.WARNING;
 
 public class ChiTietPhieuDatHang_Ctrl  {
     @FXML
@@ -260,66 +268,28 @@ public class ChiTietPhieuDatHang_Ctrl  {
     }
 
     public void onLapHoaDon() {
-        try {
-            // 1) Lấy Stage hiện tại từ pnlChung (cửa sổ chính)
-            if (pnlChung == null || pnlChung.getScene() == null) {
-                throw new IllegalStateException("pnlChung chưa được gắn vào Scene.");
-            }
-            javafx.stage.Stage stage = (javafx.stage.Stage) pnlChung.getScene().getWindow();
+        if (phieuDatHang == null) {
 
-            // 2) Tạo Controller và GUI cho Lập Hóa Đơn
-            com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl lapCtrl =
-                    new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl();
-            com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI lapGui =
-                    new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI();
-
-            // 3) Map dữ liệu từ Phiếu đặt sang ChiTietHoaDon cho LapHoaDon_Ctrl
-            //    \- Thay thế bằng 2 hàm bạn đã viết để chia sẻ dữ liệu qua pnlChung.
-            //    Ví dụ: mapPhieuToCTHD(phieuDatHangHienTai, lapCtrl);
-            //    Ví dụ: applySharedPanelBindings(pnlChung, lapCtrl);
-            //
-            //    Dưới đây là khung mẫu: lấy danh sách chi tiết PDH và nạp sang dsChiTietHD của HĐ.
-            java.util.List<com.example.pharmacymanagementsystem_qlht.model.ChiTietHoaDon> dsCTHD = new java.util.ArrayList<>();
-            for (var ctpdh : getChiTietPhieuDatHienTai()) { // TODO: thay bằng cách lấy danh sách chi tiết PDH hiện tại
-                com.example.pharmacymanagementsystem_qlht.model.ChiTietHoaDon r =
-                        new com.example.pharmacymanagementsystem_qlht.model.ChiTietHoaDon();
-                // Gán sản phẩm qua lô (tối thiểu cần sp)
-                com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo lo = new com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo();
-                lo.setThuoc(ctpdh.getThuoc()); // TODO: đảm bảo ChiTietPhieuDatHang có getThuoc()
-                r.setLoHang(lo);
-
-                // Số lượng, đơn giá, đơn vị
-                r.setSoLuong(ctpdh.getSoLuong());          // TODO: lấy từ chi tiết PDH
-                r.setDonGia(ctpdh.getDonGia());            // TODO: lấy từ chi tiết PDH
-                r.setGiamGia(0);                           // KM sẽ tính lại bên LapHoaDon_Ctrl
-                r.setDvt(ctpdh.getDvt());                  // TODO: nếu có đơn vị trên chi tiết PDH
-
-                dsCTHD.add(r);
-            }
-            lapCtrl.dsChiTietHD.setAll(dsCTHD); // Đẩy dữ liệu vào controller HĐ
-
-            // 4) Áp dụng các ràng buộc/đối tượng dùng chung qua pnlChung
-            //    Gọi 2 hàm bạn đã viết để "map dữ liệu thông qua pnlChung".
-            //    Ví dụ:
-            //    applySharedPanelBindings(pnlChung, lapCtrl);
-
-            // 5) Hiển thị giao diện Lập Hóa Đơn lên cửa sổ chính (thay thế pnlChung bằng giao diện HĐ)
-            //    LapHoaDon_GUI hiện có API nhận Stage và tự tạo Scene; dùng luôn Stage chính.
-            lapGui.showWithController(stage, lapCtrl);
-
-            // 6) Nếu cần, sau khi GUI khởi tạo, gọi tính tổng và refresh
-            lapCtrl.tinhTongTien();
-            if (lapCtrl.tblChiTietHD != null) lapCtrl.tblChiTietHD.refresh();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            hien(javafx.scene.control.Alert.AlertType.ERROR, "Lỗi", "Không thể chuyển Phiếu đặt sang Hóa đơn:\n" + ex.getMessage());
+            hien(ERROR, "Lỗi", "Không có phiếu đặt để lập hóa đơn!");
+            return;
         }
+
+        if (phieuDatHang.getTrangthai() != 1) {
+            hien(WARNING, "Cảnh báo", "Phiếu đặt chưa sẵn hàng!");
+            return;
+        }
+
+        Stage stage = new Stage();
+        LapHoaDon_Ctrl ctrl = new LapHoaDon_Ctrl();
+
+        // Gọi hàm tạo hóa đơn từ phiếu đặt
+        ctrl.taoHoaDonTuPhieuDat(phieuDatHang);
+
+        // Đóng cửa sổ chi tiết phiếu đặt
+        ((Stage) btnDong.getScene().getWindow()).close();
     }
 
-    private java.util.List<com.example.pharmacymanagementsystem_qlht.model.ChiTietPhieuDatHang> getChiTietPhieuDatHienTai() {
-        return java.util.Collections.emptyList();
-    }
+
 
     private ChiTietHoaDon convertToChiTietHoaDon(ChiTietPhieuDatHang src) {
         ChiTietHoaDon dst = new ChiTietHoaDon();

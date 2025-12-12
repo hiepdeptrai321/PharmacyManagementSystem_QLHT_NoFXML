@@ -80,6 +80,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
 
     //  3. HÀM KHỞI TẠO
     public void initialize() {
+        instance = this;
         setNgayGio(txtNgayThangNam);
         loadTableThuocHetHan();
         loadTableThuocSapHetHan();
