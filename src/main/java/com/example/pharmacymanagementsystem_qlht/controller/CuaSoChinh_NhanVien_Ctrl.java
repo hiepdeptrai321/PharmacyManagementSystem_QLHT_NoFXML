@@ -78,8 +78,12 @@ public class CuaSoChinh_NhanVien_Ctrl{
     // Cache các Node đã embed để chuyển tab nhanh
     private final Map<String, Parent> cacheViews = new HashMap<>();
 
+    public static CuaSoChinh_NhanVien_Ctrl instanceNV;
+
+
     //  3. HÀM KHỞI TẠO
     public void initialize() {
+        instanceNV = this;
         setNgayGio(txtNgayThangNam);
         loadTableThuocHetHan();
         loadTableThuocSapHetHan();
