@@ -4,6 +4,7 @@ import com.example.pharmacymanagementsystem_qlht.connectDB.ConnectDB;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.ThemKhachHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_QuanLy_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
@@ -22,12 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -35,16 +31,12 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
-import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Date;
 import java.sql.Timestamp;
-import javafx.stage.FileChooser;
 import java.io.File;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -73,7 +65,7 @@ import static javafx.scene.control.Alert.AlertType.*;
 
 public class LapHoaDon_Ctrl extends Application {
     public static final String FONT_PATH = "C:/Windows/Fonts/arial.ttf";
-    private final ObservableList<ChiTietHoaDon> dsChiTietHD = FXCollections.observableArrayList();
+    public ObservableList<ChiTietHoaDon> dsChiTietHD = FXCollections.observableArrayList();
     private final IdentityHashMap<ChiTietHoaDon, ChiTietDonViTinh> dvtTheoDong = new IdentityHashMap<>();
     private final AtomicLong demTruyVan = new AtomicLong(0);
 
@@ -145,6 +137,13 @@ public class LapHoaDon_Ctrl extends Application {
         initTienMatEvents();
         chuyenHoaDon();
         btnThanhToan.setOnAction(e -> xuLyThanhToan());
+    }
+
+    public void setDsChiTietHD(List<ChiTietHoaDon> dsChiTietHD) {
+        this.dsChiTietHD.clear();
+        if (dsChiTietHD != null) {
+            this.dsChiTietHD.addAll(dsChiTietHD);
+        }
     }
 
     private void chuyenHoaDon() {
@@ -773,28 +772,6 @@ public class LapHoaDon_Ctrl extends Application {
 
 
 
-
-//------------Xử lý khách hàng ----------------
-
-//    public void xuLyTimKhachHang() {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKKhachHang/TKKhachHang_GUI.fxml"));
-//            Parent root = loader.load();
-//            TimKiemKhachHangTrongHD_Ctrl ctrl = loader.getController();
-//
-//            Stage stage = new Stage();
-//            ctrl.setOnSelected((KhachHang kh) -> {
-//                if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
-//                if (txtSDT != null) txtSDT.setText(kh.getSdt());
-//                stage.close();
-//            });
-//
-//            stage.setScene(new Scene(root));
-//            stage.show();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
     public void xuLyTimKhachHang() {
         Stage stage = new Stage();
         TimKiemKhachHangTrongHD_Ctrl ctrl = new TimKiemKhachHangTrongHD_Ctrl();
@@ -1007,6 +984,9 @@ public void xuLyThemKH() {
             kmTheoDong.put(row, kq);
             row.setGiamGia(kq != null && kq.getDiscount() != null ? kq.getDiscount().doubleValue() : 0.0);
         } finally {
+            capNhatTongTien();
+        }
+        if (lblThanhTien != null && lblGiamGia != null) {
             capNhatTongTien();
         }
     }
@@ -1619,6 +1599,171 @@ public void xuLyThemKH() {
         // 9. Đóng file
         document.close();
     }
+
+
+    public void taoHoaDonTuPhieuDat(PhieuDatHang phieuDat) {
+        if (phieuDat == null) {
+            hien(ERROR, "Lỗi", "Không tìm thấy phiếu đặt hàng!");
+            return;
+        }
+
+        // 1. Kiểm tra trạng thái phiếu đặt
+        if (phieuDat.getTrangthai() != 1) {
+            hien(WARNING, "Cảnh báo", "Phiếu đặt chưa sẵn hàng!");
+            return;
+        }
+
+        // 2. Lấy danh sách chi tiết phiếu đặt
+        ChiTietPhieuDatHang_Dao ctpdDao = new ChiTietPhieuDatHang_Dao();
+        List<ChiTietPhieuDatHang> dsCTPD = ctpdDao.selectBySql(
+                "SELECT * FROM ChiTietPhieuDatHang WHERE MaPDat = ?",
+                phieuDat.getMaPDat()
+        );
+
+        if (dsCTPD == null || dsCTPD.isEmpty()) {
+            hien(WARNING, "Cảnh báo", "Phiếu đặt không có thuốc nào!");
+            return;
+        }
+
+        // 3. Mở giao diện LapHoaDon_GUI
+        try {
+            Stage stage = new Stage();
+            LapHoaDon_GUI view = new LapHoaDon_GUI();
+            LapHoaDon_Ctrl ctrl = new LapHoaDon_Ctrl();
+
+            view.showWithController(stage, ctrl);
+
+            CuaSoChinh_QuanLy_Ctrl ql_ctrl = new CuaSoChinh_QuanLy_Ctrl();
+            
+            // 4. Đợi giao diện load xong rồi mới fill dữ liệu
+            Platform.runLater(() -> {
+                fillDataFromPhieuDat(phieuDat, dsCTPD);
+            });
+
+        } catch (Exception e) {
+            hien(ERROR, "Lỗi", "Không thể mở giao diện lập hóa đơn: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void fillDataFromPhieuDat(PhieuDatHang phieuDat, List<ChiTietPhieuDatHang> dsCTPD) {
+        // 1. Xóa dữ liệu cũ
+        dsChiTietHD.clear();
+        dvtTheoDong.clear();
+        kmTheoDong.clear();
+        baseQtyMap.clear();
+
+        // 2. Lấy các DAO cần thiết
+        Thuoc_SP_TheoLo_Dao loDao = new Thuoc_SP_TheoLo_Dao();
+        DonViTinh_Dao dvtDao = new DonViTinh_Dao();
+
+        // 3. Chuyển đổi ChiTietPhieuDatHang -> ChiTietHoaDon
+        for (ChiTietPhieuDatHang ctpd : dsCTPD) {
+            Thuoc_SanPham sp = ctpd.getThuoc();
+            if (sp == null) continue;
+
+            String maThuoc = sp.getMaThuoc();
+            int soLuongCan = ctpd.getSoLuong();
+
+            // Tìm lô hàng phù hợp (FEFO)
+            List<Thuoc_SP_TheoLo> dsLo = loDao.selectBySql(
+                    "SELECT * FROM Thuoc_SP_TheoLo WHERE MaThuoc = ? AND SoLuongTon > 0 ORDER BY HSD ASC, NSX ASC",
+                    maThuoc
+            );
+
+            if (dsLo.isEmpty()) {
+                hien(WARNING, "Cảnh báo", "Thuốc " + sp.getTenThuoc() + " không còn hàng trong kho!");
+                continue;
+            }
+
+            // Tạo ChiTietHoaDon
+            ChiTietHoaDon cthd = new ChiTietHoaDon();
+            cthd.setLoHang(dsLo.get(0));
+            cthd.setSoLuong(soLuongCan);
+            cthd.setDonGia(ctpd.getDonGia());
+            cthd.setGiamGia(ctpd.getGiamGia());
+
+            // Lấy đơn vị tính
+            DonViTinh dvt = dvtDao.selectById(ctpd.getDvt());
+            if (dvt != null) {
+                cthd.setDvt(dvt);
+            }
+
+            // Lưu đơn vị vào map
+            dvtTheoDong.put(cthd, new ChiTietDonViTinh_Dao().selectById(ctpd.getThuoc().getMaThuoc(), ctpd.getDvt()));
+
+            // Tìm ChiTietDonViTinh tương ứng
+            if (sp.getDsCTDVT() != null) {
+                for (ChiTietDonViTinh ctDvt : sp.getDsCTDVT()) {
+                    if (ctDvt.getDvt().getMaDVT().equals(ctpd.getDvt())) {
+                        baseQtyMap.put(cthd, cthd.getSoLuong());
+                        break;
+                    }
+                }
+            }
+
+            // Áp dụng khuyến mãi cho dòng
+            apDungKMChoRow(cthd);
+
+            dsChiTietHD.add(cthd);
+        }
+
+        // 4. Điền thông tin khách hàng
+        if (phieuDat.getKhachHang() != null) {
+            if (txtTenKH != null) {
+                txtTenKH.setText(phieuDat.getKhachHang().getTenKH());
+            }
+            if (txtSDT != null) {
+                txtSDT.setText(phieuDat.getKhachHang().getSdt());
+            }
+        }
+
+        // 5. Cập nhật ngày lập
+        if (dpNgayLap != null) {
+            dpNgayLap.setValue(LocalDate.now());
+        }
+
+        // 6. Set loại hóa đơn
+        if (rbOTC != null) {
+            rbOTC.setSelected(false);
+        }
+
+        // 7. Tính tổng tiền
+        tinhTongTien();
+
+        // 8. Tự động điền số tiền khách đưa
+        if (txtSoTienKhachDua != null && lblThanhTien != null) {
+            long tongTien = parseVND(lblThanhTien.getText());
+            long soTienCanTra = tongTien - (long)phieuDat.getSoTienCoc();
+
+            if (soTienCanTra < 0) {
+                soTienCanTra = 0;
+            }
+
+            txtSoTienKhachDua.setText(String.valueOf(soTienCanTra));
+        }
+
+        // 9. Set phương thức thanh toán
+        if (cbPhuongThucTT != null) {
+            cbPhuongThucTT.setValue("Tiền mặt");
+        }
+
+        // 10. Refresh bảng
+        if (tblChiTietHD != null) {
+            tblChiTietHD.refresh();
+        }
+
+        // 11. Thông báo thành công
+        hien(INFORMATION, "Thành công",
+                "✅ Đã tải dữ liệu từ phiếu đặt " + phieuDat.getMaPDat() + " lên giao diện!\n\n" +
+                        "📦 Số lượng sản phẩm: " + dsChiTietHD.size() + "\n" +
+                        "💰 Tiền cọc đã trả: " + formatVND(phieuDat.getSoTienCoc()) + "\n\n" +
+                        "Vui lòng kiểm tra và nhấn 'Thanh toán' để hoàn tất.");
+    }
+
+
+
+
 
 
     private void lamMoiGiaoDien() {
