@@ -1,5 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_QuanLy_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.DonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
@@ -256,7 +257,7 @@ public class ChiTietPhieuDatHang_Ctrl  {
     }
 
     public void onLapHoaDon(){
-
+        CuaSoChinh_QuanLy_Ctrl.instance.openLapHoaDonWithMa("test");
     }
 
 }

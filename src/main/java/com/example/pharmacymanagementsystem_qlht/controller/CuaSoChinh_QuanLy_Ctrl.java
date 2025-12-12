@@ -1,6 +1,7 @@
 package com.example.pharmacymanagementsystem_qlht.controller;
 
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ThongKe_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
@@ -24,6 +25,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.MouseEvent;
@@ -69,17 +71,16 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     public Pane pnlNguoiDung;
     public TextField txtVaiTroNhanVien;
     public Label lblVaiTro;
-
-    //  2. KHAI BÁO BIẾN TOÀN CỤC
+    private LapHoaDon_Ctrl lapHoaDonCtrl;
+    private Parent lapHoaDonRoot;
     private int viTri;
     private final List<Thuoc_SP_TheoLo> listThuocHetHan = new Thuoc_SP_TheoLo_Dao().selectHangDaHetHan();
     private final List<Thuoc_SP_TheoLo> listThuocSapHetHan = new Thuoc_SP_TheoLo_Dao().selectHangSapHetHan();
-
-    // Cache các Node đã embed để chuyển tab nhanh
     private final Map<String, Parent> cacheViews = new HashMap<>();
 
     //  3. HÀM KHỞI TẠO
     public void initialize() {
+        instance = this;
         setNgayGio(txtNgayThangNam);
         loadTableThuocHetHan();
         loadTableThuocSapHetHan();
@@ -111,10 +112,8 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         } else {
             // fallback cho Node không phải Region
             content.resizeRelocate(0, 0, pnlChung.getWidth(), pnlChung.getHeight());
-            pnlChung.widthProperty().addListener((o, ov, nv) ->
-                    content.resizeRelocate(0, 0, nv.doubleValue(), pnlChung.getHeight()));
-            pnlChung.heightProperty().addListener((o, ov, nv) ->
-                    content.resizeRelocate(0, 0, pnlChung.getWidth(), nv.doubleValue()));
+            pnlChung.widthProperty().addListener((o, ov, nv) -> content.resizeRelocate(0, 0, nv.doubleValue(), pnlChung.getHeight()));
+            pnlChung.heightProperty().addListener((o, ov, nv) -> content.resizeRelocate(0, 0, pnlChung.getWidth(), nv.doubleValue()));
         }
 
         pnlChung.getChildren().add(content);
@@ -129,8 +128,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     private void loadViewEmbedded(int menuIndex, String cacheKey, Object gui, Object ctrl) {
         viTri = menuIndex;
         selectMenu(viTri);
-        Parent root = cacheViews.computeIfAbsent(cacheKey, k ->
-                ViewEmbedder.buildFromShowWithController(gui, ctrl));
+        Parent root = cacheViews.computeIfAbsent(cacheKey, k -> ViewEmbedder.buildFromShowWithController(gui, ctrl));
         showInMainPane(root);
         pnlThongTin.setVisible(false);
         pnlChung.requestFocus();
@@ -308,9 +306,8 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     //  5. CÁC HÀM XỬ LÝ SỰ KIỆN —> EMBED GUI SẴN CÓ
     public void AnhChuyenTrangChu(MouseEvent mouseEvent) {
         // Nếu Trang chủ là layout chính thì không cần embed. Giữ như hiện tại để focus.
-        selectMenu(0);
-        pnlThongTin.setVisible(false);
-        pnlChung.requestFocus();
+        loadViewEmbedded(0, "TrangChu",new com.example.pharmacymanagementsystem_qlht.view.TrangChu_GUI(),
+                new com.example.pharmacymanagementsystem_qlht.controller.TrangChu_Ctrl());
     }
 
     //  5.1.Chức năng tìm kiếm
@@ -517,6 +514,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
             loginStage.setTitle("Đăng nhập hệ thống quản lý nhà thuốc");
             new DangNhap_GUI().showWithController(loginStage, loginCtrl);
             loginStage.centerOnScreen();
+            loginStage.getIcons().add(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
             loginStage.show(); // bắt buộc phải show
 
             // Tìm & đóng cửa sổ hiện tại: ưu tiên lấy từ actionEvent,
@@ -540,5 +538,21 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         new CuaSoChinh_QuanLy_GUI().showWithController(stage, this);
+    }
+
+    public void openLapHoaDonWithMa(String maHoaDon) {
+        viTri = 5;
+        selectMenu(viTri);
+
+        if (lapHoaDonCtrl == null) {
+            lapHoaDonCtrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl();
+            lapHoaDonRoot = ViewEmbedder.buildFromShowWithController(new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI(), lapHoaDonCtrl);
+        }
+
+        lapHoaDonCtrl.setMaHoaDon(maHoaDon);
+
+        showInMainPane(lapHoaDonRoot);
+        pnlThongTin.setVisible(false);
+        pnlChung.requestFocus();
     }
 }

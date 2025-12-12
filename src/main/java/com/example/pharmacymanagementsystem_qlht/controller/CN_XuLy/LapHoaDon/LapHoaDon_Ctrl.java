@@ -125,6 +125,11 @@ public class LapHoaDon_Ctrl extends Application {
     private static final String GoiY_css = "/com/example/pharmacymanagementsystem_qlht/css/GoiYThuoc.css";
     private boolean GoiY_cssat = false;
     private boolean tamDungGoiY = false;
+    private String maHoaDonTemp = null;
+
+    public void setMaHoaDon(String maHoaDon) {
+        this.maHoaDonTemp = maHoaDon;
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -145,6 +150,7 @@ public class LapHoaDon_Ctrl extends Application {
         initTienMatEvents();
         chuyenHoaDon();
         btnThanhToan.setOnAction(e -> xuLyThanhToan());
+//        Platform.runLater(() -> System.out.println(maHoaDonTemp));
     }
 
     private void chuyenHoaDon() {
