@@ -1,11 +1,7 @@
 // java
 package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhuyenMai;
 
-import com.example.pharmacymanagementsystem_qlht.dao.ChiTietKhuyenMai_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.KhuyenMai_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.LoaiKhuyenMai_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TangKem_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
+import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -83,7 +79,7 @@ public class ThemKhuyenMai_Ctrl {
 
     // --- add as class fields ---
     private final Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
-    private final java.util.Map<String, String> dvtCache = new java.util.HashMap<>();
+    private java.util.Map<String, String> dvtCache = new java.util.HashMap<>();
 
     @FXML
     public void initialize() {
@@ -133,12 +129,20 @@ public class ThemKhuyenMai_Ctrl {
         btnThem.setOnAction(e-> btnThemClick());
 
 
+
     }
+
 
     private void loadAllThuoc() {
         try {
-            List<Thuoc_SanPham> ds = new Thuoc_SanPham_Dao().selectAll();
+            List<Thuoc_SanPham> ds = new Thuoc_SanPham_Dao().selectAllSLTheoDonViCoBan_ChiTietDVT();
             if (ds != null) allThuoc.setAll(ds);
+            dvtCache.clear();
+            for (Thuoc_SanPham thuoc : ds) {
+                String maThuoc = thuoc.getMaThuoc();
+                String tenDVT = thuoc.getTenDVTCoBan() != null ? thuoc.getTenDVTCoBan() : "";
+                dvtCache.put(maThuoc, tenDVT);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

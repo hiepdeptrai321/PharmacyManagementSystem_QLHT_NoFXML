@@ -103,14 +103,14 @@ public class DanhMucNhanVien_GUI {
         Label lbTitle = new Label("Danh mục nhân viên");
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutX(12);
-        lbTitle.setLayoutY(2);
+        lbTitle.setLayoutY(0);
         lbTitle.setPrefSize(350, 36);
         lbTitle.setStyle("-fx-font-size: 36;");
 
         ImageView ivOfficer = new ImageView(new Image(requireRes(
                 "/com/example/pharmacymanagementsystem_qlht/img/officer.png")));
-        ivOfficer.setFitHeight(36); ivOfficer.setFitWidth(40);
-        ivOfficer.setLayoutX(350); ivOfficer.setLayoutY(2);
+
+
         ivOfficer.setPreserveRatio(true); ivOfficer.setPickOnBounds(true);
 
         paneTitle.getChildren().addAll(lbTitle, ivOfficer);
@@ -131,6 +131,17 @@ public class DanhMucNhanVien_GUI {
         ivRefresh.setFitWidth(34); ivRefresh.setFitHeight(21);
         ivRefresh.setPreserveRatio(true); ivRefresh.setPickOnBounds(true);
         btnLamMoi.setGraphic(ivRefresh);
+
+
+        ivOfficer.setFitHeight(36); ivOfficer.setFitWidth(40);
+        ivOfficer.setLayoutX(350); ivOfficer.setLayoutY(6);
+        lbTitle.setPrefSize(320, 36);
+        lbTitle.setStyle("-fx-font-size: 32; -fx-font-weight: bold;");
+        btnTim.setPrefSize(69, 40);
+        btnLamMoi.setPrefSize(45, 40);
+        btnThemNhanVien.setPrefSize(150, 40);
+        btnThemNhanVien.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        btnTim.setStyle(" -fx-background-color: #0c81ff; -fx-text-fill: white;");
 
         // Bảng nhân viên
         tblNhanVien = new TableView<>();

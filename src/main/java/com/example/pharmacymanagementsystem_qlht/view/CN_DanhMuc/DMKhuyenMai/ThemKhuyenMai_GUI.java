@@ -110,6 +110,10 @@ public class ThemKhuyenMai_GUI {
         GridPane.setRowIndex(tfMoTa, 3);
         GridPane.setColumnSpan(tfMoTa, 3);
 
+        dpTuNgay.setPrefWidth(1000);
+        dpDenNgay.setPrefWidth(1000);
+        cbLoaiKM.setPrefWidth(1000);
+
         grid.getChildren().addAll(lblTen, tfTenKM, lblLoai, cbLoaiKM, lblGiaTri, tfGiaTri, lblTu, dpTuNgay, lblDen, dpDenNgay, lblMoTa, tfMoTa);
         VBox.setMargin(grid, new Insets(8, 0, 0, 0));
 

@@ -58,7 +58,7 @@ public class SuaKhuyenMai_GUI {
         Label lblTenKM = new Label("Tên KM:");
         TextField tfTenKM = new TextField();
         tfTenKM.setId("tfTenKM");
-        tfTenKM.setPrefWidth(365);
+        tfTenKM.setPrefWidth(600);
 
         Label lblLoaiKM = new Label("Loại KM:");
         ComboBox<String> cbLoaiKM = new ComboBox<>();
@@ -91,6 +91,7 @@ public class SuaKhuyenMai_GUI {
 
         // Place nodes in grid (columnIndex, rowIndex)
         grid.add(lblTenKM, 0, 0);
+        GridPane.setColumnSpan(tfTenKM, 3);
         grid.add(tfTenKM, 1, 0);
 
         grid.add(lblLoaiKM, 0, 1);
@@ -106,7 +107,6 @@ public class SuaKhuyenMai_GUI {
         grid.add(dpDenNgay, 3, 2);
 
         grid.add(lblMoTa, 0, 3);
-        GridPane.setColumnSpan(tfMoTa, 3);
         grid.add(tfMoTa, 1, 3);
 
         grid.add(lblMaKM, 2, 3);
@@ -161,7 +161,7 @@ public class SuaKhuyenMai_GUI {
         colDonVi.setStyle("-fx-alignment: CENTER;");
 
         TableColumn<ChiTietKhuyenMai, Void> colXoaCT = new TableColumn<>("");
-        colXoaCT.setPrefWidth(64);
+        colXoaCT.setPrefWidth(60);
         colXoaCT.setStyle("-fx-alignment: CENTER;");
 
         tbDSThuoc.getColumns().addAll(colMaThuoc, colTenThuoc, colSLAP, colSLTD, colDonVi, colXoaCT);
@@ -256,13 +256,15 @@ public class SuaKhuyenMai_GUI {
         btnLuu.setLayoutX(859);
         btnLuu.setLayoutY(401);
         btnLuu.setPrefSize(80, 34);
-        btnLuu.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+
 
         Button btnHuy = new Button("Hủy");
         btnHuy.setId("btnHuy");
         btnHuy.setLayoutX(768);
         btnHuy.setLayoutY(401);
         btnHuy.setPrefSize(80, 34);
+        btnLuu.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        btnHuy.setStyle(" -fx-background-color: #f0ad4e; -fx-text-fill: white;");
 
         // Assemble root
         root.getChildren().addAll(lbTitle, mainVBox, btnLuu, btnHuy);

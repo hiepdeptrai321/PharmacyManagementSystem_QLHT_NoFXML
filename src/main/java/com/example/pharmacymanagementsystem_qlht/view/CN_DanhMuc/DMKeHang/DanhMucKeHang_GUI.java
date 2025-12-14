@@ -34,7 +34,7 @@ public class DanhMucKeHang_GUI {
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutY(2.0);
         lbTitle.setPrefHeight(36.0);
-        lbTitle.setPrefWidth(306.0);
+        lbTitle.setPrefWidth(280.0);
         lbTitle.setFont(Font.font(48.0));
 
         // --- ĐÃ SỬA LỖI ẢNH ---
@@ -42,10 +42,7 @@ public class DanhMucKeHang_GUI {
         ImageView imgShelf = new ImageView(
                 new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/shelf_8693463.png")).toExternalForm())
         );
-        imgShelf.setFitHeight(38.0);
-        imgShelf.setFitWidth(38.0);
-        imgShelf.setLayoutX(226.0);
-        imgShelf.setLayoutY(1.0);
+
         imgShelf.setPickOnBounds(true);
         imgShelf.setPreserveRatio(true);
 
@@ -92,6 +89,19 @@ public class DanhMucKeHang_GUI {
         imgRefresh.setPickOnBounds(true);
         imgRefresh.setPreserveRatio(true);
         btnLamMoi.setGraphic(imgRefresh);
+
+
+        imgShelf.setFitHeight(40.0);
+        imgShelf.setFitWidth(40.0);
+        imgShelf.setLayoutX(290.0);
+        imgShelf.setLayoutY(6.0);
+        lbTitle.setPrefSize(320, 36);
+        lbTitle.setStyle("-fx-font-size: 32; -fx-font-weight: bold;");
+        btnTim.setPrefSize(69, 40);
+        btnLamMoi.setPrefSize(45, 40);
+        btnThem.setPrefSize(150, 40);
+        btnThem.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        btnTim.setStyle(" -fx-background-color: #0c81ff; -fx-text-fill: white;");
 
         // --- Bảng ---
         TableView<KeHang> tblKeHang = new TableView<>();
@@ -143,6 +153,5 @@ public class DanhMucKeHang_GUI {
 
         stage.setTitle("Danh mục kệ hàng");
         stage.setScene(scene);
-        stage.show();
     }
 }

@@ -1634,7 +1634,7 @@ public void xuLyThemKH() {
             view.showWithController(stage, ctrl);
 
             CuaSoChinh_QuanLy_Ctrl ql_ctrl = new CuaSoChinh_QuanLy_Ctrl();
-            
+
             // 4. Đợi giao diện load xong rồi mới fill dữ liệu
             Platform.runLater(() -> {
                 fillDataFromPhieuDat(phieuDat, dsCTPD);
