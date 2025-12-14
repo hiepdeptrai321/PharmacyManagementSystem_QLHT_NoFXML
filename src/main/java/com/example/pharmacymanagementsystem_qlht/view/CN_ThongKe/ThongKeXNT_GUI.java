@@ -209,19 +209,37 @@ public class ThongKeXNT_GUI {
         ctrl.lblTu = lblTu;
         ctrl.lblDen = lblDen;
 
-        // --- BƯỚC 2: Tạo Scene, gọi initialize, và hiển thị ---
+        // --- BƯỚC 2: Tạo Scene ---
+        // (Vẫn giữ dòng này để tránh lỗi NullPointer nếu ViewEmbedder cần Scene)
         Scene scene = new Scene(root);
-        try {
-            String cssPath = getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ThongKeBanHang.css").toExternalForm();
-            scene.getStylesheets().add(cssPath);
-        } catch (Exception e) {
-            System.err.println("Không thể tải file CSS: " + e.getMessage());
+
+        // --- SỬA LẠI: Gắn CSS trực tiếp vào ROOT (Quan trọng nhất) ---
+        String cssPath = "/com/example/pharmacymanagementsystem_qlht/css/ThongKeBanHang.css";
+        java.net.URL cssUrl = getClass().getResource(cssPath);
+
+        if (cssUrl != null) {
+            // CÁCH CŨ (Chỉ add vào Scene -> Sai khi nhúng):
+            // scene.getStylesheets().add(cssUrl.toExternalForm());
+
+            // CÁCH MỚI (Add thẳng vào Pane gốc -> Đi đâu cũng có CSS):
+            root.getStylesheets().add(cssUrl.toExternalForm());
+
+            System.out.println("Đã gắn CSS vào Root Pane thành công!");
+        } else {
+            // Thử tìm đường dẫn ngắn nếu đường dẫn dài lỗi
+            var shortUrl = getClass().getResource("/css/ThongKeBanHang.css");
+            if(shortUrl != null) {
+                root.getStylesheets().add(shortUrl.toExternalForm());
+            } else {
+                System.err.println("Không tìm thấy CSS!");
+            }
         }
 
-        // BƯỚC 3: Gọi initialize của Controller
-        ctrl.initialize();
-
-        stage.setTitle("Báo cáo Xuất - Nhập - Tồn");
+        // --- BƯỚC 3: Set Scene vào Stage ---
         stage.setScene(scene);
+
+        // --- BƯỚC 4: Khởi tạo dữ liệu ---
+        ctrl.initialize();
+        stage.setTitle("Báo cáo Xuất - Nhập - Tồn");
     }
 }
