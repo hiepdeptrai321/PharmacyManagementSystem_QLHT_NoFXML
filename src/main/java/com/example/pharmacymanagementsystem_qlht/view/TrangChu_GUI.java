@@ -30,7 +30,6 @@ public class TrangChu_GUI extends Application {
         addStyles(scene);
         stage.setTitle("Trang chủ");
         stage.setScene(scene);
-        stage.show();
     }
 
     /** Dùng trong app: tạo control và truyền trực tiếp cho controller, KHÔNG lookup */
@@ -63,7 +62,6 @@ public class TrangChu_GUI extends Application {
         addStyles(scene);
         stage.setTitle("Trang chủ");
         stage.setScene(scene);
-        stage.show();
     }
 
     // ================== UI cho test độc lập ==================

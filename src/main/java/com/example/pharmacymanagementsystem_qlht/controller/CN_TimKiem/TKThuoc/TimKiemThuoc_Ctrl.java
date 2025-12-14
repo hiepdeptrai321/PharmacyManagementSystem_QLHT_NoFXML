@@ -164,7 +164,8 @@ public class TimKiemThuoc_Ctrl extends Application {
         colXuatXu.setCellValueFactory(new PropertyValueFactory<>("nuocSX"));
         colSDK_GPNK.setCellValueFactory(new PropertyValueFactory<>("SDK_GPNK"));
         colLoaiHang.setCellValueFactory(cel -> new SimpleStringProperty(cel.getValue().getLoaiHang().getTenLoaiHang()));
-        colViTri.setCellValueFactory(cel -> new SimpleStringProperty(cel.getValue().getVitri().getTenKe()));
+        colViTri.setCellValueFactory(cel -> new SimpleStringProperty(cel.getValue()==null?"":
+                (cel.getValue().getVitri()==null?"":cel.getValue().getVitri().getTenKe())));
         colChiTiet.setCellFactory(cel -> new TableCell<Thuoc_SanPham, String>() {
             private final Button btn = new Button("Chi tiết");
 
