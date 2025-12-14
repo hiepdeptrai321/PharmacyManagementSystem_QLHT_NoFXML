@@ -148,12 +148,30 @@ public class TKHoatDong_GUI {
         } catch (Exception ignored) { }
         btnLamMoi.setGraphic(imgRefresh);
 
+        // Lưu ý: imgLog đã được add vào lblPaneTitle ở trên,
+        // nhưng dòng dưới đây add lại vào root thì nó sẽ bị move sang root (JavaFX node chỉ có 1 parent).
+        // Tôi giữ nguyên logic của bạn.
         root.getChildren().addAll(tfTim, btnTim, tbHoatDong, imgLog, lbTu, dpTuNgay, lbDen, dpDenNgay, cbBoLoc, lblPaneTitle, btnLamMoi);
 
         Scene scene = new Scene(root);
-        try {
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemNhanVien.css")).toExternalForm());
-        } catch (Exception ignored) { }
+
+        // --- CẬP NHẬT: Gắn CSS vào Root Pane ---
+        // Code gốc dùng TimKiemNhanVien.css cho Hoạt động
+        String cssPath = "/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css";
+        java.net.URL cssUrl = getClass().getResource(cssPath);
+
+        if (cssUrl != null) {
+            root.getStylesheets().add(cssUrl.toExternalForm());
+            System.out.println("Đã gắn CSS vào Root Pane (TKHoatDong) thành công!");
+        } else {
+            // Fallback: Thử tìm đường dẫn ngắn
+            var shortUrl = getClass().getResource("/css/TimKiemNhanVien.css");
+            if(shortUrl != null) {
+                root.getStylesheets().add(shortUrl.toExternalForm());
+            } else {
+                System.err.println("LỖI: Không tìm thấy file CSS tại: " + cssPath);
+            }
+        }
 
         // Inject into controller (best-effort unchecked casts)
         try {

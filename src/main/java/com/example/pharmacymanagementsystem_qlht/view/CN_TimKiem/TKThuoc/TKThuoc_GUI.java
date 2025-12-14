@@ -2,7 +2,6 @@ package com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKThuoc;
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuoc.TimKiemThuoc_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
-import javafx.application.Application;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,11 +15,44 @@ import java.util.Objects;
 
 public class TKThuoc_GUI {
 
-
-
     /** Dùng trong app: tạo UI và GÁN trực tiếp control vào controller (không lookup). */
     public void showWithController(Stage stage, TimKiemThuoc_Ctrl ctrl) {
         ViewRefs v = buildUIForController();
+
+        // --- CẬP NHẬT: Gắn CSS vào Root Pane ---
+        // File này cần 2 file CSS: TimKiemThuoc.css và QuanLyThuoc.css
+
+        // 1. Nạp TimKiemThuoc.css
+        String cssPath1 = "/com/example/pharmacymanagementsystem_qlht/css/TimKiemThuoc.css";
+        java.net.URL cssUrl1 = getClass().getResource(cssPath1);
+        if (cssUrl1 != null) {
+            v.root.getStylesheets().add(cssUrl1.toExternalForm());
+            System.out.println("Đã gắn CSS (TimKiemThuoc) thành công!");
+        } else {
+            // Fallback path ngắn
+            var shortUrl = getClass().getResource("/css/TimKiemThuoc.css");
+            if (shortUrl != null) {
+                v.root.getStylesheets().add(shortUrl.toExternalForm());
+            } else {
+                System.err.println("LỖI: Không tìm thấy file CSS: " + cssPath1);
+            }
+        }
+
+        // 2. Nạp QuanLyThuoc.css (Cho nút Reset/Làm mới)
+        String cssPath2 = "/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css";
+        java.net.URL cssUrl2 = getClass().getResource(cssPath2);
+        if (cssUrl2 != null) {
+            v.root.getStylesheets().add(cssUrl2.toExternalForm());
+            System.out.println("Đã gắn CSS (QuanLyThuoc) thành công!");
+        } else {
+            // Fallback path ngắn
+            var shortUrl = getClass().getResource("/css/QuanLyThuoc.css");
+            if (shortUrl != null) {
+                v.root.getStylesheets().add(shortUrl.toExternalForm());
+            } else {
+                System.err.println("LỖI: Không tìm thấy file CSS: " + cssPath2);
+            }
+        }
 
         // ===== GÁN CONTROL VỀ CONTROLLER (đúng fx:id) =====
         ctrl.txtTimKiem     = v.txtTimKiem;
@@ -47,9 +79,10 @@ public class TKThuoc_GUI {
         // Nếu controller có initialize()
         try { ctrl.initialize(); } catch (Exception ignore) {}
 
+        // Tạo Scene từ v.root (đã có CSS)
         Scene scene = new Scene(v.root, 1646, 895);
-        addStyles(scene);
         scene.setCursor(Cursor.DEFAULT);
+
         stage.setTitle("Tìm Kiếm Thuốc");
         stage.setScene(scene);
     }
@@ -61,7 +94,7 @@ public class TKThuoc_GUI {
         // Root Pane
         v.root = new Pane();
         v.root.setPrefSize(1646, 895);
-        v.root.setStyle("-fx-font-size: 14 px;");
+        v.root.setStyle("-fx-font-size: 14px;");
 
         // VBox tổng
         VBox vbRoot = new VBox();
@@ -200,31 +233,21 @@ public class TKThuoc_GUI {
         return v;
     }
 
-    private void addStyles(Scene scene) {
-        var css1 = Objects.requireNonNull(
-                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemThuoc.css"),
-                "Không tìm thấy css/TimKiemThuoc.css"
-        ).toExternalForm();
-        scene.getStylesheets().add(css1);
-
-        // Nút reset trong FXML có stylesheets riêng QuanLyThuoc.css -> add để đảm bảo đồng nhất
-        var css2 = Objects.requireNonNull(
-                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css"),
-                "Không tìm thấy css/QuanLyThuoc.css"
-        ).toExternalForm();
-        scene.getStylesheets().add(css2);
-    }
-
     private static ImageView imageView(String resource, double fitW, double fitH, boolean preserveRatio) {
-        ImageView iv = new ImageView(new Image(Objects.requireNonNull(
-                TKThuoc_GUI.class.getResource(resource),
-                "Không tìm thấy ảnh: " + resource
-        ).toExternalForm()));
-        iv.setFitWidth(fitW);
-        iv.setFitHeight(fitH);
-        iv.setPreserveRatio(preserveRatio);
-        iv.setPickOnBounds(true);
-        return iv;
+        try {
+            ImageView iv = new ImageView(new Image(Objects.requireNonNull(
+                    TKThuoc_GUI.class.getResource(resource)
+            ).toExternalForm()));
+            iv.setFitWidth(fitW);
+            iv.setFitHeight(fitH);
+            iv.setPreserveRatio(preserveRatio);
+            iv.setPickOnBounds(true);
+            return iv;
+        } catch (Exception e) {
+            // Trả về ảnh rỗng nếu lỗi để không crash app
+            System.err.println("Không tìm thấy ảnh: " + resource);
+            return new ImageView();
+        }
     }
 
     // ================== Giữ tham chiếu control ==================

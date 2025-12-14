@@ -1,6 +1,15 @@
-#btnhuy{
--fx-background-color: rgb(201,26,26);
+/* --- SỬA ĐOẠN NÀY --- */
+#btnhuy, #btnReset, #btnHuy {
+    -fx-background-color: rgb(201,26,26); /* Màu Đỏ */
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
 }
+
+#btnhuy:pressed, #btnReset:pressed, #btnHuy:pressed {
+    -fx-background-color: rgb(180, 0, 0);
+}
+
+/* --- CÁC PHẦN DƯỚI GIỮ NGUYÊN --- */
 #mainPane {
     -fx-background-color: #f4f6fb;
     -fx-border-color: #d1d9e6;
@@ -57,16 +66,10 @@
     -fx-border-width: 0 0 1px 0;
 }
 
-#btnHuy{
-    -fx-background-color: rgb(255, 0, 0);
-    -fx-background-radius: 5px;
-}
 #lblTrang{
     -fx-text-fill: white;
 }
-#btnHuy:pressed{
-    -fx-background-color: rgb(220, 0, 0);
-}
+
 #cbo{
     -fx-arc-height: 30px;
 }
