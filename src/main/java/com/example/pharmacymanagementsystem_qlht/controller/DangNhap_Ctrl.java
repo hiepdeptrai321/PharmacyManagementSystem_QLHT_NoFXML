@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.util.prefs.Preferences;
@@ -28,8 +29,10 @@ public class DangNhap_Ctrl extends Application {
     public void start(Stage stage) throws Exception {
         Application.setUserAgentStylesheet(STYLESHEET_CASPIAN);
         Application.setUserAgentStylesheet(null);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
         new com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI()
                 .showWithController(stage, this);
+
     }
 
     public void initialize() {
@@ -100,6 +103,7 @@ public class DangNhap_Ctrl extends Application {
             Stage loginStage = (Stage) btnDangNhap.getScene().getWindow();
 
             Stage mainStage = new Stage();
+            mainStage.getIcons().add(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
             if ("Quản lý".equals(role)) {
                 CuaSoChinh_QuanLy_Ctrl ctrl = new CuaSoChinh_QuanLy_Ctrl();
                 new com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI()

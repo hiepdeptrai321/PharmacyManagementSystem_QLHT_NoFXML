@@ -1,5 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_QuanLy_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_NhanVien_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_QuanLy_Ctrl;
@@ -267,78 +268,8 @@ public class ChiTietPhieuDatHang_Ctrl  {
         lblPTTTValue.setText("Chuyển khoản");
     }
 
-    public void onLapHoaDon() {
-        if (phieuDatHang == null) {
-
-            hien(ERROR, "Lỗi", "Không có phiếu đặt để lập hóa đơn!");
-            return;
-        }
-
-        if (phieuDatHang.getTrangthai() != 1) {
-            hien(WARNING, "Cảnh báo", "Phiếu đặt chưa sẵn hàng!");
-            return;
-        }
-
-        Stage stage = new Stage();
-        LapHoaDon_Ctrl ctrl = new LapHoaDon_Ctrl();
-
-        // Gọi hàm tạo hóa đơn từ phiếu đặt
-        ctrl.taoHoaDonTuPhieuDat(phieuDatHang);
-
-        // Đóng cửa sổ chi tiết phiếu đặt
-        ((Stage) btnDong.getScene().getWindow()).close();
-    }
-
-
-
-    private ChiTietHoaDon convertToChiTietHoaDon(ChiTietPhieuDatHang src) {
-        ChiTietHoaDon dst = new ChiTietHoaDon();
-        // Map quantity, price, discount
-        dst.setSoLuong(src.getSoLuong());
-        dst.setDonGia(src.getDonGia());
-        dst.setGiamGia(src.getGiamGia());
-
-        // Map DVT from String id to DonViTinh entity
-        DonViTinh dvtEntity = null;
-        if (src.getDvt() != null) {
-            dvtEntity = new DonViTinh_Dao().selectById(src.getDvt());
-        }
-        if (dvtEntity != null) {
-            dst.setDvt(dvtEntity);
-        }
-
-        // Unable to map lot info: ChiTietHoaDon expects Thuoc_SP_TheoLo (loHang),
-        // while ChiTietPhieuDatHang provides Thuoc_SanPham. Leave loHang null or adapt if a DAO is available.
-        dst.setLoHang(null);
-
-        // dst.tinhThanhTien() will be used where needed
-        return dst;
-    }
-
-    // Helper: convert PhieuDatHang -> HoaDon
-    private HoaDon convertPhieuDatToHoaDon(PhieuDatHang pd) {
-        if (pd == null) return null;
-        HoaDon hd = new HoaDon();
-
-        // Basic mappings
-        hd.setMaKH(pd.getKhachHang());
-        hd.setMaNV(pd.getNhanVien());
-
-        // Use existing Timestamp from PhieuDatHang
-        hd.setNgayLap(pd.getNgayLap());
-
-        // Optional mappings
-        hd.setTrangThai(Boolean.TRUE);
-        hd.setLoaiHoaDon("PhieuDatHang");
-
-        // Attach converted details
-        List<ChiTietHoaDon> ctList = tblChiTietPhieuDat.getItems()
-                .stream()
-                .map(this::convertToChiTietHoaDon)
-                .collect(java.util.stream.Collectors.toList());
-        hd.setChiTietHD(ctList);
-
-        return hd;
+    public void onLapHoaDon(){
+        CuaSoChinh_QuanLy_Ctrl.instance.openLapHoaDonWithMa("test");
     }
 
 }
