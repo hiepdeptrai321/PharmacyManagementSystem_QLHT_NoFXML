@@ -1,14 +1,18 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDatHang;
 
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.ThemKhachHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.*;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.ThemKhachHang_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_GUI;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.application.Platform;
 import javafx.scene.layout.Priority;
@@ -615,38 +619,23 @@ public class LapPhieuDatHang_Ctrl extends Application {
     }
 
     private void xuLyTimKhachHang() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKKhachHang/TKKhachHang_GUI.fxml"));
-            Parent root = loader.load();
-            TimKiemKhachHangTrongHD_Ctrl ctrl = loader.getController();
+        Stage stage = new Stage();
+        TimKiemKhachHangTrongHD_Ctrl ctrl = new TimKiemKhachHangTrongHD_Ctrl();
 
-            Stage dlg = new Stage();
-            dlg.initModality(Modality.APPLICATION_MODAL);
-            if (btnTimKH != null && btnTimKH.getScene() != null) {
-                dlg.initOwner(btnTimKH.getScene().getWindow());
-            }
+        // Tạo GUI Java code
+        TimKiemKhachHangTrongHD_GUI gui = new TimKiemKhachHangTrongHD_GUI();
 
-            // If controller is the typed search controller, set the callback like LapHoaDon_Ctrl
-            if (ctrl instanceof TimKiemKhachHangTrongHD_Ctrl tkCtrl) {
-                tkCtrl.setOnSelected((KhachHang kh) -> {
-                    if (tfTenKH != null) tfTenKH.setText(kh.getTenKH());
-                    if (tfSDT != null) tfSDT.setText(kh.getSdt());
-                    khachHang = kh;
-                    dlg.close();
-                });
-                dlg.setScene(new Scene(root));
-                dlg.showAndWait();
-                return;
-            }
+        // Truyền stage + controller cho GUI để GUI tự tạo scene
+        gui.showWithController(stage, ctrl);
 
-            // fallback: show dialog modally and try to read selected afterwards
-            dlg.setScene(new Scene(root));
-            dlg.showAndWait();
-            Object selected = extractSelectedFromController(ctrl);
-            populateCustomerFields(selected);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        // Lắng nghe kết quả chọn khách hàng
+        ctrl.setOnSelected(kh -> {
+            if (tfTenKH != null) tfTenKH.setText(kh.getTenKH());
+            if (tfSDT != null) tfSDT.setText(kh.getSdt());
+            stage.close();
+        });
+
+        stage.show();
     }
     private void canPhai(TableColumn<ChiTietPhieuDatHang, String> col) {
         col.setCellFactory(tc -> new TableCell<>() {
@@ -659,48 +648,19 @@ public class LapPhieuDatHang_Ctrl extends Application {
         });
     }
 
-    @FXML
-    private void xuLyThemKH(javafx.event.ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhachHang/ThemKhachHang_GUI.fxml"));
-            Parent root = loader.load();
-            Object ctrl = loader.getController();
+    private void xuLyThemKH(ActionEvent actionEvent) {
+        Stage stage = new Stage();
+        ThemKhachHang_Ctrl ctrl = new ThemKhachHang_Ctrl();
+        ThemKhachHang_GUI view = new ThemKhachHang_GUI();
+        view.showWithController(stage, ctrl);
 
-            // try to switch controller to add-mode if supported
-            String[] addMethods = {"setAddMode", "showAddMode", "enableAddMode", "openAddDialog", "themMoi"};
-            for (String mName : addMethods) {
-                try {
-                    var m = ctrl.getClass().getMethod(mName);
-                    m.invoke(ctrl);
-                    break;
-                } catch (NoSuchMethodException ignored) {
-                } catch (Exception ex) {
-                    System.err.println("Invoke add-mode failed: " + ex);
-                    break;
-                }
-            }
+        ctrl.setOnSaved(kh -> {
+            if (tfTenKH != null) tfTenKH.setText(kh.getTenKH());
+            if (tfSDT != null) tfSDT.setText(kh.getSdt());
+        });
 
-            Stage st = new Stage();
-            st.initModality(Modality.APPLICATION_MODAL);
-            if (btnThemKH != null && btnThemKH.getScene() != null) {
-                st.initOwner(btnThemKH.getScene().getWindow());
-            }
-            st.setScene(new Scene(root));
-
-            // extract result after dialog closes (like LapHoaDon_Ctrl)
-            st.setOnHidden(e -> {
-                try {
-                    Object selected = extractSelectedFromController(ctrl);
-                    populateCustomerFields(selected);
-                } catch (Exception ex) {
-                    System.err.println("Extracting new customer failed: " + ex);
-                }
-            });
-
-            st.show();
-        } catch (Exception ex) {
-            System.err.println("Open add-customer dialog error: " + ex);
-        }
+        stage.initOwner(btnThemKH.getScene().getWindow());
+        stage.show();
     }
     private Object extractSelectedFromController(Object ctrl) {
         if (ctrl == null) return null;
