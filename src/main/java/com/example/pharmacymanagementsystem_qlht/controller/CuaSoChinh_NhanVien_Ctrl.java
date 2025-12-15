@@ -360,6 +360,12 @@ public class CuaSoChinh_NhanVien_Ctrl{
                 new com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuoc.TimKiemThuoc_Ctrl());
     }
 
+    public void timKiemThuocTrongKho(ActionEvent actionEvent) {
+        loadViewEmbedded(1, "TK_THUOCTRONGKHO",
+                new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKThuocTrongKho.TKThuocTrongKho_GUI(),
+                new com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuocTrongKho.TimKiemThuocTrongKho_Ctrl());
+    }
+
     public void timKiemKhachHang(ActionEvent actionEvent) {
         loadViewEmbedded(1, "TK_KH",
                 new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKKhachHang.TimKiemKhachHang_GUI(),
@@ -539,4 +545,6 @@ public class CuaSoChinh_NhanVien_Ctrl{
             e.printStackTrace();
         }
     }
+
+
 }

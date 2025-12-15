@@ -179,7 +179,7 @@ public class TKPhieuTraHang_GUI extends Application {
         ctrl.btnHuyBo.setGraphic(imgRefresh);
 
         Region rg3 = new Region();
-        rg3.setPrefSize(465, 68);
+        rg3.setPrefSize(405, 68);
 
         ctrl.cbLoc = new ComboBox<>();
         ctrl.cbLoc.setPromptText("⌛ Bộ lọc nhanh");

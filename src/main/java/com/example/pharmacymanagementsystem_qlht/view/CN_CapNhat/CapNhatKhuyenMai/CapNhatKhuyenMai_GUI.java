@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ public class CapNhatKhuyenMai_GUI {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
         root.setStyle("-fx-font-size: 14;");
+
 
         TextField tfTimKM = new TextField();
         tfTimKM.setId("tfTimKM");
@@ -45,6 +47,14 @@ public class CapNhatKhuyenMai_GUI {
         tbKM.setLayoutX(12);
         tbKM.setLayoutY(104);
         tbKM.setPrefSize(1622, 784);
+
+        StackPane rootTablePane = new StackPane();
+        rootTablePane.setId("rootTablePane");
+
+        // position and size like the old table
+        rootTablePane.setLayoutX(12);
+        rootTablePane.setLayoutY(104);
+        rootTablePane.setPrefSize(1622, 784);
 
         TableColumn<Object, String> colSTT = new TableColumn<>("STT");
         colSTT.setPrefWidth(68);
@@ -79,6 +89,8 @@ public class CapNhatKhuyenMai_GUI {
         colChiTiet.setStyle("-fx-alignment: CENTER;");
 
         tbKM.getColumns().addAll(colSTT, colMaKM, colTenKM, colLoaiKM, colGiaTri, colNBD, colNKT, colChiTiet);
+
+        rootTablePane.getChildren().add(tbKM);
 
         Pane lblPane = new Pane();
         lblPane.setId("lblpaneTitle");
@@ -124,7 +136,7 @@ public class CapNhatKhuyenMai_GUI {
         imgRefresh.setPreserveRatio(true);
         btnReset.setGraphic(imgRefresh);
 
-        root.getChildren().addAll(tfTimKM, btnTimKM, tbKM, lblPane, btnReset);
+        root.getChildren().addAll(tfTimKM, btnTimKM, rootTablePane, lblPane, btnReset);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css")).toExternalForm());
@@ -142,6 +154,7 @@ public class CapNhatKhuyenMai_GUI {
         ctrl.colNBD = (TableColumn<KhuyenMai, java.sql.Date>) (TableColumn<?, ?>) colNBD;
         ctrl.colNKT = (TableColumn<KhuyenMai, java.sql.Date>) (TableColumn<?, ?>) colNKT;
         ctrl.colChiTiet = (TableColumn<KhuyenMai, String>) (TableColumn<?, ?>) colChiTiet;
+        ctrl.rootTablePane = rootTablePane;
 
         // Initialize controller logic
         ctrl.initialize();
