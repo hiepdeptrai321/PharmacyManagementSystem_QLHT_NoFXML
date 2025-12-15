@@ -13,7 +13,7 @@ public class SuaXoaKhachHang_GUI {
 
     public void showWithController(Stage stage, ChiTietKhachHang_Ctrl ctrl) {
         Pane root = new Pane();
-        root.setPrefHeight(270.0);
+        root.setPrefHeight(280.0);
         root.setPrefWidth(582.0);
         root.setStyle("-fx-font-size: 13;");
 
@@ -123,7 +123,7 @@ public class SuaXoaKhachHang_GUI {
         // Buttons
         Button btnXoa = new Button();
         btnXoa.setId("nutXoa");
-        btnXoa.setLayoutX(10.0);
+        btnXoa.setLayoutX(15.0);
         btnXoa.setLayoutY(237.0);
         btnXoa.setPrefHeight(25.0);
         btnXoa.setPrefWidth(84.0);
@@ -133,20 +133,22 @@ public class SuaXoaKhachHang_GUI {
 
         Button btnHuy = new Button("Hủy");
         btnHuy.setId("btnHuy");
-        btnHuy.setLayoutX(361.0);
+        btnHuy.setLayoutX(376.0);
         btnHuy.setLayoutY(239.0);
         btnHuy.setPrefHeight(25.0);
         btnHuy.setPrefWidth(84.0);
 
         Button btnLuu = new Button();
         btnLuu.setId("btnluu");
-        btnLuu.setLayoutX(471.0);
+        btnLuu.setLayoutX(475.0);
         btnLuu.setLayoutY(239.0);
         btnLuu.setPrefHeight(25.0);
         btnLuu.setPrefWidth(84.0);
         Label lblLuu = new Label("Lưu");
         lblLuu.setId("txtTrang_Bold");
         btnLuu.setGraphic(lblLuu);
+        btnXoa.setGraphic(lblXoa);
+
 
         root.getChildren().addAll(
                 lbTitle, lblTenKH, txtTenKH, errTenKH, lblNgaySinh, txtNgaySinh, lblGioiTinh, cboGioiTinh,

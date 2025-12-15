@@ -150,10 +150,9 @@ public class TKPhieuDatHang_Ctrl {
             Stage stage = new Stage();
             stage.setTitle("Chi tiết phiếu đặt hàng");
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            ctrl.setPhieuDatHang(pdhdao.selectById(pdh.getMaPDat()));
             new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_GUI()
                     .showWithController(stage, ctrl);
-            ctrl.setPhieuDatHang(pdhdao.selectById(pdh.getMaPDat()));
-            ctrl.setPhieuDatHang(pdh);
             stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
         } catch (Exception e) {
             e.printStackTrace();

@@ -91,17 +91,17 @@ public class DanhMucThuoc_GUI extends Application {
         Label lbTitle = new Label("Danh mục thuốc");
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutX(12);
-        lbTitle.setLayoutY(2);
-        lbTitle.setPrefSize(269, 36);
-        lbTitle.setStyle("-fx-font-size: 36;");
+        lbTitle.setLayoutY(0);
+
+
 
         ImageView icon = new ImageView(new Image(Objects.requireNonNull(
                 getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/pills-3941.png")
         ).toExternalForm()));
         icon.setFitHeight(38);
         icon.setFitWidth(36);
-        icon.setLayoutX(300);
-        icon.setLayoutY(3);
+        icon.setLayoutX(280);
+
         icon.setPreserveRatio(true);
         icon.setPickOnBounds(true);
 
@@ -119,26 +119,26 @@ public class DanhMucThuoc_GUI extends Application {
         btnTimThuoc.setId("btnTimThuoc");
         btnTimThuoc.setLayoutX(375);
         btnTimThuoc.setLayoutY(46);
-        btnTimThuoc.setPrefSize(69, 40);
+
 
         btnThemThuoc = new Button("✚Thêm thuốc");
         btnThemThuoc.setId("btnThemThuoc");
-        btnThemThuoc.setLayoutX(1440);
+        btnThemThuoc.setLayoutX(1430);
         btnThemThuoc.setLayoutY(46.285714285714285);
         btnThemThuoc.setPrefSize(144, 40);
 
         btnNhapExcel = new Button("📥");
         btnNhapExcel.setId("btnNhapExcel");
-        btnNhapExcel.setLayoutX(1594);
+        btnNhapExcel.setLayoutX(1584);
         btnNhapExcel.setLayoutY(46.285714285714285);
-        btnNhapExcel.setPrefSize(45, 40);
+
         btnNhapExcel.setMinWidth(46);
 
         btnLamMoi = new Button();
         btnLamMoi.setId("btnLamMoi");
         btnLamMoi.setLayoutX(452);
         btnLamMoi.setLayoutY(46);
-        btnLamMoi.setPrefSize(45, 40);
+
 
         ImageView imgRefresh = new ImageView(new Image(Objects.requireNonNull(
                 getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")
@@ -148,6 +148,18 @@ public class DanhMucThuoc_GUI extends Application {
         imgRefresh.setPreserveRatio(true);
         imgRefresh.setPickOnBounds(true);
         btnLamMoi.setGraphic(imgRefresh);
+
+
+
+        icon.setLayoutY(5);
+        lbTitle.setPrefSize(300, 36);
+        lbTitle.setStyle("-fx-font-size: 32; -fx-font-weight: bold;");
+        btnTimThuoc.setPrefSize(69, 40);
+        btnLamMoi.setPrefSize(45, 40);
+        btnThemThuoc.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        btnTimThuoc.setStyle(" -fx-background-color: #0c81ff; -fx-text-fill: white;");
+        btnNhapExcel.setPrefSize(45, 40);
+        btnNhapExcel.setStyle(" -fx-background-color: #3264FFCC; -fx-text-fill: white;");
 
         // --- Table ---
         tbl_Thuoc = new TableView<>();

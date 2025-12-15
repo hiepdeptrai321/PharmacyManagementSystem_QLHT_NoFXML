@@ -42,8 +42,8 @@ public class ThemNhomDuocLy_GUI {
 
         // Mô tả
         Label lblMoTa = new Label("Mô tả");
-        lblMoTa.setLayoutX(9.0);
-        lblMoTa.setLayoutY(97.0);
+        lblMoTa.setLayoutX(14.0);
+        lblMoTa.setLayoutY(99.0);
         TextArea txtMoTa = new TextArea();
         txtMoTa.setId("txtMoTa");
         txtMoTa.setLayoutX(14.0);
@@ -56,7 +56,7 @@ public class ThemNhomDuocLy_GUI {
         btnThem.setId("nutThem");
         btnThem.setLayoutX(479.0);
         btnThem.setLayoutY(202.0);
-        btnThem.setPrefHeight(25.0);
+        btnThem.setPrefHeight(30.0);
         btnThem.setPrefWidth(74.0);
         Label lblThem = new Label("Thêm");
         lblThem.setId("txtTrang_Bold");
@@ -67,7 +67,7 @@ public class ThemNhomDuocLy_GUI {
         btnHuy.setId("nutXoa");
         btnHuy.setLayoutX(25.0);
         btnHuy.setLayoutY(202.0);
-        btnHuy.setPrefHeight(25.0);
+        btnHuy.setPrefHeight(30);
         btnHuy.setPrefWidth(63.0);
         Label lblHuy = new Label("Hủy");
         lblHuy.setId("txtTrang_Bold");

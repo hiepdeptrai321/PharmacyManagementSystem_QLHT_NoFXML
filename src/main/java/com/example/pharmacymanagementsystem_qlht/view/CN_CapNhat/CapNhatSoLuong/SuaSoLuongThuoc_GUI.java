@@ -104,7 +104,6 @@ public class SuaSoLuongThuoc_GUI {
         btnLuu.setLayoutY(153);
         btnLuu.getStyleClass().add("btnthemhuy");
         btnLuu.setPrefSize(69, 32);
-        btnLuu.setStyle("-fx-text-fill: WHITE; -fx-font-weight: bold;");
 
         Button btnHuy = new Button("Hủy");
         btnHuy.setId("btnHuy");
@@ -112,7 +111,8 @@ public class SuaSoLuongThuoc_GUI {
         btnHuy.setLayoutY(153);
         btnHuy.getStyleClass().add("btnthemhuy");
         btnHuy.setPrefSize(69, 32);
-        btnHuy.setStyle("-fx-text-fill: WHITE; -fx-font-weight: bold;");
+        btnLuu.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        btnHuy.setStyle(" -fx-background-color: #f0ad4e; -fx-text-fill: white;");
 
         root.getChildren().addAll(lbTitle, mainVBox, btnLuu, btnHuy);
 

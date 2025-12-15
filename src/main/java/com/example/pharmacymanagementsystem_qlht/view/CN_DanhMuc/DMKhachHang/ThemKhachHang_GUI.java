@@ -16,11 +16,11 @@ public class ThemKhachHang_GUI {
     public void showWithController(Stage stage, ThemKhachHang_Ctrl ctrl) {
         GridPane root = new GridPane();
         root.setHgap(12);
-        root.setVgap(6);
-        root.setPrefHeight(324.0);
+        root.setVgap(2);
+        root.setPrefHeight(150.0);
         root.setPrefWidth(688.0);
         root.setStyle("-fx-font-size: 13;");
-        root.setPadding(new Insets(16, 16, 16, 16));
+        root.setPadding(new Insets(6, 10, 10, 10));
 
         // Column Constraints
         ColumnConstraints col0 = new ColumnConstraints();
@@ -80,7 +80,6 @@ public class ThemKhachHang_GUI {
         ComboBox<String> cbGioiTinh = new ComboBox<>();
         cbGioiTinh.setMaxWidth(Double.MAX_VALUE);
         cbGioiTinh.setPromptText("Chọn giới tính");
-        cbGioiTinh.setItems(FXCollections.observableArrayList("Nam", "Nữ"));
         Label errGioiTinh = new Label();
         errGioiTinh.setMaxWidth(Double.MAX_VALUE);
         errGioiTinh.setStyle("-fx-font-size:11px; -fx-text-fill: red;");
@@ -135,6 +134,12 @@ public class ThemKhachHang_GUI {
         btnHuy.setPrefWidth(60.0);
         Button btnThem = new Button("Thêm");
         btnThem.setPrefWidth(59.0);
+
+
+
+        btnHuy.setStyle("-fx-background-color: #ff0700; -fx-text-fill: white;");
+        btnThem.setId("btnluu");
+
 
         HBox hbButtons = new HBox(8, btnHuy, btnThem);
         hbButtons.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);

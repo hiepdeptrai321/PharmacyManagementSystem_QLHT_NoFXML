@@ -144,6 +144,7 @@ public class SuaGiaThuoc_GUI {
         btnHuy.setLayoutY(343);
         btnHuy.getStyleClass().add("btnthemhuy");
         btnHuy.setPrefSize(69, 32);
+        btnHuy.setStyle(" -fx-background-color: #f0ad4e; -fx-text-fill: white;");
 
         // Tag image
         ImageView imgTag = new ImageView(

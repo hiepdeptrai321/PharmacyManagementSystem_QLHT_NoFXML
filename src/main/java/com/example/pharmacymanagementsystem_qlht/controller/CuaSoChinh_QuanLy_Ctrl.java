@@ -6,6 +6,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.ThongKe_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
+import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.ViewEmbedder;
@@ -540,16 +541,16 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         new CuaSoChinh_QuanLy_GUI().showWithController(stage, this);
     }
 
-    public void openLapHoaDonWithMa(String maHoaDon) {
+    public void openLapHoaDonWithMa(String maPhieuDat) {
         viTri = 5;
         selectMenu(viTri);
 
         if (lapHoaDonCtrl == null) {
-            lapHoaDonCtrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl();
-            lapHoaDonRoot = ViewEmbedder.buildFromShowWithController(new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI(), lapHoaDonCtrl);
-        }
+            lapHoaDonCtrl = new LapHoaDon_Ctrl();
+            lapHoaDonCtrl.setMaPhieuDat(maPhieuDat);
+            lapHoaDonRoot = ViewEmbedder.buildFromShowWithController(new LapHoaDon_GUI(), lapHoaDonCtrl);
 
-        lapHoaDonCtrl.setMaHoaDon(maHoaDon);
+        }
 
         showInMainPane(lapHoaDonRoot);
         pnlThongTin.setVisible(false);

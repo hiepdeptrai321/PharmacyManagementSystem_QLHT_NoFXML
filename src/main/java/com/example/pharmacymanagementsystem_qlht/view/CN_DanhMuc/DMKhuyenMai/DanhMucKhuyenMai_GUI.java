@@ -29,7 +29,6 @@ public class DanhMucKhuyenMai_GUI {
         Label lbTitle = new Label("Danh mục khuyến mãi");
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutY(2);
-        lbTitle.setPrefSize(450, 36);
         lbTitle.setStyle("-fx-font-size: 36;");
 
         ImageView imgDiscount = new ImageView(
@@ -68,8 +67,8 @@ public class DanhMucKhuyenMai_GUI {
 
         Button btnLamMoi = new Button();
         btnLamMoi.setId("btnLamMoi");
-        btnLamMoi.setLayoutX(882);
-        btnLamMoi.setLayoutY(49);
+        btnLamMoi.setLayoutX(862);
+        btnLamMoi.setLayoutY(51);
         btnLamMoi.setPrefSize(44, 41);
 
         ImageView imgRefresh = new ImageView(
@@ -80,6 +79,20 @@ public class DanhMucKhuyenMai_GUI {
         imgRefresh.setPickOnBounds(true);
         imgRefresh.setPreserveRatio(true);
         btnLamMoi.setGraphic(imgRefresh);
+
+
+
+        imgDiscount.setFitHeight(40.0);
+        imgDiscount.setFitWidth(40.0);
+        imgDiscount.setLayoutX(345.0);
+        imgDiscount.setLayoutY(6.0);
+        lbTitle.setPrefSize(390, 36);
+        lbTitle.setStyle("-fx-font-size: 32; -fx-font-weight: bold;");
+        btnTim.setPrefSize(69, 40);
+        btnLamMoi.setPrefSize(45, 40);
+        btnthemKM.setPrefSize(150, 40);
+        btnthemKM.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        btnTim.setStyle(" -fx-background-color: #0c81ff; -fx-text-fill: white;");
 
         // Table and columns
         TableView<KhuyenMai> tbKM = new TableView<>();
