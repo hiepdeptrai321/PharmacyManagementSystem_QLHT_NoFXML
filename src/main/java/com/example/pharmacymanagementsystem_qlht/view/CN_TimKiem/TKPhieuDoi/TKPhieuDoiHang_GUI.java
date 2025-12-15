@@ -61,7 +61,7 @@ public class TKPhieuDoiHang_GUI extends Application {
 
         ctrl.cboTimKiem = new ComboBox<>();
         ctrl.cboTimKiem.setPromptText("Tìm theo");
-        ctrl.cboTimKiem.setPrefSize(140, 40);
+        ctrl.cboTimKiem.setPrefSize(200, 40);
         ctrl.cboTimKiem.getStyleClass().add("btntim");
         HBox.setMargin(ctrl.cboTimKiem, new Insets(10, 5, 0, 0));
 
@@ -118,10 +118,11 @@ public class TKPhieuDoiHang_GUI extends Application {
         ctrl.btnHuyBo = new Button();
         ctrl.btnHuyBo.setPrefSize(52, 40);
         ctrl.btnHuyBo.getStyleClass().add("btntim");
+        ctrl.btnHuyBo.setId("btnReset");
         HBox.setMargin(ctrl.btnHuyBo, new Insets(10, 8, 0, 8));
 
         ImageView imgRefresh = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png").toExternalForm()));
-        imgRefresh.setFitWidth(34);
+        imgRefresh.setFitWidth(20);
         imgRefresh.setFitHeight(20);
         ctrl.btnHuyBo.setGraphic(imgRefresh);
 

@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 import java.util.prefs.Preferences;
 
-public class DangNhap_Ctrl extends Application {
+public class  DangNhap_Ctrl extends Application {
     public CheckBox checkDangNhap;
     public Label lbhotline;
     public TextField tfTaiKhoan;

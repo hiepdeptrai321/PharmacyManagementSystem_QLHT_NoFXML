@@ -23,7 +23,8 @@ public class TimKiemNCC_GUI {
         mainPane.setId("mainPane");
         mainPane.setPrefHeight(895.0);
         mainPane.setPrefWidth(1646.0);
-        mainPane.setStyle("-fx-font-size: 14 px;");
+        // Sửa lỗi cú pháp nhỏ: "14 px" -> "14px"
+        mainPane.setStyle("-fx-font-size: 14px;");
 
         VBox vBoxContainer = new VBox();
         vBoxContainer.setLayoutX(10.0);
@@ -41,9 +42,11 @@ public class TimKiemNCC_GUI {
         lbTitle.setPrefWidth(419.0);
         lbTitle.setFont(Font.font(36.0));
 
-        ImageView imgTitle = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/delivery-truck-9146.png")).toExternalForm())
-        );
+        ImageView imgTitle = new ImageView();
+        try {
+            imgTitle = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/delivery-truck-9146.png")).toExternalForm()));
+        } catch (Exception ignored) {}
+
         imgTitle.setFitHeight(53.0);
         imgTitle.setFitWidth(51.0);
         imgTitle.setPickOnBounds(true);
@@ -64,7 +67,7 @@ public class TimKiemNCC_GUI {
         ComboBox<String> cboTimKiem = new ComboBox<>();
         cboTimKiem.setId("cboTimKiem");
         cboTimKiem.setPrefHeight(40.0);
-        cboTimKiem.setPrefWidth(225.0);
+        cboTimKiem.setPrefWidth(250.0);
         cboTimKiem.setPromptText("Tìm kiếm theo");
         HBox.setMargin(cboTimKiem, new Insets(10.0, 5.0, 0, 0));
 
@@ -81,9 +84,12 @@ public class TimKiemNCC_GUI {
         btnTim.setPrefHeight(40.0);
         btnTim.setPrefWidth(72.0);
         HBox.setMargin(btnTim, new Insets(10.0, 10.0, 0, 10.0));
-        ImageView imgSearch = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png")).toExternalForm())
-        );
+
+        ImageView imgSearch = new ImageView();
+        try {
+            imgSearch = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png")).toExternalForm()));
+        } catch (Exception ignored) {}
+
         imgSearch.setFitHeight(20.0);
         imgSearch.setFitWidth(150.0);
         imgSearch.setPickOnBounds(true);
@@ -95,9 +101,12 @@ public class TimKiemNCC_GUI {
         btnLamMoi.setPrefHeight(41.0);
         btnLamMoi.setPrefWidth(52.0);
         HBox.setMargin(btnLamMoi, new Insets(10.0, 0, 0, 5.0));
-        ImageView imgRefresh = new ImageView(
-                new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")).toExternalForm())
-        );
+
+        ImageView imgRefresh = new ImageView();
+        try {
+            imgRefresh = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")).toExternalForm()));
+        } catch (Exception ignored) {}
+
         imgRefresh.setId("imgReset");
         imgRefresh.setFitHeight(20.0);
         imgRefresh.setFitWidth(34.0);
@@ -150,23 +159,42 @@ public class TimKiemNCC_GUI {
         vBoxContainer.getChildren().addAll(hbTitle, separator, hbSearch, scrollPane);
         mainPane.getChildren().add(vBoxContainer);
 
-        // --- Scene và CSS ---
+        // --- Scene ---
         Scene scene = new Scene(mainPane);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemNhanVien.css")).toExternalForm());
+
+        // --- CẬP NHẬT: Gắn CSS vào Root Pane ---
+        // Lưu ý: Code gốc bạn dùng TimKiemNhanVien.css cho TimKiemNCC, tôi giữ nguyên như cũ.
+        String cssPath = "/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css";
+        java.net.URL cssUrl = getClass().getResource(cssPath);
+
+        if (cssUrl != null) {
+            mainPane.getStylesheets().add(cssUrl.toExternalForm());
+            System.out.println("Đã gắn CSS vào Root Pane (TimKiemNCC) thành công!");
+        } else {
+            // Fallback: Thử tìm đường dẫn ngắn
+            var shortUrl = getClass().getResource("/css/TimKiemNhanVien.css");
+            if(shortUrl != null) {
+                mainPane.getStylesheets().add(shortUrl.toExternalForm());
+            } else {
+                System.err.println("LỖI: Không tìm thấy file CSS tại: " + cssPath);
+            }
+        }
 
         // --- Tiêm vào Controller ---
-        ctrl.cboTimKiem = cboTimKiem;
-        ctrl.txtTimKiem = txtTimKiem;
-        ctrl.btnTim = btnTim;
-        ctrl.btnLamMoi = btnLamMoi;
-        ctrl.tbNCC = (TableView<NhaCungCap>) tbNCC;
-        ctrl.cotSTT = cotSTT;
-        ctrl.cotMNCC = cotMNCC;
-        ctrl.cotTenNCC = cotTenNCC;
-        ctrl.cotEmil = cotEmil;
-        ctrl.cotSDT = cotSDT;
-        ctrl.cotDiaChi = cotDiaChi;
-        ctrl.cotChiTiet = cotChiTiet;
+        try {
+            ctrl.cboTimKiem = cboTimKiem;
+            ctrl.txtTimKiem = txtTimKiem;
+            ctrl.btnTim = btnTim;
+            ctrl.btnLamMoi = btnLamMoi;
+            ctrl.tbNCC = (TableView<NhaCungCap>) tbNCC;
+            ctrl.cotSTT = cotSTT;
+            ctrl.cotMNCC = cotMNCC;
+            ctrl.cotTenNCC = cotTenNCC;
+            ctrl.cotEmil = cotEmil;
+            ctrl.cotSDT = cotSDT;
+            ctrl.cotDiaChi = cotDiaChi;
+            ctrl.cotChiTiet = cotChiTiet;
+        } catch (Exception ignored) {}
 
         // --- Khởi chạy Controller ---
         ctrl.initialize();

@@ -18,30 +18,25 @@ public class TKPhieuNhapHang_GUI extends Application {
     @Override
     public void start(Stage stage) {
         ViewRefs v = buildUIForController();
-        Scene scene = new Scene(v.root, 1646, 895);
-        addStyles(scene);
+        Scene scene = new Scene(v.root);
+        // Không cần gọi addStyles(scene) ở đây nữa vì CSS đã gắn vào root
         stage.setTitle("Tìm kiếm phiếu nhập hàng");
         stage.setScene(scene);
         stage.show();
     }
 
-    /**
-     * Dùng trong app: tạo UI và GÁN trực tiếp vào controller (không lookup).
-     */
     public void showWithController(Stage stage, TimKiemPhieuNhap_Ctrl ctrl) {
         ViewRefs v = buildUIForController();
 
-        // ==== GÁN CONTROL về controller (đúng fx:id FXML) ====
+        // ==== GÁN CONTROL về controller ====
         ctrl.cbxTimKiem = v.cbxTimKiem;
         ctrl.txtTimKiem = v.txtTimKiem;
         ctrl.tpBoLoc = v.tpBoLoc;
-
         ctrl.cbxChonNhaCC = v.cbxChonNhaCC;
         ctrl.chonNhanVien = v.chonNhanVien;
         ctrl.cboxTrangThai = v.cboxTrangThai;
         ctrl.txtNgayNhapMin = v.txtNgayNhapMin;
         ctrl.txtNgayNhapMax = v.txtNgayNhapMax;
-
         ctrl.tblPhieuNhap = v.tblPhieuNhap;
         ctrl.colMaPN = v.colMaPN;
         ctrl.colNgayNhap = v.colNgayNhap;
@@ -51,17 +46,14 @@ public class TKPhieuNhapHang_GUI extends Application {
         ctrl.colTrangThai = v.colTrangThai;
         ctrl.colChiTiet = v.colChiTiet;
 
-        // Gán handler cho nút Xóa rỗng (onAction="#btnXoaRong")
         v.btnReset.setOnAction(ctrl::btnXoaRong);
 
-        // Nếu controller có initialize()
         try {
             ctrl.initialize();
-        } catch (Exception ignore) {
-        }
+        } catch (Exception ignore) {}
 
-        Scene scene = new Scene(v.root, 1646, 895);
-        addStyles(scene);
+        // Scene tự động nhận CSS từ v.root
+        Scene scene = new Scene(v.root);
         stage.setTitle("Tìm kiếm phiếu nhập hàng");
         stage.setScene(scene);
     }
@@ -70,10 +62,15 @@ public class TKPhieuNhapHang_GUI extends Application {
     private ViewRefs buildUIForController() {
         ViewRefs v = new ViewRefs();
 
-        // Root Pane
+        // 1. Root Pane
         v.root = new Pane();
         v.root.setPrefSize(1646, 895);
-        v.root.setStyle("-fx-font-size: 14px;");
+
+        // --- [QUAN TRỌNG 1] Set ID để nhận style nền trắng/bóng đổ từ TimKiemHoaDon.css ---
+        v.root.setId("mainPane");
+
+        // --- [QUAN TRỌNG 2] Gắn CSS trực tiếp vào Root Pane (giống Thống kê) ---
+        applyStylesToRoot(v.root);
 
         // ===== Tiêu đề =====
         HBox hbTitle = new HBox();
@@ -114,12 +111,12 @@ public class TKPhieuNhapHang_GUI extends Application {
         v.txtTimKiem.getStyleClass().add("tftim");
 
         v.btnReset = new Button();
-        v.btnReset.setId("btnReset");
+        v.btnReset.setId("btnReset"); // ID này có thể dùng để style riêng nếu cần
         v.btnReset.setLayoutX(601);
         v.btnReset.setLayoutY(79);
         v.btnReset.setPrefSize(52, 40);
         v.btnReset.getStyleClass().add("btntim");
-        // Graphic refresh
+
         ImageView ivRefresh = imageView("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png", 34, 20, true);
         v.btnReset.setGraphic(ivRefresh);
 
@@ -132,6 +129,7 @@ public class TKPhieuNhapHang_GUI extends Application {
         // --- TitledPane: Bộ lọc bổ sung ---
         StackPane spFilterWrap = new StackPane();
         spFilterWrap.setPrefWidth(1613);
+
         v.tpBoLoc = new TitledPane();
         v.tpBoLoc.setText("Bộ lọc bổ sung");
         v.tpBoLoc.setAnimated(false);
@@ -146,12 +144,14 @@ public class TKPhieuNhapHang_GUI extends Application {
         v.cbxChonNhaCC.setLayoutY(7);
         v.cbxChonNhaCC.setPrefSize(302, 44);
         v.cbxChonNhaCC.setPromptText("Chọn nhà cung cấp");
+        v.cbxChonNhaCC.getStyleClass().add("btntim"); // Thêm style cho đẹp
 
         v.chonNhanVien = new ComboBox<>();
         v.chonNhanVien.setLayoutX(318);
         v.chonNhanVien.setLayoutY(7);
         v.chonNhanVien.setPrefSize(347, 44);
         v.chonNhanVien.setPromptText("Chọn nhân viên");
+        v.chonNhanVien.getStyleClass().add("btntim"); // Thêm style
 
         Label lbTrangThai = new Label("Trạng thái nhập hàng:");
         lbTrangThai.setLayoutX(693);
@@ -220,7 +220,7 @@ public class TKPhieuNhapHang_GUI extends Application {
         v.colTrangThai.setPrefWidth(259);
         v.colTrangThai.setStyle("-fx-alignment: CENTER;");
 
-        v.colChiTiet = new TableColumn<>("");
+        v.colChiTiet = new TableColumn<>("Chi tiết");
         v.colChiTiet.setPrefWidth(93);
         v.colChiTiet.setStyle("-fx-alignment: CENTER;");
 
@@ -236,20 +236,21 @@ public class TKPhieuNhapHang_GUI extends Application {
         return v;
     }
 
-    private void addStyles(Scene scene) {
-        // TimKiemHoaDon.css
-        var css1 = Objects.requireNonNull(
-                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css"),
+    // Phương thức này thay thế cho addStyles cũ
+    private void applyStylesToRoot(Pane root) {
+        // 1. TimKiemHoaDon.css (Chứa style cho #mainPane, .title, .btntim...)
+        String css1 = Objects.requireNonNull(
+                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemThuoc.css"),
                 "Không tìm thấy css/TimKiemHoaDon.css"
         ).toExternalForm();
-        scene.getStylesheets().add(css1);
+        root.getStylesheets().add(css1);
 
-        // (nút reset tham chiếu thêm QuanLyThuoc.css trong FXML)
-        var css2 = Objects.requireNonNull(
+        // 2. QuanLyThuoc.css (Nút reset có thể dùng style từ đây)
+        String css2 = Objects.requireNonNull(
                 getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css"),
                 "Không tìm thấy css/QuanLyThuoc.css"
         ).toExternalForm();
-        scene.getStylesheets().add(css2);
+        root.getStylesheets().add(css2);
     }
 
     private static ImageView imageView(String resource, double fitW, double fitH, boolean preserveRatio) {
@@ -264,23 +265,20 @@ public class TKPhieuNhapHang_GUI extends Application {
         return iv;
     }
 
-    // Giữ tham chiếu control cho controller
+    // Class giữ tham chiếu UI
     private static class ViewRefs {
         Pane root;
-
         ComboBox<String> cbxTimKiem;
         TextField txtTimKiem;
         Button btnReset;
-
         TitledPane tpBoLoc;
         ComboBox<String> cbxChonNhaCC;
         ComboBox<String> chonNhanVien;
         CheckBox cboxTrangThai;
         DatePicker txtNgayNhapMin, txtNgayNhapMax;
-
         TableView<PhieuNhap> tblPhieuNhap;
         TableColumn<PhieuNhap, String> colMaPN, colNgayNhap, colNhaCungCap, colNhanVien, colGhiChu, colTrangThai;
-        TableColumn<PhieuNhap, String> colChiTiet; // để neutral; đổi generic theo model thực tế
+        TableColumn<PhieuNhap, String> colChiTiet;
     }
 
     public static void main(String[] args) {

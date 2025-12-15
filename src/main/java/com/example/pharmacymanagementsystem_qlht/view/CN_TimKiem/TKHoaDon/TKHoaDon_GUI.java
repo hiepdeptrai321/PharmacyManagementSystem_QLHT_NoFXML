@@ -33,13 +33,12 @@ public class TKHoaDon_GUI {
 
         // ===== Header =====
         HBox hBoxTitle = new HBox();
-        hBoxTitle.setPrefSize(1544, 58);
+        hBoxTitle.setPrefSize(328, 58);
 
         Label lbTimKiem = new Label("Tìm kiếm hóa đơn");
         lbTimKiem.setPrefSize(328, 53);
         lbTimKiem.getStyleClass().add("title");
         lbTimKiem.setFont(new Font(36));
-
         ImageView ivBill = new ImageView(new Image(
                 TKHoaDon_GUI.class.getResourceAsStream(
                         "/com/example/pharmacymanagementsystem_qlht/img/bill-8854.png"
@@ -48,9 +47,8 @@ public class TKHoaDon_GUI {
         ivBill.setFitHeight(46);
         ivBill.setFitWidth(48);
 
-        Region spacerTitle = new Region();
-        HBox.setHgrow(spacerTitle, Priority.ALWAYS);
-        hBoxTitle.getChildren().addAll(lbTimKiem, spacerTitle, ivBill);
+
+        hBoxTitle.getChildren().addAll(lbTimKiem, ivBill);
 
         Separator separator = new Separator();
 
@@ -81,6 +79,12 @@ public class TKHoaDon_GUI {
         ));
         ivTime.setFitHeight(34);
         ivTime.setFitWidth(30);
+
+        // --- THÊM 2 DÒNG NÀY ĐỂ KHÓA VỊ TRÍ ---
+        ivTime.setTranslateX(0);
+        ivTime.setTranslateY(0);
+        // --------------------------------------
+
         HBox.setMargin(ivTime, new Insets(16, 4, 0, 0));
 
         Label lbTu = new Label("Từ:");
@@ -130,6 +134,7 @@ public class TKHoaDon_GUI {
         Button btnHuyBo = new Button();
         btnHuyBo.setPrefSize(52, 40);
         btnHuyBo.getStyleClass().add("btntim");
+        btnHuyBo.setId("btnReset");
         btnHuyBo.getStylesheets().add(
                 TKHoaDon_GUI.class.getResource(
                         "/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css"
