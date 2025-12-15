@@ -48,8 +48,8 @@ public class XoaSuaNhomDuocLy_GUI {
 
         // Mô tả
         Label lblMoTa = new Label("Mô tả");
-        lblMoTa.setLayoutX(9.0);
-        lblMoTa.setLayoutY(97.0);
+        lblMoTa.setLayoutX(14.0);
+        lblMoTa.setLayoutY(99.0);
         TextArea txtMota = new TextArea();
         txtMota.setId("txtMota");
         txtMota.setLayoutX(14.0);
@@ -62,7 +62,7 @@ public class XoaSuaNhomDuocLy_GUI {
         btnLuu.setId("nutThem");
         btnLuu.setLayoutX(477.0);
         btnLuu.setLayoutY(202.0);
-        btnLuu.setPrefHeight(25.0);
+        btnLuu.setPrefHeight(30);
         btnLuu.setPrefWidth(91.0);
         Label lblLuu = new Label("Lưu");
         lblLuu.setId("txtTrang_Bold");
@@ -75,7 +75,7 @@ public class XoaSuaNhomDuocLy_GUI {
         btnXoa.setId("nutXoa");
         btnXoa.setLayoutX(14.0);
         btnXoa.setLayoutY(202.0);
-        btnXoa.setPrefHeight(25.0);
+        btnXoa.setPrefHeight(30);
         btnXoa.setPrefWidth(91.0);
         Label lblXoa = new Label("Xóa");
         lblXoa.setId("txtTrang_Bold");

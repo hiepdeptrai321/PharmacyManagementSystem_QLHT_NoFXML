@@ -109,7 +109,7 @@ public class DanhMucNhaCungCap_GUI extends Application {
 
         v.btnLamMoi = new Button();
         v.btnLamMoi.setId("btnReset");
-        v.btnLamMoi.setLayoutX(879);
+        v.btnLamMoi.setLayoutX(869);
         v.btnLamMoi.setLayoutY(47);
         v.btnLamMoi.setPrefSize(36, 41);
         ImageView imgRefresh = new ImageView(new Image(Objects.requireNonNull(
@@ -123,13 +123,13 @@ public class DanhMucNhaCungCap_GUI extends Application {
 
         v.btnThemNCC = new Button("✚Thêm nhà cung cấp");
         v.btnThemNCC.setId("btnthemthuoc");
-        v.btnThemNCC.setLayoutX(1371);
+        v.btnThemNCC.setLayoutX(1360);
         v.btnThemNCC.setLayoutY(47);
         v.btnThemNCC.setPrefSize(174, 40);
 
         Button btnNhap = new Button("📥");
         btnNhap.setId("btnnhapxuat");
-        btnNhap.setLayoutX(1553);
+        btnNhap.setLayoutX(1545);
         btnNhap.setLayoutY(47);
         btnNhap.setPrefSize(45, 30);
         btnNhap.setMinWidth(46);
@@ -140,6 +140,23 @@ public class DanhMucNhaCungCap_GUI extends Application {
         btnXuat.setLayoutY(47);
         btnXuat.setPrefSize(43, 40);
         btnXuat.setMinWidth(27);
+
+
+        ivTitle.setFitHeight(40.0);
+        ivTitle.setFitWidth(40.0);
+        ivTitle.setLayoutX(385.0);
+        ivTitle.setLayoutY(6.0);
+        lbTitle.setPrefSize(390, 36);
+        lbTitle.setStyle("-fx-font-size: 32; -fx-font-weight: bold;");
+        v.btnTim.setPrefSize(69, 40);
+        v.btnLamMoi.setPrefSize(45, 40);
+        v.btnThemNCC.setPrefSize(170, 40);
+        v.btnThemNCC.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        v.btnTim.setStyle(" -fx-background-color: #0c81ff; -fx-text-fill: white;");
+        btnNhap.setPrefSize(45, 40);
+        btnNhap.setStyle(" -fx-background-color: #3264FFCC; -fx-text-fill: white;");
+        btnXuat.setPrefSize(45, 40);
+        btnXuat.setStyle(" -fx-background-color: #3264FFCC; -fx-text-fill: white;");
 
         // ===== Table =====
         v.tblNhaCungCap = new TableView<>();

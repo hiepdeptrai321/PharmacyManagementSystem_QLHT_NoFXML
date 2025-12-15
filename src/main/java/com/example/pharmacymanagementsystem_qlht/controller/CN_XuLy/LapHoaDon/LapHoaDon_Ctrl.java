@@ -1,5 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon;
 
+import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
 import com.example.pharmacymanagementsystem_qlht.connectDB.ConnectDB;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.ThemKhachHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoaDon.ChiTietHoaDon_Ctrl;
@@ -117,10 +118,11 @@ public class LapHoaDon_Ctrl extends Application {
     private static final String GoiY_css = "/com/example/pharmacymanagementsystem_qlht/css/GoiYThuoc.css";
     private boolean GoiY_cssat = false;
     private boolean tamDungGoiY = false;
-    private String maHoaDonTemp = null;
+    public String maPhieuDat = null;
+    public boolean isSuccess = false;
 
-    public void setMaHoaDon(String maHoaDon) {
-        this.maHoaDonTemp = maHoaDon;
+    public void setMaPhieuDat(String maPhieuDat) {
+        this.maPhieuDat = maPhieuDat;
     }
 
     @Override
@@ -142,7 +144,10 @@ public class LapHoaDon_Ctrl extends Application {
         initTienMatEvents();
         chuyenHoaDon();
         btnThanhToan.setOnAction(e -> xuLyThanhToan());
-//        Platform.runLater(() -> System.out.println(maHoaDonTemp));
+        System.out.println("Ma phieu dat" + maPhieuDat);
+        if(maPhieuDat != null) {
+            loadDataFromMaPhieuDat(maPhieuDat);
+        }
     }
 
     public void setDsChiTietHD(List<ChiTietHoaDon> dsChiTietHD) {
@@ -1387,6 +1392,7 @@ public void xuLyThemKH() {
             }
             hien(ERROR, "Lỗi", "Lập hóa đơn thất bại:\n" + ex.getMessage());
         } finally {
+            isSuccess = true;
             if (con != null) {
                 try {
                     con.setAutoCommit(true);
@@ -1606,168 +1612,141 @@ public void xuLyThemKH() {
         document.close();
     }
 
+    public void loadDataFromMaPhieuDat(String maPhieuDat) {
+        if (maPhieuDat == null || maPhieuDat.isBlank()) return;
 
-    public void taoHoaDonTuPhieuDat(PhieuDatHang phieuDat) {
-        if (phieuDat == null) {
-            hien(ERROR, "Lỗi", "Không tìm thấy phiếu đặt hàng!");
-            return;
-        }
-
-        // 1. Kiểm tra trạng thái phiếu đặt
-        if (phieuDat.getTrangthai() != 1) {
-            hien(WARNING, "Cảnh báo", "Phiếu đặt chưa sẵn hàng!");
-            return;
-        }
-
-        // 2. Lấy danh sách chi tiết phiếu đặt
-        ChiTietPhieuDatHang_Dao ctpdDao = new ChiTietPhieuDatHang_Dao();
-        List<ChiTietPhieuDatHang> dsCTPD = ctpdDao.selectBySql(
-                "SELECT * FROM ChiTietPhieuDatHang WHERE MaPDat = ?",
-                phieuDat.getMaPDat()
-        );
-
-        if (dsCTPD == null || dsCTPD.isEmpty()) {
-            hien(WARNING, "Cảnh báo", "Phiếu đặt không có thuốc nào!");
-            return;
-        }
-
-        // 3. Mở giao diện LapHoaDon_GUI
         try {
-            Stage stage = new Stage();
-            LapHoaDon_GUI view = new LapHoaDon_GUI();
-            LapHoaDon_Ctrl ctrl = new LapHoaDon_Ctrl();
+            // 1. Load PhieuDatHang từ DB
+            PhieuDatHang_Dao pdhDao = new PhieuDatHang_Dao();
+            PhieuDatHang pdh = pdhDao.selectById(maPhieuDat);
 
-            view.showWithController(stage, ctrl);
-
-            CuaSoChinh_QuanLy_Ctrl ql_ctrl = new CuaSoChinh_QuanLy_Ctrl();
-
-            // 4. Đợi giao diện load xong rồi mới fill dữ liệu
-            Platform.runLater(() -> {
-                fillDataFromPhieuDat(phieuDat, dsCTPD);
-            });
-
-        } catch (Exception e) {
-            hien(ERROR, "Lỗi", "Không thể mở giao diện lập hóa đơn: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void fillDataFromPhieuDat(PhieuDatHang phieuDat, List<ChiTietPhieuDatHang> dsCTPD) {
-        // 1. Xóa dữ liệu cũ
-        dsChiTietHD.clear();
-        dvtTheoDong.clear();
-        kmTheoDong.clear();
-        baseQtyMap.clear();
-
-        // 2. Lấy các DAO cần thiết
-        Thuoc_SP_TheoLo_Dao loDao = new Thuoc_SP_TheoLo_Dao();
-        DonViTinh_Dao dvtDao = new DonViTinh_Dao();
-
-        // 3. Chuyển đổi ChiTietPhieuDatHang -> ChiTietHoaDon
-        for (ChiTietPhieuDatHang ctpd : dsCTPD) {
-            Thuoc_SanPham sp = ctpd.getThuoc();
-            if (sp == null) continue;
-
-            String maThuoc = sp.getMaThuoc();
-            int soLuongCan = ctpd.getSoLuong();
-
-            // Tìm lô hàng phù hợp (FEFO)
-            List<Thuoc_SP_TheoLo> dsLo = loDao.selectBySql(
-                    "SELECT * FROM Thuoc_SP_TheoLo WHERE MaThuoc = ? AND SoLuongTon > 0 ORDER BY HSD ASC, NSX ASC",
-                    maThuoc
-            );
-
-            if (dsLo.isEmpty()) {
-                hien(WARNING, "Cảnh báo", "Thuốc " + sp.getTenThuoc() + " không còn hàng trong kho!");
-                continue;
+            if (pdh == null) {
+                hien(WARNING, "Không tìm thấy", "Không tìm thấy phiếu đặt hàng: " + maPhieuDat);
+                return;
             }
 
-            // Tạo ChiTietHoaDon
-            ChiTietHoaDon cthd = new ChiTietHoaDon();
-            cthd.setLoHang(dsLo.get(0));
-            cthd.setSoLuong(soLuongCan);
-            cthd.setDonGia(ctpd.getDonGia());
-            cthd.setGiamGia(ctpd.getGiamGia());
+            // 2. Load ChiTietPhieuDatHang từ DB
+            ChiTietPhieuDatHang_Dao ctpdhDao = new ChiTietPhieuDatHang_Dao();
+            List<ChiTietPhieuDatHang> dsCTPDH = ctpdhDao.selectByMaPhieuDat(maPhieuDat);
 
-            // Lấy đơn vị tính
-            DonViTinh dvt = dvtDao.selectById(ctpd.getDvt());
-            if (dvt != null) {
-                cthd.setDvt(dvt);
-            }
+            // 3. Chuyển đổi sang HoaDon và ChiTietHoaDon
+            HoaDon hd = chuyenPhieuDatThanhHoaDon(pdh);
+            List<ChiTietHoaDon> dsCTHD = chuyenCTPhieuDatThanhCTHoaDon(dsCTPDH);
 
-            // Lưu đơn vị vào map
-            dvtTheoDong.put(cthd, new ChiTietDonViTinh_Dao().selectById(ctpd.getThuoc().getMaThuoc(), ctpd.getDvt()));
+            // 4. Load thông tin lên các field
+            if (hd != null) {
+                // Load thông tin khách hàng
+                if (hd.getMaKH() != null) {
+                    if (txtTenKH != null) txtTenKH.setText(hd.getMaKH().getTenKH());
+                    if (txtSDT != null) txtSDT.setText(hd.getMaKH().getSdt());
+                }
 
-            // Tìm ChiTietDonViTinh tương ứng
-            if (sp.getDsCTDVT() != null) {
-                for (ChiTietDonViTinh ctDvt : sp.getDsCTDVT()) {
-                    if (ctDvt.getDvt().getMaDVT().equals(ctpd.getDvt())) {
-                        baseQtyMap.put(cthd, cthd.getSoLuong());
-                        break;
-                    }
+                // Load ngày lập
+                if (dpNgayLap != null && hd.getNgayLap() != null) {
+                    dpNgayLap.setValue(hd.getNgayLap().toLocalDateTime().toLocalDate());
                 }
             }
 
-            // Áp dụng khuyến mãi cho dòng
-            apDungKMChoRow(cthd);
+            // 5. Load chi tiết hóa đơn vào bảng
+            if (dsCTHD != null && !dsCTHD.isEmpty()) {
+                dsChiTietHD.clear();
+                dvtTheoDong.clear();
+                kmTheoDong.clear();
 
-            dsChiTietHD.add(cthd);
-        }
+                for (ChiTietHoaDon cthd : dsCTHD) {
+                    // Gán DVT cho mỗi dòng
+                    if (cthd.getDvt() != null) {
+                        ChiTietDonViTinh dvt = new ChiTietDonViTinh();
+                        dvt.setDvt(cthd.getDvt());
+                        dvt.setGiaBan(cthd.getDonGia());
+                        dvtTheoDong.put(cthd, dvt);
+                    }
 
-        // 4. Điền thông tin khách hàng
-        if (phieuDat.getKhachHang() != null) {
-            if (txtTenKH != null) {
-                txtTenKH.setText(phieuDat.getKhachHang().getTenKH());
-            }
-            if (txtSDT != null) {
-                txtSDT.setText(phieuDat.getKhachHang().getSdt());
-            }
-        }
+                    // Áp dụng khuyến mãi cho dòng
+                    apDungKMChoRow(cthd);
 
-        // 5. Cập nhật ngày lập
-        if (dpNgayLap != null) {
-            dpNgayLap.setValue(LocalDate.now());
-        }
+                    dsChiTietHD.add(cthd);
+                }
 
-        // 6. Set loại hóa đơn
-        if (rbOTC != null) {
-            rbOTC.setSelected(false);
-        }
+                // Refresh bảng
+                if (tblChiTietHD != null) {
+                    tblChiTietHD.refresh();
+                }
 
-        // 7. Tính tổng tiền
-        tinhTongTien();
-
-        // 8. Tự động điền số tiền khách đưa
-        if (txtSoTienKhachDua != null && lblThanhTien != null) {
-            long tongTien = parseVND(lblThanhTien.getText());
-            long soTienCanTra = tongTien - (long)phieuDat.getSoTienCoc();
-
-            if (soTienCanTra < 0) {
-                soTienCanTra = 0;
+                // 6. Tính tổng tiền
+                tinhTongTien();
             }
 
-            txtSoTienKhachDua.setText(String.valueOf(soTienCanTra));
-        }
+            hien(INFORMATION, "Thành công", "Đã load dữ liệu từ phiếu đặt hàng: " + maPhieuDat);
 
-        // 9. Set phương thức thanh toán
-        if (cbPhuongThucTT != null) {
-            cbPhuongThucTT.setValue("Tiền mặt");
+        } catch (Exception e) {
+            e.printStackTrace();
+            hien(ERROR, "Lỗi", "Không thể load dữ liệu từ phiếu đặt hàng:\n" + e.getMessage());
         }
-
-        // 10. Refresh bảng
-        if (tblChiTietHD != null) {
-            tblChiTietHD.refresh();
-        }
-
-        // 11. Thông báo thành công
-        hien(INFORMATION, "Thành công",
-                "✅ Đã tải dữ liệu từ phiếu đặt " + phieuDat.getMaPDat() + " lên giao diện!\n\n" +
-                        "📦 Số lượng sản phẩm: " + dsChiTietHD.size() + "\n" +
-                        "💰 Tiền cọc đã trả: " + formatVND(phieuDat.getSoTienCoc()) + "\n\n" +
-                        "Vui lòng kiểm tra và nhấn 'Thanh toán' để hoàn tất.");
     }
 
 
+    public HoaDon chuyenPhieuDatThanhHoaDon(PhieuDatHang pdh) {
+        if (pdh == null) return null;
+
+        HoaDon hd = new HoaDon();
+        // Giữ lại thông tin khách hàng và nhân viên
+        hd.setMaKH(pdh.getKhachHang());
+        hd.setMaNV(pdh.getNhanVien());
+
+        // Ngày lập = hiện tại (thời điểm chuyển thành hóa đơn)
+        hd.setNgayLap(new Timestamp(System.currentTimeMillis()));
+
+        // Trạng thái = true (đã thanh toán)
+        hd.setTrangThai(true);
+
+        // Loại hóa đơn và mã hóa đơn để trống (sẽ generate sau)
+        hd.setMaHD(null);
+        hd.setLoaiHoaDon(null);
+        hd.setMaDonThuoc(null);
+
+        return hd;
+    }
+
+    public List<ChiTietHoaDon> chuyenCTPhieuDatThanhCTHoaDon(List<ChiTietPhieuDatHang> dsCTPDH) {
+        if (dsCTPDH == null || dsCTPDH.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<ChiTietHoaDon> dsCTHD = new ArrayList<>();
+
+        for (ChiTietPhieuDatHang ctpdh : dsCTPDH) {
+            if (ctpdh == null || ctpdh.getThuoc() == null) continue;
+
+            ChiTietHoaDon cthd = new ChiTietHoaDon();
+
+            // Chuyển Thuoc_SanPham sang Thuoc_SP_TheoLo
+            Thuoc_SP_TheoLo loHang = new Thuoc_SP_TheoLo();
+            loHang.setThuoc(ctpdh.getThuoc());
+            cthd.setLoHang(loHang);
+
+            // Map các field tương ứng
+            cthd.setSoLuong(ctpdh.getSoLuong());
+            cthd.setDonGia(ctpdh.getDonGia());
+            cthd.setGiamGia(ctpdh.getGiamGia());
+
+            // Chuyển đơn vị từ String sang DonViTinh
+            if (ctpdh.getDvt() != null && !ctpdh.getDvt().isEmpty()) {
+                DonViTinh dvt = new DonViTinh();
+                dvt.setMaDVT(ctpdh.getDvt());
+                // Có thể dùng DAO để load đầy đủ thông tin DVT nếu cần
+                // dvt = new DonViTinh_Dao().selectById(ctpdh.getDvt());
+                cthd.setDvt(dvt);
+            }
+
+            // HoaDon sẽ được set sau khi tạo hóa đơn mới
+            cthd.setHoaDon(null);
+
+            dsCTHD.add(cthd);
+        }
+
+        return dsCTHD;
+    }
 
 
 

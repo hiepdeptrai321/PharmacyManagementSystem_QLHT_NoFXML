@@ -75,7 +75,7 @@ public class DanhMucKhachHang_GUI {
 
         Button btnLamMoi = new Button();
         btnLamMoi.setId("btnReset");
-        btnLamMoi.setLayoutX(881.0);
+        btnLamMoi.setLayoutX(871.0);
         btnLamMoi.setLayoutY(48.0);
         btnLamMoi.setMinHeight(39.0);
         btnLamMoi.setMinWidth(43.0);
@@ -90,6 +90,18 @@ public class DanhMucKhachHang_GUI {
         imgRefresh.setPickOnBounds(true);
         imgRefresh.setPreserveRatio(true);
         btnLamMoi.setGraphic(imgRefresh);
+
+        imgTitle.setFitHeight(40.0);
+        imgTitle.setFitWidth(40.0);
+        imgTitle.setLayoutX(345.0);
+        imgTitle.setLayoutY(6.0);
+        lbTitle.setPrefSize(365, 36);
+        lbTitle.setStyle("-fx-font-size: 32; -fx-font-weight: bold;");
+        btnTim.setPrefSize(69, 40);
+        btnLamMoi.setPrefSize(45, 40);
+        btnthemKH.setPrefSize(157, 40);
+        btnthemKH.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        btnTim.setStyle(" -fx-background-color: #0c81ff; -fx-text-fill: white;");
 
         // --- Bảng ---
         TableView<KhachHang> tbKhachHang = new TableView<>();

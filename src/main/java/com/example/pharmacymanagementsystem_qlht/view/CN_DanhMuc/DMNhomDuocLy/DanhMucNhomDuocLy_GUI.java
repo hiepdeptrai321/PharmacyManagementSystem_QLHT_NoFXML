@@ -91,6 +91,19 @@ public class DanhMucNhomDuocLy_GUI {
         imgRefresh.setPreserveRatio(true);
         btnLamMoi.setGraphic(imgRefresh);
 
+
+        imgTitle.setFitHeight(40.0);
+        imgTitle.setFitWidth(40.0);
+        imgTitle.setLayoutX(335.0);
+        imgTitle.setLayoutY(6.0);
+        lbTitle.setPrefSize(365, 36);
+        lbTitle.setStyle("-fx-font-size: 32; -fx-font-weight: bold;");
+        btnTim.setPrefSize(69, 40);
+        btnLamMoi.setPrefSize(45, 40);
+        btnThem.setPrefSize(180, 40);
+        btnThem.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
+        btnTim.setStyle(" -fx-background-color: #0c81ff; -fx-text-fill: white;");
+
         // --- Bảng ---
         TableView<NhomDuocLy> tbNhomDuocLy = new TableView<>();
         tbNhomDuocLy.setId("tablethuoc");

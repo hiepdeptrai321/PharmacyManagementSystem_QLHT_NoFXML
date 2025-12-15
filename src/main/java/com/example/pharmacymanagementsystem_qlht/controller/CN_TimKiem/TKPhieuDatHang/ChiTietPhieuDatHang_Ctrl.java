@@ -10,6 +10,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.DonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuNhap_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.*;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -44,7 +45,7 @@ import static javafx.scene.control.Alert.AlertType.WARNING;
 
 public class ChiTietPhieuDatHang_Ctrl  {
     @FXML
-    private PhieuDatHang phieuDatHang;
+    public static PhieuDatHang phieuDatHang;
 
     @FXML
     public TableColumn<ChiTietPhieuDatHang, Number> colSTT;
@@ -132,15 +133,20 @@ public class ChiTietPhieuDatHang_Ctrl  {
         }
         btnLapHoaDon.setOnAction(e -> onLapHoaDon());
 
+        hienThiThongTin();
+
+        System.out.println(phieuDatHang.getMaPDat());
+
         Platform.runLater(()->{
             Stage dialog = (Stage) btnDong.getScene().getWindow();
             dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
         });
+
+
     }
 
     public void setPhieuDatHang(PhieuDatHang pDat) {
         this.phieuDatHang = pDat;
-        hienThiThongTin();
     }
 
     private void hienThiThongTin() {
@@ -269,7 +275,29 @@ public class ChiTietPhieuDatHang_Ctrl  {
     }
 
     public void onLapHoaDon(){
-        CuaSoChinh_QuanLy_Ctrl.instance.openLapHoaDonWithMa("test");
+
+        // Kiểm tra trạng thái phiếu đặt
+        if (phieuDatHang == null) {
+            hien(ERROR, "Lỗi", "Không tìm thấy thông tin phiếu đặt hàng!");
+            return;
+        }
+
+        // Trạng thái 0: Chưa có hàng - không cho phép
+        if (phieuDatHang.getTrangthai() == 0) {
+            hien(WARNING, "Không thể lập hóa đơn",
+                    "Phiếu đặt hàng này chưa có hàng.");
+            return;
+        }
+
+        // Trạng thái 2: Đã hoàn thành - không cho phép
+        if (phieuDatHang.getTrangthai() == 2) {
+            hien(WARNING, "Không thể lập hóa đơn",
+                    "Phiếu đặt hàng này đã được hoàn tất.");
+            return;
+        }
+
+        CuaSoChinh_QuanLy_Ctrl.instance.openLapHoaDonWithMa(phieuDatHang.getMaPDat());
+        btnLapHoaDon.getScene().getWindow().hide();
     }
 
 }

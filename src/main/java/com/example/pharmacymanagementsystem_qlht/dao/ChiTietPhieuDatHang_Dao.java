@@ -13,6 +13,7 @@ public class ChiTietPhieuDatHang_Dao implements DaoInterface<ChiTietPhieuDatHang
     private final String DELETE_BY_ID_SQL = "DELETE FROM ChiTietPhieuDatHang WHERE MaPDat=? AND MaThuoc=?";
     private final String SELECT_BY_ID_SQL = "SELECT * FROM ChiTietPhieuDatHang WHERE MaPDat=? AND MaThuoc=?";
     private final String SELECT_ALL_SQL = "SELECT * FROM ChiTietPhieuDatHang";
+    private final String SELECT_BY_MAPDAT_SQL = "SELECT * FROM ChiTietPhieuDatHang WHERE MaPDat=?";
 
     @Override
     public boolean insert(ChiTietPhieuDatHang e) {
@@ -61,5 +62,9 @@ public class ChiTietPhieuDatHang_Dao implements DaoInterface<ChiTietPhieuDatHang
     @Override
     public List<ChiTietPhieuDatHang> selectAll() {
         return selectBySql(SELECT_ALL_SQL);
+    }
+
+    public List<ChiTietPhieuDatHang> selectByMaPhieuDat(String maPD) {
+        return selectBySql(SELECT_BY_MAPDAT_SQL, maPD);
     }
 }
