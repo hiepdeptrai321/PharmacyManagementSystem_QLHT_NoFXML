@@ -1,0 +1,247 @@
+package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuocTrongKho;
+
+import com.example.pharmacymanagementsystem_qlht.TienIch.LoadingOverlay;
+import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
+import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
+import com.example.pharmacymanagementsystem_qlht.model.ThuocTonKho;
+import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.stage.Stage;
+
+import java.awt.*;
+import javafx.util.Duration;
+import java.util.List;
+import javafx.geometry.Insets;
+import javafx.scene.paint.Color;
+
+public class TimKiemThuocTrongKho_Ctrl {
+    // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN
+    public TextField tfTimThuoc;
+    public Button btnTimThuoc;
+    public TableView<Object> tbThuoc;
+    public TableColumn<Object, String> colSTT;
+    public TableColumn<Object, String> colMaThuoc;
+    public TableColumn<Object, String> colTenThuoc;
+    public TableColumn<Object, String> colDVT;
+    public TableColumn<Object, Integer> colSLTon;
+    public TableColumn<Object, String> colMaLo;
+    public TableColumn<Object, String> colChiTiet;
+    public Button btnLamMoi;
+    public ToggleButton hienThiTheoLo;
+    public TableColumn<Object, Integer> colSoLoTon;
+    private Timeline colorTimeline;
+    Color current;
+
+    // 2. KHỞI TẠO (INITIALIZE)
+    public void start(Stage stage) throws Exception {
+        new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKThuocTrongKho.TKThuocTrongKho_GUI().showWithController(stage, this);
+    }
+
+    public void initialize() {
+        tfTimThuoc.setOnAction(e-> timThuoc());
+        btnLamMoi.setOnAction(e-> LamMoi());
+        Platform.runLater(()->{
+            loadTable();
+        });
+        btnTimThuoc.setOnAction(e-> timThuoc());
+        hienThiTheoLo.setOnAction(e-> onToggleHienThiTheoLo());
+        hienThiTheoLo.setSelected(true);
+
+    }
+    // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
+
+    public void loadTable() {
+        boolean isTheoLo = hienThiTheoLo != null && hienThiTheoLo.isSelected();
+        Thuoc_SP_TheoLo_Dao dao = new Thuoc_SP_TheoLo_Dao();
+
+        if (isTheoLo) {
+            List<Thuoc_SP_TheoLo> list = dao.selectAll();
+            ObservableList<Object> data = FXCollections.observableArrayList(list);
+
+            colSTT.setCellValueFactory(cellData ->
+                    new SimpleStringProperty(String.valueOf(tbThuoc.getItems().indexOf(cellData.getValue()) + 1))
+            );
+            colMaThuoc.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                    return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getMaThuoc());
+                }
+                return new SimpleStringProperty("");
+            });
+            colTenThuoc.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                    return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getTenThuoc());
+                }
+                return new SimpleStringProperty("");
+            });
+            colDVT.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                    return new SimpleStringProperty(new Thuoc_SanPham_Dao().getTenDVTByMaThuoc(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getMaThuoc()));
+                }
+                return new SimpleStringProperty("");
+            });
+            colMaLo.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                    return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getMaLH());
+                }
+                return new SimpleStringProperty("");
+            });
+            colSLTon.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                    return new javafx.beans.property.SimpleIntegerProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getSoLuongTon()).asObject();
+                }
+                return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
+            });
+
+            tbThuoc.setItems(data);
+        } else {
+            List<ThuocTonKho> list = dao.getThuocTonKho();
+            ObservableList<Object> data = FXCollections.observableArrayList(list);
+
+            colSTT.setCellValueFactory(cellData ->
+                    new SimpleStringProperty(String.valueOf(tbThuoc.getItems().indexOf(cellData.getValue()) + 1))
+            );
+            colMaThuoc.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof ThuocTonKho) {
+                    return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getMaThuoc());
+                }
+                return new SimpleStringProperty("");
+            });
+            colTenThuoc.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof ThuocTonKho) {
+                    return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getTenThuoc());
+                }
+                return new SimpleStringProperty("");
+            });
+            colDVT.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof ThuocTonKho) {
+                    return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getDonViTinh());
+                }
+                return new SimpleStringProperty("");
+            });
+            colSoLoTon.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof ThuocTonKho) {
+                    return new javafx.beans.property.SimpleIntegerProperty(((ThuocTonKho) cellData.getValue()).getSoLoTon()).asObject();
+                }
+                return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
+            });
+            colSLTon.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof ThuocTonKho) {
+                    return new javafx.beans.property.SimpleIntegerProperty(((ThuocTonKho) cellData.getValue()).getTongSoLuongTon()).asObject();
+                }
+                return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
+            });
+
+            tbThuoc.setItems(data);
+        }
+    }
+
+
+    // 4. XỬ LÝ NGHIỆP VỤ
+    public void timThuoc() {
+        String keyword = tfTimThuoc.getText().trim().toLowerCase();
+        Stage stage = (Stage) btnTimThuoc.getScene().getWindow();
+        Thuoc_SP_TheoLo_Dao dao = new Thuoc_SP_TheoLo_Dao();
+        List<Thuoc_SP_TheoLo> list = keyword.isEmpty()
+                ? dao.selectAll()
+                : dao.selectByTuKhoa(keyword);
+
+        ObservableList<Object> data = FXCollections.observableArrayList(list);
+        Platform.runLater(() -> tbThuoc.setItems(data));
+    }
+
+    private void LamMoi() {
+        tfTimThuoc.clear();
+        loadTable();
+    }
+
+    public void onToggleHienThiTheoLo() {
+        if (hienThiTheoLo == null) return;
+
+        boolean selected = hienThiTheoLo.isSelected();
+        Stage stage = (Stage) btnTimThuoc.getScene().getWindow();
+
+        // Animation chạy ngay trên FX thread
+        updateToggleAppearance(selected);
+
+        if (selected) {
+            colMaLo.setVisible(true);
+            colSoLoTon.setVisible(false);
+            tbThuoc.getColumns().setAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colMaLo, colSLTon);
+        } else {
+            colMaLo.setVisible(false);
+            colSoLoTon.setVisible(true);
+            tbThuoc.getColumns().setAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colSoLoTon, colSLTon);
+        }
+        loadTable();
+    }
+
+    private void updateToggleAppearance(boolean selected) {
+
+        hienThiTheoLo.setText(selected ? "Theo lô hàng" : "Theo sản phẩm");
+        hienThiTheoLo.setTextFill(Color.WHITE);
+
+        Color green  = Color.web("#36983b");
+        Color orange = Color.web("#ec6a02");
+
+        Color target = selected ? green : orange;
+        hienThiTheoLo.setStyle("");
+        animateBackground(hienThiTheoLo, current, target);
+        current = target;
+    }
+
+
+    private void animateBackground(Control btn, Color from, Color to) {
+        if (colorTimeline != null) {
+            colorTimeline.stop();
+        }
+
+        // Lấy màu hiện tại của button nếu from đang null
+        if (from == null) {
+            Color currentColor = null;
+
+            if (btn.getBackground() != null
+                    && !btn.getBackground().getFills().isEmpty()
+                    && btn.getBackground().getFills().get(0).getFill() instanceof Color) {
+                currentColor = (Color) btn.getBackground().getFills().get(0).getFill();
+            }
+
+            // Nếu vẫn chưa có màu thì cho from = to để tránh nhảy màu đột ngột
+            from = currentColor != null ? currentColor : to;
+        }
+
+        ObjectProperty<Color> color = new SimpleObjectProperty<>(from);
+
+        color.addListener((obs, oldColor, newColor) -> {
+            btn.setBackground(new Background(
+                    new BackgroundFill(
+                            newColor,
+                            new CornerRadii(25),
+                            Insets.EMPTY
+                    )
+            ));
+        });
+
+        colorTimeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(color, from)),
+                new KeyFrame(Duration.millis(200), new KeyValue(color, to, Interpolator.EASE_BOTH))
+        );
+        colorTimeline.play();
+    }
+}

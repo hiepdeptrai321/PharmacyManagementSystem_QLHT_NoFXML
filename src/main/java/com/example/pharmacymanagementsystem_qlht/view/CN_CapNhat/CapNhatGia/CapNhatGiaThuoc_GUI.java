@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -84,6 +85,14 @@ public class CapNhatGiaThuoc_GUI {
         imgRefresh.setPickOnBounds(true);
         btnReset.setGraphic(imgRefresh);
 
+        StackPane rootTablePane = new StackPane();
+        rootTablePane.setId("rootTablePane");
+
+        // position and size like the old table
+        rootTablePane.setLayoutX(12);
+        rootTablePane.setLayoutY(106);
+        rootTablePane.setPrefSize(1622, 781);
+
         TableView<Object> tbThuoc = new TableView<>();
         tbThuoc.setId("tablethuoc");
         tbThuoc.setLayoutX(12);
@@ -120,8 +129,9 @@ public class CapNhatGiaThuoc_GUI {
         colChiTiet.setStyle("-fx-alignment: CENTER;");
 
         tbThuoc.getColumns().addAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colGiaNhap, colGiaBan, colChiTiet);
+        rootTablePane.getChildren().add(tbThuoc);
 
-        root.getChildren().addAll(lblPaneTitle, tfTimThuoc, btnTimThuoc, btnReset, tbThuoc);
+        root.getChildren().addAll(lblPaneTitle, tfTimThuoc, btnTimThuoc, btnReset, rootTablePane);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css")).toExternalForm());
@@ -138,6 +148,7 @@ public class CapNhatGiaThuoc_GUI {
         ctrl.colGiaNhap = (TableColumn<Thuoc_SanPham, String>) (TableColumn<?, ?>) colGiaNhap;
         ctrl.colGiaBan = (TableColumn<Thuoc_SanPham, String>) (TableColumn<?, ?>) colGiaBan;
         ctrl.colChiTiet = (TableColumn<Thuoc_SanPham, String>) (TableColumn<?, ?>) colChiTiet;
+        ctrl.rootTablePane = rootTablePane;
 
         // Now initialize controller logic which will set listeners and load data
         ctrl.initialize();

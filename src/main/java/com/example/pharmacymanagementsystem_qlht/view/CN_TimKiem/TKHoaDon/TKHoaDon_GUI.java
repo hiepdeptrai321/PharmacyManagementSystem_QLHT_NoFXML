@@ -77,7 +77,7 @@ public class TKHoaDon_GUI {
                         "/com/example/pharmacymanagementsystem_qlht/img/time-2623.png"
                 )
         ));
-        ivTime.setFitHeight(34);
+        ivTime.setFitHeight(30);
         ivTime.setFitWidth(30);
 
         // --- THÊM 2 DÒNG NÀY ĐỂ KHÓA VỊ TRÍ ---
@@ -88,7 +88,7 @@ public class TKHoaDon_GUI {
         HBox.setMargin(ivTime, new Insets(16, 4, 0, 0));
 
         Label lbTu = new Label("Từ:");
-        lbTu.setPrefSize(32, 37);
+        lbTu.setPrefSize(32, 25);
         lbTu.getStyleClass().add("tftim");
         lbTu.setFont(new Font(14));
         HBox.setMargin(lbTu, new Insets(10, 0, 0, 0));
@@ -96,18 +96,18 @@ public class TKHoaDon_GUI {
         DatePicker dpTuNgay = new DatePicker();
         dpTuNgay.setPrefSize(125, 40);
         dpTuNgay.getStyleClass().add("tftim");
-        HBox.setMargin(dpTuNgay, new Insets(10, 10, 0, 0));
+        HBox.setMargin(dpTuNgay, new Insets(10, 0, 0, 0));
 
         Label lbDen = new Label("Đến:");
-        lbDen.setPrefSize(38, 37);
+        lbDen.setPrefSize(38, 25);
         lbDen.getStyleClass().add("tftim");
         lbDen.setFont(new Font(14));
-        HBox.setMargin(lbDen, new Insets(10, 0, 0, 0));
+        HBox.setMargin(lbDen, new Insets(10, 0, 0, 10));
 
         DatePicker dpDenNgay = new DatePicker();
         dpDenNgay.setPrefSize(125, 40);
         dpDenNgay.getStyleClass().add("tftim");
-        HBox.setMargin(dpDenNgay, new Insets(10, 10, 0, 0));
+        HBox.setMargin(dpDenNgay, new Insets(10, 0, 0, 0));
 
         Region region2 = new Region();
         region2.setPrefSize(25, 63);
@@ -118,7 +118,7 @@ public class TKHoaDon_GUI {
         btnTimKiem.setDefaultButton(true);
         btnTimKiem.setContentDisplay(ContentDisplay.RIGHT);
         btnTimKiem.getStyleClass().add("btntim");
-        HBox.setMargin(btnTimKiem, new Insets(10, 0, 0, 8));
+        HBox.setMargin(btnTimKiem, new Insets(10, 0, 0, 5));
 
         ImageView ivSearch = new ImageView(new Image(
                 TKHoaDon_GUI.class.getResourceAsStream(
@@ -140,7 +140,7 @@ public class TKHoaDon_GUI {
                         "/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css"
                 ).toExternalForm()
         );
-        HBox.setMargin(btnHuyBo, new Insets(10, 0, 0, 8));
+        HBox.setMargin(btnHuyBo, new Insets(10, 0, 0, 5));
 
         ImageView ivRefresh = new ImageView(new Image(
                 TKHoaDon_GUI.class.getResourceAsStream(

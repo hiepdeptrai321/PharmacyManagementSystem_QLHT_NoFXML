@@ -1,22 +1,21 @@
-package com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatSoLuong;
+package com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKThuocTrongKho;
 
-import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
-import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_CapNhat.CapNhatSoLuong.CapNhatSoLuongThuoc_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuocTrongKho.TimKiemThuocTrongKho_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Objects;
 
-public class CapNhatSoLuongThuoc_GUI {
+public class TKThuocTrongKho_GUI {
 
-    public void showWithController(Stage stage, CapNhatSoLuongThuoc_Ctrl ctrl) {
+    public void showWithController(Stage stage, TimKiemThuocTrongKho_Ctrl ctrl) {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
         root.setStyle("-fx-font-size: 14;");
@@ -28,6 +27,12 @@ public class CapNhatSoLuongThuoc_GUI {
         tfTimThuoc.setPrefHeight(40);
         tfTimThuoc.setPrefWidth(767);
         tfTimThuoc.setPromptText("Tìm theo mã, tên thuốc");
+
+        ToggleButton hienThiTheoLo = new ToggleButton("Theo lô hàng");
+        hienThiTheoLo.setPrefSize(220, 40);
+        hienThiTheoLo.setLayoutX(1415);
+        hienThiTheoLo.setLayoutY(61);
+        hienThiTheoLo.setStyle(" -fx-background-color: #36983b; -fx-background-radius: 15px; -fx-border-radius: 15px; -fx-text-fill: white;");
 
         Button btnTimThuoc = new Button("🔍 Tìm");
         btnTimThuoc.setId("btntim");
@@ -45,7 +50,7 @@ public class CapNhatSoLuongThuoc_GUI {
         lblPaneTitle.setId("lblpaneTitle");
         lblPaneTitle.setPrefSize(1646, 40);
 
-        Label lbTitle = new Label("Cập nhật số lượng thuốc");
+        Label lbTitle = new Label("Tìm kiếm thuốc trong kho");
         lbTitle.setId("lbtitle");
         lbTitle.setLayoutX(12);
         lbTitle.setLayoutY(2);
@@ -61,7 +66,7 @@ public class CapNhatSoLuongThuoc_GUI {
 
         imgSyringe.setFitHeight(50);
         imgSyringe.setFitWidth(50);
-        imgSyringe.setLayoutX(445);
+        imgSyringe.setLayoutX(475);
         imgSyringe.setLayoutY(4);
         imgSyringe.setPickOnBounds(true);
         imgSyringe.setPreserveRatio(true);
@@ -73,12 +78,7 @@ public class CapNhatSoLuongThuoc_GUI {
         tbThuoc.setLayoutX(12);
         tbThuoc.setLayoutY(107);
         tbThuoc.setPrefSize(1621, 780);
-        StackPane rootTablePane = new StackPane();
-        rootTablePane.setId("rootTablePane");
-        rootTablePane.setLayoutX(12);
-        rootTablePane.setLayoutY(107);
-        rootTablePane.setPrefSize(1621, 780);
-        rootTablePane.getChildren().add(tbThuoc);
+        tbThuoc.setFixedCellSize(35);
 
         TableColumn<Object, String> colSTT = new TableColumn<>("STT");
         colSTT.setPrefWidth(48.83333206176758);
@@ -90,6 +90,7 @@ public class CapNhatSoLuongThuoc_GUI {
 
         TableColumn<Object, String> colTenThuoc = new TableColumn<>("Tên thuốc");
         colTenThuoc.setPrefWidth(473);
+        colTenThuoc.setStyle("-fx-alignment: CENTER-LEFT;");
 
         TableColumn<Object, String> colDVT = new TableColumn<>("Đơn vị tính (cơ bản)");
         colDVT.setPrefWidth(241);
@@ -100,14 +101,16 @@ public class CapNhatSoLuongThuoc_GUI {
         colMaLo.setStyle("-fx-alignment: CENTER;");
 
         TableColumn<Object, String> colSLTon = new TableColumn<>("Số lượng tồn");
-        colSLTon.setPrefWidth(213);
+        colSLTon.setPrefWidth(313);
         colSLTon.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<Object, String> colChiTiet = new TableColumn<>("");
-        colChiTiet.setPrefWidth(101);
-        colChiTiet.setStyle("-fx-alignment: CENTER;");
+        TableColumn<Object, Integer> colSoLoTon = new TableColumn<>("Số lô tồn");
+        colSoLoTon.setPrefWidth(252);
+        colSoLoTon.setStyle("-fx-alignment: CENTER;");
+        colSoLoTon.setVisible(false);
 
-        tbThuoc.getColumns().addAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colMaLo, colSLTon, colChiTiet);
+
+        tbThuoc.getColumns().addAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colMaLo, colSoLoTon,colSLTon);
 
         Button btnLamMoi = new Button();
         btnLamMoi.setId("btnLamMoi");
@@ -124,7 +127,7 @@ public class CapNhatSoLuongThuoc_GUI {
         imgRefresh.setPickOnBounds(true);
         btnLamMoi.setGraphic(imgRefresh);
 
-        root.getChildren().addAll(tfTimThuoc, btnTimThuoc, lblPaneTitle, rootTablePane, btnLamMoi);
+        root.getChildren().addAll(tfTimThuoc, hienThiTheoLo,btnTimThuoc, lblPaneTitle, tbThuoc, btnLamMoi);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css")).toExternalForm());
@@ -133,15 +136,15 @@ public class CapNhatSoLuongThuoc_GUI {
         ctrl.tfTimThuoc = tfTimThuoc;
         ctrl.btnTimThuoc = btnTimThuoc;
         ctrl.btnLamMoi = btnLamMoi;
-        ctrl.tbThuoc = (TableView<Thuoc_SP_TheoLo>) (TableView<?>) tbThuoc;
-        ctrl.colSTT = (TableColumn<Thuoc_SP_TheoLo, String>) (TableColumn<?, ?>) colSTT;
-        ctrl.colMaThuoc = (TableColumn<Thuoc_SP_TheoLo, String>) (TableColumn<?, ?>) colMaThuoc;
-        ctrl.colTenThuoc = (TableColumn<Thuoc_SP_TheoLo, String>) (TableColumn<?, ?>) colTenThuoc;
-        ctrl.colDVT = (TableColumn<Thuoc_SP_TheoLo, String>) (TableColumn<?, ?>) colDVT;
-        ctrl.colMaLo = (TableColumn<Thuoc_SP_TheoLo, String>) (TableColumn<?, ?>) colMaLo;
-        ctrl.colSLTon = (TableColumn<Thuoc_SP_TheoLo, Integer>) (TableColumn<?, ?>) colSLTon;
-        ctrl.colChiTiet = (TableColumn<Thuoc_SP_TheoLo, String>) (TableColumn<?, ?>) colChiTiet;
-        ctrl.rootTablePane = rootTablePane;
+        ctrl.tbThuoc = (TableView<Object>) (TableView<?>) tbThuoc;
+        ctrl.colSTT = (TableColumn<Object, String>) (TableColumn<?, ?>) colSTT;
+        ctrl.colMaThuoc = (TableColumn<Object, String>) (TableColumn<?, ?>) colMaThuoc;
+        ctrl.colTenThuoc = (TableColumn<Object, String>) (TableColumn<?, ?>) colTenThuoc;
+        ctrl.colDVT = (TableColumn<Object, String>) (TableColumn<?, ?>) colDVT;
+        ctrl.colMaLo = (TableColumn<Object, String>) (TableColumn<?, ?>) colMaLo;
+        ctrl.colSLTon = (TableColumn<Object, Integer>) (TableColumn<?, ?>) colSLTon;
+        ctrl.hienThiTheoLo = hienThiTheoLo;
+        ctrl.colSoLoTon = (TableColumn<Object, Integer>) (TableColumn<?, ?>) colSoLoTon;
 
         // Initialize controller logic
         ctrl.initialize();

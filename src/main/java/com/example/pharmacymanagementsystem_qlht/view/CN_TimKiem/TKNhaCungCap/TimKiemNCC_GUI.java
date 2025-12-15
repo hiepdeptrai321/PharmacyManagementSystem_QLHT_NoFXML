@@ -35,7 +35,7 @@ public class TimKiemNCC_GUI {
         hbTitle.setPrefHeight(62.0);
         hbTitle.setPrefWidth(1170.0);
 
-        Label lbTitle = new Label("Tìm Kiếm Nhà Cung Cấp");
+        Label lbTitle = new Label("Tìm kiếm nhà cung cấp");
         lbTitle.setId("lbTimKiem");
         lbTitle.getStyleClass().add("title");
         lbTitle.setPrefHeight(53.0);
@@ -169,7 +169,6 @@ public class TimKiemNCC_GUI {
 
         if (cssUrl != null) {
             mainPane.getStylesheets().add(cssUrl.toExternalForm());
-            System.out.println("Đã gắn CSS vào Root Pane (TimKiemNCC) thành công!");
         } else {
             // Fallback: Thử tìm đường dẫn ngắn
             var shortUrl = getClass().getResource("/css/TimKiemNhanVien.css");

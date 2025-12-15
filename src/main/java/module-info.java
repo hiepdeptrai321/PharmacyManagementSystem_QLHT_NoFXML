@@ -50,7 +50,6 @@ module com.example.pharmacymanagementsystem_qlht {
     requires io;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoatDong to javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKeHang to javafx.fxml;
-    opens com.example.pharmacymanagementsystem_qlht to javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc to javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang to javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang to javafx.fxml;
@@ -72,6 +71,8 @@ module com.example.pharmacymanagementsystem_qlht {
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhaCungCap;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang to javafx.graphics, javafx.fxml;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDoiHang to javafx.graphics, javafx.fxml;
+    opens com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuocTrongKho to javafx.graphics, javafx.fxml;
+    exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuocTrongKho to javafx.graphics, javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang to javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDoiHang to javafx.fxml;
     exports com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang to javafx.graphics, javafx.fxml;
@@ -87,5 +88,4 @@ module com.example.pharmacymanagementsystem_qlht {
 
     opens com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia to javafx.graphics;
     exports com.example.pharmacymanagementsystem_qlht.view;
-    opens com.example.pharmacymanagementsystem_qlht.view to javafx.fxml;
 }

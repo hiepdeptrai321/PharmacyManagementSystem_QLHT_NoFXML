@@ -125,7 +125,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         pnlChung.layout();
     }
 
-//  Hàm load view vào pane chính
+    //  Hàm load view vào pane chính
     private void loadViewEmbedded(int menuIndex, String cacheKey, Object gui, Object ctrl) {
         viTri = menuIndex;
         selectMenu(viTri);
@@ -136,7 +136,7 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     }
 
     // ----------------------- BẢNG HẾT HẠN / THỐNG KÊ -----------------------
-//  Hàm tải dữ liệu vào bảng thuốc hết hạn
+    //  Hàm tải dữ liệu vào bảng thuốc hết hạn
     public void loadTableThuocHetHan() {
         ObservableList<Thuoc_SP_TheoLo> data = tblThuocHetHan.getItems();
         if (data == null) {
@@ -352,6 +352,12 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         loadViewEmbedded(1, "TK_THUOC",
                 new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKThuoc.TKThuoc_GUI(),
                 new com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuoc.TimKiemThuoc_Ctrl());
+    }
+
+    public void timKiemThuocTrongKho(ActionEvent actionEvent) {
+        loadViewEmbedded(1, "TK_THUOCTRONGKHO",
+                new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKThuocTrongKho.TKThuocTrongKho_GUI(),
+                new com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuocTrongKho.TimKiemThuocTrongKho_Ctrl());
     }
 
     public void timKiemKhachHang(ActionEvent actionEvent) {
