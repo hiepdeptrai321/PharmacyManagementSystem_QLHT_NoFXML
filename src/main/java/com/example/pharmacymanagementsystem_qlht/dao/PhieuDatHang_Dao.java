@@ -12,7 +12,7 @@ import java.util.List;
 
 public class PhieuDatHang_Dao implements DaoInterface<PhieuDatHang> {
     private final String INSERT_SQL = "INSERT INTO PhieuDatHang (MaPDat, NgayLap, SoTienCoc, GhiChu, MaKH, MaNV) VALUES (?, ?, ?, ?, ?, ?)";
-    private final String UPDATE_SQL = "UPDATE PhieuDatHang SET NgayLap=?, SoTienCoc=?, GhiChu=?, MaKH=?, MaNV=? WHERE MaPDat=?";
+    private final String UPDATE_SQL = "UPDATE PhieuDatHang SET NgayLap=?, SoTienCoc=?, GhiChu=?, MaKH=?, MaNV=?, TrangThai=? WHERE MaPDat=?";
     private final String DELETE_BY_ID_SQL = "DELETE FROM PhieuDatHang WHERE MaPDat=?";
     private final String SELECT_BY_ID_SQL = "SELECT * FROM PhieuDatHang WHERE MaPDat=?";
     private final String SELECT_ALL_SQL = "SELECT * FROM PhieuDatHang";
@@ -24,7 +24,7 @@ public class PhieuDatHang_Dao implements DaoInterface<PhieuDatHang> {
 
     @Override
     public boolean update(PhieuDatHang e) {
-        return ConnectDB.update(UPDATE_SQL, e.getNgayLap(), e.getSoTienCoc(), e.getGhiChu(), e.getKhachHang().getMaKH(), e.getMaPDat())>0;
+        return ConnectDB.update(UPDATE_SQL, e.getNgayLap(), e.getSoTienCoc(), e.getGhiChu(), e.getKhachHang().getMaKH(), e.getNhanVien().getMaNV(), e.getTrangthai(), e.getMaPDat())>0;
     }
 
     @Override

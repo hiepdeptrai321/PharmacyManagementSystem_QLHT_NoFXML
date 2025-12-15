@@ -119,7 +119,6 @@ public class LapHoaDon_Ctrl extends Application {
     private boolean GoiY_cssat = false;
     private boolean tamDungGoiY = false;
     public String maPhieuDat = null;
-    public boolean isSuccess = false;
 
     public void setMaPhieuDat(String maPhieuDat) {
         this.maPhieuDat = maPhieuDat;
@@ -1368,6 +1367,11 @@ public void xuLyThemKH() {
                     ctrl.initialize();
                     ctrl.setHoaDon(hdMoi);
 
+                    PhieuDatHang_Dao pdh_dao = new PhieuDatHang_Dao();
+                    PhieuDatHang pdh = pdh_dao.selectById(maPhieuDat);
+                    pdh.setTrangthai(2);
+                    pdh_dao.update(pdh);
+
                 } catch ( Exception e) {
                     hien(ERROR, "Lỗi",
                             "Không thể mở giao diện chi tiết hóa đơn:\n" + e.getMessage());
@@ -1392,7 +1396,6 @@ public void xuLyThemKH() {
             }
             hien(ERROR, "Lỗi", "Lập hóa đơn thất bại:\n" + ex.getMessage());
         } finally {
-            isSuccess = true;
             if (con != null) {
                 try {
                     con.setAutoCommit(true);
