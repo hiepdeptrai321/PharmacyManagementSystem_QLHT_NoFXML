@@ -23,6 +23,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -44,88 +45,37 @@ import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.WARNING;
 
 public class ChiTietPhieuDatHang_Ctrl  {
-    @FXML
+     
     public static PhieuDatHang phieuDatHang;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, Number> colSTT;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, String> colTenSP;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, Integer> colSoLuong;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, String> colDonVi;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, Double> colDonGia;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, String> colNhaCungCap; // used for chiết khấu percent
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, String> colThanhTien;
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, String> colTT;
-
-    @FXML
     public TableView<ChiTietPhieuDatHang> tblChiTietPhieuDat;
-
-    @FXML
     public Label lblMaPhieuDatValue;
-
-    @FXML
     public Label lblNgayLapValue;
-
-    @FXML
     public Label lblTenNhanVienValue;
-
-    @FXML
     public Label lblTenNCCValue;
-
-    @FXML
     public Label lblSDTNCCValue;
-
-    @FXML
     public Label lblGhiChuValue;
-
-    @FXML
     public Label lblTongTienDatValue;
-
-    @FXML
     public Label lblChietKhauPDValue;
-
-    @FXML
     public Label lblThueVATValue;
-
-    @FXML
     public Label lblTongTienPhaiDatValue;
-
-    @FXML
     public Label lblPTTTValue;
-
-    @FXML
     public Label lblTienDaThanhToanValue;
-
-    @FXML
     public Label lblTienConLaiValue;
-    @FXML
     public Label lbTT;
-
-    @FXML
     public Button btnInPhieuDat;
-
-    @FXML
     public Button btnLapHoaDon;
-
-    @FXML
     public Button btnDong;
-
     public final NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
 
-    @FXML
+     
     public void initialize() {
         // Close button
         if (btnDong != null) {
@@ -139,7 +89,7 @@ public class ChiTietPhieuDatHang_Ctrl  {
 
         Platform.runLater(()->{
             Stage dialog = (Stage) btnDong.getScene().getWindow();
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
+            dialog.getIcons().add(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
         });
 
 
