@@ -1,8 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuTra;
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang.TKPhieuTraHang_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.model.PhieuTraHang;
-import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang.TKPhieuTraHang_Ctrl;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -26,8 +24,30 @@ public class TKPhieuTraHang_GUI extends Application {
     public void showWithController(Stage stage, TKPhieuTraHang_Ctrl ctrl) {
         this.ctrl = ctrl;
         Pane root = createUI(ctrl);
+
+        // --- TẠO SCENE ---
         Scene scene = new Scene(root, 1646, 895);
-        scene.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css").toExternalForm());
+
+        // --- CÁCH THÊM CSS MỚI (Giống ThongKeBanHang_GUI) ---
+        // Lưu ý: Đường dẫn CSS vẫn giữ nguyên của file này (TimKiemHoaDon.css)
+        String cssPath = "/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css";
+        java.net.URL cssUrl = getClass().getResource(cssPath);
+
+        if (cssUrl != null) {
+            // Add thẳng vào Pane gốc -> Đi đâu cũng có CSS
+            root.getStylesheets().add(cssUrl.toExternalForm());
+            System.out.println("Đã gắn CSS vào Root Pane (TKPhieuTraHang) thành công!");
+        } else {
+            // Thử tìm đường dẫn ngắn nếu đường dẫn dài lỗi (Fallback)
+            var shortUrl = getClass().getResource("/css/TimKiemHoaDon.css");
+            if(shortUrl != null) {
+                root.getStylesheets().add(shortUrl.toExternalForm());
+                System.out.println("Đã gắn CSS (đường dẫn ngắn) thành công!");
+            } else {
+                System.err.println("LỖI: Không tìm thấy file CSS tại: " + cssPath);
+            }
+        }
+
         stage.setScene(scene);
         stage.setTitle("Tìm kiếm phiếu trả hàng");
         ctrl.initialize();
@@ -41,6 +61,7 @@ public class TKPhieuTraHang_GUI extends Application {
     private Pane createUI(TKPhieuTraHang_Ctrl ctrl) {
         Pane mainPane = new Pane();
         mainPane.setPrefSize(1646, 895);
+        // Có thể bỏ dòng setStyle cứng này nếu trong CSS file đã có quy định font
         mainPane.setStyle("-fx-font-size: 14px;");
 
         VBox vbox = new VBox(5);
@@ -56,7 +77,15 @@ public class TKPhieuTraHang_GUI extends Application {
         lbTimKiem.getStyleClass().add("title");
         lbTimKiem.setFont(new Font(36));
 
-        ImageView imgTitle = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/bill-8854.png").toExternalForm()));
+        // Lưu ý: Cần đảm bảo ảnh tồn tại để tránh NullPointerException,
+        // nhưng ở đây tôi giữ nguyên logic ảnh của bạn
+        ImageView imgTitle = new ImageView();
+        try {
+            imgTitle = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/bill-8854.png").toExternalForm()));
+        } catch (Exception e) {
+            System.err.println("Không tìm thấy ảnh title");
+        }
+
         imgTitle.setFitWidth(48);
         imgTitle.setFitHeight(46);
         imgTitle.setPreserveRatio(true);
@@ -72,7 +101,7 @@ public class TKPhieuTraHang_GUI extends Application {
 
         ctrl.cboTimKiem = new ComboBox<>();
         ctrl.cboTimKiem.setPromptText("Tìm theo");
-        ctrl.cboTimKiem.setPrefSize(140, 40);
+        ctrl.cboTimKiem.setPrefSize(200, 40);
         ctrl.cboTimKiem.getStyleClass().add("btntim");
         HBox.setMargin(ctrl.cboTimKiem, new Insets(10, 5, 0, 0));
 
@@ -85,7 +114,11 @@ public class TKPhieuTraHang_GUI extends Application {
         Region rg1 = new Region();
         rg1.setPrefSize(30, 51);
 
-        ImageView iconTime = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png").toExternalForm()));
+        ImageView iconTime = new ImageView();
+        try {
+            iconTime = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png").toExternalForm()));
+        } catch (Exception e) { }
+
         iconTime.setFitWidth(28);
         iconTime.setFitHeight(27);
         iconTime.setPreserveRatio(true);
@@ -120,7 +153,11 @@ public class TKPhieuTraHang_GUI extends Application {
         ctrl.btnTimKiem.getStyleClass().add("btntim");
         HBox.setMargin(ctrl.btnTimKiem, new Insets(10, 8, 0, 8));
 
-        ImageView imgSearch = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png").toExternalForm()));
+        ImageView imgSearch = new ImageView();
+        try {
+            imgSearch = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png").toExternalForm()));
+        } catch (Exception e) {}
+
         imgSearch.setFitWidth(20);
         imgSearch.setFitHeight(20);
         imgSearch.setCursor(Cursor.DEFAULT);
@@ -128,11 +165,16 @@ public class TKPhieuTraHang_GUI extends Application {
 
         ctrl.btnHuyBo = new Button();
         ctrl.btnHuyBo.setPrefSize(52, 40);
+        ctrl.btnHuyBo.setId("btnReset");
         ctrl.btnHuyBo.getStyleClass().add("btntim");
         HBox.setMargin(ctrl.btnHuyBo, new Insets(10, 8, 0, 8));
 
-        ImageView imgRefresh = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png").toExternalForm()));
-        imgRefresh.setFitWidth(34);
+        ImageView imgRefresh = new ImageView();
+        try {
+            imgRefresh = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png").toExternalForm()));
+        } catch(Exception e){}
+
+        imgRefresh.setFitWidth(20);
         imgRefresh.setFitHeight(20);
         ctrl.btnHuyBo.setGraphic(imgRefresh);
 

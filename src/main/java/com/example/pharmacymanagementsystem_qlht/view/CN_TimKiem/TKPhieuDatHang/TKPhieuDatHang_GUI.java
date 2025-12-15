@@ -18,7 +18,8 @@ public class TKPhieuDatHang_GUI {
     public void showWithController(Stage stage, TKPhieuDatHang_Ctrl ctrl) {
         Pane root = new Pane();
         root.setPrefSize(1646, 895);
-        root.setStyle("-fx-font-size: 14 px;");
+        // Sửa nhẹ lỗi syntax cũ: "14 px" -> "14px"
+        root.setStyle("-fx-font-size: 14px;");
 
         // Top VBox -> title, separator, search row, table inside ScrollPane
         VBox mainVBox = new VBox();
@@ -34,8 +35,10 @@ public class TKPhieuDatHang_GUI {
         lbTimKiem.setPrefHeight(53);
         lbTimKiem.setPrefWidth(449);
         lbTimKiem.setStyle("-fx-font-size: 36px;");
+
         Region spacer1 = new Region();
         spacer1.setPrefWidth(20);
+
         ImageView imgBill = new ImageView();
         imgBill.setFitHeight(46);
         imgBill.setFitWidth(48);
@@ -59,6 +62,7 @@ public class TKPhieuDatHang_GUI {
         cboTimKiem.setPrefHeight(40);
         cboTimKiem.setPrefWidth(164);
         cboTimKiem.setPromptText("Tìm theo");
+
         TextField txtNoiDungTimKiem = new TextField();
         txtNoiDungTimKiem.setPrefHeight(40);
         txtNoiDungTimKiem.setPrefWidth(240);
@@ -94,6 +98,7 @@ public class TKPhieuDatHang_GUI {
         btnTimKiem.setPrefHeight(40);
         btnTimKiem.setPrefWidth(74);
         btnTimKiem.setStyle("-fx-background-color: #188dfb; -fx-text-fill: white");
+
         // set graphic for search button if available
         try {
             ImageView imgSearch = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png")).toExternalForm()));
@@ -105,6 +110,7 @@ public class TKPhieuDatHang_GUI {
         Button btnHuyBo = new Button();
         btnHuyBo.setPrefHeight(40);
         btnHuyBo.setPrefWidth(52);
+        btnHuyBo.setId("btnReset");
         // reset graphic
         try {
             ImageView imgRefresh = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png")).toExternalForm()));
@@ -173,13 +179,26 @@ public class TKPhieuDatHang_GUI {
         mainVBox.getChildren().addAll(titleBox, sep, searchBox, scroll);
         root.getChildren().add(mainVBox);
 
-
         Scene scene = new Scene(root);
-        try {
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css")).toExternalForm());
-        } catch (Exception ignored) {}
 
-        // Inject into controller (best-effort unchecked casts similar to project pattern)
+        // --- CẬP NHẬT: Gắn CSS vào Root Pane ---
+        String cssPath = "/com/example/pharmacymanagementsystem_qlht/css/TimKiemHoaDon.css";
+        java.net.URL cssUrl = getClass().getResource(cssPath);
+
+        if (cssUrl != null) {
+            root.getStylesheets().add(cssUrl.toExternalForm());
+            System.out.println("Đã gắn CSS vào Root Pane (TKPhieuDatHang) thành công!");
+        } else {
+            // Fallback: Thử tìm đường dẫn ngắn
+            var shortUrl = getClass().getResource("/css/TimKiemHoaDon.css");
+            if(shortUrl != null) {
+                root.getStylesheets().add(shortUrl.toExternalForm());
+            } else {
+                System.err.println("LỖI: Không tìm thấy file CSS tại: " + cssPath);
+            }
+        }
+
+        // Inject into controller (Giữ nguyên logic cũ của bạn)
         try {
             ctrl.cboTimKiem = cboTimKiem;
             ctrl.txtNoiDungTimKiem = txtNoiDungTimKiem;

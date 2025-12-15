@@ -2,6 +2,7 @@ package com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi;
 
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDoiHang.ChiTietPhieuDoiHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietPhieuDoiHang;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -27,7 +28,7 @@ public class ChiTietPhieuDoiHang_GUI {
         AnchorPane.setLeftAnchor(splitPane, 0.0);
         AnchorPane.setRightAnchor(splitPane, 0.0);
 
-        /* ==================== LEFT PANE ==================== */
+        /* ==================== LEFT PANE (Bảng sản phẩm) ==================== */
         AnchorPane leftPane = new AnchorPane();
         Pane paneLeft = new Pane();
         AnchorPane.setTopAnchor(paneLeft, 0.0);
@@ -40,7 +41,6 @@ public class ChiTietPhieuDoiHang_GUI {
         lblTitleLeft.setLayoutX(9);
         lblTitleLeft.setLayoutY(43);
 
-        // TableView
         TableView<ChiTietPhieuDoiHang> tblChiTietPhieuDoi = new TableView<>();
         tblChiTietPhieuDoi.setId("tblChiTietPhieuDoi");
         tblChiTietPhieuDoi.setLayoutX(11);
@@ -91,10 +91,9 @@ public class ChiTietPhieuDoiHang_GUI {
 
         paneLeft.getChildren().addAll(lblTitleLeft, tblChiTietPhieuDoi,
                 lblMaPhieuDoi, lblMaPhieuDoiValue, lblNgayLap, lblNgayLapValue);
-
         leftPane.getChildren().add(paneLeft);
 
-        /* ==================== RIGHT PANE ==================== */
+        /* ==================== RIGHT PANE (Thông tin) ==================== */
         AnchorPane rightPane = new AnchorPane();
         rightPane.getStyleClass().add("right-pane-bg");
 
@@ -106,7 +105,6 @@ public class ChiTietPhieuDoiHang_GUI {
         AnchorPane.setLeftAnchor(paneRight, 0.0);
         AnchorPane.setRightAnchor(paneRight, 20.0);
 
-        // Section: Thông tin phiếu đổi
         Label lblThongTin = new Label("THÔNG TIN PHIẾU ĐỔI");
         lblThongTin.getStyleClass().add("section-label");
 
@@ -115,51 +113,62 @@ public class ChiTietPhieuDoiHang_GUI {
         infoPane.setPrefSize(469, 362);
         infoPane.getStyleClass().add("info-pane");
 
+        // --- CẤU HÌNH CÁC DÒNG THÔNG TIN ---
+        // Dùng LayoutY tăng dần đều (bước nhảy 40px) để thẳng hàng và thoáng mắt
+
+        // 1. Tên nhân viên (Y = 10)
         Label lblTenNV = new Label("Tên nhân viên lập:");
         lblTenNV.getStyleClass().add("bold-label");
-        lblTenNV.setLayoutX(5);
-        lblTenNV.setLayoutY(5);
+        lblTenNV.setLayoutX(10);
+        lblTenNV.setLayoutY(10);
 
         Label lblTenNhanVienValue = new Label();
         lblTenNhanVienValue.setId("lblTenNhanVienValue");
         lblTenNhanVienValue.getStyleClass().add("value-label");
         lblTenNhanVienValue.setLayoutX(160);
-        lblTenNhanVienValue.setLayoutY(5);
+        lblTenNhanVienValue.setLayoutY(10);
 
+        // 2. Tên khách hàng (Y = 50)
         Label lblTenKH = new Label("Tên khách hàng:");
         lblTenKH.getStyleClass().add("bold-label");
-        lblTenKH.setLayoutX(5);
-        lblTenKH.setLayoutY(46);
+        lblTenKH.setLayoutX(10);
+        lblTenKH.setLayoutY(50);
 
         Label lblTenKhachHangValue = new Label();
         lblTenKhachHangValue.setId("lblTenKhachHangValue");
         lblTenKhachHangValue.getStyleClass().add("value-label");
         lblTenKhachHangValue.setLayoutX(160);
-        lblTenKhachHangValue.setLayoutY(35);
+        lblTenKhachHangValue.setLayoutY(50);
 
+        // 3. SĐT Khách hàng (Y = 90)
         Label lblSDTKH = new Label("SĐT Khách hàng:");
         lblSDTKH.getStyleClass().add("bold-label");
-        lblSDTKH.setLayoutX(5);
-        lblSDTKH.setLayoutY(87);
+        lblSDTKH.setLayoutX(10);
+        lblSDTKH.setLayoutY(90);
 
         Label lblSDTKhachHangValue = new Label();
         lblSDTKhachHangValue.setId("lblSDTKhachHangValue");
         lblSDTKhachHangValue.getStyleClass().add("value-label");
         lblSDTKhachHangValue.setLayoutX(160);
-        lblSDTKhachHangValue.setLayoutY(65);
+        lblSDTKhachHangValue.setLayoutY(90);
 
+        // 4. Ghi chú (Y = 130) -> SỬA LỖI LỆCH TẠI ĐÂY
         Label lblGhiChu = new Label("Ghi chú:");
         lblGhiChu.getStyleClass().add("bold-label");
-        lblGhiChu.setLayoutX(5);
-        lblGhiChu.setLayoutY(127);
+        lblGhiChu.setLayoutX(10);
+        lblGhiChu.setLayoutY(130);
 
         Label lblGhiChuValue = new Label();
         lblGhiChuValue.setId("lblGhiChuValue");
         lblGhiChuValue.getStyleClass().add("value-label");
-        lblGhiChuValue.setLayoutX(90);
-        lblGhiChuValue.setLayoutY(127);
-        lblGhiChuValue.setPrefSize(288, 40);
+        lblGhiChuValue.setLayoutX(160);
+        lblGhiChuValue.setLayoutY(130);
+
+        // Quan trọng: Chỉ set Width, không set Height để tự co giãn
+        lblGhiChuValue.setPrefWidth(288);
         lblGhiChuValue.setWrapText(true);
+        // Quan trọng: Căn lề trên-trái để khớp với Label "Ghi chú"
+        lblGhiChuValue.setAlignment(Pos.TOP_LEFT);
 
         infoPane.getChildren().addAll(lblTenNV, lblTenNhanVienValue,
                 lblTenKH, lblTenKhachHangValue,
@@ -167,9 +176,7 @@ public class ChiTietPhieuDoiHang_GUI {
                 lblGhiChu, lblGhiChuValue);
 
         Separator sep1 = new Separator();
-        sep1.setLayoutY(216);
-
-
+        sep1.setLayoutY(230); // Đẩy đường kẻ xuống một chút cho đẹp
 
         // Buttons
         Button btnInPhieuDoi = new Button("In Phiếu Đổi");
@@ -193,34 +200,37 @@ public class ChiTietPhieuDoiHang_GUI {
         paneRight.getChildren().addAll(lblThongTin, infoPane, sep1, btnInPhieuDoi, btnDong);
         rightPane.getChildren().add(paneRight);
 
-        // Add to splitPane
         splitPane.getItems().addAll(leftPane, rightPane);
         root.getChildren().add(splitPane);
 
-        // Scene setup
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(
-                getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ChiTietPhieuDoi.css")).toExternalForm());
 
-        // Inject into controller
+        // CSS Check
+        String cssPath = "/com/example/pharmacymanagementsystem_qlht/css/ChiTietPhieuDoi.css";
+        java.net.URL cssUrl = getClass().getResource(cssPath);
+        if (cssUrl != null) {
+            root.getStylesheets().add(cssUrl.toExternalForm());
+        } else {
+            // Fallback
+            var shortUrl = getClass().getResource("/css/ChiTietPhieuDoi.css");
+            if(shortUrl != null) root.getStylesheets().add(shortUrl.toExternalForm());
+        }
+
         ctrl.tblChiTietPhieuDoi = tblChiTietPhieuDoi;
         ctrl.colSTT = colSTT;
         ctrl.colTenSP = colTenSP;
         ctrl.colSoLuong = colSoLuong;
         ctrl.colDonVi = colDonVi;
         ctrl.colLyDo = colLyDo;
-
         ctrl.lblMaPhieuDoiValue = lblMaPhieuDoiValue;
         ctrl.lblNgayLapValue = lblNgayLapValue;
         ctrl.lblTenNhanVienValue = lblTenNhanVienValue;
         ctrl.lblTenKhachHangValue = lblTenKhachHangValue;
         ctrl.lblSDTKhachHangValue = lblSDTKhachHangValue;
         ctrl.lblGhiChuValue = lblGhiChuValue;
-
         ctrl.btnInPhieuDoi = btnInPhieuDoi;
         ctrl.btnDong = btnDong;
 
-        // Initialize controller logic
         ctrl.initialize();
         stage.setTitle("Chi tiết phiếu đổi hàng");
         stage.setScene(scene);
