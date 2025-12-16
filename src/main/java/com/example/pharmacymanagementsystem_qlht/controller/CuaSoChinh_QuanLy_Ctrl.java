@@ -535,6 +535,37 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         }
     }
 
+    public void btnCaiDatClick(ActionEvent actionEvent) {
+//        pnlThongTin.setVisible(!pnlThongTin.isVisible());
+//        try {
+//            var gui  = new com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.ThemThuoc_GUI();
+//            var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc.ThemThuoc_Ctrl();
+//
+//            Stage dialog = new Stage();
+//            dialog.initOwner(tbl_Thuoc.getScene().getWindow());
+//            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
+//            dialog.setTitle("Thêm thuốc");
+//
+//            // 1) build UI + inject + initialize
+//            gui.showWithController(dialog, ctrl);
+//            dialog.showAndWait();
+//            // 2) set parent để refresh bảng sau khi lưu/xóa
+//
+//            // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        var ctrl = new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.CaiDat.caiDat_Ctrl();
+//        var gui = new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.CaiDat.caiDat_GUI();
+//        Stage dialog = new Stage();
+//        dialog.initOwner(lbl_SoLuongHangHetHan.getScene().getWindow());
+//        dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
+//        dialog.setTitle("Cài đặt");
+
+//        gui.showWithController(dialog, ctrl);
+//        dialog.showAndWait();
+
+    }
 
     @Override
     public void start(Stage stage) throws Exception {

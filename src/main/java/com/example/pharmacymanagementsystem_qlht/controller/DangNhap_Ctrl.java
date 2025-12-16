@@ -22,6 +22,7 @@ public class  DangNhap_Ctrl extends Application {
     public PasswordField tfMatKhauAn;
     public Button btnDangNhap;
     public static NhanVien user;
+    public DangNhap_Ctrl instance;
 
     private final Preferences prefs = Preferences.userNodeForPackage(DangNhap_Ctrl.class);
 
@@ -36,6 +37,7 @@ public class  DangNhap_Ctrl extends Application {
     }
 
     public void initialize() {
+        instance = this;
         // Sync password fields
         tfMatKhauAn.textProperty().addListener((obs, oldText, newText) -> {
             if (!tfMatKhau.isVisible()) return;
