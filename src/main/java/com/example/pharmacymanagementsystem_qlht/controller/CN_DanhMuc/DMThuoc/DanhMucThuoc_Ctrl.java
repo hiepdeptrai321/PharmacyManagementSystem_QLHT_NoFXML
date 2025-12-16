@@ -1,15 +1,19 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc;
 
+import com.example.pharmacymanagementsystem_qlht.TienIch.LoadingOverlay;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
 import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.DanhMucThuoc_GUI;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.util.List;
 
@@ -33,6 +37,9 @@ public class DanhMucThuoc_Ctrl extends Application {
     List<Thuoc_SanPham> list;
     ObservableList<Thuoc_SanPham> data;
 
+    public StackPane rootTablePane;
+    private LoadingOverlay loadingOverlay;
+
 //  2. Khởi tạo
     @Override
     public void start(Stage stage) throws Exception {
@@ -40,126 +47,141 @@ public class DanhMucThuoc_Ctrl extends Application {
     }
 
     public void initialize() {
-        loadTable();
         btnLamMoi.setOnAction(e-> LamMoi());
         tfTimThuoc.setOnAction(e-> timThuoc());
         btnTimThuoc.setOnAction(e-> timThuoc());
+        Platform.runLater(()->{
+            loadTable();
+        });
+        loadingOverlay = new LoadingOverlay();
+        // đặt overlay lên trên TableView
+        rootTablePane.getChildren().add(loadingOverlay);
+        tbl_Thuoc.setPlaceholder(new Label(""));
     }
 
 //  3. Tải bảng
     public void loadTable() {
-        list = thuocDao.selectAll();
-        data = FXCollections.observableArrayList(list);
-        colSTT.setCellFactory(col -> new TableCell<>() {
-            @Override protected void updateItem(String it, boolean empty) {
-                super.updateItem(it, empty);
-                setText(empty ? null : Integer.toString(getIndex() + 1));
-                setGraphic(null);
-            }
-        });
-        colMaThuoc.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getMaThuoc()));
-        colTenThuoc.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getTenThuoc()));
-        colHamLuong.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getHamLuongDonVi()));
-        colSDK_GPNK.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getSDK_GPNK()));
-        colXuatXu.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getNuocSX()));
-        colLoaiHang.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getLoaiHang() != null ? cd.getValue().getLoaiHang().getTenLoaiHang() : ""));
-        colViTri.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getVitri() != null ? cd.getValue().getVitri().getTenKe() : ""));
 
-        colTenThuoc.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(item);
-                    setAlignment(Pos.CENTER_LEFT);
-                }
-            }
-        });
-
-        colHamLuong.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(item);
-                    setAlignment(Pos.CENTER_LEFT);
-                }
-            }
-        });
-
-        colXuatXu.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(item);
-                    setAlignment(Pos.CENTER_LEFT);
-                }
-            }
-        });
-
-        colLoaiHang.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(item);
-                    setAlignment(Pos.CENTER_LEFT);
-                }
-            }
-        });
-
-        colChiTiet.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
-            private final Button btn = new Button("Chi tiết");
-            {
-                btn.setOnAction(event -> {
-                    Thuoc_SanPham thuoc = getTableView().getItems().get(getIndex());
-                    btnCapNhat(thuoc);
+        runWithLoading(() -> {
+            list = thuocDao.selectAll();
+            data = FXCollections.observableArrayList(list);
+            Platform.runLater(() -> {
+                colSTT.setCellFactory(col -> new TableCell<>() {
+                    @Override protected void updateItem(String it, boolean empty) {
+                        super.updateItem(it, empty);
+                        setText(empty ? null : Integer.toString(getIndex() + 1));
+                        setGraphic(null);
+                    }
                 });
-                btn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
-                btn.getStyleClass().add("btn");
-            }
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
-            }
-        });
+                colMaThuoc.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getMaThuoc()));
+                colTenThuoc.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getTenThuoc()));
+                colHamLuong.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getHamLuongDonVi()));
+                colSDK_GPNK.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getSDK_GPNK()));
+                colXuatXu.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getNuocSX()));
+                colLoaiHang.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getLoaiHang() != null ? cd.getValue().getLoaiHang().getTenLoaiHang() : ""));
+                colViTri.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getVitri() != null ? cd.getValue().getVitri().getTenKe() : ""));
 
-        tbl_Thuoc.setItems(data);
+                colTenThuoc.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item);
+                            setAlignment(Pos.CENTER_LEFT);
+                        }
+                    }
+                });
+
+                colHamLuong.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item);
+                            setAlignment(Pos.CENTER_LEFT);
+                        }
+                    }
+                });
+
+                colXuatXu.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item);
+                            setAlignment(Pos.CENTER_LEFT);
+                        }
+                    }
+                });
+
+                colLoaiHang.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item);
+                            setAlignment(Pos.CENTER_LEFT);
+                        }
+                    }
+                });
+
+                colChiTiet.setCellFactory(col -> new TableCell<Thuoc_SanPham, String>() {
+                    private final Button btn = new Button("Chi tiết");
+                    {
+                        btn.setOnAction(event -> {
+                            Thuoc_SanPham thuoc = getTableView().getItems().get(getIndex());
+                            btnCapNhat(thuoc);
+                        });
+                        btn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+                        btn.getStyleClass().add("btn");
+                    }
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setGraphic(empty ? null : btn);
+                    }
+                });
+
+                tbl_Thuoc.setItems(data);
+            });
+        });
     }
 
     public void timThuoc() {
-        data.clear();
-        if( tfTimThuoc.getText().isEmpty()) {
-            data.addAll(list);
-            tbl_Thuoc.setItems(data);
-            return;
-        }
-        String keyword = tfTimThuoc.getText().trim().toLowerCase();
+        runWithLoading(()-> {
+            data.clear();
+            if( tfTimThuoc.getText().isEmpty()) {
+                data.addAll(list);
+                tbl_Thuoc.setItems(data);
+                return;
+            }
+            String keyword = tfTimThuoc.getText().trim().toLowerCase();
 
-        List<Thuoc_SanPham> dsTSLoc = list.stream()
-                .filter(ts -> {
-                    String ten = ts.getTenThuoc() != null ? ts.getTenThuoc().toLowerCase() : "";
-                    String ma  = ts.getMaThuoc()  != null ? ts.getMaThuoc().toLowerCase()  : "";
-                    return ten.contains(keyword) || ma.contains(keyword);
-                })
-                .toList();
+            List<Thuoc_SanPham> dsTSLoc = list.stream()
+                    .filter(ts -> {
+                        String ten = ts.getTenThuoc() != null ? ts.getTenThuoc().toLowerCase() : "";
+                        String ma  = ts.getMaThuoc()  != null ? ts.getMaThuoc().toLowerCase()  : "";
+                        return ten.contains(keyword) || ma.contains(keyword);
+                    })
+                    .toList();
 
-        ObservableList<Thuoc_SanPham> data = FXCollections.observableArrayList(dsTSLoc);
-        tbl_Thuoc.setItems(data);
+            ObservableList<Thuoc_SanPham> data = FXCollections.observableArrayList(dsTSLoc);
+            Platform.runLater(() -> {
+                tbl_Thuoc.setItems(data);
+            });
+        });
     }
 
 //  Thêm thuốc
@@ -239,6 +261,24 @@ public class DanhMucThuoc_Ctrl extends Application {
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
 
+    private void runWithLoading(Runnable backgroundJob) {
+        loadingOverlay.show();
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                backgroundJob.run();
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> loadingOverlay.hide());
+        task.setOnFailed(e -> loadingOverlay.hide());
+
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
     }
 }

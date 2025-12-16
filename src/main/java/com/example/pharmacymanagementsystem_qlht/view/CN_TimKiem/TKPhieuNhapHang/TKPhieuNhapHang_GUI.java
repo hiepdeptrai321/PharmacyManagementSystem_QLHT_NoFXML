@@ -13,17 +13,7 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-public class TKPhieuNhapHang_GUI extends Application {
-
-    @Override
-    public void start(Stage stage) {
-        ViewRefs v = buildUIForController();
-        Scene scene = new Scene(v.root);
-        // Không cần gọi addStyles(scene) ở đây nữa vì CSS đã gắn vào root
-        stage.setTitle("Tìm kiếm phiếu nhập hàng");
-        stage.setScene(scene);
-        stage.show();
-    }
+public class TKPhieuNhapHang_GUI {
 
     public void showWithController(Stage stage, TimKiemPhieuNhap_Ctrl ctrl) {
         ViewRefs v = buildUIForController();
@@ -65,6 +55,7 @@ public class TKPhieuNhapHang_GUI extends Application {
         // 1. Root Pane
         v.root = new Pane();
         v.root.setPrefSize(1646, 895);
+        v.root.setStyle("-fx-font-size: 14px;");
 
         // --- [QUAN TRỌNG 1] Set ID để nhận style nền trắng/bóng đổ từ TimKiemHoaDon.css ---
         v.root.setId("mainPane");
@@ -97,23 +88,23 @@ public class TKPhieuNhapHang_GUI extends Application {
 
         // ===== Thanh tìm kiếm nhanh =====
         v.cbxTimKiem = new ComboBox<>();
-        v.cbxTimKiem.setLayoutX(21);
-        v.cbxTimKiem.setLayoutY(79);
+        v.cbxTimKiem.setLayoutX(10);
+        v.cbxTimKiem.setLayoutY(76);
         v.cbxTimKiem.setPrefSize(179, 40);
         v.cbxTimKiem.setPromptText("Tìm theo");
         v.cbxTimKiem.getStyleClass().add("btntim");
 
         v.txtTimKiem = new TextField();
-        v.txtTimKiem.setLayoutX(210);
-        v.txtTimKiem.setLayoutY(79);
+        v.txtTimKiem.setLayoutX(200);
+        v.txtTimKiem.setLayoutY(78);
         v.txtTimKiem.setPrefSize(379, 40);
         v.txtTimKiem.setPromptText("Tìm kiếm");
         v.txtTimKiem.getStyleClass().add("tftim");
 
         v.btnReset = new Button();
         v.btnReset.setId("btnReset"); // ID này có thể dùng để style riêng nếu cần
-        v.btnReset.setLayoutX(601);
-        v.btnReset.setLayoutY(79);
+        v.btnReset.setLayoutX(590);
+        v.btnReset.setLayoutY(78);
         v.btnReset.setPrefSize(52, 40);
         v.btnReset.getStyleClass().add("btntim");
 
@@ -122,7 +113,7 @@ public class TKPhieuNhapHang_GUI extends Application {
 
         // ===== Khối chính (VBox) =====
         VBox vbMain = new VBox(8);
-        vbMain.setLayoutX(20);
+        vbMain.setLayoutX(10);
         vbMain.setLayoutY(126);
         vbMain.setPrefWidth(1613);
 
@@ -137,7 +128,7 @@ public class TKPhieuNhapHang_GUI extends Application {
         v.tpBoLoc.setPrefWidth(1613);
 
         AnchorPane apFilter = new AnchorPane();
-        apFilter.setMinHeight(50);
+        apFilter.setMinHeight(40);
         apFilter.setPrefSize(1611, 50);
 
         v.cbxChonNhaCC = new ComboBox<>();
@@ -279,9 +270,5 @@ public class TKPhieuNhapHang_GUI extends Application {
         TableView<PhieuNhap> tblPhieuNhap;
         TableColumn<PhieuNhap, String> colMaPN, colNgayNhap, colNhaCungCap, colNhanVien, colGhiChu, colTrangThai;
         TableColumn<PhieuNhap, String> colChiTiet;
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

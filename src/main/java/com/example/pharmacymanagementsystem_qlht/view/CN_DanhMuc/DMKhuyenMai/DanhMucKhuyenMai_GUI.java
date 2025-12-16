@@ -60,7 +60,7 @@ public class DanhMucKhuyenMai_GUI {
 
         Button btnthemKM = new Button("✚Thêm khuyến mãi");
         btnthemKM.setId("btnthemKM");
-        btnthemKM.setLayoutX(1471);
+        btnthemKM.setLayoutX(1481);
         btnthemKM.setLayoutY(51);
         btnthemKM.setPrefSize(161, 32);
         btnthemKM.getStyleClass().add("btn");
