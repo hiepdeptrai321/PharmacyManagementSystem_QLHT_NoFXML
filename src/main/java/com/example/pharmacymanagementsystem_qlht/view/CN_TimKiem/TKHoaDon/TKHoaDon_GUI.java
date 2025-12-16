@@ -59,7 +59,7 @@ public class TKHoaDon_GUI {
 
         ComboBox<String> cboTieuChiTimKiem = new ComboBox<>();
         cboTieuChiTimKiem.setPromptText("Tiêu chí tìm kiếm");
-        cboTieuChiTimKiem.setPrefSize(184, 40);
+        cboTieuChiTimKiem.setPrefSize(184, 41);
         cboTieuChiTimKiem.getStyleClass().add("btntim");
         HBox.setMargin(cboTieuChiTimKiem, new Insets(10, 5, 0, 0));
 
@@ -166,6 +166,14 @@ public class TKHoaDon_GUI {
                 region2, btnTimKiem, btnHuyBo, spacerRight, cboBoLocNhanh
         );
 
+        StackPane rootTablePane = new StackPane();
+        rootTablePane.setId("rootTablePane");
+
+        // position and size like the old table
+        rootTablePane.setLayoutX(12);
+        rootTablePane.setLayoutY(106);
+        rootTablePane.setPrefSize(1619, 735);
+
         // ===== Bảng =====
         TableView<HoaDon> tblHD = new TableView<>();
         tblHD.setPrefSize(1619, 735);
@@ -197,9 +205,12 @@ public class TKHoaDon_GUI {
         colChiTiet.setPrefWidth(105);
         colChiTiet.setStyle("-fx-alignment: CENTER;");
 
+
         tblHD.getColumns().addAll(colMaHD, colNgayLap, colTenKH, colSdtKH, colTenNV, colSLP, colChiTiet);
 
-        vBox.getChildren().addAll(hBoxTitle, separator, hBoxSearch, tblHD);
+        rootTablePane.getChildren().addAll(tblHD);
+
+        vBox.getChildren().addAll(hBoxTitle, separator, hBoxSearch, rootTablePane);
         mainPane.getChildren().add(vBox);
 
         // ===== Gán vào controller =====
@@ -218,6 +229,7 @@ public class TKHoaDon_GUI {
         ctrl.cboBoLocNhanh = cboBoLocNhanh;
         ctrl.btnTimKiem = btnTimKiem;
         ctrl.btnHuyBo = btnHuyBo;
+        ctrl.rootTablePane = rootTablePane;
 
         ctrl.initialize();
 

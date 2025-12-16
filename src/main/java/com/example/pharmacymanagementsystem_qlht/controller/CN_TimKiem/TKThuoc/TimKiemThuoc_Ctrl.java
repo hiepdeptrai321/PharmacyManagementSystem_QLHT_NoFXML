@@ -1,6 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKThuoc;
 
-import com.example.pharmacymanagementsystem_qlht.dao.LoaiHang_Dao;
+import com.example.pharmacymanagementsystem_qlht.TienIch.LoadingOverlay;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.LoaiHang;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
@@ -12,15 +12,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -44,6 +41,8 @@ public class TimKiemThuoc_Ctrl extends Application {
     public Button btnReset;
     private ObservableList<Thuoc_SanPham> duLieuChinh = FXCollections.observableArrayList();
     private FilteredList<Thuoc_SanPham> duLieu;
+    public StackPane rootTablePane;
+    private LoadingOverlay loadingOverlay;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -52,10 +51,16 @@ public class TimKiemThuoc_Ctrl extends Application {
 
     //  phương thức khởi tạo
     public void initialize() {
+        // tạo overlay và gắn vào StackPane
+        loadingOverlay = new LoadingOverlay();
+        rootTablePane.getChildren().add(loadingOverlay);
+
+        // ẩn "No content in table"
+        tbl_Thuoc.setPlaceholder(new Label(""));
+
         // 1) Setup control cơ bản
         duLieu = new FilteredList<>(duLieuChinh, sp -> true);
         tbl_Thuoc.setItems(duLieu);
-
         cboTimKiem.getItems().setAll("Loại tìm kiếm", "Mã thuốc", "Tên thuốc", "Nước sản xuất", "Loại hàng", "Vị trí");
         cboTimKiem.setValue("Loại tìm kiếm");
         cbxLoaiHang.getItems().setAll("Chọn loại hàng");
@@ -63,54 +68,67 @@ public class TimKiemThuoc_Ctrl extends Application {
         cbxXuatSu.getItems().setAll("Chọn xuất xứ");
         cbxXuatSu.setValue("Chọn xuất xứ");
 
-        // 2) Lắng nghe thay đổi để lọc (giữ như cũ)
-        txtTimKiem.textProperty().addListener((o, ov, nv) -> TimKiemTxt());
+        // 2) Lắng nghe thay đổi để lọc
+        txtTimKiem.setOnAction(event -> {TimKiemTxt();});
         cboTimKiem.valueProperty().addListener((o, ov, nv) -> TimKiemTxt());
         cbxLoaiHang.setOnAction(e -> TimKiemLoc());
         cbxXuatSu.setOnAction(e -> TimKiemLoc());
         txtHamLuongMin.textProperty().addListener((o, ov, nv) -> TimKiemLoc());
         txtHamLuongMax.textProperty().addListener((o, ov, nv) -> TimKiemLoc());
 
-        // 3) CHỈ 1 LẦN gọi DAO ở background
-        javafx.concurrent.Task<List<Thuoc_SanPham>> task = new javafx.concurrent.Task<>() {
+        // 3) Task load dữ liệu ở background
+        Task<List<Thuoc_SanPham>> task = new Task<>() {
             @Override
             protected List<Thuoc_SanPham> call() {
                 return new Thuoc_SanPham_Dao().selectAll();
             }
         };
 
+        task.setOnRunning(e -> loadingOverlay.show());
+
         task.setOnSucceeded(e -> {
             List<Thuoc_SanPham> list = task.getValue();
 
-            // Đổ bảng
-            duLieuChinh.setAll(list);
-            loadTable();
+            // cập nhật dữ liệu bảng + combobox trên JavaFX thread
+            Platform.runLater(() -> {
+                duLieuChinh.setAll(list);
+                loadTable();
 
-            // Tự suy ra combobox từ dữ liệu vừa tải (không gọi thêm DAO)
-            List<String> loaiHangs = list.stream()
-                    .map(Thuoc_SanPham::getLoaiHang)   // → object LoaiHang
-                    .filter(Objects::nonNull)
-                    .map(LoaiHang::getTenLoaiHang)           // → chuyển sang String
-                    .filter(Objects::nonNull)
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .distinct()
-                    .sorted()
-                    .toList();
+                // fill combobox loại hàng
+                List<String> loaiHangs = list.stream()
+                        .map(Thuoc_SanPham::getLoaiHang)
+                        .filter(Objects::nonNull)
+                        .map(LoaiHang::getTenLoaiHang)
+                        .filter(Objects::nonNull)
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .distinct()
+                        .sorted()
+                        .toList();
 
-            List<String> xuatXus = list.stream()
-                    .map(Thuoc_SanPham::getNuocSX)
-                    .filter(s -> s != null && !s.isBlank())
-                    .distinct().sorted().toList();
+                // fill combobox xuất xứ
+                List<String> xuatXus = list.stream()
+                        .map(Thuoc_SanPham::getNuocSX)
+                        .filter(s -> s != null && !s.isBlank())
+                        .distinct()
+                        .sorted()
+                        .toList();
 
-            cbxLoaiHang.getItems().setAll("Chọn loại hàng");
-            cbxLoaiHang.getItems().addAll(loaiHangs);
+                cbxLoaiHang.getItems().setAll("Chọn loại hàng");
+                cbxLoaiHang.getItems().addAll(loaiHangs);
 
-            cbxXuatSu.getItems().setAll("Chọn xuất xứ");
-            cbxXuatSu.getItems().addAll(xuatXus);
+                cbxXuatSu.getItems().setAll("Chọn xuất xứ");
+                cbxXuatSu.getItems().addAll(xuatXus);
+
+                loadingOverlay.hide();
+            });
         });
 
-        task.setOnFailed(e -> task.getException().printStackTrace());
+        task.setOnFailed(e -> {
+            task.getException().printStackTrace();
+            Platform.runLater(() -> loadingOverlay.hide());
+        });
+
         new Thread(task, "LoadThuocSanPham").start();
     }
 
@@ -237,4 +255,23 @@ public class TimKiemThuoc_Ctrl extends Application {
             }
         });
     }
+    private void runWithLoading(Runnable backgroundJob) {
+        loadingOverlay.show();
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                backgroundJob.run();
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> loadingOverlay.hide());
+        task.setOnFailed(e -> loadingOverlay.hide());
+
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
+    }
+
 }

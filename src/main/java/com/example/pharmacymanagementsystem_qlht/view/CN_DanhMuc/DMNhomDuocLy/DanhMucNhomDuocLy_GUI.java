@@ -42,7 +42,7 @@ public class DanhMucNhomDuocLy_GUI {
         );
         imgTitle.setFitHeight(34.0);
         imgTitle.setFitWidth(46.0);
-        imgTitle.setLayoutX(299.0);
+        imgTitle.setLayoutX(325.0);
         imgTitle.setLayoutY(4.0);
         imgTitle.setPickOnBounds(true);
         imgTitle.setPreserveRatio(true);
@@ -67,9 +67,9 @@ public class DanhMucNhomDuocLy_GUI {
         btnTim.setPrefWidth(77.0);
         btnTim.getStyleClass().add("btn");
 
-        Button btnThem = new Button("✚Thêm nhóm dược lý");
+        Button btnThem = new Button("✚ Thêm nhóm dược lý");
         btnThem.setId("btnthemthuoc");
-        btnThem.setLayoutX(1450.0);
+        btnThem.setLayoutX(1455.0);
         btnThem.setLayoutY(52.0);
         btnThem.setPrefHeight(40.0);
         btnThem.setPrefWidth(176.0);
@@ -94,9 +94,9 @@ public class DanhMucNhomDuocLy_GUI {
 
         imgTitle.setFitHeight(40.0);
         imgTitle.setFitWidth(40.0);
-        imgTitle.setLayoutX(335.0);
+        imgTitle.setLayoutX(375.0);
         imgTitle.setLayoutY(6.0);
-        lbTitle.setPrefSize(365, 36);
+        lbTitle.setPrefSize(390, 36);
         lbTitle.setStyle("-fx-font-size: 32; -fx-font-weight: bold;");
         btnTim.setPrefSize(69, 40);
         btnLamMoi.setPrefSize(45, 40);
@@ -116,11 +116,11 @@ public class DanhMucNhomDuocLy_GUI {
         cotSTT.setPrefWidth(90.33);
         cotSTT.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<NhomDuocLy, String> cotMaNDL = new TableColumn<>("Mã Nhóm Dược Lý");
+        TableColumn<NhomDuocLy, String> cotMaNDL = new TableColumn<>("Mã nhóm dược lý");
         cotMaNDL.setPrefWidth(260.67);
         cotMaNDL.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<NhomDuocLy, String> cotTenNDL = new TableColumn<>("Tên Nhóm Dược Lý");
+        TableColumn<NhomDuocLy, String> cotTenNDL = new TableColumn<>("Tên nhóm dược lý");
         cotTenNDL.setMinWidth(0.0);
         cotTenNDL.setPrefWidth(1139.0);
 

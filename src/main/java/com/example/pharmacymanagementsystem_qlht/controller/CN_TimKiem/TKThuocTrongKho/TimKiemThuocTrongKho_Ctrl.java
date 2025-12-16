@@ -16,13 +16,16 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -30,6 +33,8 @@ import javafx.util.Duration;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+
+
 
 public class TimKiemThuocTrongKho_Ctrl {
     // 1. KHAI BÁO THÀNH PHẦN GIAO DIỆN
@@ -47,7 +52,9 @@ public class TimKiemThuocTrongKho_Ctrl {
     public ToggleButton hienThiTheoLo;
     public TableColumn<Object, Integer> colSoLoTon;
     private Timeline colorTimeline;
-    Color current;
+    private Color current;
+    public StackPane rootTablePane;
+    private LoadingOverlay loadingOverlay;
 
     // 2. KHỞI TẠO (INITIALIZE)
     public void start(Stage stage) throws Exception {
@@ -57,116 +64,130 @@ public class TimKiemThuocTrongKho_Ctrl {
     public void initialize() {
         tfTimThuoc.setOnAction(e-> timThuoc());
         btnLamMoi.setOnAction(e-> LamMoi());
-        Platform.runLater(()->{
-            loadTable();
-        });
         btnTimThuoc.setOnAction(e-> timThuoc());
         hienThiTheoLo.setOnAction(e-> onToggleHienThiTheoLo());
         hienThiTheoLo.setSelected(true);
+        Platform.runLater(()->{
+            loadTable();
+        });
+        loadingOverlay = new LoadingOverlay();
+        // đặt overlay lên trên TableView
+        rootTablePane.getChildren().add(loadingOverlay);
+        tbThuoc.setPlaceholder(new Label("")); // hoặc new Label() cũng được
 
     }
     // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
 
     public void loadTable() {
-        boolean isTheoLo = hienThiTheoLo != null && hienThiTheoLo.isSelected();
-        Thuoc_SP_TheoLo_Dao dao = new Thuoc_SP_TheoLo_Dao();
+        runWithLoading(() -> {
+            boolean isTheoLo = hienThiTheoLo != null && hienThiTheoLo.isSelected();
+            Thuoc_SP_TheoLo_Dao dao = new Thuoc_SP_TheoLo_Dao();
+            if (isTheoLo) {
+                List<Thuoc_SP_TheoLo> list = dao.selectAll();
+                ObservableList<Object> data = FXCollections.observableArrayList(list);
 
-        if (isTheoLo) {
-            List<Thuoc_SP_TheoLo> list = dao.selectAll();
-            ObservableList<Object> data = FXCollections.observableArrayList(list);
+                Platform.runLater(()->{
+                    colSTT.setCellValueFactory(cellData ->
+                            new SimpleStringProperty(String.valueOf(tbThuoc.getItems().indexOf(cellData.getValue()) + 1))
+                    );
+                    colMaThuoc.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                            return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getMaThuoc());
+                        }
+                        return new SimpleStringProperty("");
+                    });
+                    colTenThuoc.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                            return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getTenThuoc());
+                        }
+                        return new SimpleStringProperty("");
+                    });
+                    colDVT.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                            return new SimpleStringProperty(new Thuoc_SanPham_Dao().getTenDVTByMaThuoc(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getMaThuoc()));
+                        }
+                        return new SimpleStringProperty("");
+                    });
+                    colMaLo.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                            return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getMaLH());
+                        }
+                        return new SimpleStringProperty("");
+                    });
+                    colSLTon.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                            return new javafx.beans.property.SimpleIntegerProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getSoLuongTon()).asObject();
+                        }
+                        return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
+                    });
 
-            colSTT.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(String.valueOf(tbThuoc.getItems().indexOf(cellData.getValue()) + 1))
-            );
-            colMaThuoc.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
-                    return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getMaThuoc());
-                }
-                return new SimpleStringProperty("");
-            });
-            colTenThuoc.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
-                    return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getTenThuoc());
-                }
-                return new SimpleStringProperty("");
-            });
-            colDVT.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
-                    return new SimpleStringProperty(new Thuoc_SanPham_Dao().getTenDVTByMaThuoc(((Thuoc_SP_TheoLo) cellData.getValue()).getThuoc().getMaThuoc()));
-                }
-                return new SimpleStringProperty("");
-            });
-            colMaLo.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
-                    return new SimpleStringProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getMaLH());
-                }
-                return new SimpleStringProperty("");
-            });
-            colSLTon.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
-                    return new javafx.beans.property.SimpleIntegerProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getSoLuongTon()).asObject();
-                }
-                return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
-            });
+                    tbThuoc.setItems(data);
+                });
+            } else {
+                List<ThuocTonKho> list = dao.getThuocTonKho();
+                ObservableList<Object> data = FXCollections.observableArrayList(list);
 
-            tbThuoc.setItems(data);
-        } else {
-            List<ThuocTonKho> list = dao.getThuocTonKho();
-            ObservableList<Object> data = FXCollections.observableArrayList(list);
+                Platform.runLater(()->{
+                    colSTT.setCellValueFactory(cellData ->
+                            new SimpleStringProperty(String.valueOf(tbThuoc.getItems().indexOf(cellData.getValue()) + 1))
+                    );
+                    colMaThuoc.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof ThuocTonKho) {
+                            return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getMaThuoc());
+                        }
+                        return new SimpleStringProperty("");
+                    });
+                    colTenThuoc.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof ThuocTonKho) {
+                            return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getTenThuoc());
+                        }
+                        return new SimpleStringProperty("");
+                    });
+                    colDVT.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof ThuocTonKho) {
+                            return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getDonViTinh());
+                        }
+                        return new SimpleStringProperty("");
+                    });
+                    colSoLoTon.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof ThuocTonKho) {
+                            return new javafx.beans.property.SimpleIntegerProperty(((ThuocTonKho) cellData.getValue()).getSoLoTon()).asObject();
+                        }
+                        return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
+                    });
+                    colSLTon.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof ThuocTonKho) {
+                            return new javafx.beans.property.SimpleIntegerProperty(((ThuocTonKho) cellData.getValue()).getTongSoLuongTon()).asObject();
+                        }
+                        return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
+                    });
 
-            colSTT.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(String.valueOf(tbThuoc.getItems().indexOf(cellData.getValue()) + 1))
-            );
-            colMaThuoc.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof ThuocTonKho) {
-                    return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getMaThuoc());
-                }
-                return new SimpleStringProperty("");
-            });
-            colTenThuoc.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof ThuocTonKho) {
-                    return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getTenThuoc());
-                }
-                return new SimpleStringProperty("");
-            });
-            colDVT.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof ThuocTonKho) {
-                    return new SimpleStringProperty(((ThuocTonKho) cellData.getValue()).getDonViTinh());
-                }
-                return new SimpleStringProperty("");
-            });
-            colSoLoTon.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof ThuocTonKho) {
-                    return new javafx.beans.property.SimpleIntegerProperty(((ThuocTonKho) cellData.getValue()).getSoLoTon()).asObject();
-                }
-                return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
-            });
-            colSLTon.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof ThuocTonKho) {
-                    return new javafx.beans.property.SimpleIntegerProperty(((ThuocTonKho) cellData.getValue()).getTongSoLuongTon()).asObject();
-                }
-                return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
-            });
-
-            tbThuoc.setItems(data);
-        }
+                    tbThuoc.setItems(data);
+                });
+            }
+        });
     }
 
 
     // 4. XỬ LÝ NGHIỆP VỤ
     public void timThuoc() {
-        String keyword = tfTimThuoc.getText().trim().toLowerCase();
-        Stage stage = (Stage) btnTimThuoc.getScene().getWindow();
-        Thuoc_SP_TheoLo_Dao dao = new Thuoc_SP_TheoLo_Dao();
-        List<Thuoc_SP_TheoLo> list = keyword.isEmpty()
-                ? dao.selectAll()
-                : dao.selectByTuKhoa(keyword);
+        runWithLoading(() -> {
+            String keyword = tfTimThuoc.getText().trim().toLowerCase();
+            Stage stage = (Stage) btnTimThuoc.getScene().getWindow();
+            Thuoc_SP_TheoLo_Dao dao = new Thuoc_SP_TheoLo_Dao();
+            List<Thuoc_SP_TheoLo> list = keyword.isEmpty()
+                    ? dao.selectAll()
+                    : dao.selectByTuKhoa(keyword);
 
-        ObservableList<Object> data = FXCollections.observableArrayList(list);
-        Platform.runLater(() -> tbThuoc.setItems(data));
+            ObservableList<Object> data = FXCollections.observableArrayList(list);
+            Platform.runLater(() -> {
+                tbThuoc.setItems(data);
+            });
+        });
     }
 
     private void LamMoi() {
+
         tfTimThuoc.clear();
         loadTable();
     }
@@ -243,5 +264,24 @@ public class TimKiemThuocTrongKho_Ctrl {
                 new KeyFrame(Duration.millis(200), new KeyValue(color, to, Interpolator.EASE_BOTH))
         );
         colorTimeline.play();
+    }
+
+    private void runWithLoading(Runnable backgroundJob) {
+        loadingOverlay.show();
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                backgroundJob.run();
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> loadingOverlay.hide());
+        task.setOnFailed(e -> loadingOverlay.hide());
+
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
     }
 }

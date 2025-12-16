@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -73,6 +74,14 @@ public class TKThuocTrongKho_GUI {
 
         lblPaneTitle.getChildren().addAll(lbTitle, imgSyringe);
 
+        StackPane rootTablePane = new StackPane();
+        rootTablePane.setId("rootTablePane");
+
+        // position and size like the old table
+        rootTablePane.setLayoutX(12);
+        rootTablePane.setLayoutY(107);
+        rootTablePane.setPrefSize(1621, 780);
+
         TableView<Object> tbThuoc = new TableView<>();
         tbThuoc.setId("tablethuoc");
         tbThuoc.setLayoutX(12);
@@ -111,6 +120,7 @@ public class TKThuocTrongKho_GUI {
 
 
         tbThuoc.getColumns().addAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colMaLo, colSoLoTon,colSLTon);
+        rootTablePane.getChildren().add(tbThuoc);
 
         Button btnLamMoi = new Button();
         btnLamMoi.setId("btnLamMoi");
@@ -127,7 +137,7 @@ public class TKThuocTrongKho_GUI {
         imgRefresh.setPickOnBounds(true);
         btnLamMoi.setGraphic(imgRefresh);
 
-        root.getChildren().addAll(tfTimThuoc, hienThiTheoLo,btnTimThuoc, lblPaneTitle, tbThuoc, btnLamMoi);
+        root.getChildren().addAll(tfTimThuoc, hienThiTheoLo,btnTimThuoc, lblPaneTitle, rootTablePane, btnLamMoi);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/QuanLyThuoc.css")).toExternalForm());
@@ -145,6 +155,7 @@ public class TKThuocTrongKho_GUI {
         ctrl.colSLTon = (TableColumn<Object, Integer>) (TableColumn<?, ?>) colSLTon;
         ctrl.hienThiTheoLo = hienThiTheoLo;
         ctrl.colSoLoTon = (TableColumn<Object, Integer>) (TableColumn<?, ?>) colSoLoTon;
+        ctrl.rootTablePane = rootTablePane;
 
         // Initialize controller logic
         ctrl.initialize();

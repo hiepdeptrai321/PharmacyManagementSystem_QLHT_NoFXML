@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class TKThuoc_GUI {
+    StackPane rootTablePane;
 
     /** Dùng trong app: tạo UI và GÁN trực tiếp control vào controller (không lookup). */
     public void showWithController(Stage stage, TimKiemThuoc_Ctrl ctrl) {
@@ -72,6 +73,7 @@ public class TKThuoc_GUI {
         ctrl.colLoaiHang    = v.colLoaiHang;
         ctrl.colViTri       = v.colViTri;
         ctrl.colChiTiet     = v.colChiTiet;
+        ctrl.rootTablePane  = rootTablePane;
 
         // map sự kiện từ FXML: onAction="#btnXoaRong"
         v.btnReset.setOnAction(ctrl::btnXoaRong);
@@ -188,6 +190,14 @@ public class TKThuoc_GUI {
                 lbHamLuong, v.txtHamLuongMin,  lbDash, v.txtHamLuongMax
         );
 
+        rootTablePane = new StackPane();
+        rootTablePane.setId("rootTablePane");
+
+        // position and size like the old table
+        rootTablePane.setLayoutX(12);
+        rootTablePane.setLayoutY(106);
+        rootTablePane.setPrefSize(1559, 749);
+
         // ===== Bảng dữ liệu =====
         v.tbl_Thuoc = new TableView<>();
         v.tbl_Thuoc.setPrefSize(1559, 749);
@@ -226,8 +236,9 @@ public class TKThuoc_GUI {
                 v.colMaThuoc, v.colTenThuoc, v.colHamLuong, v.colSDK_GPNK,
                 v.colXuatXu, v.colLoaiHang, v.colViTri, v.colChiTiet
         );
+        rootTablePane.getChildren().add(v.tbl_Thuoc);
 
-        vbRoot.getChildren().addAll(hbTitle, sepTop, paneFilters, v.tbl_Thuoc);
+        vbRoot.getChildren().addAll(hbTitle, sepTop, paneFilters, rootTablePane);
         v.root.getChildren().add(vbRoot);
 
         return v;
