@@ -129,14 +129,14 @@ public class DanhMucNhaCungCap_GUI extends Application {
 
         Button btnNhap = new Button("📥");
         btnNhap.setId("btnnhapxuat");
-        btnNhap.setLayoutX(1545);
+        btnNhap.setLayoutX(1541);
         btnNhap.setLayoutY(47);
         btnNhap.setPrefSize(45, 30);
         btnNhap.setMinWidth(46);
 
         Button btnXuat = new Button("📤");
         btnXuat.setId("btnnhapxuat");
-        btnXuat.setLayoutX(1596);
+        btnXuat.setLayoutX(1592);
         btnXuat.setLayoutY(47);
         btnXuat.setPrefSize(43, 40);
         btnXuat.setMinWidth(27);

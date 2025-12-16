@@ -76,6 +76,7 @@ public class CuaSoChinh_QuanLy_GUI {
         v.miTimThuoc.setOnAction(ctrl::timKiemThuoc);
         v.miTimKhachHang.setOnAction(ctrl::timKiemKhachHang);
         v.miTKHoatDong.setOnAction(ctrl::timKiemHoatDong);
+        v.miTimThuocTrongKho.setOnAction(ctrl::timKiemThuocTrongKho);
 
         // Menu DANH MỤC
         v.miDMThuoc.setOnAction(ctrl::danhMucThuoc);
@@ -151,11 +152,12 @@ public class CuaSoChinh_QuanLy_GUI {
         v.miTKPhieuDat  = mi("Tìm phiếu đặt hàng");
         v.miTKNCC       = mi("Tìm nhà cung cấp");
         v.miTimThuoc    = mi("Tìm thuốc");
+        v.miTimThuocTrongKho = mi("Tìm thuốc trong kho");
         v.miTimKhachHang= mi("Tìm khách hàng");
         v.miTKHoatDong  = mi("Tìm kiếm hoạt động");
         v.menuTimKiem.getItems().addAll(
                 v.miTKHoaDon, v.miTKPhieuNhap, v.miTKPhieuDoi, v.miTKPhieuTra,
-                v.miTKPhieuDat, v.miTKNCC, v.miTimThuoc, v.miTimKhachHang, v.miTKHoatDong
+                v.miTKPhieuDat, v.miTKNCC, v.miTimThuoc, v.miTimThuocTrongKho, v.miTimKhachHang, v.miTKHoatDong
         );
         v.menuTimKiem.getStyleClass().add("m-timkiem");
 
@@ -396,7 +398,7 @@ public class CuaSoChinh_QuanLy_GUI {
         Menu menuTimKiem, menuDanhMuc, menuCapNhat, menuThongKe, menuXuLy;
 
         // các MenuItem cần gắn handler
-        MenuItem miTKHoaDon, miTKPhieuNhap, miTKPhieuDoi, miTKPhieuTra, miTKPhieuDat, miTKNCC, miTKHoatDong;
+        MenuItem miTKHoaDon, miTKPhieuNhap, miTKPhieuDoi, miTKPhieuTra, miTKPhieuDat, miTKNCC, miTKHoatDong, miTimThuocTrongKho;
         MenuItem miDMThuoc, miDMNhanVien, miDMKeHang, miDMKhuyenMai, miDMNCC, miDMNhomDL, miDMKhachHang;
         MenuItem miTKDoanhThu, miTKXNT;
         MenuItem miTimThuoc, miTimKhachHang;

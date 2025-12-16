@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -25,6 +26,7 @@ public class DanhMucThuoc_GUI extends Application {
     private TableView<Thuoc_SanPham> tbl_Thuoc;
     private TableColumn<Thuoc_SanPham, String> colSTT, colMaThuoc, colTenThuoc,
             colHamLuong, colSDK_GPNK, colXuatXu, colLoaiHang, colViTri, colChiTiet;
+    StackPane rootTablePane;
 
     @Override
     public void start(Stage stage) {
@@ -57,6 +59,8 @@ public class DanhMucThuoc_GUI extends Application {
         ctrl.colLoaiHang = colLoaiHang;
         ctrl.colViTri    = colViTri;
         ctrl.colChiTiet  = colChiTiet;
+
+        ctrl.rootTablePane = rootTablePane;
 
         // ==== Gắn handler giống FXML ====
         // FXML: onMouseClicked="#timThuoc"
@@ -161,6 +165,15 @@ public class DanhMucThuoc_GUI extends Application {
         btnNhapExcel.setPrefSize(45, 40);
         btnNhapExcel.setStyle(" -fx-background-color: #3264FFCC; -fx-text-fill: white;");
 
+
+        rootTablePane = new StackPane();
+        rootTablePane.setId("rootTablePane");
+
+        // position and size like the old table
+        rootTablePane.setLayoutX(12);
+        rootTablePane.setLayoutY(106);
+        rootTablePane.setPrefSize(1622, 781);
+
         // --- Table ---
         tbl_Thuoc = new TableView<>();
         tbl_Thuoc.setId("tbl_Thuoc");
@@ -214,8 +227,10 @@ public class DanhMucThuoc_GUI extends Application {
                 colXuatXu, colLoaiHang, colViTri, colChiTiet
         );
 
+        rootTablePane.getChildren().add(tbl_Thuoc);
+
         root.getChildren().addAll(
-                tfTimThuoc, btnTimThuoc, lblPaneTitle, btnThemThuoc, tbl_Thuoc, btnNhapExcel, btnLamMoi
+                tfTimThuoc, btnTimThuoc, lblPaneTitle, btnThemThuoc, rootTablePane, btnNhapExcel, btnLamMoi
         );
 
         return root;

@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import  java.sql.Date;
 
-public class TimKiemPhieuNhap_Ctrl extends Application {
+public class TimKiemPhieuNhap_Ctrl {
     public TableColumn<PhieuNhap, String> colChiTiet;
     public ComboBox cbxTimKiem;
     public TextField txtTimKiem;
@@ -50,11 +50,6 @@ public class TimKiemPhieuNhap_Ctrl extends Application {
     private ObservableList<PhieuNhap> duLieuChinh = FXCollections.observableArrayList();
     private FilteredList<PhieuNhap> duLieu;
     private boolean tpBoLocOnClick = false;
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        new TKPhieuNhapHang_GUI().showWithController(stage, this);
-    }
 
     public void initialize(){
         duLieuChinh.addAll(new PhieuNhap_Dao().selectAll());
@@ -78,8 +73,7 @@ public class TimKiemPhieuNhap_Ctrl extends Application {
                 tpBoLoc.setMinHeight(Region.USE_COMPUTED_SIZE);
                 tpBoLoc.setPrefHeight(Region.USE_COMPUTED_SIZE);
             } else {
-                tpBoLoc.setMinHeight(40); // chỉ giữ phần tiêu đề
-                tpBoLoc.setPrefHeight(40);
+                tpBoLoc.setMaxHeight(41); // chỉ giữ phần tiêu đề
             }
             tpBoLoc.requestLayout(); // ép VBox tính lại layout
         });

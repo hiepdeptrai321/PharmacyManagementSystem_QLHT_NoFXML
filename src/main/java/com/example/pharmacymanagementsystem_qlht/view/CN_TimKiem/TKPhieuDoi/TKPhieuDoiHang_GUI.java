@@ -61,7 +61,7 @@ public class TKPhieuDoiHang_GUI extends Application {
 
         ctrl.cboTimKiem = new ComboBox<>();
         ctrl.cboTimKiem.setPromptText("Tìm theo");
-        ctrl.cboTimKiem.setPrefSize(200, 40);
+        ctrl.cboTimKiem.setPrefSize(200, 41);
         ctrl.cboTimKiem.getStyleClass().add("btntim");
         HBox.setMargin(ctrl.cboTimKiem, new Insets(10, 5, 0, 0));
 
@@ -71,29 +71,30 @@ public class TKPhieuDoiHang_GUI extends Application {
         ctrl.txtNoiDungTimKiem.getStyleClass().add("tftim");
         HBox.setMargin(ctrl.txtNoiDungTimKiem, new Insets(10, 0, 0, 0));
 
-        Region rg1 = new Region();
-        rg1.setPrefSize(30, 51);
+        ImageView iconTime = new ImageView();
+        try {
+            iconTime = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png").toExternalForm()));
+        } catch (Exception e) { }
 
-        ImageView iconTime = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/time-2623.png").toExternalForm()));
-        iconTime.setFitWidth(28);
-        iconTime.setFitHeight(27);
+        iconTime.setFitWidth(30);
+        iconTime.setFitHeight(30);
         iconTime.setPreserveRatio(true);
-        HBox.setMargin(iconTime, new Insets(16, 4, 0, 0));
+        HBox.setMargin(iconTime, new Insets(16, 4, 0, 40));
 
         Label lblTu = new Label("Từ: ");
-        lblTu.setPrefSize(27, 37);
+        lblTu.setPrefSize(32, 25);
         lblTu.getStyleClass().add("tftim");
         HBox.setMargin(lblTu, new Insets(10, 0, 0, 0));
 
         ctrl.dpTuNgay = new DatePicker();
         ctrl.dpTuNgay.setPrefSize(125, 40);
         ctrl.dpTuNgay.getStyleClass().add("tftim");
-        HBox.setMargin(ctrl.dpTuNgay, new Insets(10, 10, 0, 0));
+        HBox.setMargin(ctrl.dpTuNgay, new Insets(10, 0, 0, 0));
 
         Label lblDen = new Label("Đến: ");
-        lblDen.setPrefSize(35, 37);
+        lblDen.setPrefSize(38, 25);
         lblDen.getStyleClass().add("tftim");
-        HBox.setMargin(lblDen, new Insets(10, 0, 0, 0));
+        HBox.setMargin(lblDen, new Insets(10, 0, 0, 10));
 
         ctrl.dpDenNgay = new DatePicker();
         ctrl.dpDenNgay.setPrefSize(125, 40);
@@ -101,15 +102,19 @@ public class TKPhieuDoiHang_GUI extends Application {
         HBox.setMargin(ctrl.dpDenNgay, new Insets(10, 0, 0, 0));
 
         Region rg2 = new Region();
-        rg2.setPrefSize(30, 51);
+        rg2.setPrefSize(30, 63);
 
         ctrl.btnTimKiem = new Button("Tìm");
         ctrl.btnTimKiem.setPrefSize(78, 40);
         ctrl.btnTimKiem.setDefaultButton(true);
         ctrl.btnTimKiem.getStyleClass().add("btntim");
-        HBox.setMargin(ctrl.btnTimKiem, new Insets(10, 8, 0, 8));
+        HBox.setMargin(ctrl.btnTimKiem, new Insets(10, 0, 0, 15));
 
-        ImageView imgSearch = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png").toExternalForm()));
+        ImageView imgSearch = new ImageView();
+        try {
+            imgSearch = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/free-search-icon-2911-thumb.png").toExternalForm()));
+        } catch (Exception e) {}
+
         imgSearch.setFitWidth(20);
         imgSearch.setFitHeight(20);
         imgSearch.setCursor(Cursor.DEFAULT);
@@ -117,17 +122,21 @@ public class TKPhieuDoiHang_GUI extends Application {
 
         ctrl.btnHuyBo = new Button();
         ctrl.btnHuyBo.setPrefSize(52, 40);
-        ctrl.btnHuyBo.getStyleClass().add("btntim");
         ctrl.btnHuyBo.setId("btnReset");
+        ctrl.btnHuyBo.getStyleClass().add("btntim");
         HBox.setMargin(ctrl.btnHuyBo, new Insets(10, 8, 0, 8));
 
-        ImageView imgRefresh = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png").toExternalForm()));
+        ImageView imgRefresh = new ImageView();
+        try {
+            imgRefresh = new ImageView(new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/refresh-3104.png").toExternalForm()));
+        } catch(Exception e){}
+
         imgRefresh.setFitWidth(20);
         imgRefresh.setFitHeight(20);
         ctrl.btnHuyBo.setGraphic(imgRefresh);
 
         Region rg3 = new Region();
-        rg3.setPrefSize(465, 68);
+        rg3.setPrefSize(390, 68);
 
         ctrl.cbLoc = new ComboBox<>();
         ctrl.cbLoc.setPromptText("⌛ Bộ lọc nhanh");
@@ -135,14 +144,14 @@ public class TKPhieuDoiHang_GUI extends Application {
         ctrl.cbLoc.getStyleClass().add("btntim");
         HBox.setMargin(ctrl.cbLoc, new Insets(10, 0, 0, 0));
 
-         // Thêm vào HBox
         searchBox.getChildren().addAll(
                 ctrl.cboTimKiem, ctrl.txtNoiDungTimKiem,
                 iconTime, lblTu, ctrl.dpTuNgay,
-                lblDen, ctrl.dpDenNgay,
+                lblDen, ctrl.dpDenNgay, rg2,
                 ctrl.btnTimKiem, ctrl.btnHuyBo,
-                rg2, ctrl.cbLoc
+                rg3, ctrl.cbLoc
         );
+
         // --- Bảng dữ liệu ---
         tblPD = new TableView<>();
         tblPD.setPrefSize(1618, 747);

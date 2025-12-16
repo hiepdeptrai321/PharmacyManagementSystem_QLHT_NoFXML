@@ -83,6 +83,8 @@ public class CuaSoChinh_NhanVien_GUI extends Application {
         v.miDM_KeHang       .setOnAction(ctrl::danhMucKeHang);
         v.miDM_NCC          .setOnAction(ctrl::danhMucNhaCungCap);
         v.miDM_NhomDuocLy   .setOnAction(ctrl::danhMucNhomDuocLy);
+        v.miTK_ThuocTrongKho.setOnAction(ctrl::timKiemThuocTrongKho);
+
 
         v.miCN_GiaBan       .setOnAction(ctrl::CapNhatGiaBan);
         v.miCN_TonKho       .setOnAction(ctrl::capNhatTonKho);
@@ -134,10 +136,11 @@ public class CuaSoChinh_NhanVien_GUI extends Application {
         v.miTK_PhieuDatHang = new MenuItem("Tìm phiếu đặt hàng");
         v.miTK_NCC          = new MenuItem("Tìm nhà cung cấp");
         v.miTK_Thuoc        = new MenuItem("Tìm thuốc");
+        v.miTK_ThuocTrongKho = new MenuItem("Tìm thuốc trong kho");
         v.miTK_KhachHang    = new MenuItem("Tìm khách hàng");
         v.menuTimKiem.getItems().addAll(
                 v.miTK_HoaDon, v.miTK_PhieuNhap, v.miTK_PhieuDoiHang, v.miTK_PhieuTraHang,
-                v.miTK_PhieuDatHang, v.miTK_NCC, v.miTK_Thuoc, v.miTK_KhachHang
+                v.miTK_PhieuDatHang, v.miTK_NCC, v.miTK_Thuoc, v.miTK_ThuocTrongKho, v.miTK_KhachHang
         );
 
         // -- Menu Danh mục
@@ -434,13 +437,14 @@ public class CuaSoChinh_NhanVien_GUI extends Application {
 
     // ===================== Giữ tham chiếu control =====================
     private static class ViewRefs {
+
         Pane root;
 
         // thanh menu
         Menu menuTimKiem, menuDanhMuc, menuCapNhat, menuXuLy;
 
         // menu items
-        MenuItem miTK_HoaDon, miTK_PhieuNhap, miTK_PhieuDoiHang, miTK_PhieuTraHang, miTK_PhieuDatHang, miTK_NCC, miTK_Thuoc, miTK_KhachHang;
+        MenuItem miTK_HoaDon, miTK_PhieuNhap, miTK_PhieuDoiHang, miTK_PhieuTraHang, miTK_PhieuDatHang, miTK_NCC, miTK_Thuoc, miTK_KhachHang, miTK_ThuocTrongKho;
         MenuItem miDM_Thuoc, miDM_KhachHang, miDM_KeHang, miDM_NCC, miDM_NhomDuocLy;
         MenuItem miCN_GiaBan, miCN_TonKho;
         MenuItem miXL_LapHoaDon, miXL_LapPhieuDoi, miXL_LapPhieuTra, miXL_LapPhieuDat, miXL_NhapHang;

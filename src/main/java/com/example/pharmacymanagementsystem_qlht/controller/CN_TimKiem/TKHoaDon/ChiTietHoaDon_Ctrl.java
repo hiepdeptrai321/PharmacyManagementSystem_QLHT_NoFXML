@@ -131,7 +131,7 @@ public class ChiTietHoaDon_Ctrl extends Application {
             boolean isETC = hoaDon.getLoaiHoaDon().equalsIgnoreCase("ETC");
 
             if (lblLoaiHoaDon != null) {
-                lblLoaiHoaDon.setText(isETC ? "Hóa đơn Kê đơn (ETC)" : "Hóa đơn Không kê đơn (OTC)");
+                lblLoaiHoaDon.setText(isETC ? "Hóa đơn kê đơn (ETC)" : "Hóa đơn không kê đơn (OTC)");
             }
 
             // Ẩn/Hiện trường Mã Đơn Thuốc
@@ -395,8 +395,8 @@ public class ChiTietHoaDon_Ctrl extends Application {
         }
 
         document.add(new Paragraph("Quốc Khánh Pharmacy")
-                .setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setMarginTop(5));
-        document.add(new Paragraph("Địa chỉ: 12 Đường Nguyễn Văn Bảo, phường 4, Gò Vấp, TP Hồ Chí Minh")
+                .setFontSize(18).setBold().setTextAlignment(TextAlignment.CENTER).setMarginTop(5));
+        document.add(new Paragraph("Địa chỉ: Số 12 Đường Nguyễn Văn Bảo, Phường 4, Gò Vấp, TP Hồ Chí Minh")
                 .setFontSize(10).setTextAlignment(TextAlignment.CENTER));
         document.add(new Paragraph("Hotline: 1800 6868")
                 .setFontSize(10).setTextAlignment(TextAlignment.CENTER));
@@ -426,7 +426,7 @@ public class ChiTietHoaDon_Ctrl extends Application {
         document.add(new Paragraph("Số điện thoại: " + lblSDTKhachHangValue.getText()));
 
         // Ghi rõ nhân viên lập HĐ (người tạo HĐ gốc)
-        document.add(new Paragraph("Nhân viên lập HĐ: " + lblTenNhanVienValue.getText()));
+        document.add(new Paragraph("Nhân viên: " + lblTenNhanVienValue.getText()));
 
         // ----- BẮT ĐẦU THÊM MỚI -----
         // Lấy nhân viên đang đăng nhập (người in)

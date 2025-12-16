@@ -2,6 +2,7 @@ package com.example.pharmacymanagementsystem_qlht.dao;
 
 import com.example.pharmacymanagementsystem_qlht.connectDB.ConnectDB;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietPhieuNhap;
+import com.example.pharmacymanagementsystem_qlht.model.ThuocTonKho;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
 
@@ -30,6 +31,18 @@ public class Thuoc_SP_TheoLo_Dao implements DaoInterface<Thuoc_SP_TheoLo> {
             "UPDATE Thuoc_SP_TheoLo " +
                     "SET SoLuongTon = SoLuongTon - ? " +
                     "WHERE MaLH = ? AND SoLuongTon >= ?";
+
+
+    private final String SELECT_THUOC_TON_KHO = "SELECT ttl.MaThuoc, tsp.TenThuoc, dvt.TenDonViTinh, " +
+            "COUNT(ttl.MaLH) as SoLoTon, SUM(ttl.SoLuongTon) as TongSoLuongTon " +
+            "FROM Thuoc_SP_TheoLo ttl " +
+            "JOIN Thuoc_SanPham tsp ON ttl.MaThuoc = tsp.MaThuoc " +
+            "JOIN ChiTietDonViTinh ctdvt ON ctdvt.MaThuoc = tsp.MaThuoc " +
+            "JOIN DonViTinh dvt ON dvt.MaDVT = ctdvt.MaDVT " +
+            "WHERE ctdvt.DonViCoBan = 1 " +
+            "GROUP BY ttl.MaThuoc, tsp.TenThuoc, dvt.TenDonViTinh";
+
+
     @Override
     public boolean insert(Thuoc_SP_TheoLo e) {
         return ConnectDB.update(
@@ -236,6 +249,26 @@ public class Thuoc_SP_TheoLo_Dao implements DaoInterface<Thuoc_SP_TheoLo> {
             e.printStackTrace();
         }
 
+        return list;
+    }
+
+    public List<ThuocTonKho> getThuocTonKho(){
+        List<ThuocTonKho> list = new ArrayList<>();
+        try {
+            ResultSet rs = ConnectDB.query(SELECT_THUOC_TON_KHO);
+            while (rs.next()) {
+                ThuocTonKho t = new ThuocTonKho();
+                t.setTenThuoc(rs.getString("TenThuoc"));
+                t.setDonViTinh(rs.getString("TenDonViTinh"));
+                t.setMaThuoc(rs.getString("MaThuoc"));
+                t.setSoLoTon(rs.getInt("SoLoTon"));
+                t.setTongSoLuongTon(rs.getInt("TongSoLuongTon"));
+                list.add(t);
+            }
+            rs.getStatement().getConnection().close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return list;
     }
 }

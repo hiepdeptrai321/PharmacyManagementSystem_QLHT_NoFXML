@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class TKThuoc_GUI {
+    StackPane rootTablePane;
 
     /** Dùng trong app: tạo UI và GÁN trực tiếp control vào controller (không lookup). */
     public void showWithController(Stage stage, TimKiemThuoc_Ctrl ctrl) {
@@ -72,6 +73,7 @@ public class TKThuoc_GUI {
         ctrl.colLoaiHang    = v.colLoaiHang;
         ctrl.colViTri       = v.colViTri;
         ctrl.colChiTiet     = v.colChiTiet;
+        ctrl.rootTablePane  = rootTablePane;
 
         // map sự kiện từ FXML: onAction="#btnXoaRong"
         v.btnReset.setOnAction(ctrl::btnXoaRong);
@@ -83,7 +85,7 @@ public class TKThuoc_GUI {
         Scene scene = new Scene(v.root, 1646, 895);
         scene.setCursor(Cursor.DEFAULT);
 
-        stage.setTitle("Tìm Kiếm Thuốc");
+        stage.setTitle("Tìm kiếm thuốc");
         stage.setScene(scene);
     }
 
@@ -106,7 +108,7 @@ public class TKThuoc_GUI {
         HBox hbTitle = new HBox();
         hbTitle.setPrefSize(782, 46);
 
-        Label lbTitle = new Label("Tìm Kiếm Thuốc");
+        Label lbTitle = new Label("Tìm kiếm thuốc");
         lbTitle.setId("lbTimKiem");
         lbTitle.getStyleClass().add("title");
         lbTitle.setPrefSize(285, 53);
@@ -133,7 +135,7 @@ public class TKThuoc_GUI {
 
         v.btnReset = new Button();
         v.btnReset.setId("btnReset");
-        v.btnReset.setLayoutX(1558);
+        v.btnReset.setLayoutX(1568);
         v.btnReset.setLayoutY(9);
         v.btnReset.setPrefSize(52, 40);
         // graphic refresh
@@ -162,31 +164,39 @@ public class TKThuoc_GUI {
         v.cbxXuatSu.setPrefSize(165, 40);
         v.cbxXuatSu.setPromptText("Chọn xuất xứ");
 
-        Label lbHamLuong = new Label("Hàm lượng:");
+        Label lbHamLuong = new Label("Hàm lượng (mg):");
         lbHamLuong.setLayoutX(1128);
         lbHamLuong.setLayoutY(18);
         lbHamLuong.setFont(Font.font("System Bold", 15));
 
         v.txtHamLuongMin = new TextField();
-        v.txtHamLuongMin.setLayoutX(1222);
+        v.txtHamLuongMin.setLayoutX(1247);
         v.txtHamLuongMin.setLayoutY(9);
         v.txtHamLuongMin.setPrefSize(74, 40);
         v.txtHamLuongMin.setPromptText("Từ");
 
         v.txtHamLuongMax = new TextField();
-        v.txtHamLuongMax.setLayoutX(1311);
+        v.txtHamLuongMax.setLayoutX(1336);
         v.txtHamLuongMax.setLayoutY(9);
         v.txtHamLuongMax.setPrefSize(74, 40);
         v.txtHamLuongMax.setPromptText("Đến");
 
-        Label lbDash = new Label("---");
-        lbDash.setLayoutX(1296);
+        Label lbDash = new Label("--");
+        lbDash.setLayoutX(1322);
         lbDash.setLayoutY(21);
 
         paneFilters.getChildren().addAll(
                 v.txtTimKiem, v.btnReset, lbLoc, v.cboTimKiem, v.cbxLoaiHang, v.cbxXuatSu,
-                lbHamLuong, v.txtHamLuongMin, v.txtHamLuongMax, lbDash
+                lbHamLuong, v.txtHamLuongMin,  lbDash, v.txtHamLuongMax
         );
+
+        rootTablePane = new StackPane();
+        rootTablePane.setId("rootTablePane");
+
+        // position and size like the old table
+        rootTablePane.setLayoutX(12);
+        rootTablePane.setLayoutY(106);
+        rootTablePane.setPrefSize(1559, 749);
 
         // ===== Bảng dữ liệu =====
         v.tbl_Thuoc = new TableView<>();
@@ -226,8 +236,9 @@ public class TKThuoc_GUI {
                 v.colMaThuoc, v.colTenThuoc, v.colHamLuong, v.colSDK_GPNK,
                 v.colXuatXu, v.colLoaiHang, v.colViTri, v.colChiTiet
         );
+        rootTablePane.getChildren().add(v.tbl_Thuoc);
 
-        vbRoot.getChildren().addAll(hbTitle, sepTop, paneFilters, v.tbl_Thuoc);
+        vbRoot.getChildren().addAll(hbTitle, sepTop, paneFilters, rootTablePane);
         v.root.getChildren().add(vbRoot);
 
         return v;
