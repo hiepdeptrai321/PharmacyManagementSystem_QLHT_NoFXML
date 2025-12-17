@@ -77,9 +77,10 @@ public class caiDat_Ctrl {
                         switch(donVi){
                             case "Tháng":{
                                 soNgay *= 30;
-                            } case "Năm":{
+                            } break;
+                            case "Năm":{
                                 soNgay *=365;
-                            }
+                            }break;
                             default:break;
                         }
                         caiDat.setGiaTri(String.valueOf(soNgay));
@@ -130,7 +131,7 @@ public class caiDat_Ctrl {
                     }
                 }break;
                 case "NgayHetHan":{
-                    if(!view.txtNgay.getText().equals(caiDat.getGiaTri())) {
+                    if(!view.txtNgay.getText().equals(caiDat.getGiaTri())||view.cbxdonViNgay.getSelectionModel().getSelectedIndex()!=0) {
                         cachLuu+=2;
                     }
                 }break;
