@@ -6,7 +6,7 @@ USE QuanLyNhaThuoc;
 GO
 
 --Link thư mục hình ảnh thuốc
-DECLARE @path NVARCHAR(255) = N'C:\Users\Hiep\Desktop\hk1_2025-2026\QLHT_NoFXML\SQL\imgThuoc\';
+DECLARE @path NVARCHAR(255) = N'F:\hk5\PTUD_Java\Project\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc\';
 
 -- =========================
 -- Bảng KhachHang
@@ -368,15 +368,10 @@ CREATE TABLE Thuoc_SP_TangKem (
     PRIMARY KEY (MaKM, MaThuocTangKem)
 );
 
-
-
-
-
-
-
-
-
-
+CREATE TABLE ThongSoUngDung(
+    TenThongSo VARCHAR(10) PRIMARY KEY,
+    GiaTri VARCHAR(30)
+)
 
 INSERT INTO KhachHang (MaKH, TenKH, SDT, Email, NgaySinh, GioiTinh, DiaChi, TrangThai) VALUES
 ('KH001', N'Nguyễn Văn An', '0905123456', 'an.nguyen@gmail.com', '1990-05-12', 1, N'Hà Nội', 1),
@@ -1521,7 +1516,7 @@ GO
 
 
 
-CREATE PROCEDURE sp_InsertNhanVien
+CREATE OR ALTER PROCEDURE sp_InsertNhanVien
     @HoTen NVARCHAR(50),
     @SDT VARCHAR(15),
     @Email VARCHAR(100),
@@ -1554,8 +1549,8 @@ BEGIN
     END
 
     -- Thêm nhân viên mới
-    INSERT INTO NhanVien(MaNV, TenNV, SDT, Email, NgaySinh, GioiTinh, DiaChi, TrangThai, TaiKhoan, MatKhau, NgayVaoLam, NgayKetThuc)
-    VALUES(@NewMaNV, @HoTen, @SDT, @Email, @NamSinh,@GioiTinh, @DiaChi, @TrangThai,@MaTK,@MatKhau,@NgayVaoLam,null);
+    INSERT INTO NhanVien(MaNV, TenNV, SDT, Email, NgaySinh, GioiTinh, DiaChi, TrangThai, TaiKhoan, MatKhau, NgayVaoLam, NgayKetThuc,TrangThaiXoa,VaiTro)
+    VALUES(@NewMaNV, @HoTen, @SDT, @Email, @NamSinh,@GioiTinh, @DiaChi, @TrangThai,@MaTK,@MatKhau,@NgayVaoLam,null,0, N'Nhân viên');
 
     -- Xuất mã nhân viên mới
     SELECT @NewMaNV AS MaNhanVienMoi;

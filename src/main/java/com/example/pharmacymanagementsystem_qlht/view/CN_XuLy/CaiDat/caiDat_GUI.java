@@ -1,5 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.CaiDat;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.CaiDat.caiDat_Ctrl;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,12 +21,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class caiDat_GUI {
+public class caiDat_GUI{
     public TextField txtThue;
     public ComboBox<String> cbxdonViNgay;
     public TextField txtNgay;
     public Button btnLuu;
     public Button btnHuy;
+    private Parent root;
+
 
     public Parent createUI(){
         BorderPane root = new BorderPane();
@@ -97,6 +100,14 @@ public class caiDat_GUI {
         root.setTop(vbox);
 
 //        Scene scene = new Scene(root,310,150);
+        this.root = root;
+        new caiDat_Ctrl(this);
+
         return root;
     }
+
+    public Parent getRoot(){
+        return root;
+    }
+
 }

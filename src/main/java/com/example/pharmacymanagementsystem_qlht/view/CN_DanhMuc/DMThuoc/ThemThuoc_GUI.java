@@ -109,9 +109,9 @@ public class ThemThuoc_GUI {
         Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(248); lbViTri.setLayoutY(18); lbViTri.setFont(Font.font(14));
         cbxViTri = new ComboBox<>(); cbxViTri.setLayoutX(286); cbxViTri.setLayoutY(16); cbxViTri.setPrefSize(158, 25);
 
-        Label lbMa = new Label("Mã thuốc:"); lbMa.setLayoutX(1); lbMa.setLayoutY(-27); lbMa.setFont(Font.font(14));
+        Label lbMa = new Label("Mã thuốc"); lbMa.setLayoutX(1); lbMa.setLayoutY(-27); lbMa.setFont(Font.font(14));
         txtMaThuoc = new TextField(); txtMaThuoc.setEditable(false); txtMaThuoc.setDisable(true);
-        txtMaThuoc.setLayoutX(74); txtMaThuoc.setLayoutY(-28); txtMaThuoc.setPrefSize(120, 25);
+        txtMaThuoc.setLayoutX(70); txtMaThuoc.setLayoutY(-28); txtMaThuoc.setPrefSize(120, 25);
 
         infoLine.getChildren().addAll(lbTenThuoc, txtTenThuoc, lbLoaiHang, cbxLoaiHang, lbViTri, cbxViTri, lbMa, txtMaThuoc);
         leftBox.getChildren().addAll(spacer, infoLine);
@@ -131,7 +131,7 @@ public class ThemThuoc_GUI {
 
         Label lbTTCT = new Label("Thông tin chi tiết");
         lbTTCT.getStyleClass().add("lbtitle");
-        lbTTCT.setLayoutX(4); lbTTCT.setLayoutY(-6); lbTTCT.setFont(Font.font(18));
+        lbTTCT.setLayoutX(4); lbTTCT.setLayoutY(-6); lbTTCT.setPrefSize(637,0); lbTTCT.setFont(Font.font(18));
 
         Label lbHL = new Label("Hàm lượng"); lbHL.setLayoutX(4); lbHL.setLayoutY(31); lbHL.setFont(Font.font(11));
         txtHamLuong = new TextField(); txtHamLuong.setLayoutX(4); txtHamLuong.setLayoutY(45); txtHamLuong.setPrefSize(136, 25);
@@ -176,7 +176,7 @@ public class ThemThuoc_GUI {
 
         // Bảng + tìm hoạt chất
         Label lbHC = new Label("Hoạt chất"); lbHC.getStyleClass().add("lbtitle");
-        lbHC.setLayoutX(18); lbHC.setLayoutY(334); lbHC.setFont(Font.font(18));
+        lbHC.setLayoutX(18); lbHC.setLayoutY(334); lbHC.setFont(Font.font(18));lbHC.setPrefSize(637,0);
 
         Label lbTim = new Label("Tìm hoạt chất:"); lbTim.getStyleClass().add("lblChinh");
         lbTim.setLayoutX(18); lbTim.setLayoutY(378); lbTim.setFont(Font.font(14));
