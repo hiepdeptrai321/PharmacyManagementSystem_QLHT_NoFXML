@@ -6,6 +6,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.ThongKe_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
+import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.CaiDat.caiDat_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI;
@@ -32,6 +33,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -541,6 +543,20 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         }
     }
 
+    public void btnCaiDatClick(ActionEvent actionEvent) {
+        pnlThongTin.setVisible(!pnlThongTin.isVisible());
+        caiDat_GUI view = new caiDat_GUI();
+        Parent root = view.createUI(); // hoặc view.getRoot()
+
+        Scene scene = new Scene(root, 310, 150);
+        Stage stage = new  Stage();
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png"))));
+        stage.initOwner(txtNgayThangNam.getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setScene(scene);
+        stage.setTitle("Cài đặt");
+        stage.show();
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -561,5 +577,10 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         showInMainPane(lapHoaDonRoot);
         pnlThongTin.setVisible(false);
         pnlChung.requestFocus();
+    }
+
+    public void dong(){
+        Stage stage = (Stage) pnlThongTin.getScene().getWindow();
+        stage.close();
     }
 }

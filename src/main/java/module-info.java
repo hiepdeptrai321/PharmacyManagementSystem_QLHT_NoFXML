@@ -83,6 +83,8 @@ module com.example.pharmacymanagementsystem_qlht {
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMNhanVien to javafx.fxml, javafx.graphics;
     exports com.example.pharmacymanagementsystem_qlht.TienIch;
     opens com.example.pharmacymanagementsystem_qlht.TienIch to javafx.fxml;
+    opens com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.CaiDat to javafx.fxml;
+    exports com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.CaiDat;
 
 
 

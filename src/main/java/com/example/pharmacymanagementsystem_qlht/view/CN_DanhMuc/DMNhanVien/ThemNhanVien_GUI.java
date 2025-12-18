@@ -167,7 +167,6 @@ public class ThemNhanVien_GUI {
         cbxGioiTinh = new ComboBox<>();
         cbxGioiTinh.setLayoutX(278); cbxGioiTinh.setLayoutY(152);
         cbxGioiTinh.setPrefSize(150, 30);
-        cbxGioiTinh.getItems().addAll("Chọn giới tính", "Nam", "Nữ");
         cbxGioiTinh.getSelectionModel().selectFirst();
 
         pane.getChildren().addAll(

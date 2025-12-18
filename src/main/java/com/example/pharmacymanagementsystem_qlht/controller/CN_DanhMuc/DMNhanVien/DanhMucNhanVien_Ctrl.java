@@ -208,9 +208,7 @@ public class DanhMucNhanVien_Ctrl extends Application {
             Stage dialog = new Stage();
             dialog.initOwner(txtTim.getScene().getWindow());                 // ĐẶT TRƯỚC
             dialog.setTitle("Thêm nhân viên");
-            dialog.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png"
-            )));
+            dialog.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png"))));
 
             ctrl.setParent(this);                                            // nếu cần
             gui.showWithController(dialog, ctrl);                            // hàm này tự showAndWait()
