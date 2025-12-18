@@ -212,8 +212,16 @@ public class LapPhieuNhapHang_GUI extends Application {
                         "-fx-border-width: 1;" +
                         "-fx-border-color: #027816;"
         );
-        v.btnNhapHangExcelPane.setOnMousePressed(e -> {v.btnNhapHangExcelPane.setStyle("-fx-background-color: #d9d9d9;" + "-fx-background-radius: 5px;");});
-        v.btnNhapHangExcelPane.setOnMouseReleased(e -> {v.btnNhapHangExcelPane.setStyle("-fx-background-color: #ffffff;" + "-fx-background-radius: 5px;");});
+        v.btnNhapHangExcelPane.setOnMousePressed(e -> {v.btnNhapHangExcelPane.setStyle("-fx-background-color: #e1e1e1;" +
+                "-fx-background-radius: 5px;" +
+                "-fx-border-radius: 5px;" +      // ← BẮT BUỘC
+                "-fx-border-width: 1;" +
+                "-fx-border-color: #027816;");});
+        v.btnNhapHangExcelPane.setOnMouseReleased(e -> {v.btnNhapHangExcelPane.setStyle("-fx-background-color: #ffffff;" +
+                "-fx-background-radius: 5px;" +
+                "-fx-border-radius: 5px;" +      // ← BẮT BUỘC
+                "-fx-border-width: 1;" +
+                "-fx-border-color: #027816;");});
         Label lbExcel = new Label("Thêm phiếu nhập hàng bằng excel");
         lbExcel.setId("lblExcel");
         lbExcel.setLayoutX(35);
