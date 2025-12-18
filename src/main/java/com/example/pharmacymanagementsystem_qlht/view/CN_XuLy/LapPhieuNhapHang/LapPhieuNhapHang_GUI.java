@@ -102,6 +102,10 @@ public class LapPhieuNhapHang_GUI extends Application {
         ImageView ivImport = imageView("/com/example/pharmacymanagementsystem_qlht/img/import.png", 38, 38, true);
         ivImport.setLayoutX(287);
         ivImport.setLayoutY(3);
+        lbtitle.setStyle(
+                "-fx-border-color: transparent transparent #cfcfcf transparent;" +
+                        "-fx-border-width: 0 0 1 0;"
+        );
 
         lbtitle.getChildren().addAll(lb, ivImport);
 
@@ -201,7 +205,13 @@ public class LapPhieuNhapHang_GUI extends Application {
         v.btnNhapHangExcelPane.setLayoutX(1063);
         v.btnNhapHangExcelPane.setLayoutY(42);
         v.btnNhapHangExcelPane.setPrefSize(247, 30);
-        v.btnNhapHangExcelPane.setStyle("-fx-background-color: #ffffff;" + "-fx-background-radius: 5px");
+        v.btnNhapHangExcelPane.setStyle(
+                "-fx-background-color: #ffffff;" +
+                        "-fx-background-radius: 5px;" +
+                        "-fx-border-radius: 5px;" +      // ← BẮT BUỘC
+                        "-fx-border-width: 1;" +
+                        "-fx-border-color: #027816;"
+        );
         v.btnNhapHangExcelPane.setOnMousePressed(e -> {v.btnNhapHangExcelPane.setStyle("-fx-background-color: #d9d9d9;" + "-fx-background-radius: 5px;");});
         v.btnNhapHangExcelPane.setOnMouseReleased(e -> {v.btnNhapHangExcelPane.setStyle("-fx-background-color: #ffffff;" + "-fx-background-radius: 5px;");});
         Label lbExcel = new Label("Thêm phiếu nhập hàng bằng excel");

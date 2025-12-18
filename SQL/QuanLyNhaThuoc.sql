@@ -372,6 +372,10 @@ CREATE TABLE ThongSoUngDung(
     TenThongSo VARCHAR(10) PRIMARY KEY,
     GiaTri VARCHAR(30)
 )
+INSERT INTO ThongSoUngDung (TenThongSo,GiaTri) VALUES ('GiaTriThue','0.05')
+INSERT INTO ThongSoUngDung (TenThongSo,GiaTri) VALUES ('NgayHetHan','30')
+
+select * from ThongSoUngDung
 
 INSERT INTO KhachHang (MaKH, TenKH, SDT, Email, NgaySinh, GioiTinh, DiaChi, TrangThai) VALUES
 ('KH001', N'Nguyễn Văn An', '0905123456', 'an.nguyen@gmail.com', '1990-05-12', 1, N'Hà Nội', 1),

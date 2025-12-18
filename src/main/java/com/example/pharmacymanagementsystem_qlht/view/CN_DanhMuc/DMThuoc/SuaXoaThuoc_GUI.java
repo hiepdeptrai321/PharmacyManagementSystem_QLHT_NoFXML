@@ -209,7 +209,7 @@ public class SuaXoaThuoc_GUI extends Application {
         tblHoatChat.setLayoutX(18); tblHoatChat.setLayoutY(411); tblHoatChat.setPrefSize(966, 213);
         colMaHoatChat = new TableColumn<>("Mã hoạt chất"); colMaHoatChat.setPrefWidth(221.14); colMaHoatChat.setStyle("-fx-alignment: CENTER;");
         colTenHoatChat = new TableColumn<>("Tên hoạt chất"); colTenHoatChat.setPrefWidth(448); colTenHoatChat.setStyle("-fx-alignment: CENTER-LEFT;");
-        colHamLuong = new TableColumn<>("Hàm lượng"); colHamLuong.setPrefWidth(209.14); colHamLuong.setStyle("-fx-alignment: CENTER-LEFT;");
+        colHamLuong = new TableColumn<>("Hàm lượng"); colHamLuong.setPrefWidth(209.14); colHamLuong.setStyle("-fx-alignment: CENTER");
         colXoa = new TableColumn<>("Xóa"); colXoa.setPrefWidth(86.28); colXoa.setStyle("-fx-alignment: CENTER;");
         tblHoatChat.getColumns().addAll(colMaHoatChat, colTenHoatChat, colHamLuong, colXoa);
 
