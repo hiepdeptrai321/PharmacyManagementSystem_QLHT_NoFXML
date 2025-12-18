@@ -3,7 +3,6 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDat
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.ThemKhachHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
@@ -11,7 +10,6 @@ import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.ThemKhachHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_GUI;
-import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_GUI;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -632,7 +630,6 @@ public class LapPhieuDatHang_Ctrl extends Application {
 
         // Lắng nghe kết quả chọn khách hàng
         ctrl.setOnSelected(kh -> {
-            this.khachHang = kh;
             if (tfTenKH != null) tfTenKH.setText(kh.getTenKH());
             if (tfSDT != null) tfSDT.setText(kh.getSdt());
             stage.close();
@@ -658,7 +655,6 @@ public class LapPhieuDatHang_Ctrl extends Application {
         view.showWithController(stage, ctrl);
 
         ctrl.setOnSaved(kh -> {
-            this.khachHang = kh;
             if (tfTenKH != null) tfTenKH.setText(kh.getTenKH());
             if (tfSDT != null) tfSDT.setText(kh.getSdt());
         });
@@ -932,33 +928,33 @@ public class LapPhieuDatHang_Ctrl extends Application {
                 a.setTitle("Success");
                 a.setHeaderText(null);
                 a.setContentText("Đặt hàng đã được lưu thành công.");
-                a.initOwner((btnDatHang != null && btnDatHang.getScene() != null)
-                        ? btnDatHang.getScene().getWindow()
-                        : null);
+                a.initOwner((btnDatHang != null && btnDatHang.getScene() != null) ? btnDatHang.getScene().getWindow() : null);
 
                 var result = a.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-
                     try {
-                        ChiTietPhieuDatHang_Ctrl detailCtrl = new ChiTietPhieuDatHang_Ctrl();
-                        detailCtrl.setPhieuDatHang(pd);
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/CN_TimKiem/TKPhieuDatHang/ChiTietPhieuDatHang_GUI.fxml"));
+                        Parent root = loader.load();
+                        Object ctrl = loader.getController();
 
-                        ChiTietPhieuDatHang_GUI detailView = new ChiTietPhieuDatHang_GUI();
+                        if (ctrl instanceof com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_Ctrl) {
+                            var detailCtrl = (com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_Ctrl) ctrl;
+                            // pass the saved PhieuDatHang (pd) to the detail controller
+                            detailCtrl.setPhieuDatHang(pd);
+                        }
 
                         Stage st = new Stage();
                         st.initModality(Modality.APPLICATION_MODAL);
-                        st.initOwner((btnDatHang != null && btnDatHang.getScene() != null)
-                                ? btnDatHang.getScene().getWindow()
-                                : null);
+                        st.initOwner((btnDatHang != null && btnDatHang.getScene() != null) ? btnDatHang.getScene().getWindow() : null);
+                        st.setScene(new Scene(root));
+                        st.showAndWait();
 
-                        detailView.showWithController(st, detailCtrl);
-                        st.show();
-
+                        // after the detail window is closed, clear/reset the form
                         resetForm();
-
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        showValidationAlert("Lỗi", "Không mở được cửa sổ chi tiết.\n" + ex.getMessage(), null);
+                        // still reset UI if error occurs (optional)
+                        onHuy();
                     }
                 }
             });
