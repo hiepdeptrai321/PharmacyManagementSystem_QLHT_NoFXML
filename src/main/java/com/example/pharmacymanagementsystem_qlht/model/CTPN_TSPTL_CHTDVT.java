@@ -37,4 +37,13 @@ public class CTPN_TSPTL_CHTDVT {
     public void setChiTietSP_theoLo(Thuoc_SP_TheoLo chiTietSP_theoLo) {
         this.chiTietSP_theoLo = chiTietSP_theoLo;
     }
+
+    @Override
+    public String  toString() {
+        return "CTPN_TSPTL_CHTDVT{" +
+                "chiTietDonViTinh=" + chiTietDonViTinh +
+                ", chiTietPhieuNhap=" + chiTietPhieuNhap +
+                ", chiTietSP_theoLo=" + chiTietSP_theoLo +
+                '}';
+    }
 }

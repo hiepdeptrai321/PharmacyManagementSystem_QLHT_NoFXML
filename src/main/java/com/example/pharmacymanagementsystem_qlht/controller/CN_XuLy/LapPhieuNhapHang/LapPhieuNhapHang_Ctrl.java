@@ -62,17 +62,21 @@ public class LapPhieuNhapHang_Ctrl extends Application {
     //  2. KHAI BÁO BIẾN TOÀN CỤC
     private ObservableList<ChiTietDonViTinh> allChiTietDonViTinh;
     private ObservableList<NhaCungCap> listNCC;
-    private NhaCungCap ncc = new NhaCungCap();
-    private NhaCungCap ncc2 = new NhaCungCap();
+    private NhaCungCap ncc;
     private int maLoHienTai = 0;
-    private ChiTietPhieuNhap_Dao ctpn_dao = new ChiTietPhieuNhap_Dao();
-    private ObservableList<CTPN_TSPTL_CHTDVT> listNhapThuoc = FXCollections.observableArrayList();
-    private PhieuNhap_Dao phieuNhapDao = new PhieuNhap_Dao();
+    private ChiTietPhieuNhap_Dao ctpn_dao;
+    private ObservableList<CTPN_TSPTL_CHTDVT> listNhapThuoc;
+    private PhieuNhap_Dao phieuNhapDao;
 
     //  3. PHƯƠNG THỨC KHỞI TẠO
     public void initialize() {
-        loadTable();         // chấp nhận block nhẹ nếu không quá nặng
-        taiDanhSachNCC();    // như trên
+        loadTable();
+        taiDanhSachNCC();
+
+        ncc = new  NhaCungCap();
+        ctpn_dao = new ChiTietPhieuNhap_Dao();
+        phieuNhapDao = new PhieuNhap_Dao();
+        listNhapThuoc = FXCollections.observableArrayList();
 
         Task<Void> task = new Task<>() {
             @Override
@@ -90,11 +94,41 @@ public class LapPhieuNhapHang_Ctrl extends Application {
         };
         new Thread(task).start();
 
+
+        setLoading(txtTimKiemChiTietDonViTinh,true);
+        Platform.runLater(this::loadDataAsync);
+
         timKiemNhaCungCap();
         timKiemDonViTinh();
         suKienThemChiTietDonViTinhVaoBang();
         suKienThemMotDongMoiVaoBang();
         listenerListNhapThuoc();
+    }
+
+    private void loadDataAsync() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                var data = new ChiTietDonViTinh_Dao().selectAll();
+                Platform.runLater(() -> {
+                    allChiTietDonViTinh = FXCollections.observableArrayList(data);
+                    listViewChiTietDonViTinh.setItems(allChiTietDonViTinh);
+                    setLoading(txtTimKiemChiTietDonViTinh,false);
+                });
+                return null;
+            }
+        };
+        new Thread(task).start();
+    }
+
+    public void setLoading(TextField tf, boolean loading) {
+        if (loading) {
+            tf.setDisable(true);
+            tf.setPromptText("Đang xử lý...");
+        } else {
+            tf.setDisable(false);
+            tf.setPromptText("");
+        }
     }
 
     //  4. PHƯƠNG THỨC XỬ LÝ SỰ KIỆN VÀ HÀM HỖ TRỢ
@@ -200,7 +234,7 @@ public class LapPhieuNhapHang_Ctrl extends Application {
     public void timKiemDonViTinh() {
 
 //      Lấy tất cả chi tiết đơn vị tính từ cơ sở dữ liệu và chỉnh style cho list view Chi Tiết Đơn Vị Tính
-        allChiTietDonViTinh = FXCollections.observableArrayList(new ChiTietDonViTinh_Dao().selectAll());
+//        allChiTietDonViTinh = FXCollections.observableArrayList(new ChiTietDonViTinh_Dao().selectAll());
         listViewChiTietDonViTinh.setItems(allChiTietDonViTinh);
         listViewChiTietDonViTinh.setVisible(false);
         listViewChiTietDonViTinh.setStyle("-fx-background-color: white; -fx-border-color: #dcdcdc; " + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0, 0, 2);" + "-fx-border-color: #cccccc;" + "-fx-border-width: 1;");
