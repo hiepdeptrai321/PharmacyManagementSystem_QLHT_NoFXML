@@ -38,11 +38,13 @@ public class NhapHangBangExcel_Ctrl {
     public Button btnLuu;
     private LapPhieuNhapHang_Ctrl lapPhieuNhapHangCtrl;
     public List<CTPN_TSPTL_CHTDVT> danhSachThuocNhapHang = new ArrayList<>();
+    public boolean trangThai;
 
 //    public List<Thuoc_SanPham> danhSachThuoc = new ArrayList<>();
 
     //  ==================================================================Khởi tạo
     public void initialize() {
+        trangThai = false;
         lblThongTinFile.setText("Kéo & thả file Excel vào đây");
         btnXoa.setVisible(false);
     }
@@ -198,18 +200,31 @@ public class NhapHangBangExcel_Ctrl {
 //      Thêm overlay vào AnchorPane
         root.getChildren().add(overlay);
 
+        if (danhSachThuocNhapHang.isEmpty()) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Lỗi nhập Excel");
+                alert.setHeaderText("File Excel không có dữ liệu");
+                alert.setContentText("Vui lòng kiểm tra lại file Excel.");
+                alert.showAndWait();
+            });
+            Platform.runLater(() -> root.getChildren().remove(overlay));
+            return;
+        }
+
 //      Tạo luồng riêng để xử lý cập nhật (tránh lag UI)
         new Thread(() -> {
-            for(CTPN_TSPTL_CHTDVT ct : danhSachThuocNhapHang) {
-                System.out.println(ct.toString());
-            }
-            // Quay lại luồng giao diện để loại bỏ overlay
+            lapPhieuNhapHangCtrl.themThuocTuExcel(danhSachThuocNhapHang);
             Platform.runLater(() -> {
                 root.getChildren().remove(overlay);
                 stage.close();
             });
         }).start();
+    }
 
+    private void dong(){
+        Stage stage = (Stage) btnLuu.getScene().getWindow();
+        stage.close();
     }
 
     //  Tải file mẫu
