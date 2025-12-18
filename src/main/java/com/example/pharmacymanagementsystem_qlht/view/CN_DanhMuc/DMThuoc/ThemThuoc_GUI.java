@@ -83,6 +83,7 @@ public class ThemThuoc_GUI {
     private AnchorPane buildUI() {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1004, 690);
+        root.setStyle("-fx-font-size: 14;");
 
         // Title
         Label lbTitle = new Label("Thông tin chung");
@@ -189,13 +190,12 @@ public class ThemThuoc_GUI {
         listViewHoatChat.setId("listViewTimKiemThuoc");
         listViewHoatChat.setLayoutX(108); listViewHoatChat.setLayoutY(405); listViewHoatChat.setPrefSize(388, 194);
 
-        tblHoatChat = new TableView<>(); tblHoatChat.setEditable(true);
+        tblHoatChat = new TableView<>();
         tblHoatChat.setLayoutX(18); tblHoatChat.setLayoutY(411); tblHoatChat.setPrefSize(966, 213);
-
-        colMaHoatChat = new TableColumn<>("Mã hoạt chất"); colMaHoatChat.setPrefWidth(221.1429);
-        colTenHoatChat = new TableColumn<>("Tên hoạt chất"); colTenHoatChat.setPrefWidth(448.0);
-        colHamLuong = new TableColumn<>("Hàm lượng"); colHamLuong.setPrefWidth(209.1429);
-        colXoa = new TableColumn<>("Xóa"); colXoa.setPrefWidth(86.2856);
+        colMaHoatChat = new TableColumn<>("Mã hoạt chất"); colMaHoatChat.setPrefWidth(221.14); colMaHoatChat.setStyle("-fx-alignment: CENTER;");
+        colTenHoatChat = new TableColumn<>("Tên hoạt chất"); colTenHoatChat.setPrefWidth(448); colTenHoatChat.setStyle("-fx-alignment: CENTER-LEFT;");
+        colHamLuong = new TableColumn<>("Hàm lượng"); colHamLuong.setPrefWidth(209.14); colHamLuong.setStyle("-fx-alignment: CENTER");
+        colXoa = new TableColumn<>("Xóa"); colXoa.setPrefWidth(86.28); colXoa.setStyle("-fx-alignment: CENTER;");
 
         tblHoatChat.getColumns().addAll(colMaHoatChat, colTenHoatChat, colHamLuong, colXoa);
 
