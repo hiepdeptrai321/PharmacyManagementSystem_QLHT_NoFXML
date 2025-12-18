@@ -352,6 +352,5 @@ public class ChiTietPhieuDatHang_GUI {
 
         stage.setTitle("Chi tiết phiếu đặt");
         stage.setScene(scene);
-        stage.show();
     }
 }
