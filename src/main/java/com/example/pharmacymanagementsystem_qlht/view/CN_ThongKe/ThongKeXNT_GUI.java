@@ -6,7 +6,7 @@ import com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe.ThongKeXN
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeTonKho;
 import com.example.pharmacymanagementsystem_qlht.model.ThuocHetHan;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -14,21 +14,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class ThongKeXNT_GUI {
 
-    // Bỏ hết các khai báo public ở đây
-
-    // Sửa lại phương thức:
     @SuppressWarnings("unchecked")
     public void showWithController(Stage stage, ThongKeXNT_Ctrl ctrl) {
 
-        // --- Tạo các thành phần giao diện (dưới dạng biến cục bộ) ---
+        // --- Tạo các thành phần giao diện ---
+
         // Bảng Tồn kho
         TableView<ThongKeTonKho> tbTon = new TableView<>();
         TableColumn<ThongKeTonKho, Integer> ColTDK = new TableColumn<>("Tồn đầu kỳ");
@@ -53,6 +49,8 @@ public class ThongKeXNT_GUI {
         DatePicker dateDen = new DatePicker();
         DatePicker dateTu = new DatePicker();
         TextField txtTimNhanh = new TextField();
+
+        // Label
         Label lblTu = new Label("Từ:");
         Label lblDen = new Label("Đến:");
 
@@ -84,101 +82,96 @@ public class ThongKeXNT_GUI {
         leftVBox.setPrefHeight(863.0);
         leftVBox.setPrefWidth(394.0);
 
+        // [STYLE] Thêm class vbox để nhận khung trắng bo góc
+        leftVBox.getStyleClass().add("vbox");
+
         // Tiêu đề
-        Label titleLabel = new Label("Báo cáo Xuất-Nhập-Tồn");
-        titleLabel.setFont(new Font(28.0));
-        titleLabel.setPrefHeight(34.0);
-        titleLabel.setPrefWidth(316.0);
+        Label titleLabel = new Label("Thống kê XNT");
+        // [STYLE] Thêm class title thay vì setFont thủ công
+        titleLabel.getStyleClass().add("title");
 
         // Icon
-        ImageView titleIcon = new ImageView();
-        try {
-            Image iconImage = new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/boxes-11430.png"));
-            titleIcon.setImage(iconImage);
-            titleIcon.setFitHeight(40.0);
-            titleIcon.setFitWidth(44.0);
-            titleIcon.setPreserveRatio(true);
-        } catch (Exception e) {
-            System.err.println("Không tải được icon: " + e.getMessage());
-        }
-        Label iconLabel = new Label();
-        iconLabel.setGraphic(titleIcon);
-        iconLabel.setPrefHeight(38.0);
-        iconLabel.setPrefWidth(30.0);
-        HBox.setMargin(iconLabel, new Insets(0, 0, 0, 10.0));
-
-        HBox titleHBox = new HBox(titleLabel, iconLabel);
-        titleHBox.setPrefHeight(41.0);
-        titleHBox.setPrefWidth(281.0);
+        ImageView titleIcon = createIcon("/com/example/pharmacymanagementsystem_qlht/img/boxes-11430.png", 40, 44);
+        HBox titleHBox = new HBox(titleLabel, new Label("", titleIcon));
+        titleHBox.setAlignment(Pos.CENTER_LEFT);
 
         Separator separator = new Separator();
         separator.setPrefWidth(200.0);
 
         // Tìm nhanh
         Label searchLabel = new Label("Tìm nhanh");
-        searchLabel.setFont(new Font(18.0));
-        txtTimNhanh.setPromptText("Nhập mã, tên");
-        txtTimNhanh.setPrefHeight(40.0);
+        // [STYLE] Thêm class header-label
+        searchLabel.getStyleClass().add("header-label");
 
-        HBox spacer = new HBox();
-        spacer.setAlignment(javafx.geometry.Pos.CENTER);
-        VBox.setMargin(spacer, new Insets(5.0, 0, 0, 0));
+        txtTimNhanh.setPromptText("Nhập mã, tên thuốc...");
+        txtTimNhanh.setPrefHeight(40.0);
 
         // Thời gian
         Label timeLabel = new Label("Thời gian");
-        timeLabel.setFont(new Font(18.0));
-        timeLabel.setPrefHeight(27.0);
+        timeLabel.getStyleClass().add("header-label");
         VBox.setMargin(timeLabel, new Insets(10.0, 0, 0, 0));
+
         cboThoiGian.setPrefHeight(49.0);
         cboThoiGian.setPrefWidth(378.0);
 
         // Từ/Đến
-        lblTu.setFont(new Font(18.0));
-        dateTu.setPrefHeight(52.0);
+        lblTu.getStyleClass().add("header-label");
+        dateTu.setPrefHeight(45.0);
         dateTu.setPrefWidth(377.0);
-        lblDen.setFont(new Font(18.0));
-        dateDen.setPrefHeight(52.0);
+
+        lblDen.getStyleClass().add("header-label");
+        dateDen.setPrefHeight(45.0);
         dateDen.setPrefWidth(376.0);
 
         // Xuất file
         Label exportLabel = new Label("Xuất file");
-        exportLabel.setFont(new Font(18.0));
+        exportLabel.getStyleClass().add("header-label");
         VBox.setMargin(exportLabel, new Insets(10.0, 0, 0, 0));
+
         cboXuat.setPrefHeight(49.0);
         cboXuat.setPrefWidth(375.0);
-        cboXuat.setPromptText("Chọn đinh dạng ");
+        cboXuat.setPromptText("Chọn định dạng");
 
         btnXuat.setMnemonicParsing(false);
         btnXuat.setPrefHeight(62.0);
         btnXuat.setPrefWidth(438.0);
+        // [STYLE] Nút sẽ tự nhận class .button từ CSS
         VBox.setMargin(btnXuat, new Insets(10.0, 0, 0, 0));
 
         // Thêm tất cả vào VBox trái
         leftVBox.getChildren().addAll(
-                titleHBox, separator, searchLabel, txtTimNhanh, spacer,
-                timeLabel, cboThoiGian, lblTu, dateTu, lblDen, dateDen,
+                titleHBox, separator,
+                searchLabel, txtTimNhanh,
+                timeLabel, cboThoiGian,
+                lblTu, dateTu,
+                lblDen, dateDen,
                 exportLabel, cboXuat, btnXuat
         );
 
         // --- Dựng VBox bên phải (Chứa 2 bảng) ---
         VBox rightVBox = new VBox();
+        // [STYLE] Thêm class vbox
+        rightVBox.getStyleClass().add("vbox");
 
-        Label warningLabel = new Label("Những sản phẩm đã hết hạn⚠");
-        warningLabel.setTextFill(javafx.scene.paint.Color.rgb(196, 35, 35));
-        warningLabel.setFont(new Font(18.0));
-        VBox.setMargin(warningLabel, new Insets(10.0, 0, 10.0, 10.0));
+        Label warningLabel = new Label("Những sản phẩm đã hết hạn ⚠");
+        // [STYLE] Sử dụng class sub-title (màu đỏ đậm, font to) thay vì set cứng
+        warningLabel.getStyleClass().add("sub-title");
+        VBox.setMargin(warningLabel, new Insets(10.0, 0, 5.0, 10.0));
 
         rightVBox.getChildren().addAll(tbTon, warningLabel, tbHetHan);
 
         // --- Dựng HBox gốc (chứa 2 VBox) ---
-        HBox mainHBox = new HBox(leftVBox, rightVBox);
+        // [LAYOUT] Thêm spacing 15 để tách 2 panel ra
+        HBox mainHBox = new HBox(15, leftVBox, rightVBox);
 
         // --- Dựng Pane gốc ---
         Pane root = new Pane();
         root.setPrefHeight(895.0);
         root.setPrefWidth(1646.0);
 
-        // Đặt HBox vào trong Pane (giống FXML)
+        // [STYLE] Set ID mainPane để nhận nền gradient
+        root.setId("mainPane");
+
         mainHBox.setLayoutX(14.0);
         mainHBox.setLayoutY(14.0);
         root.getChildren().add(mainHBox);
@@ -210,36 +203,44 @@ public class ThongKeXNT_GUI {
         ctrl.lblDen = lblDen;
 
         // --- BƯỚC 2: Tạo Scene ---
-        // (Vẫn giữ dòng này để tránh lỗi NullPointer nếu ViewEmbedder cần Scene)
         Scene scene = new Scene(root);
 
-        // --- SỬA LẠI: Gắn CSS trực tiếp vào ROOT (Quan trọng nhất) ---
+        // --- BƯỚC 3: Gắn CSS (Quan trọng) ---
+        // Dùng chung CSS với ThongKeBanHang
         String cssPath = "/com/example/pharmacymanagementsystem_qlht/css/ThongKeBanHang.css";
         java.net.URL cssUrl = getClass().getResource(cssPath);
 
         if (cssUrl != null) {
-            // CÁCH CŨ (Chỉ add vào Scene -> Sai khi nhúng):
-            // scene.getStylesheets().add(cssUrl.toExternalForm());
-
-            // CÁCH MỚI (Add thẳng vào Pane gốc -> Đi đâu cũng có CSS):
             root.getStylesheets().add(cssUrl.toExternalForm());
-
             System.out.println("Đã gắn CSS vào Root Pane thành công!");
         } else {
-            // Thử tìm đường dẫn ngắn nếu đường dẫn dài lỗi
+            // Fallback tìm đường dẫn ngắn
             var shortUrl = getClass().getResource("/css/ThongKeBanHang.css");
             if(shortUrl != null) {
                 root.getStylesheets().add(shortUrl.toExternalForm());
             } else {
-                System.err.println("Không tìm thấy CSS!");
+                System.err.println("Không tìm thấy CSS ThongKeBanHang.css!");
             }
         }
 
-        // --- BƯỚC 3: Set Scene vào Stage ---
+        // --- BƯỚC 4: Set Scene vào Stage và Init ---
         stage.setScene(scene);
-
-        // --- BƯỚC 4: Khởi tạo dữ liệu ---
         ctrl.initialize();
         stage.setTitle("Báo cáo Xuất - Nhập - Tồn");
+    }
+
+    // Hàm hỗ trợ tạo icon (cho code gọn gàng giống mẫu)
+    private ImageView createIcon(String path, double height, double width) {
+        try {
+            Image image = new Image(getClass().getResourceAsStream(path));
+            ImageView icon = new ImageView(image);
+            icon.setFitHeight(height);
+            icon.setFitWidth(width);
+            icon.setPreserveRatio(true);
+            return icon;
+        } catch (Exception e) {
+            System.err.println("Lỗi tải icon: " + path);
+            return new ImageView();
+        }
     }
 }
