@@ -28,6 +28,7 @@ import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -110,6 +111,9 @@ public class LapHoaDon_Ctrl extends Application {
     private Stage qrStage;
     private static final String OTC_OFF = "Không kê đơn(OTC)";
     private static final String OTC_ON  = "Kê đơn(ETC)";
+    private boolean coQR = false;
+    private boolean dangThanhToan = false;
+
 
     // popup suggestions
     private final ContextMenu goiYMenu = new ContextMenu();
@@ -119,9 +123,10 @@ public class LapHoaDon_Ctrl extends Application {
     private boolean GoiY_cssat = false;
     private boolean tamDungGoiY = false;
     public String maPhieuDat = null;
-
+    private boolean phieuDatLoaded = false;
     public void setMaPhieuDat(String maPhieuDat) {
-        this.maPhieuDat = maPhieuDat;
+        this.maPhieuDat = (maPhieuDat == null || maPhieuDat.isBlank()) ? null : maPhieuDat;
+        this.phieuDatLoaded = false;
     }
 
     @Override
@@ -143,8 +148,8 @@ public class LapHoaDon_Ctrl extends Application {
         initTienMatEvents();
         chuyenHoaDon();
         btnThanhToan.setOnAction(e -> xuLyThanhToan());
-        System.out.println("Ma phieu dat" + maPhieuDat);
-        if(maPhieuDat != null) {
+        System.out.println("Ma phieu dat: " + (maPhieuDat == null ? "<none>" : maPhieuDat));
+        if (maPhieuDat != null) {
             loadDataFromMaPhieuDat(maPhieuDat);
         }
     }
@@ -179,7 +184,13 @@ public class LapHoaDon_Ctrl extends Application {
     }
 
 
-
+    private void anQR() {
+        if (qrStage != null) {
+            qrStage.close();
+            qrStage = null;
+        }
+        cbPhuongThucTT.setDisable(false);
+    }
     private void xuLyPhuongThucTT() {
         if (cbPhuongThucTT != null) {
             cbPhuongThucTT.getItems().clear();
@@ -189,19 +200,48 @@ public class LapHoaDon_Ctrl extends Application {
             anQR();
 
             cbPhuongThucTT.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal == null || newVal.equals(oldVal)) {
+                if (coQR) return;
+                if (dangThanhToan) return;
+                if (newVal == null || newVal.equals(oldVal)) return;
+                if (tblChiTietHD.getItems() == null || tblChiTietHD.getItems().isEmpty()) {
+                    hien(WARNING, "Chưa có sản phẩm",
+                            "Vui lòng thêm sản phẩm vào hóa đơn trước khi chọn phương thức thanh toán.");
+                    coQR = true;
+                    cbPhuongThucTT.setValue("Tiền mặt");
+                    coQR = false;
                     return;
                 }
-
                 themFieldTienMat(newVal);
 
                 if ("Chuyển khoản".equals(newVal)) {
-                    hienThiQR();
+                    try {
+                        double thanhTien = layThanhTien();
+
+                        if (thanhTien <= 0) {
+                            hien(WARNING, "Tổng tiền không hợp lệ",
+                                    "Tổng tiền phải lớn hơn 0 để thanh toán.");
+                            cbPhuongThucTT.setValue("Tiền mặt");
+                            return;
+                        }
+
+                        hienThiQR(thanhTien);
+
+                    } catch (Exception ex) {
+                        hien(ERROR, "Lỗi", ex.getMessage());
+                        cbPhuongThucTT.setValue("Tiền mặt");
+                    }
                 } else {
                     anQR();
                 }
             });
         }
+    }
+    private double layThanhTien() {
+        String str = lblThanhTien.getText().replaceAll("[^0-9]", "");
+        if (str.isEmpty()) {
+            throw new IllegalStateException("Không thể xác định tổng tiền.");
+        }
+        return Double.parseDouble(str);
     }
     private void themFieldTienMat(String value) {
         if (paneTienMat != null) {
@@ -210,32 +250,135 @@ public class LapHoaDon_Ctrl extends Application {
             paneTienMat.setManaged(visible);
         }
     }
-    private void hienThiQR() {
+    private void resetPhuongThucThanhToan() {
+        if (cbPhuongThucTT != null) {
+            cbPhuongThucTT.getSelectionModel().select("Tiền mặt");
+        }
+        themFieldTienMat("Tiền mặt");
+        anQR();
+    }
+    private void hienThiQR(double thanhTien) {
+        cbPhuongThucTT.setDisable(true);
         if (qrStage != null && qrStage.isShowing()) {
             qrStage.toFront();
             return;
         }
 
         qrStage = new Stage();
+        qrStage.setTitle("Thanh toán chuyển khoản");
+        qrStage.initModality(Modality.APPLICATION_MODAL);
 
-        VBox vbox = new VBox(10);
-        vbox.setStyle("-fx-padding: 20; -fx-alignment: center;");
-        Label label = new Label("Quét mã QR dưới đây để thanh toán");
-        InputStream is = getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/qr_mb.jpg");
-        Image qrImg = (is != null) ? new Image(is) : new Image(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/qr_mb.jpg").toExternalForm());
-        ImageView qrImage = new ImageView(qrImg);
-        qrImage.setFitWidth(500);
-        qrImage.setPreserveRatio(true);
-        vbox.getChildren().addAll(label, qrImage);
-        Scene scene = new Scene(vbox, 600, 600);
-        qrStage.setScene(scene);
-        qrStage.setTitle("Thanh Toán Chuyển Khoản");
-        qrStage.show();
-    }
+        // 👇 Lấy stage cha
+        Stage owner = (Stage) cbPhuongThucTT.getScene().getWindow();
+        qrStage.initOwner(owner);
+        qrStage.setResizable(false);
+        //        qrStage.setOnCloseRequest(e -> {
+//            e.consume(); // chặn đóng bằng nút X
+//            hien(WARNING,
+//                    "Chưa hoàn tất",
+//                    "Vui lòng chọn Xác nhận hoặc Thoát để tiếp tục.");
+//        });
 
-    private void anQR() {
-        if (qrStage != null && qrStage.isShowing()) {
+        // ===== Root =====
+        VBox root = new VBox(15);
+        root.setStyle("""
+        -fx-padding: 25;
+        -fx-alignment: center;
+        -fx-background-color: #ffffff;
+    """);
+
+        Label title = new Label("THANH TOÁN CHUYỂN KHOẢN");
+        title.setStyle("""
+        -fx-font-size: 18px;
+        -fx-font-weight: bold;
+    """);
+
+        Label lblTien = new Label("Số tiền cần thanh toán: " +
+                String.format("%,.0f VND", thanhTien));
+        lblTien.setStyle("-fx-font-size: 14px;");
+
+        // ===== QR Image =====
+        InputStream is = getClass().getResourceAsStream(
+                "/com/example/pharmacymanagementsystem_qlht/img/qr_mb.jpg");
+
+        if (is == null) {
+            throw new IllegalStateException("Không tìm thấy ảnh QR.");
+        }
+
+        Image qrImg = new Image(is);
+        ImageView qrView = new ImageView(qrImg);
+        qrView.setFitWidth(300);
+        qrView.setPreserveRatio(true);
+        qrView.setStyle("""
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 15, 0, 0, 5);
+        -fx-border-color: #dddddd;
+        -fx-border-radius: 10;
+        -fx-background-radius: 10;
+        """);
+
+        Label huongDan = new Label(
+                "Vui lòng quét mã QR để chuyển khoản\nSau khi hoàn tất, nhấn 'Xác nhận'"
+        );
+        huongDan.setStyle("-fx-text-alignment: center;");
+
+        // ===== Buttons =====
+        Button btnXacNhan = new Button("✔ Xác nhận");
+        Button btnThoat = new Button("✖ Thoát");
+
+        btnXacNhan.setStyle("""
+        -fx-background-color: #2ecc71;
+        -fx-text-fill: white;
+        -fx-font-size: 13px;
+        -fx-pref-width: 140;
+        """);
+
+        btnThoat.setStyle("""
+        -fx-background-color: #e74c3c;
+        -fx-text-fill: white;
+        -fx-font-size: 13px;
+        -fx-pref-width: 140;
+        """);
+
+        HBox buttonBox = new HBox(15, btnXacNhan, btnThoat);
+        buttonBox.setStyle("-fx-alignment: center;");
+
+        root.getChildren().addAll(
+                title, lblTien, qrView, huongDan, buttonBox
+        );
+
+        // ===== Events =====
+        btnThoat.setOnAction(e -> {
             qrStage.close();
+            resetPhuongThucThanhToan();
+        });
+        qrStage.setOnCloseRequest(e -> {
+            resetPhuongThucThanhToan();
+        });
+
+        btnXacNhan.setOnAction(e -> {
+            dangThanhToan = true;
+            xuLyXacNhanChuyenKhoan(thanhTien);
+        });
+
+        Scene scene = new Scene(root, 420, 520);
+        qrStage.setScene(scene);
+        qrStage.setResizable(false);
+        qrStage.showAndWait();
+    }
+    private void xuLyXacNhanChuyenKhoan(double thanhTien) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác nhận thanh toán");
+        alert.setHeaderText("Xác nhận đã nhận tiền");
+        alert.setContentText(
+                "Bạn đã nhận được " +
+                        String.format("%,.0f VND", thanhTien) +
+                        " ?"
+        );
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            qrStage.close();
+            xuLyThanhToan();
         }
     }
     private void xuLyTimThuoc() {
@@ -802,45 +945,7 @@ public class LapHoaDon_Ctrl extends Application {
         stage.show();
     }
 
-//    public void xuLyThemKH() {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-//                    "/com/example/pharmacymanagementsystem_qlht/CN_DanhMuc/DMKhachHang/ThemKhachHang_GUI.fxml"));
-//            Parent root = loader.load();
-//            Object ctrl = loader.getController();
-//
-//            Stage st = new Stage();
-//            st.setScene(new Scene(root));
-//            if (btnThemKH != null && btnThemKH.getScene() != null) {
-//                st.initOwner(btnThemKH.getScene().getWindow());
-//            }
-//
-//            st.setOnHidden(e -> {
-//                try {
-//                    Object o = null;
-//                    try {
-//                        java.lang.reflect.Method m1 = ctrl.getClass().getMethod("getKhachHangMoi");
-//                        o = m1.invoke(ctrl);
-//                    } catch (NoSuchMethodException ignore) {
-//                        try {
-//                            java.lang.reflect.Method m2 = ctrl.getClass().getMethod("getSavedKhachHang");
-//                            o = m2.invoke(ctrl);
-//                        } catch (NoSuchMethodException ignored) { }
-//                    }
-//                    if (o instanceof KhachHang kh) {
-//                        Platform.runLater(() -> {
-//                            if (txtTenKH != null) txtTenKH.setText(kh.getTenKH());
-//                            if (txtSDT != null) txtSDT.setText(kh.getSdt());
-//                        });
-//                    }
-//                } catch (Exception ignored) {
-//                }
-//            });
-//            st.show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
 public void xuLyThemKH() {
     Stage stage = new Stage();
     ThemKhachHang_Ctrl ctrl = new ThemKhachHang_Ctrl();
@@ -1188,17 +1293,24 @@ public void xuLyThemKH() {
 
         double thanhTien = Double.parseDouble(thanhTienStr);
         double thanhTienLamTron = Math.ceil(thanhTien / 1000) * 1000;
-        String soTienKhachDuaStr = txtSoTienKhachDua.getText().replaceAll("[^0-9]", "");
-        if (soTienKhachDuaStr.isEmpty()) {
-            hien(WARNING, "Thiếu thông tin", "Vui lòng nhập số tiền khách đưa trước khi thanh toán.");
-            return;
-        }
-        double soTienKhachDua = Double.parseDouble(soTienKhachDuaStr);
-        if (soTienKhachDua < thanhTienLamTron) {
-            hien(ERROR, "Thiếu tiền",
-                    "Số tiền khách đưa không đủ để thanh toán.\n" +
-                            "Cần ít nhất: " + String.format("%,.0f đ", thanhTienLamTron));
-            return;
+        boolean laChuyenKhoan = "Chuyển khoản".equals(cbPhuongThucTT.getValue());
+
+        double soTienKhachDua = 0;
+
+        if (!laChuyenKhoan) {
+            String soTienKhachDuaStr = txtSoTienKhachDua.getText().replaceAll("[^0-9]", "");
+            if (soTienKhachDuaStr.isEmpty()) {
+                hien(WARNING, "Thiếu thông tin", "Vui lòng nhập số tiền khách đưa trước khi thanh toán.");
+                return;
+            }
+            soTienKhachDua = Double.parseDouble(soTienKhachDuaStr);
+
+            if (soTienKhachDua < thanhTienLamTron) {
+                hien(ERROR, "Thiếu tiền",
+                        "Số tiền khách đưa không đủ.\n" +
+                                "Cần ít nhất: " + String.format("%,.0f đ", thanhTienLamTron));
+                return;
+            }
         }
 
         Connection con = null;
@@ -1270,11 +1382,12 @@ public void xuLyThemKH() {
                 maDonThuoc = txtMaDonThuoc.getText();
 
                 if (maDonThuoc == null || maDonThuoc.trim().isEmpty()) {
-                    // new Alert(Alert.AlertType.ERROR, "Hóa đơn ETC bắt buộc phải có Mã đơn thuốc.").showAndWait();
-                    // con.rollback(); // Hủy giao dịch
-                    // return; // Dừng lại
-
-                    throw new IllegalStateException("Hóa đơn Kê đơn (ETC) bắt buộc phải có Mã đơn thuốc.");
+                    hien(
+                            WARNING,
+                            "Thiếu mã đơn thuốc",
+                            "Hóa đơn kê đơn (ETC) bắt buộc phải nhập Mã đơn thuốc."
+                    );
+                    return;
                 }
             }
 
@@ -1355,7 +1468,6 @@ public void xuLyThemKH() {
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
-                    // Tạo controller
                     ChiTietHoaDon_Ctrl ctrl = new ChiTietHoaDon_Ctrl();
                     ChiTietHoaDon_GUI gui = new ChiTietHoaDon_GUI();
 
@@ -1367,10 +1479,8 @@ public void xuLyThemKH() {
                     ctrl.initialize();
                     ctrl.setHoaDon(hdMoi);
 
-                    PhieuDatHang_Dao pdh_dao = new PhieuDatHang_Dao();
-                    PhieuDatHang pdh = pdh_dao.selectById(maPhieuDat);
-                    pdh.setTrangthai(2);
-                    pdh_dao.update(pdh);
+                    // Safe update of related order status (avoids NPE if no order was loaded)
+                    updatePhieuDatTrangThaiIfLoaded(2);
 
                 } catch ( Exception e) {
                     hien(ERROR, "Lỗi",
@@ -1403,6 +1513,9 @@ public void xuLyThemKH() {
                 } catch (Exception ignore) { }
             }
         }
+        cbPhuongThucTT.setValue("Tiền mặt");
+        anQR();
+        dangThanhToan = false;
     }
     private void allocateLotsAutomatically(Connection con, List<ChiTietHoaDon> chiTietList) throws SQLException {
         Thuoc_SP_TheoLo_Dao loDao = new Thuoc_SP_TheoLo_Dao();
@@ -1615,6 +1728,9 @@ public void xuLyThemKH() {
         document.close();
     }
 
+
+
+
     public void loadDataFromMaPhieuDat(String maPhieuDat) {
         if (maPhieuDat == null || maPhieuDat.isBlank()) return;
 
@@ -1625,8 +1741,12 @@ public void xuLyThemKH() {
 
             if (pdh == null) {
                 hien(WARNING, "Không tìm thấy", "Không tìm thấy phiếu đặt hàng: " + maPhieuDat);
+                this.phieuDatLoaded = false;
+                this.maPhieuDat = null; // clear invalid id
                 return;
             }
+            this.maPhieuDat = maPhieuDat;
+            this.phieuDatLoaded = true;
 
             // 2. Load ChiTietPhieuDatHang từ DB
             ChiTietPhieuDatHang_Dao ctpdhDao = new ChiTietPhieuDatHang_Dao();
@@ -1684,7 +1804,30 @@ public void xuLyThemKH() {
 
         } catch (Exception e) {
             e.printStackTrace();
+            this.phieuDatLoaded = false;
             hien(ERROR, "Lỗi", "Không thể load dữ liệu từ phiếu đặt hàng:\n" + e.getMessage());
+        }
+    }
+    private void updatePhieuDatTrangThaiIfLoaded(int trangThai) {
+        if (!phieuDatLoaded || maPhieuDat == null || maPhieuDat.isBlank()) {
+            // nothing to update
+            return;
+        }
+        try {
+            PhieuDatHang_Dao pdhDao = new PhieuDatHang_Dao();
+            PhieuDatHang pdh = pdhDao.selectById(maPhieuDat);
+            if (pdh != null) {
+                pdh.setTrangthai(trangThai);
+                pdhDao.update(pdh);
+            } else {
+                System.err.println("PhieuDat not found: " + maPhieuDat);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            // clear flags so subsequent invoices won't try to update again
+            phieuDatLoaded = false;
+            maPhieuDat = null;
         }
     }
 

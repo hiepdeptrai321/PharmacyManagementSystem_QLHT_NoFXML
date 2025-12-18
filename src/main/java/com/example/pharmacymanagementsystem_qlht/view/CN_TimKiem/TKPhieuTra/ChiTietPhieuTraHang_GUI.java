@@ -247,92 +247,65 @@ public class ChiTietPhieuTraHang_GUI extends Application {
 
         // --- Nội dung Summary Pane ---
 
-        // Tổng tiền trả (trước CK/VAT)
-        Label lbTongTienTra = new Label("Tổng tiền trả (trước CK/VAT):");
-        lbTongTienTra.setLayoutX(5.0); lbTongTienTra.setLayoutY(5.0); lbTongTienTra.getStyleClass().add("label-normal");
-        lbTongTienTra.setFont(Font.font("System Bold", 12.0));
+        // Tổng tiền trả
+        Pane paneTien = new Pane();
+        paneTien.setLayoutX(10);
+        paneTien.setLayoutY(10);
+        paneTien.setPrefWidth(550);
+        paneTien.setPrefHeight(140);
+        paneTien.setStyle("""
+        -fx-background-color: #fafafa;
+        -fx-border-color: #e0e0e0;
+        -fx-border-radius: 8;
+        -fx-background-radius: 8;
+        -fx-padding: 10;
+    """);
+        Label lbTongTienHDGoc = new Label("Tổng tiền hóa đơn gốc");
+        lbTongTienHDGoc.setLayoutX(15);
+        lbTongTienHDGoc.setLayoutY(15);
+        lbTongTienHDGoc.setStyle("-fx-font-size: 12px; -fx-text-fill: #616161;");
 
-        Label lblTongTienTraValue = new Label("0 VNĐ");
-        lblTongTienTraValue.setId("lblTongTienTraValue");
-        lblTongTienTraValue.setLayoutX(240.0); lblTongTienTraValue.setLayoutY(5.0);
-        lblTongTienTraValue.getStyleClass().addAll("bold-label", "value-label");
+        Label lblTongTienHDGocValue = new Label("0 VNĐ");
+        lblTongTienHDGocValue.setId("lblTongTienHDGocValue");
+        lblTongTienHDGocValue.setLayoutX(400);
+        lblTongTienHDGocValue.setLayoutY(15);
+        lblTongTienHDGocValue.setStyle("""
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+""");
+        Separator sep = new Separator();
+        sep.setLayoutX(15);
+        sep.setLayoutY(45);
+        sep.setPrefWidth(520);
+        sep.setOpacity(0.3);
+        Label lbSoTienTraLai = new Label("SỐ TIỀN TRẢ LẠI");
+        lbSoTienTraLai.setLayoutX(15);
+        lbSoTienTraLai.setLayoutY(60);
+        lbSoTienTraLai.setStyle("""
+        -fx-font-size: 13px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #333333;
+        """);
 
-        // Chiết khấu Phiếu trả
-        Label lbChietKhauPT = new Label("Chiết khấu Phiếu trả:");
-        lbChietKhauPT.setLayoutX(5.0); lbChietKhauPT.setLayoutY(30.0); lbChietKhauPT.getStyleClass().add("label-normal");
-        lbChietKhauPT.setFont(Font.font("System Bold", 12.0));
+        Label lblSoTienTraLaiValue = new Label("0 VNĐ");
+        lblSoTienTraLaiValue.setId("lblSoTienTraLaiValue");
+        lblSoTienTraLaiValue.setLayoutX(15);
+        lblSoTienTraLaiValue.setLayoutY(85);
+        lblSoTienTraLaiValue.setStyle("""
+        -fx-font-size: 26px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #d32f2f;
+        """);
+        paneTien.getChildren().addAll(
+                lbTongTienHDGoc,
+                lblTongTienHDGocValue,
+                sep,
+                lbSoTienTraLai,
+                lblSoTienTraLaiValue
+        );
 
-        Label lblChietKhauPTValue = new Label("0 VNĐ");
-        lblChietKhauPTValue.setId("lblChietKhauPTValue");
-        lblChietKhauPTValue.setLayoutX(240.0); lblChietKhauPTValue.setLayoutY(30.0);
-        lblChietKhauPTValue.getStyleClass().addAll("label-discount", "bold-label", "value-label");
-
-        // Thuế (VAT)
-        Label lbThueVAT = new Label("Thuế (VAT):");
-        lbThueVAT.setLayoutX(5.0); lbThueVAT.setLayoutY(55.0); lbThueVAT.getStyleClass().add("label-normal");
-        lbThueVAT.setFont(Font.font("System Bold", 12.0));
-
-        Label lblThueVATValue = new Label("0 VNĐ");
-        lblThueVATValue.setId("lblThueVATValue");
-        lblThueVATValue.setLayoutX(240.0); lblThueVATValue.setLayoutY(55.0);
-        lblThueVATValue.getStyleClass().addAll("bold-label", "value-label");
-
-        // Separator 2
-        Separator separator2 = new Separator();
-        separator2.setLayoutY(85.0);
-        separator2.setPrefHeight(2.0);
-        separator2.setPrefWidth(544.0);
-
-        // TỔNG TIỀN TRẢ
-        Label lbTongTienPhaiTra = new Label("TỔNG TIỀN TRẢ:");
-        lbTongTienPhaiTra.setLayoutX(5.0); lbTongTienPhaiTra.setLayoutY(100.0);
-        lbTongTienPhaiTra.getStyleClass().addAll("bold-label", "section-label");
-        lbTongTienPhaiTra.setFont(Font.font("System Bold", 12.0));
-
-        Label lblTongTienPhaiTraValue = new Label("0 VNĐ");
-        lblTongTienPhaiTraValue.setId("lblTongTienPhaiTraValue");
-        lblTongTienPhaiTraValue.setLayoutX(240.0); lblTongTienPhaiTraValue.setLayoutY(100.0);
-        lblTongTienPhaiTraValue.getStyleClass().addAll("main-value-label", "grand-total-value", "bold-label", "value-label");
-
-        // Separator 3
-        Separator separator3 = new Separator();
-        separator3.setLayoutY(130.0);
-        separator3.setPrefHeight(2.0);
-        separator3.setPrefWidth(547.0);
-
-        // Phương thức hoàn tiền
-        Label lbPTHT = new Label("Phương thức hoàn tiền:");
-        lbPTHT.setLayoutX(5.0); lbPTHT.setLayoutY(150.0); lbPTHT.getStyleClass().add("label-normal");
-        lbPTHT.setFont(Font.font("System Bold", 12.0));
-
-        Label lblPTHTValue = new Label("Tiền mặt");
-        lblPTHTValue.setId("lblPTHTValue");
-        lblPTHTValue.setLayoutX(240.0); lblPTHTValue.setLayoutY(150.0);
-        lblPTHTValue.getStyleClass().addAll("bold-label", "value-label");
-
-        // Số tiền khách nhận
-        Label lbTienKhachNhan = new Label("Số tiền khách nhận:");
-        lbTienKhachNhan.setLayoutX(5.0); lbTienKhachNhan.setLayoutY(175.0); lbTienKhachNhan.getStyleClass().add("label-normal");
-        lbTienKhachNhan.setFont(Font.font("System Bold", 12.0));
-
-        Label lblTienKhachNhanValue = new Label("0 VNĐ");
-        lblTienKhachNhanValue.setId("lblTienKhachNhanValue");
-        lblTienKhachNhanValue.setLayoutX(240.0); lblTienKhachNhanValue.setLayoutY(175.0);
-        lblTienKhachNhanValue.getStyleClass().addAll("bold-label", "value-label");
-
-        // Tiền thừa trả lại
-        Label lbTienThua = new Label("Tiền thừa trả lại:");
-        lbTienThua.setLayoutX(5.0); lbTienThua.setLayoutY(210.0); lbTienThua.getStyleClass().add("bold-label");
-
-        Label lblTienThuaValue = new Label("0 VNĐ");
-        lblTienThuaValue.setId("lblTienThuaValue");
-        lblTienThuaValue.setLayoutX(240.0); lblTienThuaValue.setLayoutY(210.0);
-        lblTienThuaValue.getStyleClass().addAll("change-due-value", "bold-label", "value-label");
-
-        summaryPane.getChildren().addAll(lbTongTienTra, lblTongTienTraValue, lbChietKhauPT, lblChietKhauPTValue,
-                lbThueVAT, lblThueVATValue, separator2, lbTongTienPhaiTra,
-                lblTongTienPhaiTraValue, separator3, lbPTHT, lblPTHTValue,
-                lbTienKhachNhan, lblTienKhachNhanValue, lbTienThua, lblTienThuaValue);
+        summaryPane.getChildren().addAll(paneTien);
 
         // - Pane Buttons
         Pane buttonPane = new Pane();
@@ -380,33 +353,22 @@ public class ChiTietPhieuTraHang_GUI extends Application {
             ctrl.colDonGia = colDonGia;
             ctrl.colLyDo = colLyDo;
             ctrl.colThanhTien = colThanhTien;
-
             ctrl.lblMaPhieuTraValue = lblMaPhieuTraValue;
             ctrl.lblNgayLapValue = lblNgayLapValue;
-
             ctrl.lblTenNhanVienValue = lblTenNhanVienValue;
             ctrl.lblTenNV = lblTenNV;
-
             ctrl.lblTenKhachHangValue = lblTenKhachHangValue;
             ctrl.lblTenKH = lblTenKH;
-
             ctrl.lblSDTKhachHangValue = lblSDTKhachHangValue;
             ctrl.lblSDTKH = lblSDTKH;
-
             ctrl.lblGhiChuValue = lblGhiChuValue;
-
-            ctrl.lblTongTienTraValue = lblTongTienTraValue;
-            ctrl.lblChietKhauPTValue = lblChietKhauPTValue;
-            ctrl.lblThueVATValue = lblThueVATValue;
-            ctrl.lblTongTienPhaiTraValue = lblTongTienPhaiTraValue;
-
-            ctrl.lblPTHTValue = lblPTHTValue;
-            ctrl.lblTienKhachNhanValue = lblTienKhachNhanValue;
-            ctrl.lblTienThuaValue = lblTienThuaValue;
-
+            ctrl.lblTongTienHDGocValue = lblTongTienHDGocValue;
+            ctrl.lblSoTienTraLaiValue = lblSoTienTraLaiValue;
             ctrl.btnInPhieuTra = btnInPhieuTra;
             ctrl.btnDong = btnDong;
+            ctrl.onUIReady();
         }
+
 
         return root;
     }

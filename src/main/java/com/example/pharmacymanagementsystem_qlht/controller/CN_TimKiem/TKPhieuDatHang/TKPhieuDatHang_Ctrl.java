@@ -22,7 +22,7 @@ import javafx.scene.control.DatePicker;
 import java.util.List;
 import com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay;
 
-public class TKPhieuDatHang_Ctrl {
+public class    TKPhieuDatHang_Ctrl {
     public TableView<PhieuDatHang> tblPD;
     public TableColumn<PhieuDatHang, Number> colSTT;
     public TableColumn<PhieuDatHang, String> colMaPD;

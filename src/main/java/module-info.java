@@ -39,7 +39,6 @@ module com.example.pharmacymanagementsystem_qlht {
     opens com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi to javafx.graphics;
     exports com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi;
 
-
     requires javafx.base;
     requires java.sql;
     requires java.prefs;
