@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LapPhieuDatHang_Ctrl extends Application {
+public class LapPhieuDatHang_Ctrl {
     public Button btnLamMoi;
     public Button btnDatHangVaIn;
     // Left / search area
@@ -728,11 +728,12 @@ public class LapPhieuDatHang_Ctrl extends Application {
             Platform.runLater(() -> focus.requestFocus());
         }
     }
-
+    
     private Double parseDoubleOrNull(String s) {
         if (s == null) return null;
         try {
-            String cleaned = s.replaceAll("[^0-9\\-,\\.]", "").replace(',', '.');
+            // Loại bỏ tất cả ký tự không phải số, trừ dấu trừ và dấu thập phân cuối
+            String cleaned = s.replaceAll("[^0-9\\-]", "");
             if (cleaned.isBlank()) return null;
             return Double.parseDouble(cleaned);
         } catch (Exception e) {
@@ -850,10 +851,6 @@ public class LapPhieuDatHang_Ctrl extends Application {
         updateTienThieuPhieuDat(tongThanhToan);
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuDat.LapPhieuDat_GUI().showWithController(stage, this);
-    }
 
     private void initTienCocEvents() {
         if (tfTienCoc == null || lbTienThieu == null || lbTongTT == null) return;
