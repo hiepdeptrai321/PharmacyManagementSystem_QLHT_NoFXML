@@ -205,7 +205,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
                         int slConTra = goc.getSoLuong() - slDaTra;
 
                         if (slConTra <= 0) {
-                            thongBaoTuyChinh(
+                            hien(
                                     WARNING,
                                     "Không thể trả",
                                     "Sản phẩm này đã được trả hết."
@@ -263,7 +263,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
         int slConTra = slBan - slDaTra;
 
         if (slConTra <= 0) {
-            thongBaoTuyChinh(
+            hien(
                     WARNING,
                     "Không thể trả",
                     "Sản phẩm này đã được trả hết."
@@ -699,7 +699,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
                             "Sản phẩm " + cthdGoc.getLoHang().getThuoc().getTenThuoc()
                                     + " chỉ còn trả được " + slConTra
                     );
-                    return; 
+                    return;
                 }
 
                 // ===== LƯU CHI TIẾT PHIẾU TRẢ =====

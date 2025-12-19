@@ -3,6 +3,7 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuD
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
 import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuDatHang;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_GUI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,6 +18,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.DatePicker;
 import java.util.List;
@@ -149,11 +152,12 @@ public class    TKPhieuDatHang_Ctrl {
 
             Stage stage = new Stage();
             stage.setTitle("Chi tiết phiếu đặt hàng");
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.initModality(Modality.APPLICATION_MODAL);
             ctrl.setPhieuDatHang(pdhdao.selectById(pdh.getMaPDat()));
-            new com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_GUI()
+            new ChiTietPhieuDatHang_GUI()
                     .showWithController(stage, ctrl);
-            stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
+            stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }

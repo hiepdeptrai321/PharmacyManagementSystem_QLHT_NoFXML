@@ -1,148 +1,63 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDatHang;
 
 import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_QuanLy_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_NhanVien_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_QuanLy_Ctrl;
-import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.DonViTinh_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
-import com.example.pharmacymanagementsystem_qlht.dao.PhieuNhap_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.*;
-import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDatHang.ChiTietPhieuDatHang_GUI;
-import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
+
 
 import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hien;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.WARNING;
 
 public class ChiTietPhieuDatHang_Ctrl  {
-    @FXML
     public static PhieuDatHang phieuDatHang;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, Number> colSTT;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, String> colTenSP;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, Integer> colSoLuong;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, String> colDonVi;
-
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, Double> colDonGia;
-
-    @FXML
-    public TableColumn<ChiTietPhieuDatHang, String> colNhaCungCap; // used for chiết khấu percent
-
-    @FXML
+    public TableColumn<ChiTietPhieuDatHang, String> colNhaCungCap;
     public TableColumn<ChiTietPhieuDatHang, String> colThanhTien;
-    @FXML
     public TableColumn<ChiTietPhieuDatHang, String> colTT;
-
-    @FXML
     public TableView<ChiTietPhieuDatHang> tblChiTietPhieuDat;
-
-    @FXML
     public Label lblMaPhieuDatValue;
-
-    @FXML
     public Label lblNgayLapValue;
-
-    @FXML
     public Label lblTenNhanVienValue;
-
-    @FXML
     public Label lblTenNCCValue;
-
-    @FXML
     public Label lblSDTNCCValue;
-
-    @FXML
     public Label lblGhiChuValue;
-
-    @FXML
     public Label lblTongTienDatValue;
-
-    @FXML
     public Label lblChietKhauPDValue;
-
-    @FXML
     public Label lblThueVATValue;
-
-    @FXML
     public Label lblTongTienPhaiDatValue;
-
-    @FXML
     public Label lblPTTTValue;
-
-    @FXML
     public Label lblTienDaThanhToanValue;
-
-    @FXML
     public Label lblTienConLaiValue;
-    @FXML
     public Label lbTT;
-
-    @FXML
     public Button btnInPhieuDat;
-
-    @FXML
     public Button btnLapHoaDon;
-
-    @FXML
     public Button btnDong;
-
     public final NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
 
-    @FXML
     public void initialize() {
-        // Close button
         if (btnDong != null) {
             btnDong.setOnAction(e -> ((Stage) btnDong.getScene().getWindow()).close());
         }
         btnLapHoaDon.setOnAction(e -> onLapHoaDon());
-
         hienThiThongTin();
-
-        System.out.println(phieuDatHang.getMaPDat());
-
-        Platform.runLater(()->{
-            Stage dialog = (Stage) btnDong.getScene().getWindow();
-            dialog.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png")));
-        });
-
-
+        //System.out.println(phieuDatHang.getMaPDat());
     }
 
     public void setPhieuDatHang(PhieuDatHang pDat) {

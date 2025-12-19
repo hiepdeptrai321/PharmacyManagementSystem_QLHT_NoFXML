@@ -49,29 +49,31 @@ public class LapPhieuTra_GUI {
 
         // ===== Search Pane =====
         Pane searchPane = new Pane();
+        searchPane.setPrefSize(1167, 70);
         searchPane.getStyleClass().add("search-pane");
-        searchPane.setPrefSize(766, 70);
         AnchorPane.setTopAnchor(searchPane, 71.0);
         AnchorPane.setLeftAnchor(searchPane, 30.0);
-        AnchorPane.setRightAnchor(searchPane, 850.0);
+        AnchorPane.setRightAnchor(searchPane, 449.0);
 
-        Label lblSearch = new Label("Tìm hóa đơn gốc:");
-        lblSearch.setLayoutX(20);
-        lblSearch.setLayoutY(20);
-        lblSearch.setFont(Font.font("System Bold", 13));
+        Label lblTimHD = new Label("Tìm hóa đơn gốc:");
+        lblTimHD.setLayoutX(20);
+        lblTimHD.setLayoutY(20);
+        lblTimHD.setFont(Font.font("System Bold", 13));
 
         TextField txtTimHoaDon = new TextField();
-        txtTimHoaDon.setPromptText("Nhập mã hóa đơn hoặc tên khách hàng ...");
-        txtTimHoaDon.setLayoutX(130);
+        txtTimHoaDon.setId("txtTimHoaDonGoc");
+        txtTimHoaDon.setLayoutX(140);
         txtTimHoaDon.setLayoutY(15);
-        txtTimHoaDon.setPrefSize(563, 27);
+        txtTimHoaDon.setPrefSize(939, 29);
+        txtTimHoaDon.setPromptText("Nhập mã hóa đơn gốc vào đây...");
 
         Button btnTimHD = new Button("Tìm");
-        btnTimHD.setLayoutX(702);
-        btnTimHD.setLayoutY(16);
-        btnTimHD.setOnAction(e -> ctrl.xuLyTimHDGoc());
+        btnTimHD.setId("btnTimHD");
+        btnTimHD.setLayoutX(1098);
+        btnTimHD.setLayoutY(15);
+        btnTimHD.setPrefSize(54, 28);
 
-        searchPane.getChildren().addAll(lblSearch, txtTimHoaDon, btnTimHD);
+        searchPane.getChildren().addAll(lblTimHD, txtTimHoaDon, btnTimHD);
 
         // ===== Hint =====
         Label lblHint = new Label("Chọn hóa đơn gốc để bắt đầu trả hàng");
