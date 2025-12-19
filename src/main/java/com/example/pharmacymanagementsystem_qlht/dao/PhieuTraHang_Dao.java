@@ -1,6 +1,7 @@
 package com.example.pharmacymanagementsystem_qlht.dao;
 
 import com.example.pharmacymanagementsystem_qlht.connectDB.ConnectDB;
+import com.example.pharmacymanagementsystem_qlht.model.ChiTietHoaDon;
 import com.example.pharmacymanagementsystem_qlht.model.PhieuTraHang;
 
 import java.sql.ResultSet;
@@ -81,6 +82,14 @@ public class PhieuTraHang_Dao implements DaoInterface<PhieuTraHang> {
         } catch (Exception e) { e.printStackTrace(); }
         return 0;
     }
+    public String insertAndReturnId(PhieuTraHang e) {
+        // generate new id and persist
+        String newId = generateNewMaPT();
+        e.setMaPT(newId);
+        boolean ok = insert(e);
+        return ok ? newId : null;
+    }
+
     @Override
     public List<PhieuTraHang> selectAll() {
         return selectBySql(SELECT_ALL_SQL);

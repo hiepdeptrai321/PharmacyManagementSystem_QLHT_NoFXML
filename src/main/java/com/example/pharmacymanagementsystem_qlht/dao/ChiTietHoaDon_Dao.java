@@ -121,6 +121,23 @@ public class ChiTietHoaDon_Dao implements  DaoInterface<ChiTietHoaDon> {
         }
         return list;
     }
+    public boolean updateSoLuong(ChiTietHoaDon e) {
+        String sql = """
+        UPDATE ChiTietHoaDon
+        SET SoLuong = ?
+        WHERE MaHD = ?
+          AND MaLH = ?
+          AND MaDVT = ?
+    """;
+
+        return ConnectDB.update(
+                sql,
+                e.getSoLuong(),
+                e.getHoaDon().getMaHD(),
+                e.getLoHang().getMaLH(),
+                e.getDvt().getMaDVT()
+        ) > 0;
+    }
 
     @Override
     public List<ChiTietHoaDon> selectAll() {
