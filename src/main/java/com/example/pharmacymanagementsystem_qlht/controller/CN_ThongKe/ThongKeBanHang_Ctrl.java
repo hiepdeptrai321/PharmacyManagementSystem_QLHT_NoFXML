@@ -158,6 +158,12 @@ public class ThongKeBanHang_Ctrl extends Application {
         // Tải dữ liệu ban đầu
         cboThoiGian.setValue("Hôm nay");
         chartDoanhThu.setAnimated(false);
+        btnXuat.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                refreshData();
+            }
+        });
+
     }
 
     private void setupTables() {
@@ -504,5 +510,12 @@ public class ThongKeBanHang_Ctrl extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+    public void refreshData() {
+        if (cboThoiGian.getValue().equals("Tùy chọn")) {
+            attemptAutoLoadTuyChon();
+        } else {
+            loadData(cboThoiGian.getValue());
+        }
     }
 }
