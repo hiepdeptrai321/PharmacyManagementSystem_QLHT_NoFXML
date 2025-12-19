@@ -101,44 +101,33 @@ public class TrangChu_Ctrl extends Application {
 
     //  3.3 Thiết lập các nhãn thống kê và biểu đồ
     private void setThongKeLabelsAndData() {
-//      Kiểm tra null để tránh lỗi
         if (lblHoaDonThangNay == null || lblHoaDonThangTruoc == null
                 || lblDoanhThuThangNay == null || lblDoanhThuThangTruoc == null
-                || chartDoanhThuThangNay == null) {
-            return;
-        }
+                || chartDoanhThuThangNay == null) return;
 
-//      Lấy dữ liệu thống kê từ DAO
         ThongKe_Dao tkDao = new ThongKe_Dao();
         LocalDate now = LocalDate.now();
 
-//      Xác định phạm vi ngày cho tháng hiện tại và tháng trước
         LocalDate startThis = now.withDayOfMonth(1);
         LocalDate endThis = now.withDayOfMonth(now.lengthOfMonth());
         LocalDate startPrev = startThis.minusMonths(1);
         LocalDate endPrev = startThis.minusDays(1);
 
-//      và các mục nhập theo ngày (hoặc theo kỳ) từ DAO cho các phạm vi
         List<ThongKeBanHang> dataThis = tkDao.getThongKeBanHang_TuyChon(startThis, endThis);
         List<ThongKeBanHang> dataPrev = tkDao.getThongKeBanHang_TuyChon(startPrev, endPrev);
 
-//      Tính tổng số hóa đơn và doanh thu cho cả hai tháng
         int invoicesThis = dataThis.stream().mapToInt(ThongKeBanHang::getSoLuongHoaDon).sum();
         double revenueThis = dataThis.stream().mapToDouble(ThongKeBanHang::getDoanhThu).sum();
 
         int invoicesPrev = dataPrev.stream().mapToInt(ThongKeBanHang::getSoLuongHoaDon).sum();
         double revenuePrev = dataPrev.stream().mapToDouble(ThongKeBanHang::getDoanhThu).sum();
 
-//      Định dạng và hiển thị trên nhãn
-        DecimalFormat df = new DecimalFormat("#,###");
-
+        VNDFormatter vndFormatter = new VNDFormatter();
         lblHoaDonThangNay.setText(invoicesThis + " Hóa đơn");
         lblHoaDonThangTruoc.setText(invoicesPrev + " Hóa đơn");
-        VNDFormatter vndFormatter = new VNDFormatter();
         lblDoanhThuThangNay.setText(vndFormatter.format(revenueThis));
         lblDoanhThuThangTruoc.setText(vndFormatter.format(revenuePrev));
 
-//      Thiết lập dữ liệu cho biểu đồ doanh thu tháng này
         chartDoanhThuThangNay.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Doanh thu");

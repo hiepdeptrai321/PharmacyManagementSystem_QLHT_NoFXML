@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class LapPhieuNhapHang_Ctrl extends Application {
+public class LapPhieuNhapHang_Ctrl{
 
     //  1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colSTT;
@@ -105,6 +105,7 @@ public class LapPhieuNhapHang_Ctrl extends Application {
         suKienThemMotDongMoiVaoBang();
         listenerListNhapThuoc();
     }
+
 
     private void loadDataAsync() {
         Task<Void> task = new Task<>() {
@@ -1130,11 +1131,6 @@ public class LapPhieuNhapHang_Ctrl extends Application {
         }
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        new LapPhieuNhapHang_GUI().showWithController(stage, this);
-    }
-
     private void listenerListNhapThuoc(){
         listNhapThuoc.addListener((javafx.collections.ListChangeListener<CTPN_TSPTL_CHTDVT>) change -> {
             boolean shouldUpdate = false;
@@ -1231,20 +1227,22 @@ public class LapPhieuNhapHang_Ctrl extends Application {
 
     private void hienThongBaoThuocMoi(Thuoc_SanPham t) {
 
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Thuốc chưa tồn tại");
-        alert.setHeaderText("Phát hiện thuốc chưa có trong hệ thống");
+        Platform.runLater(() ->{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Thuốc chưa tồn tại");
+            alert.setHeaderText("Phát hiện thuốc chưa có trong hệ thống");
 
-        alert.setContentText(
-                "Tên thuốc: " + t.getTenThuoc() +
-                        "\nHàm lượng: " + t.getHamLuong() + " " + t.getDonViHamLuong() +
-                        "\nĐường dùng: " + t.getDuongDung() +
-                        "\nHãng SX: " + t.getHangSX() +
-                        "\nXuất xứ: " + t.getNuocSX() +
-                        "\n\nVui lòng nhập thuốc mới trước khi nhập hàng!"
-        );
+            alert.setContentText(
+                    "Tên thuốc: " + t.getTenThuoc() +
+                            "\nHàm lượng: " + t.getHamLuong() + " " + t.getDonViHamLuong() +
+                            "\nĐường dùng: " + t.getDuongDung() +
+                            "\nHãng SX: " + t.getHangSX() +
+                            "\nXuất xứ: " + t.getNuocSX() +
+                            "\n\nVui lòng nhập thuốc mới trước khi nhập hàng!"
+            );
 
-        alert.showAndWait();
+            alert.showAndWait();
+        });
     }
 
     public void themVaoBangNhap(CTPN_TSPTL_CHTDVT ct) {

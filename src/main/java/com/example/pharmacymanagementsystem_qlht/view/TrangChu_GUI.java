@@ -54,6 +54,9 @@ public class TrangChu_GUI extends Application {
 
         ctrl.lblDoanhThuThangTruoc = v.lblDoanhThuThangTruoc;
         ctrl.lblDoanhThuThangNay   = v.lblDoanhThuThangNay;
+        ctrl.lblHoaDonThangTruoc   = v.lblHoaDonThangTruoc;
+        ctrl.lblHoaDonThangNay     = v.lblHoaDonThangNay;
+
 
         // Nếu controller có initialize()
         try { ctrl.initialize(); } catch (Exception ignore) {}
@@ -271,11 +274,20 @@ public class TrangChu_GUI extends Application {
         ImageView ivHD = imageView("/com/example/pharmacymanagementsystem_qlht/img/hoaDon.png", 98, 105, 44, 26, true);
 
         // Hai label này không có fx:id trong FXML; chỉ hiển thị số.
-        Label dummyHoaDonThangTruoc = boldLabel("0 hóa đơn", 25, 240, 153);
-        Label dummyHoaDonThangNay   = boldLabel("0 hóa đơn", 25, 240, 202);
+//        Label dummyHoaDonThangTruoc = boldLabel("0 hóa đơn", 25, 240, 153);
+//        Label dummyHoaDonThangNay   = boldLabel("0 hóa đơn", 25, 240, 202);
+//
+//        paneMain5.getChildren().addAll(lbHoaDon, lbHDThangNay, lbHDThangTruoc, ivHD,
+//                dummyHoaDonThangTruoc, dummyHoaDonThangNay);
+        v.lblHoaDonThangTruoc = boldLabel("0 hóa đơn", 25, 240, 153);
+        v.lblHoaDonThangNay   = boldLabel("0 hóa đơn", 25, 240, 202);
 
-        paneMain5.getChildren().addAll(lbHoaDon, lbHDThangNay, lbHDThangTruoc, ivHD,
-                dummyHoaDonThangTruoc, dummyHoaDonThangNay);
+        paneMain5.getChildren().addAll(
+                lbHoaDon, lbHDThangNay, lbHDThangTruoc, ivHD,
+                v.lblHoaDonThangTruoc,
+                v.lblHoaDonThangNay
+        );
+
         paneHoaDonWrap.getChildren().add(paneMain5);
 
         gridSmallTop.add(paneDoanhThuWrap, 0, 0);
@@ -345,7 +357,7 @@ public class TrangChu_GUI extends Application {
 
         // Labels
         Label lbl_SoLuongHangHetHan, lbl_SoLuongHangSapHetHan;
-        Label lblDoanhThuThangTruoc, lblDoanhThuThangNay;
+        Label lblDoanhThuThangTruoc, lblDoanhThuThangNay, lblHoaDonThangTruoc, lblHoaDonThangNay;
     }
 
     public static void main(String[] args) {
