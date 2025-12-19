@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -1158,15 +1159,97 @@ public class LapPhieuNhapHang_Ctrl extends Application {
             dialog.initOwner(tblNhapThuoc.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
             dialog.setTitle("Nhập thuốc bằng Excel");
-
-            // 1) build UI + inject + initialize
-            gui.showWithController(dialog, ctrl);
-            // 2) set parent để refresh bảng sau khi lưu/xóa
             ctrl.setLapPhieuNhapHangCtrl(this);
-            // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
+            gui.showWithController(dialog, ctrl);
+
         } catch (Exception e){
             e.printStackTrace();
         }
-
     }
+
+    public boolean isSameThuoc(Thuoc_SanPham o, Thuoc_SanPham i) {
+        if (o == null || i == null) return false;
+
+        return eq(i.getTenThuoc(), o.getTenThuoc())
+                && eq(i.getDonViHamLuong(), o.getDonViHamLuong())
+                && eq(i.getDuongDung(), o.getDuongDung())
+                && eq(i.getQuyCachDongGoi(), o.getQuyCachDongGoi())
+                && eq(i.getSDK_GPNK(), o.getSDK_GPNK())
+                && eq(i.getHangSX(), o.getHangSX())
+                && eq(i.getNuocSX(), o.getNuocSX())
+                && Math.abs(i.getHamLuong() - o.getHamLuong()) < 0.0001;
+    }
+
+    private boolean eq(String a, String b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.trim().equalsIgnoreCase(b.trim());
+    }
+
+
+
+    public void themThuocTuExcel(List<CTPN_TSPTL_CHTDVT> excelList) {
+
+        Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
+        List<Thuoc_SanPham> thuocDB = thuocDao.selectAll();
+
+        for (CTPN_TSPTL_CHTDVT ct : excelList) {
+
+            Thuoc_SanPham thuocExcel = ct.getChiTietPhieuNhap().getThuoc();
+            Thuoc_SanPham thuocTonTai = null;
+
+            // 🔍 SO SÁNH FULL FIELD
+            for (Thuoc_SanPham tDB : thuocDB) {
+                if (isSameThuoc(thuocExcel,tDB)) {
+                    thuocTonTai = tDB;
+                    break;
+                }
+            }
+
+            // ❌ CHƯA CÓ
+            if (thuocTonTai == null) {
+                hienThongBaoThuocMoi(thuocExcel);
+                return; // DỪNG TOÀN BỘ
+            }
+
+            // ✅ ĐÃ CÓ → GÁN LẠI THUỐC DB
+            ct.getChiTietPhieuNhap().setThuoc(thuocTonTai);
+            ct.getChiTietSP_theoLo().setThuoc(thuocTonTai);
+            ct.getChiTietDonViTinh().setThuoc(thuocTonTai);
+
+// 🔥 TẠO LÔ TỰ ĐỘNG (QUAN TRỌNG)
+            maLoHienTai++;
+            String maLH = String.format("LH%05d", maLoHienTai);
+
+            ct.getChiTietSP_theoLo().setMaLH(maLH);
+            ct.getChiTietPhieuNhap().setMaLH(maLH);
+
+// ➕ FILL VÀO BẢNG
+            themVaoBangNhap(ct);
+        }
+    }
+
+    private void hienThongBaoThuocMoi(Thuoc_SanPham t) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Thuốc chưa tồn tại");
+        alert.setHeaderText("Phát hiện thuốc chưa có trong hệ thống");
+
+        alert.setContentText(
+                "Tên thuốc: " + t.getTenThuoc() +
+                        "\nHàm lượng: " + t.getHamLuong() + " " + t.getDonViHamLuong() +
+                        "\nĐường dùng: " + t.getDuongDung() +
+                        "\nHãng SX: " + t.getHangSX() +
+                        "\nXuất xứ: " + t.getNuocSX() +
+                        "\n\nVui lòng nhập thuốc mới trước khi nhập hàng!"
+        );
+
+        alert.showAndWait();
+    }
+
+    public void themVaoBangNhap(CTPN_TSPTL_CHTDVT ct) {
+        listNhapThuoc.add(ct);
+        tblNhapThuoc.setItems(listNhapThuoc);
+    }
+
 }
