@@ -106,7 +106,7 @@ public class ThongKeBanHang_GUI {
         separator.setPrefWidth(200.0);
 
         Label displayLabel = new Label("Kiểu hiển thị");
-        displayLabel.getStyleClass().add("header-label"); // Thêm class header
+        displayLabel.getStyleClass().add("header-label");
 
         // Cấu hình Nút
         btnBang.setId("btnBang"); // ID để nhận màu xanh
@@ -117,7 +117,7 @@ public class ThongKeBanHang_GUI {
 
         btnBieuDo.setId("btnBieuDo"); // ID để nhận màu cam
         btnBieuDo.setPrefHeight(62.0);
-        btnBieuDo.setPrefWidth(104.0);
+        btnBieuDo.setPrefWidth(120.0);
         btnBieuDo.setGraphic(createIcon("/com/example/pharmacymanagementsystem_qlht/img/improvement.png", 35, 34));
         HBox.setMargin(btnBieuDo, new Insets(0, 0, 0, 30.0));
 
@@ -172,7 +172,7 @@ public class ThongKeBanHang_GUI {
         revenueLabel.setAlignment(Pos.CENTER);
         revenueLabel.setPrefWidth(1167.0);
 
-        Label invoiceListLabel = new Label("Danh sách Hóa đơn 🧾");
+        Label invoiceListLabel = new Label("Danh sách hóa đơn");
         // Thay vì set màu cứng, dùng class sub-title
         invoiceListLabel.getStyleClass().add("sub-title");
         VBox.setMargin(invoiceListLabel, new Insets(15.0, 0, 8.0, 10.0));

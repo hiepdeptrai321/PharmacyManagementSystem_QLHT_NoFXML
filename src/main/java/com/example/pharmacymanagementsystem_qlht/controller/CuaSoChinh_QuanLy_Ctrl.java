@@ -2,13 +2,16 @@ package com.example.pharmacymanagementsystem_qlht.controller;
 
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang.LapPhieuNhapHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ThongKe_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
+import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.CaiDat.caiDat_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.TrangChu_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.ViewEmbedder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -32,8 +35,12 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe.ThongKeTopSanPham_GUI;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe.ThongKeTopSanPham_Ctrl;
+
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -129,7 +136,8 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     private void loadViewEmbedded(int menuIndex, String cacheKey, Object gui, Object ctrl) {
         viTri = menuIndex;
         selectMenu(viTri);
-        Parent root = cacheViews.computeIfAbsent(cacheKey, k -> ViewEmbedder.buildFromShowWithController(gui, ctrl));
+//        Parent root = cacheViews.computeIfAbsent(cacheKey, k -> ViewEmbedder.buildFromShowWithController(gui, ctrl));
+        Parent root = ViewEmbedder.buildFromShowWithController(gui, ctrl);
         showInMainPane(root);
         pnlThongTin.setVisible(false);
         pnlChung.requestFocus();
@@ -305,10 +313,16 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     }
 
     //  5. CÁC HÀM XỬ LÝ SỰ KIỆN —> EMBED GUI SẴN CÓ
-    public void AnhChuyenTrangChu(MouseEvent mouseEvent) {
-        // Nếu Trang chủ là layout chính thì không cần embed. Giữ như hiện tại để focus.
-        loadViewEmbedded(0, "TrangChu",new com.example.pharmacymanagementsystem_qlht.view.TrangChu_GUI(),
-                new com.example.pharmacymanagementsystem_qlht.controller.TrangChu_Ctrl());
+    public void AnhChuyenTrangChu(MouseEvent e) {
+        viTri = 0;
+        selectMenu(viTri);
+
+        Parent root = ViewEmbedder.buildFromShowWithController(
+                new TrangChu_GUI(),
+                new TrangChu_Ctrl()
+        );
+
+        showInMainPane(root);
     }
 
     //  5.1.Chức năng tìm kiếm
@@ -446,7 +460,11 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
                 new com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe.ThongKeXNT_GUI(),
                 new com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe.ThongKeXNT_Ctrl());
     }
-
+    public void thongKeTopSanPham(ActionEvent actionEvent) {
+        loadViewEmbedded(4, "TK_TOP_SP",
+                new ThongKeTopSanPham_GUI(),
+                new ThongKeTopSanPham_Ctrl());
+    }
     //  5.5.Chức năng xử lý
     public void lapHoaDon(ActionEvent actionEvent) {
         loadViewEmbedded(5, "XL_HD",
@@ -473,9 +491,10 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     }
 
     public void nhapHang(ActionEvent actionEvent) {
+        LapPhieuNhapHang_Ctrl ctrl = new LapPhieuNhapHang_Ctrl();
         loadViewEmbedded(5, "XL_PNHAP",
                 new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuNhapHang.LapPhieuNhapHang_GUI(),
-                new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang.LapPhieuNhapHang_Ctrl());
+                ctrl);
     }
 
     private void addShortcut(Scene scene, KeyCodeCombination keyCombination, Runnable action) {
@@ -541,6 +560,20 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         }
     }
 
+    public void btnCaiDatClick(ActionEvent actionEvent) {
+        pnlThongTin.setVisible(!pnlThongTin.isVisible());
+        caiDat_GUI view = new caiDat_GUI();
+        Parent root = view.createUI(); // hoặc view.getRoot()
+
+        Scene scene = new Scene(root, 310, 150);
+        Stage stage = new  Stage();
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png"))));
+        stage.initOwner(txtNgayThangNam.getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setScene(scene);
+        stage.setTitle("Cài đặt");
+        stage.show();
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -561,5 +594,10 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
         showInMainPane(lapHoaDonRoot);
         pnlThongTin.setVisible(false);
         pnlChung.requestFocus();
+    }
+
+    public void dong(){
+        Stage stage = (Stage) pnlThongTin.getScene().getWindow();
+        stage.close();
     }
 }

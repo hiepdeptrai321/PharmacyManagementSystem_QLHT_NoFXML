@@ -27,10 +27,11 @@ import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class LapPhieuNhapHang_Ctrl extends Application {
+public class LapPhieuNhapHang_Ctrl{
 
     //  1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colSTT;
@@ -62,17 +63,21 @@ public class LapPhieuNhapHang_Ctrl extends Application {
     //  2. KHAI BÁO BIẾN TOÀN CỤC
     private ObservableList<ChiTietDonViTinh> allChiTietDonViTinh;
     private ObservableList<NhaCungCap> listNCC;
-    private NhaCungCap ncc = new NhaCungCap();
-    private NhaCungCap ncc2 = new NhaCungCap();
+    private NhaCungCap ncc;
     private int maLoHienTai = 0;
-    private ChiTietPhieuNhap_Dao ctpn_dao = new ChiTietPhieuNhap_Dao();
-    private ObservableList<CTPN_TSPTL_CHTDVT> listNhapThuoc = FXCollections.observableArrayList();
-    private PhieuNhap_Dao phieuNhapDao = new PhieuNhap_Dao();
+    private ChiTietPhieuNhap_Dao ctpn_dao;
+    private ObservableList<CTPN_TSPTL_CHTDVT> listNhapThuoc;
+    private PhieuNhap_Dao phieuNhapDao;
 
     //  3. PHƯƠNG THỨC KHỞI TẠO
     public void initialize() {
-        loadTable();         // chấp nhận block nhẹ nếu không quá nặng
-        taiDanhSachNCC();    // như trên
+        loadTable();
+        taiDanhSachNCC();
+
+        ncc = new  NhaCungCap();
+        ctpn_dao = new ChiTietPhieuNhap_Dao();
+        phieuNhapDao = new PhieuNhap_Dao();
+        listNhapThuoc = FXCollections.observableArrayList();
 
         Task<Void> task = new Task<>() {
             @Override
@@ -90,11 +95,42 @@ public class LapPhieuNhapHang_Ctrl extends Application {
         };
         new Thread(task).start();
 
+
+        setLoading(txtTimKiemChiTietDonViTinh,true);
+        Platform.runLater(this::loadDataAsync);
+
         timKiemNhaCungCap();
         timKiemDonViTinh();
         suKienThemChiTietDonViTinhVaoBang();
         suKienThemMotDongMoiVaoBang();
         listenerListNhapThuoc();
+    }
+
+
+    private void loadDataAsync() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                var data = new ChiTietDonViTinh_Dao().selectAll();
+                Platform.runLater(() -> {
+                    allChiTietDonViTinh = FXCollections.observableArrayList(data);
+                    listViewChiTietDonViTinh.setItems(allChiTietDonViTinh);
+                    setLoading(txtTimKiemChiTietDonViTinh,false);
+                });
+                return null;
+            }
+        };
+        new Thread(task).start();
+    }
+
+    public void setLoading(TextField tf, boolean loading) {
+        if (loading) {
+            tf.setDisable(true);
+            tf.setPromptText("Đang xử lý...");
+        } else {
+            tf.setDisable(false);
+            tf.setPromptText("");
+        }
     }
 
     //  4. PHƯƠNG THỨC XỬ LÝ SỰ KIỆN VÀ HÀM HỖ TRỢ
@@ -200,7 +236,7 @@ public class LapPhieuNhapHang_Ctrl extends Application {
     public void timKiemDonViTinh() {
 
 //      Lấy tất cả chi tiết đơn vị tính từ cơ sở dữ liệu và chỉnh style cho list view Chi Tiết Đơn Vị Tính
-        allChiTietDonViTinh = FXCollections.observableArrayList(new ChiTietDonViTinh_Dao().selectAll());
+//        allChiTietDonViTinh = FXCollections.observableArrayList(new ChiTietDonViTinh_Dao().selectAll());
         listViewChiTietDonViTinh.setItems(allChiTietDonViTinh);
         listViewChiTietDonViTinh.setVisible(false);
         listViewChiTietDonViTinh.setStyle("-fx-background-color: white; -fx-border-color: #dcdcdc; " + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0, 0, 2);" + "-fx-border-color: #cccccc;" + "-fx-border-width: 1;");
@@ -1095,11 +1131,6 @@ public class LapPhieuNhapHang_Ctrl extends Application {
         }
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        new LapPhieuNhapHang_GUI().showWithController(stage, this);
-    }
-
     private void listenerListNhapThuoc(){
         listNhapThuoc.addListener((javafx.collections.ListChangeListener<CTPN_TSPTL_CHTDVT>) change -> {
             boolean shouldUpdate = false;
@@ -1124,15 +1155,99 @@ public class LapPhieuNhapHang_Ctrl extends Application {
             dialog.initOwner(tblNhapThuoc.getScene().getWindow());
             dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
             dialog.setTitle("Nhập thuốc bằng Excel");
-
-            // 1) build UI + inject + initialize
-            gui.showWithController(dialog, ctrl);
-            // 2) set parent để refresh bảng sau khi lưu/xóa
             ctrl.setLapPhieuNhapHangCtrl(this);
-            // 3) nạp dữ liệu thuốc (PHẢI gọi sau inject)
+            gui.showWithController(dialog, ctrl);
+
         } catch (Exception e){
             e.printStackTrace();
         }
-
     }
+
+    public boolean isSameThuoc(Thuoc_SanPham o, Thuoc_SanPham i) {
+        if (o == null || i == null) return false;
+
+        return eq(i.getTenThuoc(), o.getTenThuoc())
+                && eq(i.getDonViHamLuong(), o.getDonViHamLuong())
+                && eq(i.getDuongDung(), o.getDuongDung())
+                && eq(i.getQuyCachDongGoi(), o.getQuyCachDongGoi())
+                && eq(i.getSDK_GPNK(), o.getSDK_GPNK())
+                && eq(i.getHangSX(), o.getHangSX())
+                && eq(i.getNuocSX(), o.getNuocSX())
+                && Math.abs(i.getHamLuong() - o.getHamLuong()) < 0.0001;
+    }
+
+    private boolean eq(String a, String b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.trim().equalsIgnoreCase(b.trim());
+    }
+
+
+
+    public void themThuocTuExcel(List<CTPN_TSPTL_CHTDVT> excelList) {
+
+        Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
+        List<Thuoc_SanPham> thuocDB = thuocDao.selectAll();
+
+        for (CTPN_TSPTL_CHTDVT ct : excelList) {
+
+            Thuoc_SanPham thuocExcel = ct.getChiTietPhieuNhap().getThuoc();
+            Thuoc_SanPham thuocTonTai = null;
+
+            // 🔍 SO SÁNH FULL FIELD
+            for (Thuoc_SanPham tDB : thuocDB) {
+                if (isSameThuoc(thuocExcel,tDB)) {
+                    thuocTonTai = tDB;
+                    break;
+                }
+            }
+
+            // ❌ CHƯA CÓ
+            if (thuocTonTai == null) {
+                hienThongBaoThuocMoi(thuocExcel);
+                return; // DỪNG TOÀN BỘ
+            }
+
+            // ✅ ĐÃ CÓ → GÁN LẠI THUỐC DB
+            ct.getChiTietPhieuNhap().setThuoc(thuocTonTai);
+            ct.getChiTietSP_theoLo().setThuoc(thuocTonTai);
+            ct.getChiTietDonViTinh().setThuoc(thuocTonTai);
+
+// 🔥 TẠO LÔ TỰ ĐỘNG (QUAN TRỌNG)
+            maLoHienTai++;
+            String maLH = String.format("LH%05d", maLoHienTai);
+
+            ct.getChiTietSP_theoLo().setMaLH(maLH);
+            ct.getChiTietPhieuNhap().setMaLH(maLH);
+
+// ➕ FILL VÀO BẢNG
+            themVaoBangNhap(ct);
+        }
+    }
+
+    private void hienThongBaoThuocMoi(Thuoc_SanPham t) {
+
+        Platform.runLater(() ->{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Thuốc chưa tồn tại");
+            alert.setHeaderText("Phát hiện thuốc chưa có trong hệ thống");
+
+            alert.setContentText(
+                    "Tên thuốc: " + t.getTenThuoc() +
+                            "\nHàm lượng: " + t.getHamLuong() + " " + t.getDonViHamLuong() +
+                            "\nĐường dùng: " + t.getDuongDung() +
+                            "\nHãng SX: " + t.getHangSX() +
+                            "\nXuất xứ: " + t.getNuocSX() +
+                            "\n\nVui lòng nhập thuốc mới trước khi nhập hàng!"
+            );
+
+            alert.showAndWait();
+        });
+    }
+
+    public void themVaoBangNhap(CTPN_TSPTL_CHTDVT ct) {
+        listNhapThuoc.add(ct);
+        tblNhapThuoc.setItems(listNhapThuoc);
+    }
+
 }

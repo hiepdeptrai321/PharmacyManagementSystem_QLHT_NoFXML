@@ -113,13 +113,13 @@ public class SuaXoaThuoc_GUI extends Application {
         Label lbTenThuoc = new Label("Tên thuốc"); lbTenThuoc.setLayoutX(209); lbTenThuoc.setLayoutY(-25); lbTenThuoc.setFont(Font.font(14));
         txtTenThuoc = new TextField(); txtTenThuoc.setLayoutX(283); txtTenThuoc.setLayoutY(-28); txtTenThuoc.setPrefSize(360, 25);
 
-        Label lbLoaiHang = new Label("Loại hàng"); lbLoaiHang.setLayoutX(0); lbLoaiHang.setLayoutY(15); lbLoaiHang.setFont(Font.font(14));
-        cbxLoaiHang = new ComboBox<>(); cbxLoaiHang.setLayoutX(70); cbxLoaiHang.setLayoutY(15); cbxLoaiHang.setPrefSize(158, 25);
+        Label lbLoaiHang = new Label("Loại hàng"); lbLoaiHang.setLayoutX(0); lbLoaiHang.setLayoutY(18); lbLoaiHang.setFont(Font.font(14));
+        cbxLoaiHang = new ComboBox<>(); cbxLoaiHang.setLayoutX(70); cbxLoaiHang.setLayoutY(15); cbxLoaiHang.setPrefSize(258, 25);
 
-        Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(248); lbViTri.setLayoutY(18); lbViTri.setFont(Font.font(14));
-        cbxViTri = new ComboBox<>(); cbxViTri.setLayoutX(286); cbxViTri.setLayoutY(16); cbxViTri.setPrefSize(158, 25);
+        Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(348); lbViTri.setLayoutY(21); lbViTri.setFont(Font.font(14));
+        cbxViTri = new ComboBox<>(); cbxViTri.setLayoutX(386); cbxViTri.setLayoutY(16); cbxViTri.setPrefSize(158, 25);
 
-        Label lbMa = new Label("Mã thuốc:"); lbMa.setLayoutX(1); lbMa.setLayoutY(-27); lbMa.setFont(Font.font(14));
+        Label lbMa = new Label("Mã thuốc"); lbMa.setLayoutX(1); lbMa.setLayoutY(-25); lbMa.setFont(Font.font(14));
         txtMaThuoc = new TextField(); txtMaThuoc.setEditable(false); txtMaThuoc.setLayoutX(74); txtMaThuoc.setLayoutY(-28); txtMaThuoc.setPrefSize(120, 25);
 
         infoLine.getChildren().addAll(lbTenThuoc, txtTenThuoc, lbLoaiHang, cbxLoaiHang, lbViTri, cbxViTri, lbMa, txtMaThuoc);
@@ -141,7 +141,7 @@ public class SuaXoaThuoc_GUI extends Application {
 
         Label lbTTCT = new Label("Thông tin chi tiết");
         lbTTCT.setId("lbtitle");
-        lbTTCT.getStyleClass().add("lbtitle");
+        lbTTCT.getStyleClass().add("lbtitle");lbTTCT.setPrefSize(637,0);
         lbTTCT.setLayoutX(4); lbTTCT.setLayoutY(-6); lbTTCT.setFont(Font.font(18));
 
         Label lbHL = new Label("Hàm lượng"); lbHL.setLayoutX(4); lbHL.setLayoutY(26); lbHL.setFont(Font.font(13));
@@ -191,7 +191,7 @@ public class SuaXoaThuoc_GUI extends Application {
 
         // Bảng hoạt chất + tìm
         Label lbHC = new Label("Hoạt chất");
-        lbHC.setId("lbtitle");
+        lbHC.setId("lbtitle");lbHC.setPrefSize(637,0);
         lbHC.getStyleClass().add("lbtitle");
         lbHC.setLayoutX(18); lbHC.setLayoutY(334);
         lbHC.setFont(Font.font(18));
@@ -209,7 +209,7 @@ public class SuaXoaThuoc_GUI extends Application {
         tblHoatChat.setLayoutX(18); tblHoatChat.setLayoutY(411); tblHoatChat.setPrefSize(966, 213);
         colMaHoatChat = new TableColumn<>("Mã hoạt chất"); colMaHoatChat.setPrefWidth(221.14); colMaHoatChat.setStyle("-fx-alignment: CENTER;");
         colTenHoatChat = new TableColumn<>("Tên hoạt chất"); colTenHoatChat.setPrefWidth(448); colTenHoatChat.setStyle("-fx-alignment: CENTER-LEFT;");
-        colHamLuong = new TableColumn<>("Hàm lượng"); colHamLuong.setPrefWidth(209.14); colHamLuong.setStyle("-fx-alignment: CENTER-LEFT;");
+        colHamLuong = new TableColumn<>("Hàm lượng"); colHamLuong.setPrefWidth(209.14); colHamLuong.setStyle("-fx-alignment: CENTER");
         colXoa = new TableColumn<>("Xóa"); colXoa.setPrefWidth(86.28); colXoa.setStyle("-fx-alignment: CENTER;");
         tblHoatChat.getColumns().addAll(colMaHoatChat, colTenHoatChat, colHamLuong, colXoa);
 

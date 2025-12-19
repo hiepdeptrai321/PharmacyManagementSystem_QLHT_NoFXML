@@ -156,10 +156,10 @@ public class ThemThuoc_Ctrl {
             {
                 btn.setOnAction(event -> {
                     ChiTietHoatChat chtc = getTableView().getItems().get(getIndex());
-                    new ChiTietHoatChat_Dao().deleteById(chtc.getThuoc().getMaThuoc(), chtc.getHoatChat().getMaHoatChat());
+//                    new ChiTietHoatChat_Dao().deleteById(chtc.getThuoc().getMaThuoc(), chtc.getHoatChat().getMaHoatChat());
                     getTableView().getItems().remove(chtc);
                     listChiTietHoatChat.removeIf(item ->
-                            item.getThuoc().getMaThuoc().equals(chtc.getThuoc().getMaThuoc()) &&
+//                            item.getThuoc().getMaThuoc().equals(chtc.getThuoc().getMaThuoc()) &&
                                     item.getHoatChat().getMaHoatChat().equals(chtc.getHoatChat().getMaHoatChat()));
 
                 });

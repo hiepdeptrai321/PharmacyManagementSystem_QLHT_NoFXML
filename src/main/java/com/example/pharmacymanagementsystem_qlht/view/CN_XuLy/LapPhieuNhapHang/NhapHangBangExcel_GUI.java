@@ -57,7 +57,7 @@ public class NhapHangBangExcel_GUI {
 
         stage.setScene(scene);
         stage.setTitle("Gửi tài liệu");
-        stage.show();
+        stage.showAndWait();
     }
 
     private AnchorPane buildUI() {

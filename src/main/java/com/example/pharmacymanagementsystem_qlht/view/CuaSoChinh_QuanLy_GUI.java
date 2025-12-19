@@ -95,6 +95,7 @@ public class CuaSoChinh_QuanLy_GUI {
         // Menu THỐNG KÊ
         v.miTKDoanhThu.setOnAction(ctrl::thongKeDoanhThu);
         v.miTKXNT.setOnAction(ctrl::thongKeXuatNhap);
+        v.miTKTopSanPham.setOnAction(ctrl::thongKeTopSanPham);
 
         // Menu XỬ LÝ
         v.miLapHoaDon.setOnAction(ctrl::lapHoaDon);
@@ -184,7 +185,8 @@ public class CuaSoChinh_QuanLy_GUI {
         v.menuThongKe = new Menu("📊 Thống kê");
         v.miTKDoanhThu = mi("Thống kê doanh thu");
         v.miTKXNT      = mi("Thống kê xuất nhập tồn");
-        v.menuThongKe.getItems().addAll(v.miTKDoanhThu, v.miTKXNT);
+        v.miTKTopSanPham = mi("Thống kê Top SP");
+        v.menuThongKe.getItems().addAll(v.miTKDoanhThu, v.miTKXNT, v.miTKTopSanPham);
         v.menuThongKe.getStyleClass().add("m-thongke");
 
         v.menuXuLy = new Menu("🛠 Xử lý");
@@ -323,24 +325,50 @@ public class CuaSoChinh_QuanLy_GUI {
 
         VBox vbInfo = new VBox(); vbInfo.setPrefSize(307, 107);
         HBox hbRole = new HBox(); hbRole.setPrefSize(307, 35); VBox.setMargin(hbRole, new Insets(20,0,0,0));
-        Label lbRole = new Label("Vai trò:"); lbRole.setPrefSize(52, 30); HBox.setMargin(lbRole, new Insets(0,0,0,35));
+        Label lbRole = new Label("Vai trò:"); lbRole.setPrefSize(52, 30);
+        HBox.setMargin(lbRole, new Insets(0,0,0,35));
+
         Pane paneLabelThongTin = paneMain(191, 30);
         v.lblVaiTro = new Label(); v.lblVaiTro.setPrefSize(158, 30); v.lblVaiTro.setLayoutX(14); v.lblVaiTro.setLayoutY(1);
         paneLabelThongTin.setId("paneLabelThongTin");
         paneLabelThongTin.getChildren().add(v.lblVaiTro);
         hbRole.getChildren().addAll(lbRole, paneLabelThongTin);
 
-        Pane pDangXuat = new Pane(); pDangXuat.setPrefSize(307, 62);
-        Button btnDangXuat = new Button("Đăng xuất"); btnDangXuat.setId("btnDangXuat");
+        HBox pnlButton = new HBox(); pnlButton.setPrefSize(307, 62);
+
+        Button btnDangXuat = new Button("Đăng xuất");
+        btnDangXuat.setStyle("-fx-background-color: #ff4d4d;\n" +
+                "    -fx-text-fill: white;\n" +
+                "    -fx-font-weight: bold;\n" +
+                "    -fx-background-radius: 5px;\n" +
+                "    -fx-padding: 8 15 8 15;");
         btnDangXuat.setLayoutX(110); btnDangXuat.setLayoutY(12);
         // handler sẽ set trong showWithController qua ctrl.btnDangXuatClick
-        pDangXuat.getChildren().add(btnDangXuat);
         // Đặt handler ngay tại đây để không quên:
         btnDangXuat.setOnAction(e -> {
             if (ctrlRef != null) ctrlRef.btnDangXuatClick(e);
         });
 
-        vbInfo.getChildren().addAll(hbRole, pDangXuat);
+        Button btntemp = new Button("Cài đặt");
+        btntemp.setStyle("-fx-background-color: #0c81ff;\n" +
+                "    -fx-text-fill: white;\n" +
+                "    -fx-font-weight: bold;\n" +
+                "    -fx-background-radius: 5px;\n" +
+                "    -fx-padding: 8 15 8 15;");
+        btntemp.setLayoutX(110); btnDangXuat.setLayoutY(12);
+        // handler sẽ set trong showWithController qua ctrl.btnDangXuatClick
+        // Đặt handler ngay tại đây để không quên:
+        btntemp.setOnAction(e -> {
+            if (ctrlRef != null) ctrlRef.btnCaiDatClick(e);
+        });
+
+        HBox.setMargin(btnDangXuat, new Insets(10,0,0,82));
+        HBox.setMargin(btntemp, new Insets(10,0,0,35));
+        pnlButton.getChildren().add(btntemp);
+        pnlButton.getChildren().add(btnDangXuat);
+
+
+        vbInfo.getChildren().addAll(hbRole, pnlButton);
         v.pnlThongTin.getChildren().add(vbInfo);
 
         // ===== Panel tên người dùng (click hiện pnlThongTin) =====
@@ -374,7 +402,7 @@ public class CuaSoChinh_QuanLy_GUI {
         // các MenuItem cần gắn handler
         MenuItem miTKHoaDon, miTKPhieuNhap, miTKPhieuDoi, miTKPhieuTra, miTKPhieuDat, miTKNCC, miTKHoatDong, miTimThuocTrongKho;
         MenuItem miDMThuoc, miDMNhanVien, miDMKeHang, miDMKhuyenMai, miDMNCC, miDMNhomDL, miDMKhachHang;
-        MenuItem miTKDoanhThu, miTKXNT;
+        MenuItem miTKDoanhThu, miTKXNT, miTKTopSanPham;
         MenuItem miTimThuoc, miTimKhachHang;
         MenuItem miLapHoaDon, miLapPhieuDoi, miLapPhieuTra, miLapPhieuDatHang, miNhapHang;
         MenuItem miCapNhatGia, miCapNhatTonKho, miCapNhatKM;

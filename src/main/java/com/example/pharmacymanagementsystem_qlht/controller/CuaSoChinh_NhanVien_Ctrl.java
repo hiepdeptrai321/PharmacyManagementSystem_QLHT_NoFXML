@@ -1,12 +1,15 @@
 package com.example.pharmacymanagementsystem_qlht.controller;
 
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ThongKe_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
+import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.TrangChu_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.ViewEmbedder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -41,7 +44,7 @@ import java.util.*;
 public class CuaSoChinh_NhanVien_Ctrl{
 
     //  1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
-    public static CuaSoChinh_QuanLy_Ctrl instance;
+    public static CuaSoChinh_NhanVien_Ctrl instance;
     public Pane pnlChung;
     public Menu menuTimKiem;
     public Menu menuDanhMuc;
@@ -69,6 +72,8 @@ public class CuaSoChinh_NhanVien_Ctrl{
     public Pane pnlNguoiDung;
     public TextField txtVaiTroNhanVien;
     public Label lblVaiTro;
+    private Parent lapHoaDonRoot;
+    private LapHoaDon_Ctrl lapHoaDonCtrl;
 
     //  2. KHAI BÁO BIẾN TOÀN CỤC
     private int viTri;
@@ -80,10 +85,10 @@ public class CuaSoChinh_NhanVien_Ctrl{
 
     public static CuaSoChinh_NhanVien_Ctrl instanceNV;
 
-
     //  3. HÀM KHỞI TẠO
     public void initialize() {
         instanceNV = this;
+        instance = this;
         setNgayGio(txtNgayThangNam);
         loadTableThuocHetHan();
         loadTableThuocSapHetHan();
@@ -310,11 +315,16 @@ public class CuaSoChinh_NhanVien_Ctrl{
     }
 
     //  5. CÁC HÀM XỬ LÝ SỰ KIỆN —> EMBED GUI SẴN CÓ
-    public void AnhChuyenTrangChu(MouseEvent mouseEvent) {
-        // Nếu Trang chủ là layout chính thì không cần embed. Giữ như hiện tại để focus.
-        selectMenu(0);
-        pnlThongTin.setVisible(false);
-        pnlChung.requestFocus();
+    public void AnhChuyenTrangChu(MouseEvent e) {
+        viTri = 0;
+        selectMenu(viTri);
+
+        Parent root = ViewEmbedder.buildFromShowWithController(
+                new TrangChu_GUI(),
+                new TrangChu_Ctrl()
+        );
+
+        showInMainPane(root);
     }
 
     //  5.1.Chức năng tìm kiếm
@@ -546,5 +556,24 @@ public class CuaSoChinh_NhanVien_Ctrl{
         }
     }
 
+    public void openLapHoaDonWithMa(String maPhieuDat) {
+        viTri = 5;
+        selectMenu(viTri);
 
+        if (lapHoaDonCtrl == null) {
+            lapHoaDonCtrl = new LapHoaDon_Ctrl();
+            lapHoaDonCtrl.setMaPhieuDat(maPhieuDat);
+            lapHoaDonRoot = ViewEmbedder.buildFromShowWithController(new LapHoaDon_GUI(), lapHoaDonCtrl);
+
+        }
+
+        showInMainPane(lapHoaDonRoot);
+        pnlThongTin.setVisible(false);
+        pnlChung.requestFocus();
+    }
+
+    public void dong(){
+        Stage stage = (Stage) pnlThongTin.getScene().getWindow();
+        stage.close();
+    }
 }
