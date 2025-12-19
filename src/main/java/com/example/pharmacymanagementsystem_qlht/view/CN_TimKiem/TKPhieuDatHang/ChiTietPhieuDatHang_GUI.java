@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 import java.util.Objects;
 
@@ -308,6 +309,7 @@ public class ChiTietPhieuDatHang_GUI {
         root.getChildren().add(split);
 
         Scene scene = new Scene(root);
+
         try {
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/ChiTietPhieuDat.css")).toExternalForm());
         } catch (Exception ignored) {}
@@ -351,7 +353,16 @@ public class ChiTietPhieuDatHang_GUI {
         ctrl.initialize();
 
         stage.setTitle("Chi tiết phiếu đặt");
+        stage.getIcons().add(
+                new Image(
+                        Objects.requireNonNull(
+                                getClass().getResourceAsStream(
+                                        "/com/example/pharmacymanagementsystem_qlht/img/logoNguyenBan.png"
+                                )
+                        )
+                )
+        );
         stage.setScene(scene);
-        stage.show();
+
     }
 }
