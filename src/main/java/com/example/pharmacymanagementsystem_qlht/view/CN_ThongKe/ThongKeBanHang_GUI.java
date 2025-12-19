@@ -84,7 +84,7 @@ public class ThongKeBanHang_GUI {
         cotMaNhanVien.setPrefWidth(200.0);
         cotTongTien.setPrefWidth(359.0);
         tableHoaDon.getColumns().addAll(cotMaHoaDon, cotNgayLap, cotMaKhachHang, cotMaNhanVien, cotTongTien);
-        tableHoaDon.setPrefHeight(273.0);
+        tableHoaDon.setPrefHeight(200.0);
         tableHoaDon.setPrefWidth(1161.0);
 
         // --- 5. Dựng VBox bên trái (Panel điều khiển) ---

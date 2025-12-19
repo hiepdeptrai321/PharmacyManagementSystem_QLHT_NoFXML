@@ -108,15 +108,15 @@ public class ThongKeTopSanPham_GUI {
         listLabel.getStyleClass().add("sub-title"); // Màu đỏ, to
 
         TableView<ThongKeTopSanPham> table = new TableView<>();
-        table.setPrefHeight(400);
+        table.setPrefHeight(300);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn<ThongKeTopSanPham, Integer> colSTT = new TableColumn<>("Hạng");
-        TableColumn<ThongKeTopSanPham, String> colMa = new TableColumn<>("Mã Thuốc");
-        TableColumn<ThongKeTopSanPham, String> colTen = new TableColumn<>("Tên Thuốc");
+        TableColumn<ThongKeTopSanPham, String> colMa = new TableColumn<>("Mã thuốc");
+        TableColumn<ThongKeTopSanPham, String> colTen = new TableColumn<>("Tên thuốc");
         TableColumn<ThongKeTopSanPham, String> colDVT = new TableColumn<>("ĐVT");
-        TableColumn<ThongKeTopSanPham, Integer> colSL = new TableColumn<>("Số Lượng Bán");
-        TableColumn<ThongKeTopSanPham, Double> colTien = new TableColumn<>("Tổng Tiền");
+        TableColumn<ThongKeTopSanPham, Integer> colSL = new TableColumn<>("Số lượng bán");
+        TableColumn<ThongKeTopSanPham, Double> colTien = new TableColumn<>("Tổng tiền");
 
         colSTT.setMinWidth(50);
         colMa.setMinWidth(100);

@@ -152,41 +152,54 @@ public class ThongKeTopSanPham_Ctrl extends Application {
         }
     }
 
-    // --- ĐÃ SỬA: Dùng Platform.runLater chuẩn để tránh nhân đôi và luôn hiện Top 5 ---
     private void updateCharts(boolean useQuantity) {
-        // Tính toán tổng số liệu trước (ở luồng hiện tại)
+        // Tính toán tổng trước
         double totalValueTemp = 0;
         for (ThongKeTopSanPham sp : listData) {
             totalValueTemp += useQuantity ? sp.getSoLuong() : sp.getTongTien();
         }
         final double totalValue = totalValueTemp;
 
-        // Đẩy toàn bộ việc Xóa và Vẽ vào luồng giao diện để đồng bộ
         Platform.runLater(() -> {
-            // 1. Xóa dữ liệu cũ (Nằm TRONG runLater để tránh xung đột với lệnh Add)
+            // --- BƯỚC 1: XÓA SẠCH DỮ LIỆU CŨ ---
             pieChart.getData().clear();
             barChart.getData().clear();
+            xAxis.getCategories().clear(); // Xóa danh mục cũ
 
+            // --- BƯỚC 2: CHUẨN BỊ DỮ LIỆU MỚI ---
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName(useQuantity ? "Số lượng" : "Doanh thu");
 
-            // 2. Chỉ lấy Top 5 cho biểu đồ (Dù listData có 10, 20...)
-            int limit = Math.min(listData.size(), 5);
+            // Tạo một danh sách tạm để chứa tên các thuốc (Categories)
+            ObservableList<String> categories = FXCollections.observableArrayList();
 
+            int limit = Math.min(listData.size(), 5);
             for (int i = 0; i < limit; i++) {
                 ThongKeTopSanPham sp = listData.get(i);
                 double value = useQuantity ? sp.getSoLuong() : sp.getTongTien();
 
+                // Xử lý PieChart
                 double percent = (totalValue == 0) ? 0 : (value / totalValue) * 100;
                 String nameWithPercent = String.format("%s (%.1f%%)", sp.getTenThuoc(), percent);
-
                 pieChart.getData().add(new PieChart.Data(nameWithPercent, value));
+
+                // Xử lý BarChart
                 series.getData().add(new XYChart.Data<>(sp.getTenThuoc(), value));
+
+                // [QUAN TRỌNG] Lưu tên thuốc vào danh sách danh mục
+                categories.add(sp.getTenThuoc());
             }
 
-            pieChart.setTitle(useQuantity ? "Tỷ trọng số lượng (Top 5)" : "Tỷ trọng doanh thu (Top 5)");
+            xAxis.setCategories(categories);
+
+            // --- BƯỚC 4: THÊM DATA VÀO BIỂU ĐỒ ---
             barChart.getData().add(series);
+
+            // --- BƯỚC 5: CẤU HÌNH GIAO DIỆN (CHỮ NGHIÊNG ĐỂ KHÔNG BỊ ĐÈ) ---
+            pieChart.setTitle(useQuantity ? "Tỷ trọng số lượng (Top 5)" : "Tỷ trọng doanh thu (Top 5)");
             yAxis.setLabel(useQuantity ? "Đơn vị" : "VNĐ");
+            xAxis.setTickLabelRotation(30);
+            xAxis.setStyle("-fx-tick-label-font-size: 10px;");
         });
     }
 
