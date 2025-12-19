@@ -2,6 +2,7 @@ package com.example.pharmacymanagementsystem_qlht.controller;
 
 import com.example.pharmacymanagementsystem_qlht.TienIch.VNDFormatter;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapHoaDon.LapHoaDon_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang.LapPhieuNhapHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ThongKe_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TheoLo_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ThongKeBanHang;
@@ -135,7 +136,8 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     private void loadViewEmbedded(int menuIndex, String cacheKey, Object gui, Object ctrl) {
         viTri = menuIndex;
         selectMenu(viTri);
-        Parent root = cacheViews.computeIfAbsent(cacheKey, k -> ViewEmbedder.buildFromShowWithController(gui, ctrl));
+//        Parent root = cacheViews.computeIfAbsent(cacheKey, k -> ViewEmbedder.buildFromShowWithController(gui, ctrl));
+        Parent root = ViewEmbedder.buildFromShowWithController(gui, ctrl);
         showInMainPane(root);
         pnlThongTin.setVisible(false);
         pnlChung.requestFocus();
@@ -489,9 +491,10 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
     }
 
     public void nhapHang(ActionEvent actionEvent) {
+        LapPhieuNhapHang_Ctrl ctrl = new LapPhieuNhapHang_Ctrl();
         loadViewEmbedded(5, "XL_PNHAP",
                 new com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuNhapHang.LapPhieuNhapHang_GUI(),
-                new com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuNhapHang.LapPhieuNhapHang_Ctrl());
+                ctrl);
     }
 
     private void addShortcut(Scene scene, KeyCodeCombination keyCombination, Runnable action) {
