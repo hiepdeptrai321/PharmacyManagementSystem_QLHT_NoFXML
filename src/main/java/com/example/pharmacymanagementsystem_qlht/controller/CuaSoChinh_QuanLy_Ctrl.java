@@ -36,6 +36,9 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe.ThongKeTopSanPham_GUI;
+import com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe.ThongKeTopSanPham_Ctrl;
+
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -448,7 +451,11 @@ public class CuaSoChinh_QuanLy_Ctrl extends Application {
                 new com.example.pharmacymanagementsystem_qlht.view.CN_ThongKe.ThongKeXNT_GUI(),
                 new com.example.pharmacymanagementsystem_qlht.controller.CN_ThongKe.ThongKeXNT_Ctrl());
     }
-
+    public void thongKeTopSanPham(ActionEvent actionEvent) {
+        loadViewEmbedded(4, "TK_TOP_SP",
+                new ThongKeTopSanPham_GUI(),
+                new ThongKeTopSanPham_Ctrl());
+    }
     //  5.5.Chức năng xử lý
     public void lapHoaDon(ActionEvent actionEvent) {
         loadViewEmbedded(5, "XL_HD",

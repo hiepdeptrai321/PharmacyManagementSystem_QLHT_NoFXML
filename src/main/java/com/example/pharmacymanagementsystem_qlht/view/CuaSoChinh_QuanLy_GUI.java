@@ -95,6 +95,7 @@ public class CuaSoChinh_QuanLy_GUI {
         // Menu THỐNG KÊ
         v.miTKDoanhThu.setOnAction(ctrl::thongKeDoanhThu);
         v.miTKXNT.setOnAction(ctrl::thongKeXuatNhap);
+        v.miTKTopSanPham.setOnAction(ctrl::thongKeTopSanPham);
 
         // Menu XỬ LÝ
         v.miLapHoaDon.setOnAction(ctrl::lapHoaDon);
@@ -184,7 +185,8 @@ public class CuaSoChinh_QuanLy_GUI {
         v.menuThongKe = new Menu("📊 Thống kê");
         v.miTKDoanhThu = mi("Thống kê doanh thu");
         v.miTKXNT      = mi("Thống kê xuất nhập tồn");
-        v.menuThongKe.getItems().addAll(v.miTKDoanhThu, v.miTKXNT);
+        v.miTKTopSanPham = mi("Thống kê Top SP");
+        v.menuThongKe.getItems().addAll(v.miTKDoanhThu, v.miTKXNT, v.miTKTopSanPham);
         v.menuThongKe.getStyleClass().add("m-thongke");
 
         v.menuXuLy = new Menu("🛠 Xử lý");
@@ -400,7 +402,7 @@ public class CuaSoChinh_QuanLy_GUI {
         // các MenuItem cần gắn handler
         MenuItem miTKHoaDon, miTKPhieuNhap, miTKPhieuDoi, miTKPhieuTra, miTKPhieuDat, miTKNCC, miTKHoatDong, miTimThuocTrongKho;
         MenuItem miDMThuoc, miDMNhanVien, miDMKeHang, miDMKhuyenMai, miDMNCC, miDMNhomDL, miDMKhachHang;
-        MenuItem miTKDoanhThu, miTKXNT;
+        MenuItem miTKDoanhThu, miTKXNT, miTKTopSanPham;
         MenuItem miTimThuoc, miTimKhachHang;
         MenuItem miLapHoaDon, miLapPhieuDoi, miLapPhieuTra, miLapPhieuDatHang, miNhapHang;
         MenuItem miCapNhatGia, miCapNhatTonKho, miCapNhatKM;
