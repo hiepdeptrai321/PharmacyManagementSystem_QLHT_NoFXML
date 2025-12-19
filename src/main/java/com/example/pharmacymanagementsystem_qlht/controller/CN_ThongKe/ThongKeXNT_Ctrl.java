@@ -113,6 +113,11 @@ public class ThongKeXNT_Ctrl extends Application {
 
         // 4. Gắn sự kiện
         btnXuat.setOnAction(e -> xuatFile(e));
+        btnXuat.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                refreshData();
+            }
+        });
     }
 
     // --- 5. CÁC HÀM SETUP (GIỮ NGUYÊN, CHỈ BỎ `view.`) ---
@@ -312,7 +317,10 @@ public class ThongKeXNT_Ctrl extends Application {
             }
         }
     }
-
+    public void refreshData() {
+        loadDataHetHan();
+        handleThoiGianChange();
+    }
     private void xuatExcel(File file) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Font headerFont = workbook.createFont();
