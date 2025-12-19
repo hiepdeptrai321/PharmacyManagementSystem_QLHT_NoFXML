@@ -9,6 +9,7 @@ import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapHoaDon.LapHoaDon_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CuaSoChinh_QuanLy_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.DangNhap_GUI;
+import com.example.pharmacymanagementsystem_qlht.view.TrangChu_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.ViewEmbedder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -314,11 +315,16 @@ public class CuaSoChinh_NhanVien_Ctrl{
     }
 
     //  5. CÁC HÀM XỬ LÝ SỰ KIỆN —> EMBED GUI SẴN CÓ
-    public void AnhChuyenTrangChu(MouseEvent mouseEvent) {
-        // Nếu Trang chủ là layout chính thì không cần embed. Giữ như hiện tại để focus.
-        selectMenu(0);
-        pnlThongTin.setVisible(false);
-        pnlChung.requestFocus();
+    public void AnhChuyenTrangChu(MouseEvent e) {
+        viTri = 0;
+        selectMenu(viTri);
+
+        Parent root = ViewEmbedder.buildFromShowWithController(
+                new TrangChu_GUI(),
+                new TrangChu_Ctrl()
+        );
+
+        showInMainPane(root);
     }
 
     //  5.1.Chức năng tìm kiếm
