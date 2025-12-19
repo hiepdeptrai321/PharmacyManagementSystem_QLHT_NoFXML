@@ -322,8 +322,8 @@ public class LapHoaDon_Ctrl extends Application {
         huongDan.setStyle("-fx-text-alignment: center;");
 
         // ===== Buttons =====
-        Button btnXacNhan = new Button("✔ Xác nhận");
-        Button btnThoat = new Button("✖ Thoát");
+        Button btnXacNhan = new Button(" Xác nhận");
+        Button btnThoat = new Button(" Thoát");
 
         btnXacNhan.setStyle("""
         -fx-background-color: #2ecc71;

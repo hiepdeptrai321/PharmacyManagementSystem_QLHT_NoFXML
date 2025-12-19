@@ -32,8 +32,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hien;
-import static javafx.scene.control.Alert.AlertType.ERROR;
-import static javafx.scene.control.Alert.AlertType.WARNING;
+import static javafx.scene.control.Alert.AlertType.*;
 
 public class LapPhieuTraHang_Ctrl extends Application {
     public TextField lblMaHDGoc;
@@ -76,6 +75,8 @@ public class LapPhieuTraHang_Ctrl extends Application {
     private final HoaDon_Dao hoaDonDao = new HoaDon_Dao();
     private final ChiTietHoaDon_Dao cthdDao = new ChiTietHoaDon_Dao();
     private final KhachHang_Dao khDao = new KhachHang_Dao();
+    private ChiTietPhieuTraHang_Dao ctpthDao = new ChiTietPhieuTraHang_Dao();
+    private HoaDon hoaDonGoc;
 
     private final NumberFormat currencyVN = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
@@ -107,6 +108,12 @@ public class LapPhieuTraHang_Ctrl extends Application {
         }
         setupTblGocColumns();
         setupTblTraColumns();
+    }
+    public void setHoaDonGoc(HoaDon hd) {
+        this.hoaDonGoc = hd;
+
+        List<ChiTietHoaDon> list = cthdDao.selectByMaHD(hd.getMaHD());
+        dsGoc.setAll(list);
     }
     private void safeSetConstrainedResize(TableView<?> tv) {
         try { tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); } catch (Exception ignored) {}
@@ -176,26 +183,63 @@ public class LapPhieuTraHang_Ctrl extends Application {
             alignRight(colThanhTienGoc);
         }
         if (colTra != null) {
-            colTra.setCellFactory(tc -> new TableCell<>() {
+            colTra.setCellFactory(tc -> new TableCell<ChiTietHoaDon, Void>() {
+
                 private final Button btn = new Button("↓");
+
                 {
                     btn.getStyleClass().add("btn-doi");
-                    btn.setTooltip(new Tooltip("Chuyển xuống danh sách đổi"));
-                    btn.setOnAction(e -> {
-                        int idx = getIndex();
-                        if (idx < 0 || idx >= tblSanPhamHoaDon.getItems().size()) return;
+                    btn.setTooltip(new Tooltip("Chuyển sang danh sách trả"));
 
-                        ChiTietHoaDon goc = getTableView().getItems().get(getIndex());
+                    btn.setOnAction(e -> {
+                        ChiTietHoaDon goc =
+                                getTableView().getItems().get(getIndex());
+
                         if (goc == null) return;
+
+                        int slDaTra = ctpthDao.tongSoLuongDaTra(
+                                lblMaHDGoc.getText(),
+                                goc.getLoHang().getMaLH()
+                        );
+
+                        int slConTra = goc.getSoLuong() - slDaTra;
+
+                        if (slConTra <= 0) {
+                            thongBaoTuyChinh(
+                                    WARNING,
+                                    "Không thể trả",
+                                    "Sản phẩm này đã được trả hết."
+                            );
+                            return;
+                        }
 
                         xuLyChuyenSangTra(goc);
                     });
+
                     setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     setStyle("-fx-alignment: center;");
                 }
-                @Override protected void updateItem(Void it, boolean empty) {
+
+                @Override
+                protected void updateItem(Void it, boolean empty) {
                     super.updateItem(it, empty);
-                    setGraphic(empty ? null : btn);
+
+                    if (empty) {
+                        setGraphic(null);
+                        return;
+                    }
+
+                    ChiTietHoaDon goc =
+                            getTableView().getItems().get(getIndex());
+
+                    int slDaTra = ctpthDao.tongSoLuongDaTra(
+                            lblMaHDGoc.getText(),
+                            goc.getLoHang().getMaLH()
+                    );
+
+                    btn.setDisable(goc.getSoLuong() - slDaTra <= 0);
+
+                    setGraphic(btn);
                     setText(null);
                 }
             });
@@ -206,22 +250,44 @@ public class LapPhieuTraHang_Ctrl extends Application {
     }
 
     private void xuLyChuyenSangTra(ChiTietHoaDon cthdGoc) {
+
         if (cthdGoc == null || cthdGoc.getLoHang() == null) return;
-        String key = cthdGoc.getHoaDon().getMaHD() + "_" +
-                cthdGoc.getLoHang().getMaLH() + "_" +
-                (cthdGoc.getDvt() != null ? cthdGoc.getDvt().getMaDVT() : "null");
-        int max = Math.max(0, cthdGoc.getSoLuong());
+
+        int slBan = cthdGoc.getSoLuong(); // SỐ BÁN GỐC
+
+        int slDaTra = ctpthDao.tongSoLuongDaTra(
+                cthdGoc.getHoaDon().getMaHD(),
+                cthdGoc.getLoHang().getMaLH()
+        );
+
+        int slConTra = slBan - slDaTra;
+
+        if (slConTra <= 0) {
+            thongBaoTuyChinh(
+                    WARNING,
+                    "Không thể trả",
+                    "Sản phẩm này đã được trả hết."
+            );
+            return;
+        }
+
+        String key =
+                cthdGoc.getHoaDon().getMaHD() + "_" +
+                        cthdGoc.getLoHang().getMaLH();
+
         TraHangItem vm = traByKey.get(key);
+
         if (vm == null) {
             vm = new TraHangItem(cthdGoc, 1, "");
             dsTra.add(vm);
             traByKey.put(key, vm);
         } else {
-            int next = Math.min(max, vm.getSoLuongTra() + 1);
+            int next = Math.min(slConTra, vm.getSoLuongTra() + 1);
             vm.setSoLuongTra(next);
         }
+
         capNhatTienTra();
-        if (tblChiTietTraHang != null) tblChiTietTraHang.refresh();
+        tblChiTietTraHang.refresh();
     }
 
     private String tenSP(ChiTietHoaDon row) {
@@ -430,8 +496,9 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
     public void xuLyTimHDGoc() {
         String ma = txtTimHoaDon.getText().trim();
+
         if (ma.isBlank()) {
-            thongBaoTuyChinh(WARNING, "Thiếu thông tin", "Vui lòng nhập mã hóa đơn.");
+            hien(WARNING, "Thiếu thông tin", "Vui lòng nhập mã hóa đơn.");
             return;
         }
 
@@ -440,15 +507,19 @@ public class LapPhieuTraHang_Ctrl extends Application {
             HoaDon hd = hoaDonDao.selectById(ma);
 
             if (hd == null) {
-                thongBaoTuyChinh(WARNING, "Không tìm thấy", "Hóa đơn không tồn tại.");
+                hien(WARNING, "Không tìm thấy", "Hóa đơn không tồn tại.");
                 return;
             }
 
             // load line items first to compute discounts
-            List<ChiTietHoaDon> list = cthdDao.selectByMaHD(ma);
+            List<ChiTietHoaDon> lines = cthdDao.selectByMaHD(ma);
+            if (lines == null || lines.isEmpty()) {
+                hien(WARNING, "Không có sản phẩm", "Hóa đơn không có chi tiết.");
+                return;
+            }
             double perLineDiscount = 0;
-            if (list != null) {
-                for (ChiTietHoaDon ct : list) {
+            if (lines != null) {
+                for (ChiTietHoaDon ct : lines) {
                     if (ct != null) perLineDiscount += ct.getGiamGia();
                 }
             }
@@ -474,7 +545,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
             } catch (Exception ignored) { }
 
             if (invoiceLevelDiscount + perLineDiscount > 0) {
-                thongBaoTuyChinh(WARNING,
+                hien(WARNING,
                         "Hóa đơn có áp dụng giảm giá tổng!",
                         "Không thể thực hiện trả hàng với hóa đơn này.");
                 return;
@@ -482,7 +553,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
             LocalDate ngayHD = hd.getNgayLap().toLocalDateTime().toLocalDate();
             if (ngayHD.isBefore(LocalDate.now().minusDays(7))) {
-                thongBaoTuyChinh(WARNING, "Quá hạn", "Hóa đơn đã quá 7 ngày, không thể trả hàng.");
+                hien(WARNING, "Quá hạn", "Hóa đơn đã quá 7 ngày, không thể trả hàng.");
                 return;
             }
 
@@ -503,18 +574,36 @@ public class LapPhieuTraHang_Ctrl extends Application {
             }
 
             dpNgayLapPhieu.setValue(LocalDate.now());
-
-            List<ChiTietHoaDon> lines = cthdDao.selectByMaHD(ma);
-            System.out.println("CTHD size = " + lines.size());
-            for (ChiTietHoaDon c : lines) {
-                System.out.println(
-                        "LH=" + (c.getLoHang() != null) +
-                                ", Thuoc=" + (c.getLoHang()!=null ? c.getLoHang().getThuoc() : null) +
-                                ", DVT=" + c.getDvt()
-                );
-            }
             dsTra.clear();
             traByKey.clear();
+//            dsGoc.setAll(lines);
+            dsGoc.clear();
+            boolean conTraDuoc = false;
+
+            for (ChiTietHoaDon ct : lines) {
+
+                int slBan = ct.getSoLuong();
+                int slDaTra = ctpthDao.tongSoLuongDaTra(
+                        ma,
+                        ct.getLoHang().getMaLH()
+                );
+
+                if (slBan - slDaTra > 0) {
+                    conTraDuoc = true;
+                    break;
+                }
+            }
+            dsGoc.setAll(lines);
+
+            if (!conTraDuoc) {
+                hien(
+                        INFORMATION,
+                        "Không thể trả hàng",
+                        "Các sản phẩm trong hóa đơn này đã được trả hết."
+                );
+                return;
+            }
+
             dsGoc.setAll(lines);
             double tongTienGoc = 0;
             for (ChiTietHoaDon ct : lines) {
@@ -527,22 +616,20 @@ public class LapPhieuTraHang_Ctrl extends Application {
             tblSanPhamHoaDon.refresh();
         } catch (Exception e) {
             e.printStackTrace();
-            thongBaoTuyChinh(ERROR, "Lỗi", "Không thể tải hóa đơn.");
+            hien(ERROR, "Lỗi", "Không thể tải hóa đơn.");
         }
-        System.out.println("dsGoc = " + dsGoc.size());
-        System.out.println("tbl = " + tblSanPhamHoaDon.getItems().size());
     }
 
 
 
     public void xuLyTraHang() {
         if (lblMaHDGoc.getText() == null || lblMaHDGoc.getText().isBlank()) {
-            thongBaoTuyChinh(WARNING, "Thiếu thông tin", "Chưa chọn hóa đơn gốc.");
+            hien(WARNING, "Thiếu thông tin", "Chưa chọn hóa đơn gốc.");
             return;
         }
 
         if (dsTra.isEmpty()) {
-            thongBaoTuyChinh(WARNING, "Chưa có sản phẩm", "Vui lòng chọn sản phẩm cần trả.");
+            hien(WARNING, "Chưa có sản phẩm", "Vui lòng chọn sản phẩm cần trả.");
             return;
         }
 
@@ -551,7 +638,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
             String maHD = lblMaHDGoc.getText().trim();
             HoaDon hdGoc = hoaDonDao.selectById(maHD);
             if (hdGoc == null) {
-                thongBaoTuyChinh(ERROR, "Lỗi", "Không tìm thấy hóa đơn gốc.");
+                hien(ERROR, "Lỗi", "Không tìm thấy hóa đơn gốc.");
                 return;
             }
 
@@ -560,7 +647,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
             phieuTra.setHoaDon(hdGoc);
 
             if (DangNhap_Ctrl.user == null) {
-                thongBaoTuyChinh(ERROR, "Lỗi đăng nhập", "Chưa xác định nhân viên đang đăng nhập.");
+                hien(ERROR, "Lỗi đăng nhập", "Chưa xác định nhân viên đang đăng nhập.");
                 return;
             }
             phieuTra.setNhanVien(DangNhap_Ctrl.user);
@@ -579,7 +666,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
             String maPhieuTra = pthDao.insertAndReturnId(phieuTra);
 
             if (maPhieuTra == null) {
-                thongBaoTuyChinh(ERROR, "Lỗi", "Không thể tạo phiếu trả.");
+                hien(ERROR, "Lỗi", "Không thể tạo phiếu trả.");
                 return;
             }
             phieuTra.setMaPT(maPhieuTra);
@@ -587,16 +674,35 @@ public class LapPhieuTraHang_Ctrl extends Application {
             // ===== 3. Lưu chi tiết trả =====
             ChiTietPhieuTraHang_Dao ctpthDao = new ChiTietPhieuTraHang_Dao();
             Thuoc_SP_TheoLo_Dao loDao = new Thuoc_SP_TheoLo_Dao();
-            ChiTietHoaDon_Dao cthdUpdateDao = new ChiTietHoaDon_Dao();
-
             for (TraHangItem item : dsTra) {
+
                 ChiTietHoaDon cthdGoc = item.getGoc();
                 if (cthdGoc == null) continue;
 
                 int slTra = item.getSoLuongTra();
                 if (slTra <= 0) continue;
 
-                // 3.1 Tạo chi tiết phiếu trả
+                // ===== CHECK SỐ LƯỢNG CÒN TRẢ =====
+                int slBan = cthdGoc.getSoLuong();
+
+                int slDaTra = ctpthDao.tongSoLuongDaTra(
+                        maHD,
+                        cthdGoc.getLoHang().getMaLH()
+                );
+
+                int slConTra = slBan - slDaTra;
+
+                if (slTra > slConTra) {
+                    hien(
+                            WARNING,
+                            "Số lượng không hợp lệ",
+                            "Sản phẩm " + cthdGoc.getLoHang().getThuoc().getTenThuoc()
+                                    + " chỉ còn trả được " + slConTra
+                    );
+                    return; 
+                }
+
+                // ===== LƯU CHI TIẾT PHIẾU TRẢ =====
                 ChiTietPhieuTraHang ct = new ChiTietPhieuTraHang();
                 ct.setPhieuTraHang(phieuTra);
                 ct.setLoHang(cthdGoc.getLoHang());
@@ -608,25 +714,10 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
                 ctpthDao.insert(ct);
 
-                // ===== 4. Cập nhật tồn kho (+ lại) =====
-                try {
-                    loDao.congSoLuong(cthdGoc.getLoHang().getMaLH(), slTra);
-                } catch (Exception ex) {
-                    // log but continue
-                    ex.printStackTrace();
-                }
-
-                // ===== 5. Trừ số lượng trong chi tiết hóa đơn =====
-                int slConLai = cthdGoc.getSoLuong() - slTra;
-                cthdGoc.setSoLuong(slConLai);
-                try {
-                    cthdUpdateDao.updateSoLuong(cthdGoc);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                // ===== CỘNG LẠI TỒN KHO =====
+                loDao.congSoLuong(cthdGoc.getLoHang().getMaLH(), slTra);
             }
 
-            // ===== 6. Thông báo & reset =====
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Thành công");
             alert.setHeaderText("Lập phiếu trả thành công");
@@ -659,7 +750,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
         } catch (Exception e) {
             e.printStackTrace();
-            thongBaoTuyChinh(ERROR, "Lỗi", "Không thể lưu phiếu trả.");
+            hien(ERROR, "Lỗi", "Không thể lưu phiếu trả.");
         }
     }
     private void capNhatTienTra() {

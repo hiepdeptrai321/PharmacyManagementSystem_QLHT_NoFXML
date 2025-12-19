@@ -4,6 +4,8 @@ import com.example.pharmacymanagementsystem_qlht.connectDB.ConnectDB;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietPhieuNhap;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietPhieuTraHang;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +88,30 @@ public class ChiTietPhieuTraHang_Dao implements DaoInterface<ChiTietPhieuTraHang
         }
         return list;
     }
+    public int tongSoLuongDaTra(String maHD, String maLH) {
+        String sql = """
+        SELECT COALESCE(SUM(ct.SoLuong), 0)
+        FROM ChiTietPhieuTraHang ct
+        JOIN PhieuTraHang p ON ct.MaPT = p.MaPT
+        WHERE p.MaHD = ? AND ct.MaLH = ?
+    """;
+
+        try (Connection con = ConnectDB.getInstance();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, maHD);
+            ps.setString(2, maLH);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 
 
     @Override
