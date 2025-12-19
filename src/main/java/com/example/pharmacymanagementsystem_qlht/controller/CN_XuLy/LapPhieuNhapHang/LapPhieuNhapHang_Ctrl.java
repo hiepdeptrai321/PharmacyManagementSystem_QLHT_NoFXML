@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class LapPhieuNhapHang_Ctrl extends Application {
+public class LapPhieuNhapHang_Ctrl{
 
     //  1. KHAI BÁO THÀNH PHẦN GIAO DIỆN (FXML)
     public TableColumn<CTPN_TSPTL_CHTDVT, String> colSTT;
@@ -105,6 +105,7 @@ public class LapPhieuNhapHang_Ctrl extends Application {
         suKienThemMotDongMoiVaoBang();
         listenerListNhapThuoc();
     }
+
 
     private void loadDataAsync() {
         Task<Void> task = new Task<>() {
@@ -1128,11 +1129,6 @@ public class LapPhieuNhapHang_Ctrl extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        new LapPhieuNhapHang_GUI().showWithController(stage, this);
     }
 
     private void listenerListNhapThuoc(){
