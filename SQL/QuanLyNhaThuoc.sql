@@ -6,7 +6,7 @@ USE QuanLyNhaThuoc;
 GO
 
 --Link thư mục hình ảnh thuốc
-DECLARE @path NVARCHAR(255) = N'F:\hk5\PTUD_Java\Project\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc\';
+DECLARE @path NVARCHAR(255) = N'C:\Users\Nhut Hao\Desktop\New folder (2)\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc';
 
 -- =========================
 -- Bảng KhachHang
