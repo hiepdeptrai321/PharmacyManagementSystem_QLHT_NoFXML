@@ -95,7 +95,11 @@ public class HoaDon {
     public void setTrangThai(Boolean trangThai) {
         this.trangThai = trangThai;
     }
-
+    public double tinhTongTien(List<ChiTietHoaDon> dsCT) {
+        return dsCT.stream()
+                .mapToDouble(ct -> ct.getSoLuong() * ct.getDonGia())
+                .sum();
+    }
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

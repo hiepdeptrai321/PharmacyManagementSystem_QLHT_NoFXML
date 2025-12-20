@@ -49,29 +49,31 @@ public class LapPhieuTra_GUI {
 
         // ===== Search Pane =====
         Pane searchPane = new Pane();
+        searchPane.setPrefSize(1167, 70);
         searchPane.getStyleClass().add("search-pane");
-        searchPane.setPrefSize(766, 70);
         AnchorPane.setTopAnchor(searchPane, 71.0);
         AnchorPane.setLeftAnchor(searchPane, 30.0);
-        AnchorPane.setRightAnchor(searchPane, 850.0);
+        AnchorPane.setRightAnchor(searchPane, 449.0);
 
-        Label lblSearch = new Label("Tìm hóa đơn gốc:");
-        lblSearch.setLayoutX(20);
-        lblSearch.setLayoutY(20);
-        lblSearch.setFont(Font.font("System Bold", 13));
+        Label lblTimHD = new Label("Tìm hóa đơn gốc:");
+        lblTimHD.setLayoutX(20);
+        lblTimHD.setLayoutY(20);
+        lblTimHD.setFont(Font.font("System Bold", 13));
 
         TextField txtTimHoaDon = new TextField();
-        txtTimHoaDon.setPromptText("Nhập mã hóa đơn hoặc tên khách hàng ...");
-        txtTimHoaDon.setLayoutX(130);
+        txtTimHoaDon.setId("txtTimHoaDonGoc");
+        txtTimHoaDon.setLayoutX(140);
         txtTimHoaDon.setLayoutY(15);
-        txtTimHoaDon.setPrefSize(563, 27);
+        txtTimHoaDon.setPrefSize(939, 29);
+        txtTimHoaDon.setPromptText("Nhập mã hóa đơn gốc vào đây...");
 
         Button btnTimHD = new Button("Tìm");
-        btnTimHD.setLayoutX(702);
-        btnTimHD.setLayoutY(16);
-        btnTimHD.setOnAction(e -> ctrl.xuLyTimHDGoc());
+        btnTimHD.setId("btnTimHD");
+        btnTimHD.setLayoutX(1098);
+        btnTimHD.setLayoutY(15);
+        btnTimHD.setPrefSize(54, 28);
 
-        searchPane.getChildren().addAll(lblSearch, txtTimHoaDon, btnTimHD);
+        searchPane.getChildren().addAll(lblTimHD, txtTimHoaDon, btnTimHD);
 
         // ===== Hint =====
         Label lblHint = new Label("Chọn hóa đơn gốc để bắt đầu trả hàng");
@@ -182,7 +184,7 @@ public class LapPhieuTra_GUI {
         lblMaHDGocText.setLayoutX(32);
         lblMaHDGocText.setLayoutY(55);
 
-        TextField lblMaHDGoc = new TextField();
+        TextField lblMaHDGoc = new TextField("");
         lblMaHDGoc.setEditable(false);
         lblMaHDGoc.setLayoutX(211);
         lblMaHDGoc.setLayoutY(49);
@@ -191,7 +193,8 @@ public class LapPhieuTra_GUI {
         Label lblTenKHText = new Label("Tên khách hàng:");
         lblTenKHText.setLayoutX(34);
         lblTenKHText.setLayoutY(100);
-        Label lblTenKH = new Label();
+        TextField lblTenKH = new TextField("");
+        lblTenKH.setEditable(false);
         lblTenKH.setLayoutX(213);
         lblTenKH.setLayoutY(94);
         lblTenKH.setPrefWidth(120);
@@ -199,7 +202,8 @@ public class LapPhieuTra_GUI {
         Label lblSDTText = new Label("Số điện thoại:");
         lblSDTText.setLayoutX(35);
         lblSDTText.setLayoutY(145);
-        Label lblSDT = new Label();
+        TextField lblSDT = new TextField("");
+        lblSDT.setEditable(false);
         lblSDT.setLayoutX(214);
         lblSDT.setLayoutY(139);
         lblSDT.setPrefWidth(120);
@@ -229,22 +233,14 @@ public class LapPhieuTra_GUI {
         lblTongTienTraLai.setLayoutX(207);
         lblTongTienTraLai.setLayoutY(309);
 
-        Label lblVATText = new Label("Thuế(VAT) hoàn lại:");
-        lblVATText.setLayoutX(27);
-        lblVATText.setLayoutY(351);
-        Label lblVAT = new Label("0 VNĐ");
-        lblVAT.getStyleClass().add("value-label");
-        lblVAT.setLayoutX(207);
-        lblVAT.setLayoutY(349);
-
         Label lblTienTraLaiText = new Label("Số tiền trả lại:");
         lblTienTraLaiText.getStyleClass().add("bold-label");
-        lblTienTraLaiText.setLayoutX(28);
-        lblTienTraLaiText.setLayoutY(400);
+        lblTienTraLaiText.setLayoutX(27);
+        lblTienTraLaiText.setLayoutY(351);
         Label lblSoTienTraLai = new Label("0 VNĐ");
         lblSoTienTraLai.getStyleClass().add("main-value-label");
         lblSoTienTraLai.setLayoutX(207);
-        lblSoTienTraLai.setLayoutY(399);
+        lblSoTienTraLai.setLayoutY(349);
 
         Label lblGhiChuText = new Label("Ghi chú:");
         lblGhiChuText.setLayoutX(34);
@@ -270,59 +266,58 @@ public class LapPhieuTra_GUI {
         btnHuy.getStyleClass().add("print-btn");
         btnHuy.setOnAction(e -> ctrl.xuLyHuy());
 
-        infoPane.getChildren().addAll(
-                lblHeaderInfo, lblMaHDGocText, lblMaHDGoc,
-                lblTenKHText, lblTenKH, lblSDTText, lblSDT,
-                lblNgayLapText, dpNgayLapPhieu,
-                lblThanhTienGocText, lblTongTienGoc,
-                lblTongTraLaiText, lblTongTienTraLai,
-                lblVATText, lblVAT,
-                lblTienTraLaiText, lblSoTienTraLai,
-                lblGhiChuText, txtGhiChu,
-                btnTraHang, btnHuy
-        );
+            infoPane.getChildren().addAll(
+                    lblHeaderInfo, lblMaHDGocText, lblMaHDGoc,
+                    lblTenKHText, lblTenKH, lblSDTText, lblSDT,
+                    lblNgayLapText, dpNgayLapPhieu,
+                    lblThanhTienGocText, lblTongTienGoc,
+                    lblTongTraLaiText, lblTongTienTraLai,
+                    lblTienTraLaiText, lblSoTienTraLai,
+                    lblGhiChuText, txtGhiChu,
+                    btnTraHang, btnHuy
+            );
 
-        // ===== Add all to root =====
-        root.getChildren().addAll(
-                headerPane, lblTitle, searchPane,
-                lblHint, lblSPGoc, tblSanPhamHoaDon,
-                lblChiTietTra, tblChiTietTraHang,
-                infoPane
-        );
+            // ===== Add all to root =====
+            root.getChildren().addAll(
+                    headerPane, lblTitle, searchPane,
+                    lblHint, lblSPGoc, tblSanPhamHoaDon,
+                    lblChiTietTra, tblChiTietTraHang,
+                    infoPane
+            );
 
-        // ===== Gán control vào controller =====
-        ctrl.txtTimHoaDon = txtTimHoaDon;
-        ctrl.btnTimHoaDon = btnTimHD;
-        ctrl.btnTraHang = btnTraHang;
-        ctrl.btnHuy = btnHuy;
-        ctrl.lblMaHDGoc = lblMaHDGoc;
-        ctrl.lblTenKH = lblTenKH;
-        ctrl.lblSDT = lblSDT;
-        ctrl.lblTongTienGoc = lblTongTienGoc;
-        ctrl.lblTongTienTraLai = lblTongTienTraLai;
-        ctrl.lblVAT = lblVAT;
-        ctrl.lblSoTienTraLai = lblSoTienTraLai;
-        ctrl.txtGhiChu = txtGhiChu;
-        ctrl.dpNgayLapPhieu = dpNgayLapPhieu;
+            // ===== Gán control vào controller =====
+            ctrl.txtTimHoaDon = txtTimHoaDon;
+            ctrl.btnTimHoaDon = btnTimHD;
+            ctrl.btnTraHang = btnTraHang;
+            ctrl.btnHuy = btnHuy;
+            ctrl.lblMaHDGoc = lblMaHDGoc;
+            ctrl.lblTenKH = lblTenKH;
+            ctrl.lblSDT = lblSDT;
+            ctrl.lblTongTienGoc = lblTongTienGoc;
+            ctrl.lblTongTienTraLai = lblTongTienTraLai;
+            ctrl.lblSoTienTraLai = lblSoTienTraLai;
+            ctrl.txtGhiChu = txtGhiChu;
+            ctrl.dpNgayLapPhieu = dpNgayLapPhieu;
 
-        ctrl.tblSanPhamHoaDon = tblSanPhamHoaDon;
-        ctrl.colSTTGoc = colSTTGoc;
-        ctrl.colTenSPGoc = colTenSPGoc;
-        ctrl.colSLGoc = colSLGoc;
-        ctrl.colDonViGoc = colDonViGoc;
-        ctrl.colDonGiaGoc = colDonGiaGoc;
-        ctrl.colThanhTienGoc = colThanhTienGoc;
-        ctrl.colTra = colTra;
+            ctrl.tblSanPhamHoaDon = tblSanPhamHoaDon;
+            ctrl.colSTTGoc = colSTTGoc;
+            ctrl.colTenSPGoc = colTenSPGoc;
+            ctrl.colSLGoc = colSLGoc;
+            ctrl.colDonViGoc = colDonViGoc;
+            ctrl.colDonGiaGoc = colDonGiaGoc;
+            ctrl.colThanhTienGoc = colThanhTienGoc;
+            ctrl.colTra = colTra;
 
-        ctrl.tblChiTietTraHang = tblChiTietTraHang;
-        ctrl.colSTTTra = colSTTTra;
-        ctrl.colTenSPTra = colTenSPTra;
-        ctrl.colSLTra = colSLTra;
-        ctrl.colDonViTra = colDonViTra;
-        ctrl.colDonGiaTra = colDonGiaTra;
-        ctrl.colThanhTienTra = colThanhTienTra;
-        ctrl.colLyDo = colLyDo;
-        ctrl.colBo = colBo;
+            ctrl.tblChiTietTraHang = tblChiTietTraHang;
+            ctrl.colSTTTra = colSTTTra;
+            ctrl.colTenSPTra = colTenSPTra;
+            ctrl.colSLTra = colSLTra;
+            ctrl.colDonViTra = colDonViTra;
+            ctrl.colDonGiaTra = colDonGiaTra;
+            ctrl.colThanhTienTra = colThanhTienTra;
+            ctrl.colLyDo = colLyDo;
+            ctrl.colBo = colBo;
+        ctrl.initialize(null, null);
 
         // ===== Scene setup =====
         Scene scene = new Scene(root);
