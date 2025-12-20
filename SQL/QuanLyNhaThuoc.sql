@@ -2119,15 +2119,36 @@ GO
 -- ==========================================================
 -- 1. SP THỐNG KÊ THUỐC HẾT HẠN
 -- ==========================================================
+
+USE QuanLyNhaThuoc;
+GO
+
+-- 1. Xóa Procedure cũ để tránh lỗi cache
 IF OBJECT_ID('sp_ThongKeThuocHetHan', 'P') IS NOT NULL
     DROP PROCEDURE sp_ThongKeThuocHetHan;
 GO
 
+-- 2. Tạo lại Procedure với logic chuẩn
 CREATE PROCEDURE sp_ThongKeThuocHetHan
 AS
 BEGIN
     SET NOCOUNT ON;
 
+    -- Lấy số ngày từ cài đặt
+    DECLARE @SoNgayCanhBao INT;
+    
+    -- Dùng TRY_CAST để an toàn, Trim khoảng trắng
+    SELECT @SoNgayCanhBao = TRY_CAST(RTRIM(LTRIM(GiaTri)) AS INT)
+    FROM ThongSoUngDung
+    WHERE TenThongSo = 'NgayHetHan';
+
+    -- Nếu không tìm thấy hoặc lỗi, mặc định 30 ngày
+    IF @SoNgayCanhBao IS NULL SET @SoNgayCanhBao = 30;
+
+    -- In ra màn hình Message để debug (bạn có thể xem trong tab Messages khi chạy thử)
+    PRINT N'Đang lọc thuốc hết hạn trước ngày: ' + CONVERT(NVARCHAR, DATEADD(DAY, @SoNgayCanhBao, GETDATE()), 103);
+
+    -- Truy vấn
     SELECT
         T.MaThuoc       AS maThuocHH,
         T.TenThuoc      AS tenThuocHH,
@@ -2138,15 +2159,14 @@ BEGIN
     JOIN
         Thuoc_SanPham AS T ON L.MaThuoc = T.MaThuoc
     WHERE
-        L.HSD <= GETDATE()  -- Lấy các lô có HSD nhỏ hơn hoặc bằng ngày hiện tại
-        AND L.SoLuongTon > 0 -- Chỉ lấy các lô còn tồn kho
+        -- Logic: HSD <= (Hôm nay + Số ngày cài đặt)
+        L.HSD <= DATEADD(DAY, @SoNgayCanhBao, CAST(GETDATE() AS DATE))
+        AND L.SoLuongTon > 0
     GROUP BY
         T.MaThuoc, T.TenThuoc, L.HSD
     ORDER BY
-        L.HSD; -- Sắp xếp theo ngày hết hạn
+        L.HSD ASC;
 END;
-GO
-
 GO
 
 -- ==========================================================
