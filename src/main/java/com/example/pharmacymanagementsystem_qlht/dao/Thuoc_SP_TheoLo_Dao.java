@@ -235,7 +235,6 @@ public class Thuoc_SP_TheoLo_Dao implements DaoInterface<Thuoc_SP_TheoLo> {
         return list;
     }
 
-
     public List<Thuoc_SP_TheoLo> selectHangDaHetHan() {
         List<Thuoc_SP_TheoLo> list = new ArrayList<>();
         String sql = "{call sp_HangHetHan}";
