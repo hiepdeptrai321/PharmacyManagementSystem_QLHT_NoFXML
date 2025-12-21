@@ -1,9 +1,11 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDoi;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDoiHang.ChiTietPhieuDoiHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.DoiHangItem;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi.ChiTietPhieuDoiHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuDoi.LapPhieuDoi_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,6 +26,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 
+import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hien;
 import static javafx.scene.control.Alert.AlertType.*;
 
 public class LapPhieuDoiHang_Ctrl extends Application {
@@ -519,7 +522,40 @@ public class LapPhieuDoiHang_Ctrl extends Application {
                     ctpdDao.insert(ctSave);
                 }
             }
-            thongBaoTuyChinh(INFORMATION, "Đổi hàng thành công!", "Phiếu đổi hàng đã được tạo với mã: " + phieu.getMaPD());
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Thành công");
+            alert.setHeaderText("Lập phiếu đổi hàng thành công");
+            alert.setContentText("Bạn có muốn xem chi tiết phiếu đổi hàng không?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                try {
+                    ChiTietPhieuDoiHang_Ctrl ctrl = new ChiTietPhieuDoiHang_Ctrl();
+
+                    Stage stage = new Stage();
+                    stage.setTitle("Chi tiết phiếu đổi " + phieu.getMaPD());
+
+                    ChiTietPhieuDoiHang_GUI gui = new ChiTietPhieuDoiHang_GUI();
+                    gui.showWithController(stage, ctrl);
+
+                    // Lấy lại phiếu đổi đầy đủ từ DB
+                    PhieuDoiHang_Dao phieuDoiDao = new PhieuDoiHang_Dao();
+                    PhieuDoiHang phieuDoiDayDu =
+                            phieuDoiDao.selectById(phieu.getMaPD());
+
+                    ctrl.setPhieuDoiHang(phieuDoiDayDu);
+
+                    stage.show();
+
+                } catch (Exception e) {
+                    hien(ERROR, "Lỗi", "Không thể mở chi tiết phiếu đổi hàng:\n" + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+// Reset / đóng form hiện tại
+            xuLyHuy();
             dsDoi.clear();
             dsGoc.clear();
             doiByMaLH.clear();

@@ -1,11 +1,15 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuTra;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang.ChiTietPhieuTraHang_Ctrl;
+import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.TraHangItem;
+import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuTra.ChiTietPhieuTraHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuTra.LapPhieuTra_GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,25 +31,13 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.*;
 
-import static javafx.scene.control.Alert.AlertType.ERROR;
-import static javafx.scene.control.Alert.AlertType.WARNING;
+import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hien;
+import static javafx.scene.control.Alert.AlertType.*;
 
 public class LapPhieuTraHang_Ctrl extends Application {
-
-
-    public TableView<ChiTietHoaDon> tblSanPhamHoaDon;
-    public TableColumn<ChiTietHoaDon, String> colSTTGoc;
-    public TableColumn<ChiTietHoaDon, String> colTenSPGoc;
-    public TableColumn<ChiTietHoaDon, String> colSLGoc;
-    public TableColumn<ChiTietHoaDon, String> colDonViGoc;
-    public TableColumn<ChiTietHoaDon, String> colDonGiaGoc;
-    public TableColumn<ChiTietHoaDon, String> colGiamGiaGoc;
-    public TableColumn<ChiTietHoaDon, String> colThanhTienGoc;
-    public TableColumn<ChiTietHoaDon, Void> colTra;
-
     public TextField lblMaHDGoc;
-    public Label lblTenKH;
-    public Label lblSDT;
+    public TextField lblTenKH;
+    public TextField lblSDT;
     public DatePicker dpNgayLapPhieu;
     public Label lblTongTienGoc;
     public Label lblTongTienTraLai;
@@ -57,8 +49,15 @@ public class LapPhieuTraHang_Ctrl extends Application {
     public Button btnTraHang;
     public Button btnHuy;
 
-
-
+    public TableView<ChiTietHoaDon> tblSanPhamHoaDon;
+    public TableColumn<ChiTietHoaDon, String> colSTTGoc;
+    public TableColumn<ChiTietHoaDon, String> colTenSPGoc;
+    public TableColumn<ChiTietHoaDon, String> colSLGoc;
+    public TableColumn<ChiTietHoaDon, String> colDonViGoc;
+    public TableColumn<ChiTietHoaDon, String> colDonGiaGoc;
+    public TableColumn<ChiTietHoaDon, String> colGiamGiaGoc;
+    public TableColumn<ChiTietHoaDon, String> colThanhTienGoc;
+    public TableColumn<ChiTietHoaDon, Void> colTra;
 
     public TableView<TraHangItem> tblChiTietTraHang;
     public TableColumn<TraHangItem, String> colSTTTra;
@@ -70,14 +69,14 @@ public class LapPhieuTraHang_Ctrl extends Application {
     public TableColumn<TraHangItem, Double> colThanhTienTra;
     public TableColumn<TraHangItem, Void> colBo;
 
-
-
     private final ObservableList<ChiTietHoaDon> dsGoc = FXCollections.observableArrayList();
     private final ObservableList<TraHangItem> dsTra = FXCollections.observableArrayList();
     private final Map<String, TraHangItem> traByKey = new HashMap<>();
     private final HoaDon_Dao hoaDonDao = new HoaDon_Dao();
     private final ChiTietHoaDon_Dao cthdDao = new ChiTietHoaDon_Dao();
     private final KhachHang_Dao khDao = new KhachHang_Dao();
+    private ChiTietPhieuTraHang_Dao ctpthDao = new ChiTietPhieuTraHang_Dao();
+    private HoaDon hoaDonGoc;
 
     private final NumberFormat currencyVN = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
@@ -89,7 +88,12 @@ public class LapPhieuTraHang_Ctrl extends Application {
     }
     public void initialize(URL location, ResourceBundle resources) {
         dpNgayLapPhieu.setValue(LocalDate.now());
-        txtTimHoaDon.setOnAction(e -> btnTimHoaDon.fire());
+        if (btnTimHoaDon != null) {
+            btnTimHoaDon.setOnAction(e -> xuLyTimHDGoc());
+        }
+        if (txtTimHoaDon != null) {
+            txtTimHoaDon.setOnAction(e -> xuLyTimHDGoc());
+        }
         Platform.runLater(() -> txtTimHoaDon.getParent().requestFocus());
         if (tblSanPhamHoaDon != null) {
             tblSanPhamHoaDon.setItems(dsGoc);
@@ -105,27 +109,32 @@ public class LapPhieuTraHang_Ctrl extends Application {
         setupTblGocColumns();
         setupTblTraColumns();
     }
+    public void setHoaDonGoc(HoaDon hd) {
+        this.hoaDonGoc = hd;
+
+        List<ChiTietHoaDon> list = cthdDao.selectByMaHD(hd.getMaHD());
+        dsGoc.setAll(list);
+    }
     private void safeSetConstrainedResize(TableView<?> tv) {
         try { tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); } catch (Exception ignored) {}
     }
 
     private void setupTblGocColumns() {
         if (colSTTGoc != null) {
-            colSTTGoc.setCellValueFactory(cd ->
-                    new ReadOnlyObjectWrapper<>(String.valueOf(tblSanPhamHoaDon.getItems().indexOf(cd.getValue()) + 1))
-            );
-            colSTTGoc.setCellFactory(tc -> new TableCell<ChiTietHoaDon, String>() {
+            colSTTGoc.setCellFactory(tc -> new TableCell<>() {
                 @Override protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty ? null : item);
+                    if (empty) setText(null);
+                    else setText(String.valueOf(getIndex() + 1));
                 }
             });
             colSTTGoc.setSortable(false);
             colSTTGoc.setReorderable(false);
         }
         if (colTenSPGoc != null) {
+
             colTenSPGoc.setCellValueFactory(cd ->
-                    new ReadOnlyObjectWrapper<>(tenSP(cd.getValue()))
+                    Bindings.createStringBinding(() -> tenSP(cd.getValue()))
             );
         }
         if (colSLGoc != null) {
@@ -151,7 +160,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
         }
         if (colDonGiaGoc != null) {
             colDonGiaGoc.setCellValueFactory(cd ->
-                    new ReadOnlyObjectWrapper<>(vnd(cd.getValue().getDonGia()))
+                    Bindings.createStringBinding(() -> vnd(cd.getValue().getDonGia()))
             );
             alignRight(colDonGiaGoc);
         }
@@ -162,34 +171,75 @@ public class LapPhieuTraHang_Ctrl extends Application {
             alignRight(colGiamGiaGoc);
         }
         if (colThanhTienGoc != null) {
-            colThanhTienGoc.setCellValueFactory(cd -> {
-                ChiTietHoaDon r = cd.getValue();
-                double tt = Math.max(0, r.getSoLuong() * r.getDonGia() - r.getGiamGia());
-                return new ReadOnlyObjectWrapper<>(vnd(tt));
-            });
+            colThanhTienGoc.setCellValueFactory(cd ->
+                    Bindings.createStringBinding(() -> {
+                        ChiTietHoaDon r = cd.getValue();
+                        if (r == null) return "";
+                        double tt = Math.max(0,
+                                r.getSoLuong() * r.getDonGia() - r.getGiamGia());
+                        return vnd(tt);
+                    })
+            );
             alignRight(colThanhTienGoc);
         }
         if (colTra != null) {
-            colTra.setCellFactory(tc -> new TableCell<>() {
+            colTra.setCellFactory(tc -> new TableCell<ChiTietHoaDon, Void>() {
+
                 private final Button btn = new Button("↓");
+
                 {
                     btn.getStyleClass().add("btn-doi");
-                    btn.setTooltip(new Tooltip("Chuyển xuống danh sách đổi"));
-                    btn.setOnAction(e -> {
-                        int idx = getIndex();
-                        if (idx < 0 || idx >= tblSanPhamHoaDon.getItems().size()) return;
+                    btn.setTooltip(new Tooltip("Chuyển sang danh sách trả"));
 
-                        ChiTietHoaDon goc = tblSanPhamHoaDon.getItems().get(idx);
+                    btn.setOnAction(e -> {
+                        ChiTietHoaDon goc =
+                                getTableView().getItems().get(getIndex());
+
                         if (goc == null) return;
+
+                        int slDaTra = ctpthDao.tongSoLuongDaTra(
+                                lblMaHDGoc.getText(),
+                                goc.getLoHang().getMaLH()
+                        );
+
+                        int slConTra = goc.getSoLuong() - slDaTra;
+
+                        if (slConTra <= 0) {
+                            hien(
+                                    WARNING,
+                                    "Không thể trả",
+                                    "Sản phẩm này đã được trả hết."
+                            );
+                            return;
+                        }
 
                         xuLyChuyenSangTra(goc);
                     });
+
                     setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     setStyle("-fx-alignment: center;");
                 }
-                @Override protected void updateItem(Void it, boolean empty) {
+
+                @Override
+                protected void updateItem(Void it, boolean empty) {
                     super.updateItem(it, empty);
-                    setGraphic(empty ? null : btn);
+
+                    if (empty) {
+                        setGraphic(null);
+                        return;
+                    }
+
+                    ChiTietHoaDon goc =
+                            getTableView().getItems().get(getIndex());
+
+                    int slDaTra = ctpthDao.tongSoLuongDaTra(
+                            lblMaHDGoc.getText(),
+                            goc.getLoHang().getMaLH()
+                    );
+
+                    btn.setDisable(goc.getSoLuong() - slDaTra <= 0);
+
+                    setGraphic(btn);
                     setText(null);
                 }
             });
@@ -200,21 +250,44 @@ public class LapPhieuTraHang_Ctrl extends Application {
     }
 
     private void xuLyChuyenSangTra(ChiTietHoaDon cthdGoc) {
+
         if (cthdGoc == null || cthdGoc.getLoHang() == null) return;
-        String key = cthdGoc.getLoHang().getMaLH() + "_" +
-                (cthdGoc.getDvt() != null ? cthdGoc.getDvt().getMaDVT() : "null");
-        int max = Math.max(0, cthdGoc.getSoLuong());
+
+        int slBan = cthdGoc.getSoLuong(); // SỐ BÁN GỐC
+
+        int slDaTra = ctpthDao.tongSoLuongDaTra(
+                cthdGoc.getHoaDon().getMaHD(),
+                cthdGoc.getLoHang().getMaLH()
+        );
+
+        int slConTra = slBan - slDaTra;
+
+        if (slConTra <= 0) {
+            hien(
+                    WARNING,
+                    "Không thể trả",
+                    "Sản phẩm này đã được trả hết."
+            );
+            return;
+        }
+
+        String key =
+                cthdGoc.getHoaDon().getMaHD() + "_" +
+                        cthdGoc.getLoHang().getMaLH();
+
         TraHangItem vm = traByKey.get(key);
+
         if (vm == null) {
             vm = new TraHangItem(cthdGoc, 1, "");
             dsTra.add(vm);
             traByKey.put(key, vm);
         } else {
-            int next = Math.min(max, vm.getSoLuongTra() + 1);
+            int next = Math.min(slConTra, vm.getSoLuongTra() + 1);
             vm.setSoLuongTra(next);
         }
+
         capNhatTienTra();
-        if (tblChiTietTraHang != null) tblChiTietTraHang.refresh();
+        tblChiTietTraHang.refresh();
     }
 
     private String tenSP(ChiTietHoaDon row) {
@@ -395,7 +468,8 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
                         TraHangItem vm = tblChiTietTraHang.getItems().get(idx);
                         if (vm != null && vm.getGoc() != null && vm.getGoc().getLoHang() != null) {
-                            String key = vm.getGoc().getLoHang().getMaLH() + "_" +
+                            String key = vm.getGoc().getHoaDon().getMaHD() + "_" +
+                                    vm.getGoc().getLoHang().getMaLH() + "_" +
                                     (vm.getGoc().getDvt() != null ? vm.getGoc().getDvt().getMaDVT() : "null");
                             traByKey.remove(key);
                         }
@@ -422,8 +496,9 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
     public void xuLyTimHDGoc() {
         String ma = txtTimHoaDon.getText().trim();
+
         if (ma.isBlank()) {
-            thongBaoTuyChinh(WARNING, "Thiếu thông tin", "Vui lòng nhập mã hóa đơn.");
+            hien(WARNING, "Thiếu thông tin", "Vui lòng nhập mã hóa đơn.");
             return;
         }
 
@@ -432,15 +507,19 @@ public class LapPhieuTraHang_Ctrl extends Application {
             HoaDon hd = hoaDonDao.selectById(ma);
 
             if (hd == null) {
-                thongBaoTuyChinh(WARNING, "Không tìm thấy", "Hóa đơn không tồn tại.");
+                hien(WARNING, "Không tìm thấy", "Hóa đơn không tồn tại.");
                 return;
             }
 
             // load line items first to compute discounts
-            List<ChiTietHoaDon> list = cthdDao.selectByMaHD(ma);
+            List<ChiTietHoaDon> lines = cthdDao.selectByMaHD(ma);
+            if (lines == null || lines.isEmpty()) {
+                hien(WARNING, "Không có sản phẩm", "Hóa đơn không có chi tiết.");
+                return;
+            }
             double perLineDiscount = 0;
-            if (list != null) {
-                for (ChiTietHoaDon ct : list) {
+            if (lines != null) {
+                for (ChiTietHoaDon ct : lines) {
                     if (ct != null) perLineDiscount += ct.getGiamGia();
                 }
             }
@@ -466,7 +545,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
             } catch (Exception ignored) { }
 
             if (invoiceLevelDiscount + perLineDiscount > 0) {
-                thongBaoTuyChinh(WARNING,
+                hien(WARNING,
                         "Hóa đơn có áp dụng giảm giá tổng!",
                         "Không thể thực hiện trả hàng với hóa đơn này.");
                 return;
@@ -474,26 +553,57 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
             LocalDate ngayHD = hd.getNgayLap().toLocalDateTime().toLocalDate();
             if (ngayHD.isBefore(LocalDate.now().minusDays(7))) {
-                thongBaoTuyChinh(WARNING, "Quá hạn", "Hóa đơn đã quá 7 ngày, không thể trả hàng.");
+                hien(WARNING, "Quá hạn", "Hóa đơn đã quá 7 ngày, không thể trả hàng.");
                 return;
             }
 
             lblMaHDGoc.setText(hd.getMaHD());
 
-            String tenKH = hd.getMaKH() != null && hd.getMaKH().getTenKH() != null
-                    ? hd.getMaKH().getTenKH()
-                    : "";
-            String sdt = hd.getMaKH() != null && hd.getMaKH().getSdt() != null
-                    ? hd.getMaKH().getSdt()
-                    : "";
 
-            lblTenKH.setText(tenKH);
-            lblSDT.setText(sdt);
+            if (hd.getMaKH() != null) {
+                String maKH = hd.getMaKH().getMaKH();
+                KhachHang kh = khDao.selectById(maKH);
+
+                if (kh != null) {
+                    lblTenKH.setText(kh.getTenKH());
+                    lblSDT.setText(kh.getSdt());
+                } else {
+                    lblTenKH.setText("(không tìm thấy KH)");
+                    lblSDT.setText("");
+                }
+            }
+
             dpNgayLapPhieu.setValue(LocalDate.now());
-
-            List<ChiTietHoaDon> lines = cthdDao.selectByMaHD(ma);
             dsTra.clear();
             traByKey.clear();
+//            dsGoc.setAll(lines);
+            dsGoc.clear();
+            boolean conTraDuoc = false;
+
+            for (ChiTietHoaDon ct : lines) {
+
+                int slBan = ct.getSoLuong();
+                int slDaTra = ctpthDao.tongSoLuongDaTra(
+                        ma,
+                        ct.getLoHang().getMaLH()
+                );
+
+                if (slBan - slDaTra > 0) {
+                    conTraDuoc = true;
+                    break;
+                }
+            }
+            dsGoc.setAll(lines);
+
+            if (!conTraDuoc) {
+                hien(
+                        INFORMATION,
+                        "Không thể trả hàng",
+                        "Các sản phẩm trong hóa đơn này đã được trả hết."
+                );
+                return;
+            }
+
             dsGoc.setAll(lines);
             double tongTienGoc = 0;
             for (ChiTietHoaDon ct : lines) {
@@ -506,13 +616,142 @@ public class LapPhieuTraHang_Ctrl extends Application {
             tblSanPhamHoaDon.refresh();
         } catch (Exception e) {
             e.printStackTrace();
-            thongBaoTuyChinh(ERROR, "Lỗi", "Không thể tải hóa đơn.");
+            hien(ERROR, "Lỗi", "Không thể tải hóa đơn.");
         }
     }
 
 
 
     public void xuLyTraHang() {
+        if (lblMaHDGoc.getText() == null || lblMaHDGoc.getText().isBlank()) {
+            hien(WARNING, "Thiếu thông tin", "Chưa chọn hóa đơn gốc.");
+            return;
+        }
+
+        if (dsTra.isEmpty()) {
+            hien(WARNING, "Chưa có sản phẩm", "Vui lòng chọn sản phẩm cần trả.");
+            return;
+        }
+
+        try {
+            // ===== 1. Lấy hóa đơn gốc =====
+            String maHD = lblMaHDGoc.getText().trim();
+            HoaDon hdGoc = hoaDonDao.selectById(maHD);
+            if (hdGoc == null) {
+                hien(ERROR, "Lỗi", "Không tìm thấy hóa đơn gốc.");
+                return;
+            }
+
+            // ===== 2. Tạo Phiếu Trả =====
+            PhieuTraHang phieuTra = new PhieuTraHang();
+            phieuTra.setHoaDon(hdGoc);
+
+            if (DangNhap_Ctrl.user == null) {
+                hien(ERROR, "Lỗi đăng nhập", "Chưa xác định nhân viên đang đăng nhập.");
+                return;
+            }
+            phieuTra.setNhanVien(DangNhap_Ctrl.user);
+
+            if (hdGoc.getMaKH() != null) {
+                phieuTra.setKhachHang(hdGoc.getMaKH());
+            }
+
+            phieuTra.setNgayLap(
+                    java.sql.Timestamp.valueOf(dpNgayLapPhieu.getValue().atStartOfDay())
+            );
+
+            phieuTra.setGhiChu(txtGhiChu == null ? "" : txtGhiChu.getText());
+
+            PhieuTraHang_Dao pthDao = new PhieuTraHang_Dao();
+            String maPhieuTra = pthDao.insertAndReturnId(phieuTra);
+
+            if (maPhieuTra == null) {
+                hien(ERROR, "Lỗi", "Không thể tạo phiếu trả.");
+                return;
+            }
+            phieuTra.setMaPT(maPhieuTra);
+            PhieuTraHang phieuTraHangMoi = phieuTra;
+            // ===== 3. Lưu chi tiết trả =====
+            ChiTietPhieuTraHang_Dao ctpthDao = new ChiTietPhieuTraHang_Dao();
+            Thuoc_SP_TheoLo_Dao loDao = new Thuoc_SP_TheoLo_Dao();
+            for (TraHangItem item : dsTra) {
+
+                ChiTietHoaDon cthdGoc = item.getGoc();
+                if (cthdGoc == null) continue;
+
+                int slTra = item.getSoLuongTra();
+                if (slTra <= 0) continue;
+
+                // ===== CHECK SỐ LƯỢNG CÒN TRẢ =====
+                int slBan = cthdGoc.getSoLuong();
+
+                int slDaTra = ctpthDao.tongSoLuongDaTra(
+                        maHD,
+                        cthdGoc.getLoHang().getMaLH()
+                );
+
+                int slConTra = slBan - slDaTra;
+
+                if (slTra > slConTra) {
+                    hien(
+                            WARNING,
+                            "Số lượng không hợp lệ",
+                            "Sản phẩm " + cthdGoc.getLoHang().getThuoc().getTenThuoc()
+                                    + " chỉ còn trả được " + slConTra
+                    );
+                    return;
+                }
+
+                // ===== LƯU CHI TIẾT PHIẾU TRẢ =====
+                ChiTietPhieuTraHang ct = new ChiTietPhieuTraHang();
+                ct.setPhieuTraHang(phieuTra);
+                ct.setLoHang(cthdGoc.getLoHang());
+                ct.setThuoc(cthdGoc.getLoHang().getThuoc());
+                ct.setDvt(cthdGoc.getDvt());
+                ct.setSoLuong(slTra);
+                ct.setDonGia(cthdGoc.getDonGia());
+                ct.setLyDoTra(item.getLyDo());
+
+                ctpthDao.insert(ct);
+
+                // ===== CỘNG LẠI TỒN KHO =====
+                loDao.congSoLuong(cthdGoc.getLoHang().getMaLH(), slTra);
+            }
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Thành công");
+            alert.setHeaderText("Lập phiếu trả thành công");
+            alert.setContentText("Bạn có muốn xem chi tiết phiếu trả không?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                try {
+                    ChiTietPhieuTraHang_Ctrl ctrl = new ChiTietPhieuTraHang_Ctrl();
+
+                    Stage stage = new Stage();
+                    stage.setTitle("Chi tiết phiếu trả " + phieuTraHangMoi.getMaPT());
+
+                    ChiTietPhieuTraHang_GUI.showWithController(stage, ctrl);
+
+                    PhieuTraHang_Dao phieuTraDao = new PhieuTraHang_Dao();
+                    PhieuTraHang phieuTraDayDu = phieuTraDao.selectById(maPhieuTra);
+
+                    ctrl.setPhieuTraHang(phieuTraDayDu);
+
+                    stage.show();
+
+                } catch (Exception e) {
+                    hien(ERROR, "Lỗi", "Không thể mở chi tiết phiếu trả:\n" + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            xuLyHuy();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            hien(ERROR, "Lỗi", "Không thể lưu phiếu trả.");
+        }
     }
     private void capNhatTienTra() {
         double tongTienTraHang = 0;
@@ -527,11 +766,17 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
         lblTongTienTraLai.setText(vnd(tongTienTraHang));
 
-        double vat = tongTienTraHang * 0.05; // bạn đặt VAT = 8% phải không?
-        lblVAT.setText(vnd(vat));
-
-        double soTienTra = tongTienTraHang + vat;
+        double soTienTra = tongTienTraHang;
         lblSoTienTraLai.setText(vnd(soTienTra));
+    }
+    private double parseVnd(String text) {
+        if (text == null) return 0;
+        return Double.parseDouble(
+                text.replace("VNĐ", "")
+                        .replace(".", "")
+                        .replace(",", "")
+                        .trim()
+        );
     }
 
     private void thongBaoTuyChinh(Alert.AlertType type, String header, String message) {
@@ -559,7 +804,6 @@ public class LapPhieuTraHang_Ctrl extends Application {
 
         stage.setWidth(550);
         stage.setHeight(260);
-
         alert.showAndWait();
     }
 
@@ -574,5 +818,8 @@ public class LapPhieuTraHang_Ctrl extends Application {
         txtTimHoaDon.clear();
         tblSanPhamHoaDon.getItems().clear();
         tblChiTietTraHang.getItems().clear();
+        lblSoTienTraLai.setText("");
+        lblTongTienGoc.setText("");
+        lblTongTienTraLai.setText("");
     }
 }

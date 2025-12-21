@@ -185,7 +185,7 @@ public class CuaSoChinh_QuanLy_GUI {
         v.menuThongKe = new Menu("📊 Thống kê");
         v.miTKDoanhThu = mi("Thống kê doanh thu");
         v.miTKXNT      = mi("Thống kê xuất nhập tồn");
-        v.miTKTopSanPham = mi("Thống kê Top SP");
+        v.miTKTopSanPham = mi("Thống kê top sản phẩm");
         v.menuThongKe.getItems().addAll(v.miTKDoanhThu, v.miTKXNT, v.miTKTopSanPham);
         v.menuThongKe.getStyleClass().add("m-thongke");
 

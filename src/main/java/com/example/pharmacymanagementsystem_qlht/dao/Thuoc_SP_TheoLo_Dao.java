@@ -118,6 +118,14 @@ public class Thuoc_SP_TheoLo_Dao implements DaoInterface<Thuoc_SP_TheoLo> {
         }
         return soLuongTon;
     }
+    public boolean congSoLuong(String maLH, int soLuong) {
+        String sql = """
+        UPDATE Thuoc_SP_TheoLo
+        SET SoLuongTon = SoLuongTon + ?
+        WHERE MaLH = ?
+    """;
+        return ConnectDB.update(sql, soLuong, maLH) > 0;
+    }
 
     public List<Thuoc_SP_TheoLo> selectByTuKhoa(String tuKhoa) {
         return this.selectBySql(SELECT_BY_TUKHOA_SQL, "%" + tuKhoa.toLowerCase() + "%", "%" + tuKhoa.toLowerCase() + "%");

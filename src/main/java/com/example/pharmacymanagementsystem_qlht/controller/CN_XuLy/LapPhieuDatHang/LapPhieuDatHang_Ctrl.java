@@ -932,33 +932,29 @@ public class LapPhieuDatHang_Ctrl extends Application {
                 a.setTitle("Success");
                 a.setHeaderText(null);
                 a.setContentText("Đặt hàng đã được lưu thành công.");
-                a.initOwner((btnDatHang != null && btnDatHang.getScene() != null)
-                        ? btnDatHang.getScene().getWindow()
-                        : null);
+                a.initOwner((btnDatHang != null && btnDatHang.getScene() != null) ? btnDatHang.getScene().getWindow() : null);
 
                 var result = a.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-
                     try {
+                        // create controller + GUI (pure Java, no FXML)
                         ChiTietPhieuDatHang_Ctrl detailCtrl = new ChiTietPhieuDatHang_Ctrl();
-                        detailCtrl.setPhieuDatHang(pd);
+                        ChiTietPhieuDatHang_GUI gui = new ChiTietPhieuDatHang_GUI();
 
-                        ChiTietPhieuDatHang_GUI detailView = new ChiTietPhieuDatHang_GUI();
-
+                        // prepare stage
                         Stage st = new Stage();
                         st.initModality(Modality.APPLICATION_MODAL);
-                        st.initOwner((btnDatHang != null && btnDatHang.getScene() != null)
-                                ? btnDatHang.getScene().getWindow()
-                                : null);
+                        st.initOwner((btnDatHang != null && btnDatHang.getScene() != null) ? btnDatHang.getScene().getWindow() : null);
 
-                        detailView.showWithController(st, detailCtrl);
-                        st.show();
+                        detailCtrl.setPhieuDatHang(pd);
 
+                        gui.showWithController(st, detailCtrl);
+                        st.showAndWait();
                         resetForm();
-
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        showValidationAlert("Lỗi", "Không mở được cửa sổ chi tiết.\n" + ex.getMessage(), null);
+                        // still reset UI if error occurs (optional)
+                        onHuy();
                     }
                 }
             });
