@@ -433,6 +433,7 @@ public class SuaXoaThuoc_Ctrl {
         danhMucThuoc_Ctrl = parent;
     }
 
+
     public void btnXoa() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn xoá thuốc này?", ButtonType.YES, ButtonType.NO);
         confirm.setHeaderText(null);
