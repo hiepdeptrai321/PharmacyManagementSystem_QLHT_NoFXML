@@ -47,7 +47,6 @@ module com.example.pharmacymanagementsystem_qlht {
     requires org.apache.poi.ooxml;
     requires layout;
     requires io;
-    opens com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKHoatDong to javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKeHang to javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc to javafx.fxml;
     opens com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang to javafx.fxml;

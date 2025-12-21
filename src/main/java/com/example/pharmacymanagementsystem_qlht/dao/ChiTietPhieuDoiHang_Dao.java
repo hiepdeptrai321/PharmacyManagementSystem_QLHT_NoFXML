@@ -101,6 +101,34 @@ public class ChiTietPhieuDoiHang_Dao implements DaoInterface<ChiTietPhieuDoiHang
         try { return rs.getString("LyDo"); } catch (Exception ignored) {}
         return null;
     }
+    public int tongSoLuongDaDoi(String maHD, String maLH) {
+        String sql = """
+        SELECT ISNULL(SUM(ct.SoLuong), 0)
+        FROM ChiTietPhieuDoiHang ct
+        JOIN PhieuDoiHang pd ON ct.MaPD = pd.MaPD
+        WHERE pd.MaHD = ?
+          AND ct.MaLH = ?
+    """;
+        try (ResultSet rs = ConnectDB.query(sql, maHD, maLH)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    public int countByMaPD(String maPD) {
+        String sql = "SELECT COUNT(*) FROM ChiTietPhieuDoiHang WHERE MaPD = ?";
+        try (ResultSet rs = ConnectDB.query(sql, maPD)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
     @Override
     public List<ChiTietPhieuDoiHang> selectAll() {
