@@ -684,12 +684,10 @@ public class LapHoaDon_Ctrl extends Application {
         }
 //        colKeDon.setCellFactory(tc -> new TableCell<>() {
 //            private final CheckBox checkBox = new CheckBox();
-//
 //            {
-//                checkBox.setDisable(true); // không cho tick tay
-//                checkBox.setStyle("-fx-opacity: 1"); // tránh bị mờ
+//                checkBox.setDisable(true);
+//                checkBox.setStyle("-fx-opacity: 1");
 //            }
-//
 //            @Override
 //            protected void updateItem(Boolean keDon, boolean empty) {
 //                super.updateItem(keDon, empty);
