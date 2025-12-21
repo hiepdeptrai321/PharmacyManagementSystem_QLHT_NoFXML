@@ -116,7 +116,7 @@ public class ThongKeXNT_GUI {
         VBox rightVBox = new VBox();
         rightVBox.getStyleClass().add("vbox");
 
-        Label warningLabel = new Label("Những sản phẩm đã hết hạn ⚠");
+        Label warningLabel = new Label("Những sản phẩm đã, sắp hết hạn ⚠");
         warningLabel.getStyleClass().add("sub-title");
         VBox.setMargin(warningLabel, new Insets(10.0, 0, 5.0, 0)); // Bỏ margin trái 10px để thẳng hàng
 
