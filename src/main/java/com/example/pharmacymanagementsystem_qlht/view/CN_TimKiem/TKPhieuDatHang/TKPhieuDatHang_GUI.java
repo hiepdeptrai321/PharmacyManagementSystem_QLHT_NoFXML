@@ -165,7 +165,7 @@ public class TKPhieuDatHang_GUI {
         colTT.setPrefWidth(120);
         colTT.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<Object, String> colChiTiet = new TableColumn<>("");
+        TableColumn<Object, String> colChiTiet = new TableColumn<>("Chi tiết");
         colChiTiet.setPrefWidth(88);
         colChiTiet.setStyle("-fx-alignment: CENTER;");
 

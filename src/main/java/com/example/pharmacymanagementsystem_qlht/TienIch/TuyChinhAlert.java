@@ -79,6 +79,34 @@ public class TuyChinhAlert {
         // ✅ Trả về kết quả khi người dùng bấm nút
         return alert.showAndWait();
     }
+    public static Optional<ButtonType> hoi(String title, String header, String message) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+
+        // custom button
+        ButtonType btnYes = new ButtonType("Có", ButtonType.OK.getButtonData());
+        ButtonType btnNo = new ButtonType("Không", ButtonType.CANCEL.getButtonData());
+        alert.getButtonTypes().setAll(btnYes, btnNo);
+
+        DialogPane pane = alert.getDialogPane();
+        pane.getStylesheets().add(
+                TuyChinhAlert.class.getResource(
+                        "/com/example/pharmacymanagementsystem_qlht/css/ThongBaoAlert.css"
+                ).toExternalForm()
+        );
+
+        pane.getStyleClass().add("confirm-alert");
+
+        Stage stage = (Stage) pane.getScene().getWindow();
+        stage.setWidth(550);
+        stage.setHeight(260);
+
+        return alert.showAndWait();
+    }
 
 
 }

@@ -20,7 +20,7 @@ public class LapPhieuDoi_GUI {
         root.setPrefSize(1646, 895);
         root.setStyle("-fx-font-size: 13px;");
         root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDoiHang.css").toExternalForm());
-
+        root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css").toExternalForm());
         // ===== Header Pane =====
         Pane headerPane = new Pane();
         headerPane.getStyleClass().add("header-pane");
