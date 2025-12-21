@@ -386,7 +386,7 @@ public class ThongKeXNT_Ctrl extends Application {
 
         float[] columnWidths1 = {1.2f, 3f, 1f, 1.5f, 1.5f, 1.5f, 1.5f};
         Table table1 = new Table(UnitValue.createPercentArray(columnWidths1));
-        table1.setWidth(UnitValue.createPercentValue(100));
+        table1.setWidth(UnitValue.createPercentValue(90));
 
         table1.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Mã thuốc").setBold()));
         table1.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Tên thuốc").setBold()));

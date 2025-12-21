@@ -185,7 +185,7 @@ public class CuaSoChinh_QuanLy_GUI {
         v.menuThongKe = new Menu("📊 Thống kê");
         v.miTKDoanhThu = mi("Thống kê doanh thu");
         v.miTKXNT      = mi("Thống kê xuất nhập tồn");
-        v.miTKTopSanPham = mi("Thống kê Top SP");
+        v.miTKTopSanPham = mi("Thống kê top sản phẩm");
         v.menuThongKe.getItems().addAll(v.miTKDoanhThu, v.miTKXNT, v.miTKTopSanPham);
         v.menuThongKe.getStyleClass().add("m-thongke");
 
@@ -261,8 +261,8 @@ public class CuaSoChinh_QuanLy_GUI {
         v.colHSDSapHetHan = new TableColumn<>("Hạn sử dụng"); v.colHSDSapHetHan.setPrefWidth(151.43);
         v.tblThuocSapHetHan.getColumns().addAll(v.colMaThuocSapHetHan, v.colLoHangSapHetHan, v.colHSDSapHetHan);
 
-        v.lbl_SoLuongHangHetHan = bold("Hàng hết hạn: 0", 20); v.lbl_SoLuongHangHetHan.setLayoutX(18); v.lbl_SoLuongHangHetHan.setLayoutY(87);
-        v.lbl_SoLuongHangSapHetHan = bold("Hàng sắp hết hạn: 0", 20); v.lbl_SoLuongHangSapHetHan.setLayoutX(21); v.lbl_SoLuongHangSapHetHan.setLayoutY(262);
+        v.lbl_SoLuongHangHetHan = bold("Hàng hết hạn: 0", 20); v.lbl_SoLuongHangHetHan.setLayoutX(18); v.lbl_SoLuongHangHetHan.setLayoutY(87);v.lbl_SoLuongHangHetHan.setStyle("-fx-font-weight: bold;");
+        v.lbl_SoLuongHangSapHetHan = bold("Hàng sắp hết hạn: 0", 20); v.lbl_SoLuongHangSapHetHan.setLayoutX(21); v.lbl_SoLuongHangSapHetHan.setLayoutY(262);v.lbl_SoLuongHangSapHetHan.setStyle("-fx-font-weight: bold;");
         ImageView ivCB = img("/com/example/pharmacymanagementsystem_qlht/img/canhBao.png", 74, 74); ivCB.setLayoutX(41); ivCB.setLayoutY(10);
         paneMain11.getChildren().addAll(lbCB, v.tblThuocHetHan, v.tblThuocSapHetHan, v.lbl_SoLuongHangHetHan, v.lbl_SoLuongHangSapHetHan, ivCB);
         cell11.getChildren().add(paneMain11);
@@ -278,8 +278,8 @@ public class CuaSoChinh_QuanLy_GUI {
         Pane pLeft = new Pane();
         Pane boxLeft = paneMain(480, 308); boxLeft.setLayoutX(27); boxLeft.setLayoutY(27);
         Label lbDTTitle = bold("Doanh thu", 35); lbDTTitle.setLayoutX(176); lbDTTitle.setLayoutY(50);
-        Label lbTTruoc = bold("Tháng trước:", 25); lbTTruoc.setLayoutX(62); lbTTruoc.setLayoutY(153);
-        Label lbTNay = bold("Tháng này:", 25); lbTNay.setLayoutX(62); lbTNay.setLayoutY(202);
+        Label lbTTruoc = bold("Tháng trước:", 25); lbTTruoc.setLayoutX(62); lbTTruoc.setLayoutY(153);lbTTruoc.setStyle("-fx-font-weight: bold");
+        Label lbTNay = bold("Tháng này:", 25); lbTNay.setLayoutX(62); lbTNay.setLayoutY(202);lbTNay.setStyle("-fx-font-weight: bold");
         ImageView ivTien = img("/com/example/pharmacymanagementsystem_qlht/img/Tien.png", 123, 123); ivTien.setLayoutX(29); ivTien.setLayoutY(14);
         v.lblDoanhThuThangTruoc = bold("0 VND", 25); v.lblDoanhThuThangTruoc.setLayoutX(231); v.lblDoanhThuThangTruoc.setLayoutY(153);
         v.lblDoanhThuThangNay = bold("0 VND", 25); v.lblDoanhThuThangNay.setLayoutX(231); v.lblDoanhThuThangNay.setLayoutY(202);
@@ -290,8 +290,8 @@ public class CuaSoChinh_QuanLy_GUI {
         Pane pRight = new Pane(); GridPane.setColumnIndex(pRight, 1);
         Pane boxRight = paneMain(480, 308); boxRight.setLayoutX(22); boxRight.setLayoutY(28);
         Label lbHDTitle = bold("Hóa đơn", 35); lbHDTitle.setLayoutX(190); lbHDTitle.setLayoutY(50);
-        Label lbHDTNay = bold("Tháng này: ", 25); lbHDTNay.setLayoutX(64); lbHDTNay.setLayoutY(202);
-        Label lbHDTT = bold("Tháng trước: ", 25); lbHDTT.setLayoutX(64); lbHDTT.setLayoutY(153);
+        Label lbHDTNay = bold("Tháng này: ", 25); lbHDTNay.setLayoutX(64); lbHDTNay.setLayoutY(202);lbHDTNay.setStyle("-fx-font-weight: bold");
+        Label lbHDTT = bold("Tháng trước: ", 25); lbHDTT.setLayoutX(64); lbHDTT.setLayoutY(153);lbHDTT.setStyle("-fx-font-weight: bold");
         ImageView ivHD = img("/com/example/pharmacymanagementsystem_qlht/img/hoaDon.png", 98, 105); ivHD.setLayoutX(44); ivHD.setLayoutY(26);
         v.lblHoaDonThangTruoc = bold("0 hóa đơn", 25); v.lblHoaDonThangTruoc.setLayoutX(240); v.lblHoaDonThangTruoc.setLayoutY(153);
         v.lblHoaDonThangNay = bold("0 hóa đơn", 25); v.lblHoaDonThangNay.setLayoutX(240); v.lblHoaDonThangNay.setLayoutY(202);
