@@ -6,6 +6,7 @@
 #paneMain{
     -fx-background-color: #ffffff;
     -fx-background-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.3, 0, 2);
 }
 
 #paneMainThoiGian{

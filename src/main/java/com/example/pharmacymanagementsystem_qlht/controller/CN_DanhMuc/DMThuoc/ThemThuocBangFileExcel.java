@@ -207,7 +207,18 @@ public class ThemThuocBangFileExcel {
             danhMucThuocCtrl.loadTable();
             // Quay lại luồng giao diện để loại bỏ overlay
             Platform.runLater(() -> {
+                danhMucThuocCtrl.refestTable();
+
+                // Xóa overlay
                 root.getChildren().remove(overlay);
+
+                // Alert thành công
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Thành công");
+                alert.setHeaderText(null);
+                alert.setContentText("Lưu dữ liệu thành công!");
+                alert.initOwner(stage);
+                alert.showAndWait();
                 stage.close();
             });
         }).start();

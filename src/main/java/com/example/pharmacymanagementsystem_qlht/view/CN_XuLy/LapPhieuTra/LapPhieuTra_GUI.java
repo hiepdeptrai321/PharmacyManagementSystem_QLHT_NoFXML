@@ -24,6 +24,8 @@ public class LapPhieuTra_GUI {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1646, 895);
         root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuTraHang.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/LapPhieuDoiHang.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/css/Chung.css").toExternalForm());
 
         // ===== Header =====
         Pane headerPane = new Pane();
@@ -145,7 +147,7 @@ public class LapPhieuTra_GUI {
         colTenSPTra.setPrefWidth(401.6666564941406);
 
         TableColumn<TraHangItem, Number> colSLTra = new TableColumn<>("Số lượng");
-        colSLTra.setPrefWidth(108.33334350585938);
+        colSLTra.setPrefWidth(130);
 
         TableColumn<TraHangItem, String> colDonViTra = new TableColumn<>("Đơn vị");
         colDonViTra.setPrefWidth(93.66668701171875);

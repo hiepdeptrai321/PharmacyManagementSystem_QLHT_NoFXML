@@ -2,23 +2,11 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachH
 
 import com.example.pharmacymanagementsystem_qlht.dao.KhachHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KhachHang;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML; // (Có thể giữ lại)
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class ThemKhachHang_Ctrl {
 
