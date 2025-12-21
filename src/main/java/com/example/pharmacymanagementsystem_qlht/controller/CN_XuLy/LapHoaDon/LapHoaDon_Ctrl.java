@@ -92,6 +92,7 @@ public class LapHoaDon_Ctrl extends Application {
     public TableView<ChiTietHoaDon> tblChiTietHD;
     public TableColumn <ChiTietHoaDon, String> colSTT;
     public TableColumn <ChiTietHoaDon, String> colTenSP;
+    public TableColumn <ChiTietHoaDon, Boolean> colKeDon;
     public TableColumn <ChiTietHoaDon, String> colSL;
     public TableColumn <ChiTietHoaDon, String> colDonVi;
     public TableColumn <ChiTietHoaDon, String> colDonGia;
@@ -681,6 +682,25 @@ public class LapHoaDon_Ctrl extends Application {
                     new ReadOnlyStringWrapper(layTenSP(p.getValue()))
             );
         }
+//        colKeDon.setCellFactory(tc -> new TableCell<>() {
+//            private final CheckBox checkBox = new CheckBox();
+//
+//            {
+//                checkBox.setDisable(true); // không cho tick tay
+//                checkBox.setStyle("-fx-opacity: 1"); // tránh bị mờ
+//            }
+//
+//            @Override
+//            protected void updateItem(Boolean keDon, boolean empty) {
+//                super.updateItem(keDon, empty);
+//                if (empty || keDon == null) {
+//                    setGraphic(null);
+//                } else {
+//                    checkBox.setSelected(keDon);
+//                    setGraphic(checkBox);
+//                }
+//            }
+//        });
         if (colSL != null) {
             colSL.setCellValueFactory(p -> new ReadOnlyStringWrapper(String.valueOf(p.getValue().getSoLuong())));
             colSL.setCellFactory(tc -> new TableCell<>() {
