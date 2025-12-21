@@ -138,8 +138,9 @@ public class CuaSoChinh_NhanVien_Ctrl{
     private void loadViewEmbedded(int menuIndex, String cacheKey, Object gui, Object ctrl) {
         viTri = menuIndex;
         selectMenu(viTri);
-        Parent root = cacheViews.computeIfAbsent(cacheKey, k ->
-                ViewEmbedder.buildFromShowWithController(gui, ctrl));
+//        Parent root = cacheViews.computeIfAbsent(cacheKey, k ->
+//                ViewEmbedder.buildFromShowWithController(gui, ctrl));
+        Parent root = ViewEmbedder.buildFromShowWithController(gui, ctrl);
         showInMainPane(root);
         pnlThongTin.setVisible(false);
         pnlChung.requestFocus();
