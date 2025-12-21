@@ -67,7 +67,16 @@ public class HoaDon_Dao implements DaoInterface<HoaDon>{
 
     @Override
     public boolean update(HoaDon e) {
-        return ConnectDB.update(UPDATE_SQL, e.getMaNV().getMaNV(), e.getNgayLap(), e.getMaKH().getMaKH(), e.getTrangThai(), e.getMaHD())>0;
+        return ConnectDB.update(
+                UPDATE_SQL,
+                e.getMaNV().getMaNV(),
+                e.getNgayLap(),
+                e.getMaKH() != null ? e.getMaKH().getMaKH() : null,
+                e.getTrangThai(),
+                e.getLoaiHoaDon(),
+                e.getMaDonThuoc(),
+                e.getMaHD()
+        ) > 0;
     }
 
     @Override
@@ -165,5 +174,9 @@ public class HoaDon_Dao implements DaoInterface<HoaDon>{
             if (meta.getColumnName(i).equalsIgnoreCase(column)) return true;
         }
         return false;
+    }
+    public boolean updateKhachHang(String maHD, String maKH) {
+        String sql = "UPDATE HoaDon SET MaKH = ? WHERE MaHD = ?";
+        return ConnectDB.update(sql, maKH, maHD) > 0;
     }
 }

@@ -742,7 +742,6 @@ public class LapPhieuDatHang_Ctrl {
     }
 
     private boolean validateInputs(boolean requirePrintAfter) {
-        // require at least one product
         if (dsChiTietPD.isEmpty()) {
             showValidationAlert("Validation", "Vui lòng thêm ít nhất một sản phẩm.", tfTimSanPham);
             return false;
