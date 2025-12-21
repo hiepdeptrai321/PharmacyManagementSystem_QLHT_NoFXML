@@ -6,7 +6,7 @@ USE QuanLyNhaThuoc;
 GO
 
 --Link thư mục hình ảnh thuốc
-DECLARE @path NVARCHAR(255) = N'F:\hk5\PTUD_Java\Project\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc\';
+DECLARE @path NVARCHAR(255) = N'C:\Users\Hiep\Desktop\hk1_2025-2026\QLHT_NoFXML\SQL\imgThuoc\';
 
 -- =========================
 -- Bảng KhachHang
@@ -188,6 +188,8 @@ CREATE TABLE HoaDon (
     MaHD       VARCHAR(10) PRIMARY KEY,
     NgayLap    DATETIME NOT NULL,
     TrangThai  NVARCHAR(10) NOT NULL,
+    LoaiHoaDon VARCHAR(3) NOT NULL DEFAULT 'OTC',
+    MaDonThuoc VARCHAR(20) NULL,
 	MaKH       VARCHAR(10) FOREIGN KEY REFERENCES KhachHang(MaKH),
     MaNV       VARCHAR(10) FOREIGN KEY REFERENCES NhanVien(MaNV)
 );
@@ -293,9 +295,9 @@ CREATE TABLE PhieuTraHang (
 CREATE TABLE ChiTietPhieuTraHang (
     MaLH       VARCHAR(10) FOREIGN KEY REFERENCES Thuoc_SP_TheoLo(MaLH),
     MaPT       VARCHAR(10) NOT NULL FOREIGN KEY REFERENCES PhieuTraHang(MaPT),
-    MaThuoc    VARCHAR(10),
+    MaThuoc    VARCHAR(10) FOREIGN KEY REFERENCES Thuoc_SanPham(MaThuoc),
     SoLuong    INT NOT NULL,
-    MaDVT      VARCHAR(10),
+    MaDVT      VARCHAR(10) FOREIGN KEY REFERENCES DonViTinh(MaDVT),
     DonGia     FLOAT NOT NULL,
     GiamGia    FLOAT NOT NULL,
     LyDoTra    NVARCHAR(20) NOT NULL,
@@ -1807,11 +1809,7 @@ GO
 
 
 
-
-
-
-
-CREATE OR ALTER PROCEDURE sp_InsertNhanVien
+CREATE PROCEDURE sp_InsertNhanVien
     @HoTen NVARCHAR(50),
     @SDT VARCHAR(15),
     @Email VARCHAR(100),
@@ -2618,12 +2616,6 @@ BEGIN
 END;
 GO
 
-ALTER TABLE HoaDon
-    ADD LoaiHoaDon VARCHAR(3) NOT NULL DEFAULT 'OTC';
-go
-ALTER TABLE HoaDon
-    ADD MaDonThuoc VARCHAR(20) NULL;
-go
 
 
 
@@ -2631,70 +2623,6 @@ go
 --================================================================================================================================================================================================
 --================================================================================================================================================================================================
 --XỬ LÝ ĐƠN ĐẶT HÀNG
-
-----Trigger – Cập nhật trạng thái Phiếu Đặt Hàng khi thay đổi tồn
-
---CREATE OR ALTER TRIGGER trg_CapNhatTrangThaiDatHang
---ON Thuoc_SP_TheoLo
---AFTER INSERT, UPDATE
---AS
---BEGIN
---    SET NOCOUNT ON;
-
---    DECLARE @MaThuoc VARCHAR(10);
-
---    DECLARE cur CURSOR FOR
---        SELECT DISTINCT MaThuoc FROM inserted;
---    OPEN cur;
---    FETCH NEXT FROM cur INTO @MaThuoc;
---    WHILE @@FETCH_STATUS = 0
---    BEGIN
---        DECLARE @TongTon INT = (
---            SELECT SUM(SoLuongTon)
---            FROM Thuoc_SP_TheoLo
---            WHERE MaThuoc = @MaThuoc
---        );
-
---        -- Cập nhật trạng thái từng chi tiết phiếu đặt có liên quan
---        UPDATE ctpd
---        SET TrangThai =
---            CASE
---                WHEN @TongTon >= CEILING(ctpd.SoLuong *
---                    ISNULL(
---                        (SELECT HeSoQuyDoi FROM ChiTietDonViTinh dvt
---                         WHERE dvt.MaThuoc = ctpd.MaThuoc AND dvt.MaDVT = ctpd.MaDVT),
---                        1
---                    )
---                )
---                THEN 1
---                ELSE 0
---            END
---        FROM ChiTietPhieuDatHang ctpd
---        WHERE ctpd.MaThuoc = @MaThuoc;
-
---        -- Nếu tất cả chi tiết đủ hàng thì cập nhật phiếu
---        UPDATE pd
---        SET TrangThai =
---            CASE
---                WHEN NOT EXISTS (
---                    SELECT 1 FROM ChiTietPhieuDatHang
---                    WHERE MaPDat = pd.MaPDat AND TrangThai = 0
---                ) THEN 1
---                ELSE 0
---            END
---        FROM PhieuDatHang pd
---        WHERE EXISTS (
---            SELECT 1 FROM ChiTietPhieuDatHang ctpd
---            WHERE ctpd.MaPDat = pd.MaPDat AND ctpd.MaThuoc = @MaThuoc
---        );
-
---        FETCH NEXT FROM cur INTO @MaThuoc;
---    END
---    CLOSE cur;
---    DEALLOCATE cur;
---END;
---GO
-
 
 CREATE OR ALTER PROCEDURE sp_CapNhatTrangThaiDatHang @MaThuoc VARCHAR(10)
 AS
@@ -2754,17 +2682,17 @@ BEGIN
 
     DECLARE @MaThuoc VARCHAR(10);
 
-    DECLARE cur CURSOR FOR
+    DECLARE cur_cntt CURSOR FOR
         SELECT DISTINCT MaThuoc FROM inserted;
-    OPEN cur; FETCH NEXT FROM cur INTO @MaThuoc;
+    OPEN cur_cntt; FETCH NEXT FROM cur_cntt INTO @MaThuoc;
 
     WHILE @@FETCH_STATUS = 0
     BEGIN
         EXEC sp_CapNhatTrangThaiDatHang @MaThuoc;
-        FETCH NEXT FROM cur INTO @MaThuoc;
+        FETCH NEXT FROM cur_cntt INTO @MaThuoc;
     END
 
-    CLOSE cur; DEALLOCATE cur;
+    CLOSE cur_cntt; DEALLOCATE cur_cntt;
 END;
 GO
 
@@ -2995,6 +2923,7 @@ GO
 --GO
 
 -- STORED PROCEDURE 1: (Đã cập nhật VAT)
+
 CREATE PROCEDURE sp_GetHoaDonTheoThoiGian
     @ThoiGian NVARCHAR(20)
 AS
