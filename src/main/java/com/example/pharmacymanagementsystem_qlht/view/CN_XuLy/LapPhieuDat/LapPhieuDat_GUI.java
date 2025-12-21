@@ -29,14 +29,14 @@ public class LapPhieuDat_GUI {
 
         ImageView headerIcon = new ImageView();
         headerIcon.setFitWidth(61);
-        headerIcon.setFitHeight(56);
-        headerIcon.setLayoutX(317);
-        headerIcon.setLayoutY(2);
+        headerIcon.setFitHeight(54);
+        headerIcon.setLayoutX(310);
+        headerIcon.setLayoutY(4);
         headerIcon.setPickOnBounds(true);
         headerIcon.setPreserveRatio(true);
         // try load a generic icon if present
         try {
-            headerIcon.setImage(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/clipboard_2308962.png")).toExternalForm()));
+            headerIcon.setImage(new Image(Objects.requireNonNull(getClass().getResource("/com/example/pharmacymanagementsystem_qlht/img/preorder1.png")).toExternalForm()));
         } catch (Exception ignored) {}
 
         headerPane.getChildren().add(headerIcon);
