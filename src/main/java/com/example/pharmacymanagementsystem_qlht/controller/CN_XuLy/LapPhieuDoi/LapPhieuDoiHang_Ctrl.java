@@ -1,10 +1,12 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuDoi;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.ThemKhachHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuDoiHang.ChiTietPhieuDoiHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.DoiHangItem;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.ThemKhachHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuDoi.ChiTietPhieuDoiHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuDoi.LapPhieuDoi_GUI;
 import javafx.application.Application;
@@ -21,6 +23,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.DefaultStringConverter;
 
@@ -73,6 +76,7 @@ public class LapPhieuDoiHang_Ctrl extends Application {
     private final ChiTietHoaDon_Dao cthdDao = new ChiTietHoaDon_Dao();
     private final KhachHang_Dao khDao = new KhachHang_Dao();
     private final ChiTietPhieuDoiHang_Dao ctpdDao = new ChiTietPhieuDoiHang_Dao();
+    private  HoaDon hoaDonGoc ;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -498,6 +502,12 @@ public class LapPhieuDoiHang_Ctrl extends Application {
                         "Vui lòng kiểm tra lại mã hóa đơn.");
                 return;
             }
+            this.hoaDonGoc = hd;
+            lblMaHDGoc.setText(hd.getMaHD());
+            dpNgayLapPhieu.setValue(LocalDate.now());
+
+            List<ChiTietHoaDon> lines = cthdDao.selectByMaHD(ma);
+            dsGoc.setAll(lines);
 
             // check hạn đổi 7 ngày
             LocalDate ngayHD = hd.getNgayLap().toLocalDateTime().toLocalDate();
@@ -518,14 +528,19 @@ public class LapPhieuDoiHang_Ctrl extends Application {
                     sdt = kh.getSdt() == null ? "" : kh.getSdt();
                 }
             }
-            lblMaHDGoc.setText(hd.getMaHD());
             lblTenKH.setText(tenKH);
             lblSDT.setText(sdt);
-            dpNgayLapPhieu.setValue(LocalDate.now());
-            // load chi tiet
-            List<ChiTietHoaDon> lines = cthdDao.selectByMaHD(ma);
-            dsGoc.setAll(lines);
+            if (chuaCoKhachHang(hd)) {
 
+                hien(
+                        WARNING,
+                        "Hóa đơn chưa có khách hàng",
+                        "Hóa đơn này là khách lẻ.\n" +
+                                "Vui lòng bổ sung thông tin khách hàng để tiếp tục."
+                );
+                moFormThemKhachHang(hd);
+                return;
+            }
             dsDoi.clear();
             doiByMaLH.clear();
 
@@ -542,10 +557,78 @@ public class LapPhieuDoiHang_Ctrl extends Application {
                     "Không thể tải hóa đơn gốc. Vui lòng thử lại.");
         }
     }
+    private boolean chuaCoKhachHang(HoaDon hd) {
+        if (hd == null) return true;
+        if (hd.getMaKH() == null) return true;
+        return hd.getMaKH().getMaKH() == null
+                || hd.getMaKH().getMaKH().trim().isEmpty();
+    }
+    private void moFormThemKhachHang(HoaDon hd) {
+        try {
+            // 1. Tạo Stage
+            Stage stage = new Stage();
+            stage.setTitle("Thêm khách hàng");
+            stage.initOwner(btnTimHD.getScene().getWindow());
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            // 2. Tạo Controller
+            ThemKhachHang_Ctrl ctrl = new ThemKhachHang_Ctrl();
+
+            // 3. Set callback khi lưu thành công
+            ctrl.setOnSaved(kh -> {
+
+                hoaDonDao.updateKhachHang(
+                        hoaDonGoc.getMaHD(),
+                        kh.getMaKH()
+                );
+
+                // 🔥 LOAD LẠI HÓA ĐƠN GỐC TỪ DB
+                hoaDonGoc = hoaDonDao.selectById(hoaDonGoc.getMaHD());
+
+                lblTenKH.setText(kh.getTenKH());
+                lblSDT.setText(kh.getSdt());
+
+                hien(
+                        INFORMATION,
+                        "Thành công",
+                        "Đã bổ sung thông tin khách hàng."
+                );
+            });
+
+            // 4. Tạo GUI và gắn controller
+            ThemKhachHang_GUI gui = new ThemKhachHang_GUI();
+            gui.showWithController(stage, ctrl);
+
+            // 5. Hiển thị
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            hien(ERROR, "Lỗi", "Không thể mở form thêm khách hàng");
+        }
+    }
 
     public void xuLyDoiHang() {
+        if (hoaDonGoc == null || hoaDonGoc.getMaHD() == null) {
+            hien(
+                    WARNING,
+                    "Chưa chọn hóa đơn gốc",
+                    "Vui lòng tìm hóa đơn gốc trước khi đổi hàng."
+            );
+            return;
+        }
         if (dsDoi.isEmpty()) {
             hien(WARNING, "Danh sách đổi hàng trống", "Vui lòng thêm sản phẩm để đổi.");
+            return;
+        }
+        if (chuaCoKhachHang(hoaDonGoc)) {
+            hien(
+                    WARNING,
+                    "Chưa có khách hàng",
+                    "Vui lòng bổ sung thông tin khách hàng trước khi đổi / trả."
+            );
+
+            moFormThemKhachHang(hoaDonGoc);
             return;
         }
         for (DoiHangItem item : dsDoi) {
@@ -555,6 +638,39 @@ public class LapPhieuDoiHang_Ctrl extends Application {
 
                 tblSanPhamDoi.getSelectionModel().select(item);
                 tblSanPhamDoi.scrollTo(item);
+                return;
+            }
+        }
+        Thuoc_SP_TheoLo_Dao loDaoCheck = new Thuoc_SP_TheoLo_Dao();
+
+        for (DoiHangItem item : dsDoi) {
+            ChiTietHoaDon goc = item.getGoc();
+            if (goc == null || goc.getLoHang() == null) {
+                hien(ERROR, "Lỗi dữ liệu", "Sản phẩm đổi không hợp lệ");
+                return;
+            }
+
+            int soLuongCan = item.getSoLuongDoi();
+
+            List<Thuoc_SP_TheoLo> loList =
+                    loDaoCheck.selectLoHangFEFO_Multi(
+                            goc.getLoHang().getThuoc().getMaThuoc(),
+                            soLuongCan
+                    );
+
+            int tongTon = loList.stream()
+                    .mapToInt(Thuoc_SP_TheoLo::getSoLuongTon)
+                    .sum();
+
+            if (tongTon < soLuongCan) {
+                hien(
+                        WARNING,
+                        "Không đủ tồn kho",
+                        "Sản phẩm: " + tenSP(goc)
+                                + "\nCần: " + soLuongCan
+                                + " | Còn: " + tongTon
+                                + "\n→ Phiếu đổi KHÔNG được tạo"
+                );
                 return;
             }
         }
@@ -592,10 +708,6 @@ public class LapPhieuDoiHang_Ctrl extends Application {
                 Thuoc_SP_TheoLo loCu = goc.getLoHang();
                 int soLuong = item.getSoLuongDoi();
 
-                // Giảm tồn kho lô cũ
-               // loCu.setSoLuongTon(Math.max(0, loCu.getSoLuongTon() - soLuong));
-                loCu.setSoLuongTon(Math.max(0, loCu.getSoLuongTon()));
-                loDao.update(loCu);
 
                 // FEFO: phân bổ từ nhiều lô
                 int soLuongCan = soLuong;
@@ -603,8 +715,9 @@ public class LapPhieuDoiHang_Ctrl extends Application {
                         loDao.selectLoHangFEFO_Multi(loCu.getThuoc().getMaThuoc(), soLuongCan);
 
                 if (loMoiList == null || loMoiList.isEmpty()) {
-                    hien(WARNING, "Không tìm thấy lô hàng để đổi", "Sản phẩm: " + tenSP(goc) + " không đủ tồn để đổi. Vui lòng kiểm tra lại.");
-                    continue;
+                    throw new RuntimeException(
+                            "Không tìm thấy lô hàng để đổi cho sản phẩm: " + tenSP(goc)
+                    );
                 }
 
                 List<ChiTietPhieuDoiHang> dsChiTietTheoLo = new ArrayList<>();
@@ -636,14 +749,17 @@ public class LapPhieuDoiHang_Ctrl extends Application {
 
                 // Nếu vẫn còn thiếu hàng => rollback riêng sản phẩm này
                 if (soLuongCan > 0) {
-                    hien(WARNING, "Không đủ tồn để đổi",
-                            "Sản phẩm: " + tenSP(goc) + " không đủ tồn để đổi. Vui lòng kiểm tra lại.");
-                    continue;
+                    throw new RuntimeException(
+                            "Không đủ tồn kho khi phân bổ lô cho sản phẩm: " + tenSP(goc)
+                    );
                 }
 
                 for (ChiTietPhieuDoiHang ctSave : dsChiTietTheoLo) {
                     ctpdDao.insert(ctSave);
                 }
+            }
+            if (ctpdDao.countByMaPD(phieu.getMaPD()) == 0) {
+                throw new RuntimeException("Phiếu đổi không có chi tiết");
             }
             Optional<ButtonType> result = hoi(
                     "Thành công",

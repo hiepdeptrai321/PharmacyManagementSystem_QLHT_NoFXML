@@ -118,6 +118,17 @@ public class ChiTietPhieuDoiHang_Dao implements DaoInterface<ChiTietPhieuDoiHang
         }
         return 0;
     }
+    public int countByMaPD(String maPD) {
+        String sql = "SELECT COUNT(*) FROM ChiTietPhieuDoiHang WHERE MaPD = ?";
+        try (ResultSet rs = ConnectDB.query(sql, maPD)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
     @Override
     public List<ChiTietPhieuDoiHang> selectAll() {

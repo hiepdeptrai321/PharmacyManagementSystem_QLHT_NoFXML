@@ -1,11 +1,13 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_XuLy.LapPhieuTra;
 
+import com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMKhachHang.ThemKhachHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuTraHang.ChiTietPhieuTraHang_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.controller.DangNhap_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.DoiHangItem;
 import com.example.pharmacymanagementsystem_qlht.service.TraHangItem;
+import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.ThemKhachHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKPhieuTra.ChiTietPhieuTraHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_XuLy.LapPhieuTra.LapPhieuTra_GUI;
 import javafx.application.Application;
@@ -24,15 +26,18 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.DefaultStringConverter;
 
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hien;
 import static com.example.pharmacymanagementsystem_qlht.TienIch.TuyChinhAlert.hoi;
@@ -80,7 +85,8 @@ public class LapPhieuTraHang_Ctrl extends Application {
     private final ChiTietHoaDon_Dao cthdDao = new ChiTietHoaDon_Dao();
     private final KhachHang_Dao khDao = new KhachHang_Dao();
     private ChiTietPhieuTraHang_Dao ctpthDao = new ChiTietPhieuTraHang_Dao();
-    private HoaDon hoaDonGoc;
+    private HoaDon hoaDonGoc ;
+    private Consumer<KhachHang> onSaved;
 
     private final NumberFormat currencyVN = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
@@ -563,6 +569,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
                 hien(WARNING, "Không tìm thấy", "Hóa đơn không tồn tại.");
                 return;
             }
+            this.hoaDonGoc = hd;
 
             // load line items first to compute discounts
             List<ChiTietHoaDon> lines = cthdDao.selectByMaHD(ma);
@@ -609,21 +616,27 @@ public class LapPhieuTraHang_Ctrl extends Application {
                 hien(WARNING, "Quá hạn", "Hóa đơn đã quá 7 ngày, không thể trả hàng.");
                 return;
             }
-
-            lblMaHDGoc.setText(hd.getMaHD());
-
-
-            if (hd.getMaKH() != null) {
-                String maKH = hd.getMaKH().getMaKH();
-                KhachHang kh = khDao.selectById(maKH);
-
+            String tenKH = "";
+            String sdt = "";
+            if (hd.getMaKH() != null && hd.getMaKH().getMaKH() != null) {
+                KhachHang kh = khDao.selectById(hd.getMaKH().getMaKH());
                 if (kh != null) {
-                    lblTenKH.setText(kh.getTenKH());
-                    lblSDT.setText(kh.getSdt());
-                } else {
-                    lblTenKH.setText("(không tìm thấy KH)");
-                    lblSDT.setText("");
+                    tenKH = kh.getTenKH() == null ? "" : kh.getTenKH();
+                    sdt = kh.getSdt() == null ? "" : kh.getSdt();
                 }
+            }
+            lblTenKH.setText(tenKH);
+            lblSDT.setText(sdt);
+            lblMaHDGoc.setText(hd.getMaHD());
+            if (chuaCoKhachHang(hd)) {
+                hien(
+                        WARNING,
+                        "Hóa đơn chưa có khách hàng",
+                        "Hóa đơn này là khách lẻ.\nVui lòng bổ sung thông tin khách hàng để tiếp tục."
+                );
+                moFormThemKhachHang(hd);
+                hd = hoaDonDao.selectById(ma);
+                this.hoaDonGoc = hd;
             }
 
             dpNgayLapPhieu.setValue(LocalDate.now());
@@ -671,7 +684,54 @@ public class LapPhieuTraHang_Ctrl extends Application {
             hien(ERROR, "Lỗi", "Không thể tải hóa đơn.");
         }
     }
+    private boolean chuaCoKhachHang(HoaDon hd) {
+        return hd.getMaKH() == null
+                || hd.getMaKH().getMaKH() == null
+                || hd.getMaKH().getMaKH().trim().isEmpty();
+    }
+    private void moFormThemKhachHang(HoaDon hd) {
+        try {
+            // 1. Tạo Stage
+            Stage stage = new Stage();
+            stage.setTitle("Thêm khách hàng");
+            stage.initOwner(btnTimHoaDon.getScene().getWindow());
+            stage.initModality(Modality.APPLICATION_MODAL);
 
+            // 2. Tạo Controller
+            ThemKhachHang_Ctrl ctrl = new ThemKhachHang_Ctrl();
+
+            // 3. Set callback khi lưu thành công
+            ctrl.setOnSaved(kh -> {
+
+                hoaDonDao.updateKhachHang(
+                        hoaDonGoc.getMaHD(),
+                        kh.getMaKH()
+                );
+
+                hoaDonGoc = hoaDonDao.selectById(hoaDonGoc.getMaHD());
+
+                lblTenKH.setText(kh.getTenKH());
+                lblSDT.setText(kh.getSdt());
+
+                hien(
+                        INFORMATION,
+                        "Thành công",
+                        "Đã bổ sung thông tin khách hàng.\nBạn có thể tiếp tục đổi / trả."
+                );
+            });
+
+            // 4. Tạo GUI và gắn controller
+            ThemKhachHang_GUI gui = new ThemKhachHang_GUI();
+            gui.showWithController(stage, ctrl);
+
+            // 5. Hiển thị
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            hien(ERROR, "Lỗi", "Không thể mở form thêm khách hàng");
+        }
+    }
 
 
     public void xuLyTraHang() {
@@ -683,6 +743,20 @@ public class LapPhieuTraHang_Ctrl extends Application {
         if (dsTra.isEmpty()) {
             hien(WARNING, "Chưa có sản phẩm", "Vui lòng chọn sản phẩm cần trả.");
             return;
+        }
+        if (chuaCoKhachHang(hoaDonGoc)) {
+            hien(
+                    WARNING,
+                    "Chưa có khách hàng",
+                    "Vui lòng bổ sung thông tin khách hàng trước khi đổi / trả."
+            );
+
+            moFormThemKhachHang(hoaDonGoc);
+            hoaDonGoc = hoaDonDao.selectById(hoaDonGoc.getMaHD());
+
+            if (chuaCoKhachHang(hoaDonGoc)) {
+                return;
+            }
         }
         for (TraHangItem item : dsTra) {
             if (item.getLyDo() == null || item.getLyDo().trim().isEmpty()) {
@@ -719,7 +793,7 @@ public class LapPhieuTraHang_Ctrl extends Application {
             }
 
             phieuTra.setNgayLap(
-                    java.sql.Timestamp.valueOf(dpNgayLapPhieu.getValue().atStartOfDay())
+                    Timestamp.valueOf(dpNgayLapPhieu.getValue().atStartOfDay())
             );
 
             phieuTra.setGhiChu(txtGhiChu == null ? "" : txtGhiChu.getText());
