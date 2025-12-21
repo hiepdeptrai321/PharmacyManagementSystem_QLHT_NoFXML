@@ -6,7 +6,7 @@ USE QuanLyNhaThuoc;
 GO
 
 --Link thư mục hình ảnh thuốc
-DECLARE @path NVARCHAR(255) = N'C:\Users\Hiep\Desktop\hk1_2025-2026\QLHT_NoFXML\SQL\imgThuoc\';
+DECLARE @path NVARCHAR(255) = N'F:\hk5\PTUD_Java\Project\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc\';
 
 -- =========================
 -- Bảng KhachHang
@@ -2541,20 +2541,29 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE sp_HangSapHetHan
+CREATE OR ALTER PROCEDURE sp_HangSapHetHan
 AS
 BEGIN
     SET NOCOUNT ON;
+    DECLARE @SoNgayCanhBao INT;
+
+    -- Dùng TRY_CAST để an toàn, Trim khoảng trắng
+    SELECT @SoNgayCanhBao = TRY_CAST(RTRIM(LTRIM(GiaTri)) AS INT)
+    FROM ThongSoUngDung
+    WHERE TenThongSo = 'NgayHetHan';
 
     SELECT
-        MaThuoc,
         MaLH,
-        HSD
+        HSD,
+        MaThuoc
     FROM Thuoc_SP_TheoLo
-    WHERE HSD BETWEEN CAST(GETDATE() AS DATE) AND DATEADD(MONTH, 2, CAST(GETDATE() AS DATE))
+    WHERE HSD <= DATEADD(DAY, @SoNgayCanhBao, CAST(GETDATE() AS DATE))
     ORDER BY HSD ASC;
 END;
 GO
+
+
+
 
 CREATE OR ALTER PROCEDURE sp_InsertThuoc_SanPham
     @TenThuoc NVARCHAR(100),
