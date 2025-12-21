@@ -6,7 +6,7 @@ USE QuanLyNhaThuoc;
 GO
 
 --Link thư mục hình ảnh thuốc
-DECLARE @path NVARCHAR(255) = N'C:\Users\Hiep\Desktop\hk1_2025-2026\QLHT_NoFXML\SQL\imgThuoc\';
+DECLARE @path NVARCHAR(255) = N'F:\hk5\PTUD_Java\Project\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc\';
 
 -- =========================
 -- Bảng KhachHang
@@ -293,9 +293,9 @@ CREATE TABLE PhieuTraHang (
 CREATE TABLE ChiTietPhieuTraHang (
     MaLH       VARCHAR(10) FOREIGN KEY REFERENCES Thuoc_SP_TheoLo(MaLH),
     MaPT       VARCHAR(10) NOT NULL FOREIGN KEY REFERENCES PhieuTraHang(MaPT),
-    MaThuoc    VARCHAR(10) FOREIGN KEY REFERENCES Thuoc_SanPham(MaThuoc),
+    MaThuoc    VARCHAR(10),
     SoLuong    INT NOT NULL,
-    MaDVT      VARCHAR(10) FOREIGN KEY REFERENCES DonViTinh(MaDVT),
+    MaDVT      VARCHAR(10),
     DonGia     FLOAT NOT NULL,
     GiamGia    FLOAT NOT NULL,
     LyDoTra    NVARCHAR(20) NOT NULL,
@@ -1491,134 +1491,6 @@ IF NOT EXISTS (SELECT * FROM NhaCungCap WHERE MaNCC = 'NCC001')
 IF NOT EXISTS (SELECT * FROM NhaCungCap WHERE MaNCC = 'NCC002')
     INSERT INTO NhaCungCap (MaNCC, TenNCC, DiaChi, SDT, Email)
     VALUES ('NCC002', N'DHG Pharma', N'Cần Thơ', '0292388888', 'ncc002@gmail.com');
-
--- ====================================================
--- 2️⃣ DỮ LIỆU MẪU TEST THỐNG KÊ (MÃ BẮT ĐẦU TỪ 041)
--- ====================================================
-
--- KHÁCH HÀNG
-INSERT INTO KhachHang VALUES
-('KH041', N'Phan Thị Hạnh', '0914000001', 'hanh41@gmail.com', '1995-01-10', 0, N'Hà Nội', 1),
-('KH042', N'Lê Văn Khải', '0914000002', 'khai42@gmail.com', '1990-05-15', 1, N'HCM', 1),
-('KH043', N'Đỗ Minh Đức', '0914000003', 'duc43@gmail.com', '1988-03-05', 1, N'Đà Nẵng', 1);
-
--- NHÂN VIÊN
-INSERT INTO NhanVien VALUES
-('NV041', N'Trần Ngọc Huyền', '0904000001', 'huyen41@qlnt.vn', '1994-02-14', 0, N'Hà Nội', N'Bán hàng', 1, 'huyen41', '123', '2024-01-01', NULL, 0),
-('NV042', N'Phạm Quang Minh', '0904000002', 'minh42@qlnt.vn', '1993-08-12', 1, N'HCM', N'Bán hàng', 1, 'minh42', '123', '2024-02-01', NULL, 0),
-('NV043', N'Nguyễn Tấn Lộc', '0904000003', 'loc43@qlnt.vn', '1997-10-02', 1, N'Đà Nẵng', N'Bán hàng', 1, 'loc43', '123', '2024-03-01', NULL, 0);
-
--- SẢN PHẨM
-INSERT INTO Thuoc_SanPham (MaThuoc, TenThuoc, HamLuong, DonViHL, DuongDung, QuyCachDongGoi, SDK_GPNK, HangSX, NuocSX, MaLoaiHang, MaNDL, ViTri,TrangThaiXoa)
-VALUES
-('SP041', N'Paracetamol 500mg', 500, 'mg', N'Uống', N'Hộp 10 vỉ x 10 viên', 'SDK041', N'DHG Pharma', N'VN', 'LH001', 'ND001', 'KE001',0),
-('SP042', N'Amoxicillin 500mg', 500, 'mg', N'Uống', N'Hộp 10 vỉ x 10 viên', 'SDK042', N'Mekophar', N'VN', 'LH001', 'ND001', 'KE001',0),
-('SP043', N'Loratadin 10mg', 10, 'mg', N'Uống', N'Hộp 5 vỉ x 10 viên', 'SDK043', N'OPV', N'VN', 'LH001', 'ND001', 'KE003',0),
-('SP044', N'Cefalexin 250mg', 250, 'mg', N'Uống', N'Hộp 10 vỉ x 10 viên', 'SDK044', N'Imexpharm', N'VN', 'LH001', 'ND001', 'KE002',0),
-('SP045', N'Vitamin C 500mg', 500, 'mg', N'Uống', N'Hộp 10 vỉ x 10 viên', 'SDK045', N'Truong Tho', N'VN', 'LH001', 'ND001', 'KE002',0);
-
--- PHIẾU NHẬP
-INSERT INTO PhieuNhap (MaPN, NgayNhap, TrangThai, GhiChu, MaNCC, MaNV) VALUES
-('PN041', '2025-01-10', 1, N'Nhập hàng đầu năm', 'NCC001', 'NV041'),
-('PN042', '2025-03-15', 1, N'Nhập tháng 3', 'NCC002', 'NV042'),
-('PN043', '2025-05-12', 1, N'Nhập tháng 5', 'NCC001', 'NV043'),
-('PN044', '2025-07-05', 1, N'Nhập tháng 7', 'NCC001', 'NV041'),
-('PN045', '2025-09-18', 1, N'Nhập tháng 9', 'NCC002', 'NV043'),
-('PN046', '2025-10-01', 1, N'Nhập đầu tháng 10', 'NCC001', 'NV042'),
-('PN047', '2025-10-10', 1, N'Nhập giữa tháng 10', 'NCC002', 'NV043'),
-('PN048', '2025-10-20', 1, N'Nhập tuần này', 'NCC001', 'NV041'),
-('PN049', '2025-10-23', 1, N'Nhập hôm qua', 'NCC002', 'NV042'),
-('PN050', '2025-10-25', 1, N'Nhập hôm nay', 'NCC001', 'NV043'),
-('PN051', '2025-11-05', 1, N'Nhập tháng 11', 'NCC001', 'NV041'),
-('PN052', '2025-12-10', 1, N'Nhập tháng 12', 'NCC002', 'NV042'),
-('PN053', '2025-12-31', 1, N'Nhập cuối năm', 'NCC001', 'NV043');
-
--- CHI TIẾT PHIẾU NHẬP + LÔ HÀNG
-INSERT INTO ChiTietPhieuNhap (MaPN, MaThuoc, MaLH, SoLuong, GiaNhap, ChietKhau, Thue) VALUES
-('PN041','SP041','LH00041',500,1200,0,5),
-('PN042','SP042','LH00042',600,1300,0,5),
-('PN043','SP043','LH00043',400,1100,0,5),
-('PN044','SP044','LH00044',700,1400,0,5),
-('PN045','SP045','LH00045',800,1000,0,5),
-('PN046','SP041','LH00046',500,1200,0,5),
-('PN047','SP042','LH00047',600,1300,0,5),
-('PN048','SP043','LH00048',400,1100,0,5),
-('PN049','SP044','LH00049',700,1400,0,5),
-('PN050','SP045','LH00050',800,1000,0,5),
-('PN051','SP041','LH00051',500,1200,0,5),
-('PN052','SP042','LH00052',600,1300,0,5),
-('PN053','SP043','LH00053',400,1100,0,5);
-
-INSERT INTO Thuoc_SP_TheoLo (MaPN, MaThuoc, MaLH, SoLuongTon, NSX, HSD) VALUES
-('PN041','SP041','LH00041',500,'2025-01-01','2027-01-01'),
-('PN042','SP042','LH00042',600,'2025-03-01','2027-03-01'),
-('PN043','SP043','LH00043',400,'2025-05-01','2027-05-01'),
-('PN044','SP044','LH00044',700,'2025-07-01','2027-07-01'),
-('PN045','SP045','LH00045',800,'2025-09-01','2027-09-01'),
-('PN046','SP041','LH00046',500,'2025-10-01','2027-10-01'),
-('PN047','SP042','LH00047',600,'2025-10-10','2027-10-10'),
-('PN048','SP043','LH00048',400,'2025-10-20','2027-10-20'),
-('PN049','SP044','LH00049',700,'2025-10-23','2027-10-23'),
-('PN050','SP045','LH00050',800,'2025-10-25','2027-10-25'),
-('PN051','SP041','LH00051',500,'2025-11-05','2027-11-05'),
-('PN052','SP042','LH00052',600,'2025-12-10','2027-12-10'),
-('PN053','SP043','LH00053',400,'2025-12-31','2027-12-31');
-
--- HÓA ĐƠN
-
-INSERT INTO HoaDon (MaHD, NgayLap, TrangThai, MaKH, MaNV)
-VALUES
-    ('HD011', '2025-09-16 09:00:00', N'Hoàn tất', 'KH007', 'NV002'),
-    ('HD012', '2025-09-16 11:30:00', N'Hoàn tất', NULL, 'NV001'),
-    ('HD013', '2025-09-16 15:45:00', N'Hoàn tất', 'KH008', 'NV003'),
-    ('HD014', '2025-09-17 08:20:00', N'Hoàn tất', 'KH009', 'NV002'),
-    ('HD015', '2025-09-17 10:15:00', N'Hoàn tất', NULL, 'NV001'),
-    ('HD016', '2025-09-18 14:00:00', N'Hoàn tất', 'KH010', 'NV003'),
-    ('HD017', '2025-09-18 17:30:00', N'Hoàn tất', 'KH011', 'NV002'),
-    ('HD018', '2025-09-19 09:40:00', N'Hoàn tất', 'KH001', 'NV001'),
-    ('HD019', '2025-09-19 13:00:00', N'Hoàn tất', NULL, 'NV003'),
-    ('HD020', '2025-09-20 16:20:00', N'Hoàn tất', 'KH002', 'NV002');
-
--- CHI TIẾT HÓA ĐƠN
-INSERT INTO ChiTietHoaDon (MaHD, MaLH, MaDVT, SoLuong, DonGia, GiamGia)
-VALUES
--- HD011: Paracetamol (5 viên) + Vitamin C (1 chai)
-('HD011', 'LH00001', 'DVT01', 5, 1500, 100),
-('HD011', 'LH00005', 'DVT04', 1, 1200, 0),
-
--- HD012: Amoxicillin (2 vỉ) + Aspirin (1 hộp)
-('HD012', 'LH00002', 'DVT02', 2, 1900, 0),
-('HD012', 'LH00004', 'DVT03', 1, 3000, 0),
-
--- HD013: Kem chống nắng (1 tuýp) + Găng tay y tế (5 hộp)
-('HD013', 'LH00015', 'DVT06', 1, 250000, 20000),
-('HD013', 'LH00014', 'DVT03', 5, 1800, 0),
-
--- HD014: Cao ích mẫu (2 hộp) + Ibuprofen (1 hộp)
-('HD014', 'LH00009', 'DVT03', 2, 15000, 0),
-('HD014', 'LH00003', 'DVT03', 1, 2500, 0),
-
--- HD015: Hoạt huyết dưỡng não (1 hộp)
-('HD015', 'LH00007', 'DVT03', 1, 9500, 0),
-
--- HD016: Probiotic 10 strains (1 hộp) + Vitamin D3 (1 hộp)
-('HD016', 'LH00012', 'DVT03', 1, 320000, 0),
-('HD016', 'LH00011', 'DVT03', 1, 150000, 5000),
-
--- HD017: Siro ho Bảo Thanh (3 chai)
-('HD017', 'LH00008', 'DVT04', 3, 25000, 0),
-
--- HD018: Kem dưỡng ẩm (2 hộp) + Nhiệt kế điện tử (1 cái)
-('HD018', 'LH00016', 'DVT03', 2, 350000, 20000),
-('HD018', 'LH00013', 'DVT10', 1, 130000, 0),
-
--- HD019: Atorvastatin (2 hộp) + Amoxicillin (1 vỉ)
-('HD019', 'LH00006', 'DVT03', 2, 3500, 0),
-('HD019', 'LH00002', 'DVT02', 1, 1900, 0),
-
--- HD020: Vitamin C (2 chai) + Paracetamol (10 viên)
-('HD020', 'LH00005', 'DVT04', 2, 1200, 0),
-('HD020', 'LH00001', 'DVT01', 10, 1500, 150);
 
 
 --=======================================================================================================================
