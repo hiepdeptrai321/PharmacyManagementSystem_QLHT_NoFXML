@@ -38,6 +38,7 @@ public class SuaXoaThuoc_Ctrl {
     public TextField txtNuocSanXuat;
     public TextField txtQuyCachDongGoi;
     public TextField txtSDK_GPNK;
+    public CheckBox cbETC;
 
     public TableView<ChiTietHoatChat> tblHoatChat;
     public TableColumn<ChiTietHoatChat, String> colMaHoatChat;
@@ -199,6 +200,7 @@ public class SuaXoaThuoc_Ctrl {
         txtHangSanXuat.setText(thuoc.getHangSX());
         txtDonViHamLuong.setText(thuoc.getDonViHamLuong());
         txtDuongDung.setText(thuoc.getDuongDung());
+        cbETC.setSelected(thuoc.isETC());
 
         if (thuoc.getNhomDuocLy() != null) {
             cbxNhomDuocLy.setValue(thuoc.getNhomDuocLy().getTenNDL());
@@ -348,6 +350,7 @@ public class SuaXoaThuoc_Ctrl {
                 thuoc.setNuocSX(txtNuocSanXuat.getText().trim());
                 thuoc.setQuyCachDongGoi(txtQuyCachDongGoi.getText().trim());
                 thuoc.setSDK_GPNK(txtSDK_GPNK.getText().trim());
+                thuoc.setETC(cbETC.isSelected());
 
                 // Ảnh
                 Image image = imgThuoc_SanPham.getImage();

@@ -20,13 +20,15 @@ public class ChiTietHoaDon_Dao implements  DaoInterface<ChiTietHoaDon> {
 
     @Override
     public boolean insert(ChiTietHoaDon e) {
-        return ConnectDB.update(INSERT_SQL,
+        return ConnectDB.update(
+                INSERT_SQL,
                 e.getHoaDon().getMaHD(),
                 e.getLoHang().getMaLH(),
                 e.getDvt().getMaDVT(),
                 e.getSoLuong(),
                 e.getDonGia(),
-                e.getGiamGia()) > 0;
+                e.getGiamGia()
+        ) > 0;
     }
 //    public boolean insert(ChiTietHoaDon cthd) {
 //        String sql = "insert into ChiTietHoaDon(MaHD, MaLH, SoLuong, DonGia, GiamGia) values (?, ?, ?, ?, ?)";
@@ -130,13 +132,7 @@ public class ChiTietHoaDon_Dao implements  DaoInterface<ChiTietHoaDon> {
           AND MaDVT = ?
     """;
 
-        return ConnectDB.update(
-                sql,
-                e.getSoLuong(),
-                e.getHoaDon().getMaHD(),
-                e.getLoHang().getMaLH(),
-                e.getDvt().getMaDVT()
-        ) > 0;
+        return ConnectDB.update(sql, e.getSoLuong(), e.getHoaDon().getMaHD(), e.getLoHang().getMaLH(), e.getDvt().getMaDVT()) > 0;
     }
 
     @Override

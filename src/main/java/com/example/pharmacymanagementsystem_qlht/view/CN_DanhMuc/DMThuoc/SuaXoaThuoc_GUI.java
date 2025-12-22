@@ -29,6 +29,7 @@ public class SuaXoaThuoc_GUI extends Application {
     public TableColumn<ChiTietHoatChat, String> colMaHoatChat, colTenHoatChat, colHamLuong, colXoa;
     public ListView<HoatChat> listViewHoatChat;
     public Button btnChonAnh, btnXoa, btnHuy, btnLuu;
+    public CheckBox cbETC;
 
     @Override
     public void start(Stage stage) {
@@ -50,6 +51,7 @@ public class SuaXoaThuoc_GUI extends Application {
         ctrl.cbxLoaiHang = (ComboBox) cbxLoaiHang;
         ctrl.cbxViTri    = (ComboBox) cbxViTri;
         ctrl.cbxNhomDuocLy = (ComboBox) cbxNhomDuocLy;
+        ctrl.cbETC = cbETC;
         ctrl.imgThuoc_SanPham = imgThuoc;
 
         ctrl.txtHamLuong = txtHamLuong;
@@ -73,9 +75,6 @@ public class SuaXoaThuoc_GUI extends Application {
         ctrl.btnHuy = btnHuy;
         ctrl.btnLuu = btnLuu;
         ctrl.btnChonAnh = btnChonAnh;
-
-        // debug
-        System.out.println("tblHoatChat injected? " + ctrl.tblHoatChat);
 
         ctrl.initialize();
 
@@ -114,10 +113,10 @@ public class SuaXoaThuoc_GUI extends Application {
         txtTenThuoc = new TextField(); txtTenThuoc.setLayoutX(283); txtTenThuoc.setLayoutY(-28); txtTenThuoc.setPrefSize(360, 25);
 
         Label lbLoaiHang = new Label("Loại hàng"); lbLoaiHang.setLayoutX(0); lbLoaiHang.setLayoutY(18); lbLoaiHang.setFont(Font.font(14));
-        cbxLoaiHang = new ComboBox<>(); cbxLoaiHang.setLayoutX(70); cbxLoaiHang.setLayoutY(15); cbxLoaiHang.setPrefSize(258, 25);
+        cbxLoaiHang = new ComboBox<>(); cbxLoaiHang.setLayoutX(70); cbxLoaiHang.setLayoutY(15); cbxLoaiHang.setPrefSize(228, 25);
 
-        Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(348); lbViTri.setLayoutY(21); lbViTri.setFont(Font.font(14));
-        cbxViTri = new ComboBox<>(); cbxViTri.setLayoutX(386); cbxViTri.setLayoutY(16); cbxViTri.setPrefSize(158, 25);
+        Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(318); lbViTri.setLayoutY(21); lbViTri.setFont(Font.font(14));
+        cbxViTri = new ComboBox<>(); cbxViTri.setLayoutX(356); cbxViTri.setLayoutY(16); cbxViTri.setPrefSize(287, 25);
 
         Label lbMa = new Label("Mã thuốc"); lbMa.setLayoutX(1); lbMa.setLayoutY(-25); lbMa.setFont(Font.font(14));
         txtMaThuoc = new TextField(); txtMaThuoc.setEditable(false); txtMaThuoc.setLayoutX(74); txtMaThuoc.setLayoutY(-28); txtMaThuoc.setPrefSize(120, 25);
@@ -168,6 +167,9 @@ public class SuaXoaThuoc_GUI extends Application {
         Label lbNDL = new Label("Nhóm dược lý"); lbNDL.setLayoutX(4); lbNDL.setLayoutY(125); lbNDL.setFont(Font.font(13));
         cbxNhomDuocLy = new ComboBox<>(); cbxNhomDuocLy.setLayoutX(4); cbxNhomDuocLy.setLayoutY(142); cbxNhomDuocLy.setPrefSize(388, 30);
 
+        Label lbETC = new Label("ETC: "); lbETC.setLayoutX(401); lbETC.setLayoutY(145); lbETC.setFont(Font.font(14));
+        cbETC = new CheckBox();cbETC.setLayoutX(431); cbETC.setLayoutY(142); cbETC.setPrefSize(157, 25);
+
         btnChonAnh = new Button("Chọn ảnh");
         btnChonAnh.setLayoutX(800); btnChonAnh.setLayoutY(124); btnChonAnh.setPrefSize(92, 32);
         btnChonAnh.setStyle("-fx-background-color: rgba(0, 123, 255, 0.8); \n" +
@@ -184,7 +186,7 @@ public class SuaXoaThuoc_GUI extends Application {
         detailPane.getChildren().addAll(
                 lbTTCT, lbHL, txtHamLuong, lbDVHL, txtDonViHamLuong, lbDuong, txtDuongDung,
                 lbQCDG, txtQuyCachDongGoi, lbSDK, txtSDK_GPNK, lbHSX, txtHangSanXuat,
-                lbNSX, txtNuocSanXuat, lbNDL, cbxNhomDuocLy, btnChonAnh
+                lbNSX, txtNuocSanXuat, lbNDL, cbxNhomDuocLy, btnChonAnh, lbETC, cbETC
         );
 
         vbox.getChildren().addAll(topPane, detailPane);

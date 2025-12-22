@@ -19,14 +19,18 @@ import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -93,7 +97,7 @@ public class LapHoaDon_Ctrl extends Application {
     public TableColumn <ChiTietHoaDon, String> colSTT;
     public TableColumn <ChiTietHoaDon, String> colTenSP;
     public TableColumn <ChiTietHoaDon, Boolean> colKeDon;
-    public TableColumn <ChiTietHoaDon, String> colSL;
+    public TableColumn<ChiTietHoaDon, Number> colSL;
     public TableColumn <ChiTietHoaDon, String> colDonVi;
     public TableColumn <ChiTietHoaDon, String> colDonGia;
     public TableColumn <ChiTietHoaDon, String> colChietKhau;
@@ -149,10 +153,10 @@ public class LapHoaDon_Ctrl extends Application {
         initTienMatEvents();
         chuyenHoaDon();
         btnThanhToan.setOnAction(e -> xuLyThanhToan());
-        System.out.println("Ma phieu dat: " + (maPhieuDat == null ? "<none>" : maPhieuDat));
         if (maPhieuDat != null) {
             loadDataFromMaPhieuDat(maPhieuDat);
         }
+        System.out.println(dsChiTietHD.getClass());
     }
 
     public void setDsChiTietHD(List<ChiTietHoaDon> dsChiTietHD) {
@@ -623,20 +627,19 @@ public class LapHoaDon_Ctrl extends Application {
             same.setSoLuong(same.getSoLuong() + 1);
             same.setDonGia(chosen.getGiaBan());
             apDungKMChoRow(same);
-            if (tblChiTietHD != null) tblChiTietHD.refresh();
             return;
         }
 
         // create new row with the chosen unit
         ChiTietHoaDon cthd = new ChiTietHoaDon();
         ganThuocVaoCTHD(cthd, sp);
+        //cthd.setKeDon(sp.isThuocKeDon());
         cthd.setSoLuong(1);
         cthd.setDonGia(chosen.getGiaBan());
         apDungKMChoRow(cthd);
         dsChiTietHD.add(cthd);
         dvtTheoDong.put(cthd, chosen);
 
-        if (tblChiTietHD != null) tblChiTietHD.refresh();
         Platform.runLater(() -> {
             if (txtTimThuoc != null) {
                 txtTimThuoc.requestFocus();
@@ -667,41 +670,68 @@ public class LapHoaDon_Ctrl extends Application {
     private void cauHinhCotBang() {
         if (tblChiTietHD == null) return;
         if (colSTT != null) {
-            colSTT.setCellFactory(tc -> new TableCell<>() {
+            colSTT.setCellFactory(col -> new TableCell<ChiTietHoaDon, String>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty ? null : String.valueOf(getIndex() + 1));
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(getIndex() + 1));
+                    }
                 }
             });
-            colSTT.setSortable(false);
-            colSTT.setReorderable(false);
         }
+        colSTT.setSortable(false);
         if (colTenSP != null) {
             colTenSP.setCellValueFactory(p ->
                     new ReadOnlyStringWrapper(layTenSP(p.getValue()))
             );
         }
-//        colKeDon.setCellFactory(tc -> new TableCell<>() {
-//            private final CheckBox checkBox = new CheckBox();
-//            {
-//                checkBox.setDisable(true);
-//                checkBox.setStyle("-fx-opacity: 1");
-//            }
-//            @Override
-//            protected void updateItem(Boolean keDon, boolean empty) {
-//                super.updateItem(keDon, empty);
-//                if (empty || keDon == null) {
-//                    setGraphic(null);
-//                } else {
-//                    checkBox.setSelected(keDon);
-//                    setGraphic(checkBox);
-//                }
-//            }
-//        });
+        colKeDon.setCellValueFactory(cd -> {
+            ChiTietHoaDon ct = cd.getValue();
+
+            boolean isETC = false;
+            if (ct != null
+                    && ct.getLoHang() != null
+                    && ct.getLoHang().getThuoc() != null) {
+
+                isETC = ct.getLoHang().getThuoc().isETC();
+            }
+
+            return new ReadOnlyBooleanWrapper(isETC);
+        });
+        colKeDon.setCellFactory(col -> new TableCell<ChiTietHoaDon, Boolean>() {
+            private final CheckBox cb = new CheckBox();
+
+            {
+                cb.setDisable(true);
+                setAlignment(Pos.CENTER);
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            }
+
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    cb.setSelected(item);
+                    setGraphic(cb);
+                }
+            }
+        });
+
+        colKeDon.setEditable(false);
+        tblChiTietHD.setEditable(false);
         if (colSL != null) {
-            colSL.setCellValueFactory(p -> new ReadOnlyStringWrapper(String.valueOf(p.getValue().getSoLuong())));
-            colSL.setCellFactory(tc -> new TableCell<>() {
+            colSL.setCellValueFactory(cd ->
+                    cd.getValue().soLuongProperty()
+            );
+            colSL.setSortable(false);
+            tblChiTietHD.getSortOrder().clear();
+            colSL.setCellFactory(tc -> new TableCell<ChiTietHoaDon, Number>() {
                 private final Button btnMinus = new Button("-");
                 private final Button btnPlus  = new Button("+");
                 private final TextField tf    = new TextField();
@@ -714,18 +744,32 @@ public class LapHoaDon_Ctrl extends Application {
                     tf.setTextFormatter(new TextFormatter<>(chg ->
                             chg.getControlNewText().matches("\\d{0,6}") ? chg : null));
 
-                    btnMinus.setOnAction(e -> { goiYMenu.hide(); pause.stop(); adjust(-1); });
-                    btnPlus.setOnAction(e -> { goiYMenu.hide(); pause.stop(); adjust(+1); });
-                    tf.setOnAction(e -> { goiYMenu.hide(); pause.stop(); commitFromText(); });
-                    tf.focusedProperty().addListener((o, was, now) -> { if (!now) commitFromText(); });
+                    btnMinus.setOnAction(e -> {
+                        goiYMenu.hide(); pause.stop();
+                        ChiTietHoaDon row = (getTableRow() == null) ? null : getTableRow().getItem();
+                        adjustRow(row, -1);
+                    });
+                    btnPlus.setOnAction(e -> {
+                        goiYMenu.hide(); pause.stop();
+                        ChiTietHoaDon row = (getTableRow() == null) ? null : getTableRow().getItem();
+                        adjustRow(row, +1);
+                    });
+
+                    tf.setOnAction(e -> {
+                        goiYMenu.hide(); pause.stop();
+                        ChiTietHoaDon row = (getTableRow() == null) ? null : getTableRow().getItem();
+                        commitFromTextForRow(row);
+                    });
+                    tf.focusedProperty().addListener((o, was, now) -> {
+                        if (!now) {
+                            ChiTietHoaDon row = (getTableRow() == null) ? null : getTableRow().getItem();
+                            commitFromTextForRow(row);
+                        }
+                    });
                 }
 
-                private void adjust(int delta) {
-                    int idx = getIndex();
-                    if (idx < 0 || idx >= getTableView().getItems().size()) return;
-                    ChiTietHoaDon row = getTableView().getItems().get(idx);
+                private void adjustRow(ChiTietHoaDon row, int delta) {
                     if (row == null) return;
-
                     Thuoc_SanPham sp = spOf(row);
                     ChiTietDonViTinh dvt = dvtOf(row);
                     if (sp == null || dvt == null) return;
@@ -733,7 +777,6 @@ public class LapHoaDon_Ctrl extends Application {
                     int cur = row.getSoLuong();
                     int target = Math.max(1, cur + delta);
 
-                    // compute max allowed for this row given other rows
                     int max = maxSLDong(row);
                     if (target > max) {
                         canhBaoTonKhongDu();
@@ -741,23 +784,20 @@ public class LapHoaDon_Ctrl extends Application {
                     }
                     if (target != cur) {
                         row.setSoLuong(target);
-                        // AFTER changing quantity, attempt auto-conversion to larger unit(s)
-                        autoConvertUnitsAfterChange(row);
-                        if (tblChiTietHD != null) tblChiTietHD.refresh();
+                        if (tblChiTietHD != null) tblChiTietHD.getSortOrder().clear();
+                        autoConvertUnitsAfterChange(row); // will keep original position now
                         tinhTongTien();
                     }
                     tf.setText(String.valueOf(row.getSoLuong()));
                 }
 
-                private void commitFromText() {
-                    int idx = getIndex();
-                    if (idx < 0 || idx >= getTableView().getItems().size()) return;
-                    ChiTietHoaDon row = getTableView().getItems().get(idx);
+                private void commitFromTextForRow(ChiTietHoaDon row) {
                     if (row == null) return;
-
                     String s = tf.getText();
-                    if (s == null || s.isBlank()) { tf.setText(String.valueOf(row.getSoLuong())); return; }
-
+                    if (s == null || s.isBlank()) {
+                        tf.setText(String.valueOf(row.getSoLuong()));
+                        return;
+                    }
                     try {
                         int entered = Integer.parseInt(s);
                         if (entered <= 0) entered = 1;
@@ -768,9 +808,8 @@ public class LapHoaDon_Ctrl extends Application {
                         }
                         if (entered != row.getSoLuong()) {
                             row.setSoLuong(entered);
-                            // attempt auto-conversion after user edited absolute number
-                            autoConvertUnitsAfterChange(row);
-                            if (tblChiTietHD != null) tblChiTietHD.refresh();
+                            if (tblChiTietHD != null) tblChiTietHD.getSortOrder().clear();
+                            autoConvertUnitsAfterChange(row); // will keep original position now
                             tinhTongTien();
                         }
                         tf.setText(String.valueOf(row.getSoLuong()));
@@ -780,12 +819,14 @@ public class LapHoaDon_Ctrl extends Application {
                 }
 
                 @Override
-                protected void updateItem(String item, boolean empty) {
+                protected void updateItem(Number item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty) { setGraphic(null); setText(null); }
-                    else {
-                        ChiTietHoaDon r = getTableView().getItems().get(getIndex());
-                        tf.setText(r != null ? String.valueOf(r.getSoLuong()) : "1");
+                    ChiTietHoaDon row = (getTableRow() == null) ? null : getTableRow().getItem();
+                    if (empty || row == null) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        tf.setText(String.valueOf(row.getSoLuong()));
                         setGraphic(box);
                         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     }
@@ -842,7 +883,7 @@ public class LapHoaDon_Ctrl extends Application {
                         dsChiTietHD.remove(item);
 
                         // Refresh UI and totals
-                        if (tblChiTietHD != null) tblChiTietHD.refresh();
+                        //if (tblChiTietHD != null) tblChiTietHD.refresh();
                         capNhatTongTien(); // or tinhTongTien();
                     });
                     // Optional styling
@@ -863,8 +904,11 @@ public class LapHoaDon_Ctrl extends Application {
             colBo.setEditable(false);
             colBo.setStyle("-fx-alignment: CENTER; -fx-padding: 0 4 0 4;");
         }
-
-        dsChiTietHD.addListener((ListChangeListener<ChiTietHoaDon>) c -> tblChiTietHD.refresh());
+        for (TableColumn<?, ?> col : tblChiTietHD.getColumns()) {
+            col.setSortable(false);
+        }
+        tblChiTietHD.getSortOrder().clear();
+        tblChiTietHD.setSortPolicy(tv -> false);
     }
 
     private void canPhai(TableColumn<ChiTietHoaDon, String> col) {
@@ -876,6 +920,19 @@ public class LapHoaDon_Ctrl extends Application {
                 setStyle(empty ? "" : "-fx-alignment: CENTER-RIGHT;");
             }
         });
+    }
+    private int firstIndexOfProduct(Thuoc_SanPham sp) {
+        if (sp == null || dsChiTietHD.isEmpty()) return dsChiTietHD.size();
+        String ma = sp.getMaThuoc();
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < dsChiTietHD.size(); i++) {
+            ChiTietHoaDon r = dsChiTietHD.get(i);
+            Thuoc_SanPham rsp = spOf(r);
+            if (rsp != null && ma.equals(rsp.getMaThuoc())) {
+                min = Math.min(min, i);
+            }
+        }
+        return (min == Integer.MAX_VALUE) ? dsChiTietHD.size() : min;
     }
 
     private String layTenSP(ChiTietHoaDon row) {
@@ -1135,71 +1192,67 @@ public void xuLyThemKH() {
     private void autoConvertUnitsAfterChange(ChiTietHoaDon changedRow) {
         if (changedRow == null || changedRow.getLoHang() == null) return;
         Thuoc_SanPham sp = spOf(changedRow);
-
         if (sp == null || sp.getDsCTDVT() == null || sp.getDsCTDVT().size() < 2) {
-            apDungKMChoRow(changedRow); // Vẫn áp dụng KM cho dòng vừa thay đổi
-            tinhTongTien(); // Tính lại tổng tiền
+            apDungKMChoRow(changedRow);
+            if (tblChiTietHD != null) tblChiTietHD.refresh();
+            tinhTongTien();
             return;
         }
-
+        final int anchorIndexBefore = firstIndexOfProduct(sp);
         String maThuoc = sp.getMaThuoc();
-
-        // 1 Lấy danh sách DVT của sản phẩm, to toi nho
+        // 1) sort theo don vi
         List<ChiTietDonViTinh> dvtsSorted = sp.getDsCTDVT().stream()
-                .sorted(Comparator.comparingDouble(ChiTietDonViTinh::getHeSoQuyDoi).reversed())
-                .toList(); 
-
-        if (dvtsSorted.isEmpty()) return; 
-
-        // 2 Tính tổng số lượng cơ bản (vd: tổng số 'viên') từ all dòng
+                .sorted((a, b) -> Double.compare(b.getHeSoQuyDoi(), a.getHeSoQuyDoi()))
+                .toList();
+        if (dvtsSorted.isEmpty()) return;
+        // 2) tinh tong so luong co ban
         int tongSLCoBan = 0;
         for (ChiTietHoaDon row : List.copyOf(dsChiTietHD)) {
-            Thuoc_SanPham spRow = spOf(row);
-            if (spRow != null && spRow.getMaThuoc().equals(maThuoc)) {
-                tongSLCoBan += toBaseQty(row.getSoLuong(), dvtOf(row));
+            Thuoc_SanPham rSp = spOf(row);
+            if (rSp != null && maThuoc.equals(rSp.getMaThuoc())) {
+                ChiTietDonViTinh dvt = dvtOf(row);
+                int base = toBaseQty(row.getSoLuong(), dvt != null ? dvt : layDVTCoBan(sp));
+                tongSLCoBan += base;
             }
         }
 
-        // 3 Xóa all dòng của sản phẩm này
+        // 3) xoa toan bo dong hien tai cua sp
         dsChiTietHD.removeIf(row -> {
-            Thuoc_SanPham spRow = spOf(row);
-            if (spRow != null && spRow.getMaThuoc().equals(maThuoc)) {
+            Thuoc_SanPham rSp = spOf(row);
+            if (rSp != null && maThuoc.equals(rSp.getMaThuoc())) {
                 dvtTheoDong.remove(row);
                 kmTheoDong.remove(row);
-                return true; 
+                return true;
             }
-            return false; // neu sp khac thi giu lai
+            return false;
         });
 
-        // 4 Phân bổ lại `tongSLCoBan` vào các dòng mới (từ lớn đến nhỏ)
+        // 4) tao lai cac dong theo don vi tuong ung
         int remainingBaseQty = tongSLCoBan;
+        List<ChiTietHoaDon> newRows = new ArrayList<>();
 
-        for (ChiTietDonViTinh dvt : dvtsSorted) { // Vòng lặp từ Hộp -> Vỉ -> Viên
-            if (remainingBaseQty == 0) break; // Hết số lượng để chia
+        for (ChiTietDonViTinh dvt : dvtsSorted) {
+            if (remainingBaseQty <= 0) break;
 
-            int heSo = (int)Math.round(heSo(dvt));
-            if (heSo <= 0) continue; // Bỏ qua DVT lỗi nếu có
+            int soLuongByThisUnit = fromBaseQty(remainingBaseQty, dvt);
+            if (soLuongByThisUnit <= 0) continue;
 
-            int newQty = remainingBaseQty / heSo; // Số lượng ở đơn vị DVT này
+            ChiTietHoaDon r = new ChiTietHoaDon();
+            ganThuocVaoCTHD(r, sp);
+            r.setSoLuong(soLuongByThisUnit);
+            r.setDonGia(dvt.getGiaBan());
+            newRows.add(r);
+            dvtTheoDong.put(r, dvt);
+            apDungKMChoRow(r);
 
-            if (newQty > 0) {
-                ChiTietHoaDon newRow = new ChiTietHoaDon();
-                ganThuocVaoCTHD(newRow, sp);
-                newRow.setSoLuong(newQty);
-                newRow.setDonGia(dvt.getGiaBan());
-
-                dvtTheoDong.put(newRow, dvt); //  map DVT cho dòng mới
-                dsChiTietHD.add(newRow);     // Thêm dòng mới vào danh sách
-
-                // CapNhat
-                remainingBaseQty = remainingBaseQty % heSo;
-            }
+            remainingBaseQty -= toBaseQty(soLuongByThisUnit, dvt);
         }
+        int anchor = Math.min(anchorIndexBefore, dsChiTietHD.size());
+        dsChiTietHD.addAll(anchor, newRows);
+
         if (tblChiTietHD != null) tblChiTietHD.refresh();
         tinhTongTien();
     }
-
-
     //-----Xu Ly giao dich
 
     private String cur(BigDecimal v) { return VND.format(v.max(BigDecimal.ZERO)); }
@@ -1597,158 +1650,6 @@ public void xuLyThemKH() {
         this.baseQtyMap = baseQtyToReduce;
 
     }
-
-
-    private void xuatHoaDonPDF(File file) throws IOException {
-        PdfWriter writer = new PdfWriter(file);
-        PdfDocument pdf = new PdfDocument(writer);
-        Document document = new Document(pdf);
-
-        // 1. Thiết lập Font
-        PdfFont font;
-        try {
-            font = PdfFontFactory.createFont(FONT_PATH);
-        } catch (IOException e) {
-            System.err.println("Không tìm thấy font tại: " + FONT_PATH + ". Sử dụng font mặc định.");
-            font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-        }
-        document.setFont(font);
-
-        // 2. Header có logo
-        try {
-            String logoPath = "/com/example/pharmacymanagementsystem_qlht/img/logo.png";
-            InputStream is = getClass().getResourceAsStream(logoPath);
-            if (is != null) {
-                byte[] bytes = is.readAllBytes();
-                com.itextpdf.io.image.ImageData imageData = com.itextpdf.io.image.ImageDataFactory.create(bytes);
-                com.itextpdf.layout.element.Image logo = new com.itextpdf.layout.element.Image(imageData);
-                logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                logo.scaleToFit(120f, 120f);
-                document.add(logo);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        document.add(new Paragraph("Quốc Khánh Pharmacy")
-                .setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setMarginTop(5));
-        document.add(new Paragraph("Địa chỉ: 12 Đường Nguyễn Văn Bảo, phường 4, Gò Vấp, TP Hồ Chí Minh")
-                .setFontSize(10).setTextAlignment(TextAlignment.CENTER));
-        document.add(new Paragraph("Hotline: 1800 6868")
-                .setFontSize(10).setTextAlignment(TextAlignment.CENTER));
-
-        // 3. Tiêu đề Hóa đơn
-        document.add(new Paragraph("HOÁ ĐƠN BÁN LẺ")
-                .setFontSize(18).setBold().setTextAlignment(TextAlignment.CENTER).setMarginTop(15));
-
-        document.add(new Paragraph("Ngày lập: " + (dpNgayLap.getValue() != null ? dpNgayLap.getValue().toString() : LocalDate.now().toString()))
-                .setTextAlignment(TextAlignment.CENTER));
-
-        // 4. Mã đơn thuốc (
-        if (rbOTC != null && rbOTC.isSelected()) {
-            String maDonThuoc = (txtMaDonThuoc != null) ? txtMaDonThuoc.getText() : "";
-            if (maDonThuoc != null && !maDonThuoc.isBlank()) {
-                document.add(new Paragraph("Mã đơn thuốc: " + maDonThuoc)
-                        .setTextAlignment(TextAlignment.CENTER).setFontSize(10));
-            }
-        }
-
-        // 5. Thông tin khách hàng và nhân viên (ĐÃ CẬP NHẬT)
-        document.add(new Paragraph("THÔNG TIN GIAO DỊCH")
-                .setFontSize(14).setBold().setMarginTop(15));
-
-        document.add(new Paragraph("Khách hàng: " + (txtTenKH.getText() != null ? txtTenKH.getText() : "Khách lẻ")));
-        document.add(new Paragraph("Số điện thoại: " + (txtSDT.getText() != null ? txtSDT.getText() : "")));
-        document.add(new Paragraph("Phương thức thanh toán: " + (cbPhuongThucTT.getValue() != null ? cbPhuongThucTT.getValue() : "Tiền mặt")));
-
-        // ----- BẮT ĐẦU THÊM MỚI -----
-        // Lấy nhân viên đang đăng nhập (người lập HĐ/người in)
-        String tenNhanVien = "Không rõ";
-        if (DangNhap_Ctrl.user != null && DangNhap_Ctrl.user.getTenNV() != null) {
-            tenNhanVien = DangNhap_Ctrl.user.getTenNV();
-        }
-        document.add(new Paragraph("Nhân viên: " + tenNhanVien));
-        // ----- KẾT THÚC THÊM MỚI -----
-
-        // 6. Bảng chi tiết sản phẩm
-        document.add(new Paragraph("DANH SÁCH SẢN PHẨM")
-                .setFontSize(14).setBold().setMarginTop(15));
-
-        float[] columnWidths = {1, 5, 1.5f, 2, 2.5f, 2.5f, 3};
-        Table table = new Table(UnitValue.createPercentArray(columnWidths));
-        table.setWidth(UnitValue.createPercentValue(100));
-
-        // Headers của bảng
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colSTT.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colTenSP.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colSL.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colDonVi.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colDonGia.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colChietKhau.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colThanhTien.getText()).setBold()));
-
-        // Dữ liệu bảng
-        int stt = 1;
-        for (ChiTietHoaDon cthd : dsChiTietHD) {
-            String tenSP = layTenSP(cthd);
-            int soLuong = cthd.getSoLuong();
-            String donVi = layTenDonVi(cthd);
-            double donGia = cthd.getDonGia();
-            double chietKhau = cthd.getGiamGia();
-            double thanhTien = Math.max(0, (soLuong * donGia) - chietKhau);
-
-            table.addCell(String.valueOf(stt++));
-            table.addCell(tenSP);
-            table.addCell(String.valueOf(soLuong)).setTextAlignment(TextAlignment.CENTER);
-            table.addCell(donVi);
-            table.addCell(formatVND(donGia)).setTextAlignment(TextAlignment.RIGHT);
-            table.addCell(formatVND(chietKhau)).setTextAlignment(TextAlignment.RIGHT);
-            table.addCell(formatVND(thanhTien)).setTextAlignment(TextAlignment.RIGHT);
-        }
-        document.add(table);
-
-        // 7. Tổng kết (Đọc từ Label)
-        document.add(new Paragraph("Tổng giảm giá: " + lblGiamGia.getText())
-                .setTextAlignment(TextAlignment.RIGHT));
-        document.add(new Paragraph("Tổng tiền: " + lblTongTien.getText())
-                .setTextAlignment(TextAlignment.RIGHT).setMarginTop(10));
-        document.add(new Paragraph("Giảm giá theo hóa đơn: " + lblGiamTheoHD.getText())
-                .setTextAlignment(TextAlignment.RIGHT));
-        document.add(new Paragraph("Thuế (VAT 5%): " + lblVAT.getText())
-                .setTextAlignment(TextAlignment.RIGHT));
-        document.add(new Paragraph("TỔNG THANH TOÁN: " + lblThanhTien.getText())
-                .setTextAlignment(TextAlignment.RIGHT).setBold().setFontSize(14));
-
-        // 8. Thông tin tiền mặt (Footer)
-        String phuongThucTT = cbPhuongThucTT.getValue();
-        if ("Tiền mặt".equals(phuongThucTT) && txtSoTienKhachDua != null && lblTienThua != null) {
-
-            String tienKhachDuaStr = txtSoTienKhachDua.getText();
-            String tienThuaStr = lblTienThua.getText();
-
-            try {
-                tienKhachDuaStr = formatVND(parseVND(tienKhachDuaStr));
-            } catch (Exception e) {
-                tienKhachDuaStr = "0 đ";
-            }
-
-            if (tienThuaStr.contains("Chưa đủ")) {
-                tienThuaStr = "0 đ";
-            }
-
-            document.add(new Paragraph("Tiền khách đưa: " + tienKhachDuaStr)
-                    .setTextAlignment(TextAlignment.RIGHT).setBold().setFontSize(14).setMarginTop(5));
-            document.add(new Paragraph("Tiền thừa: " + tienThuaStr)
-                    .setTextAlignment(TextAlignment.RIGHT).setBold().setFontSize(14));
-        }
-
-        // 9. Đóng file
-        document.close();
-    }
-
-
-
-
     public void loadDataFromMaPhieuDat(String maPhieuDat) {
         if (maPhieuDat == null || maPhieuDat.isBlank()) return;
 
@@ -1902,8 +1803,6 @@ public void xuLyThemKH() {
                 // dvt = new DonViTinh_Dao().selectById(ctpdh.getDvt());
                 cthd.setDvt(dvt);
             }
-
-            // HoaDon sẽ được set sau khi tạo hóa đơn mới
             cthd.setHoaDon(null);
 
             dsCTHD.add(cthd);
@@ -1911,9 +1810,6 @@ public void xuLyThemKH() {
 
         return dsCTHD;
     }
-
-
-
 
     private void lamMoiGiaoDien() {
         tblChiTietHD.getItems().clear();

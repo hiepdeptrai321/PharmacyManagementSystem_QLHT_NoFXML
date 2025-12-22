@@ -1,11 +1,18 @@
 package com.example.pharmacymanagementsystem_qlht.model;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 import java.util.Objects;
+import java.util.UUID;
 
 public class ChiTietHoaDon {
+    private final UUID uuid = UUID.randomUUID();
     private HoaDon hoaDon;
     private Thuoc_SP_TheoLo loHang;
-    private int soLuong;
+    private final IntegerProperty soLuong = new SimpleIntegerProperty(1);
     private DonViTinh dvt;
     private double donGia;
     private double giamGia;
@@ -16,7 +23,7 @@ public class ChiTietHoaDon {
     public ChiTietHoaDon(HoaDon hoaDon, Thuoc_SP_TheoLo loHang, int soLuong, DonViTinh dvt, double donGia, double giamGia) {
         this.hoaDon = hoaDon;
         this.loHang = loHang;
-        this.soLuong = soLuong;
+        this.soLuong.set(soLuong);
         this.dvt = dvt;
         this.donGia = donGia;
         this.giamGia = giamGia;
@@ -39,11 +46,13 @@ public class ChiTietHoaDon {
     }
 
     public int getSoLuong() {
-        return soLuong;
+        return soLuong.get();
     }
-
-    public void setSoLuong(int soLuong) {
-        this.soLuong = soLuong;
+    public void setSoLuong(int v) {
+        soLuong.set(v);
+    }
+    public IntegerProperty soLuongProperty() {
+        return soLuong;
     }
     public DonViTinh getDvt() {
         return dvt;
@@ -69,23 +78,23 @@ public class ChiTietHoaDon {
         this.giamGia = giamGia;
     }
 
+
     public double tinhThanhTien() {
-        double thanhTien = this.soLuong * this.donGia - this.giamGia;
+        double thanhTien = getSoLuong() * getDonGia() - getGiamGia();
         return thanhTien;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        ChiTietHoaDon that = (ChiTietHoaDon) o;
-        return Objects.equals(hoaDon, that.hoaDon) &&
-                Objects.equals(loHang, that.loHang) &&
-                Objects.equals(dvt, that.dvt);
+        if (this == o) return true;
+        if (!(o instanceof ChiTietHoaDon)) return false;
+        ChiTietHoaDon other = (ChiTietHoaDon) o;
+        return uuid.equals(other.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hoaDon, loHang, dvt);
+        return uuid.hashCode();
     }
 
     @Override

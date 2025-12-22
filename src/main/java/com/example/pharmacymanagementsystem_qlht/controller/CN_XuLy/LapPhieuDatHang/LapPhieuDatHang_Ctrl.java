@@ -439,17 +439,15 @@ public class LapPhieuDatHang_Ctrl {
     }
 
     private void taiCSSGoiYThuoc() {
-        String css = getClass().getResource(GoiY_css).toExternalForm();
+        if (!goiYMenu.getStyleClass().contains("suggestion-menu")) {
+            goiYMenu.getStyleClass().add("suggestion-menu");
+        }
+        var url = getClass().getResource(GoiY_css);
+        if (url == null) return;
+        String css = url.toExternalForm();
 
-        goiYMenu.setOnShown(e -> {
-            Scene sc = goiYMenu.getScene();
-            if (sc != null && !sc.getStylesheets().contains(css)) {
-                sc.getStylesheets().add(css);
-            }
-        });
-
-        // đảm bảo owner scene cũng có css
-        tfTimSanPham.sceneProperty().addListener((obs, old, scene) -> {
+        goiYMenu.setOnShowing(e -> {
+            Scene scene = goiYMenu.getScene();
             if (scene != null && !scene.getStylesheets().contains(css)) {
                 scene.getStylesheets().add(css);
             }

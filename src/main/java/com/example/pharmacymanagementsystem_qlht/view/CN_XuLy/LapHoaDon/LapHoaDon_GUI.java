@@ -88,7 +88,7 @@ public class LapHoaDon_GUI {
         TableColumn<ChiTietHoaDon, String> colDonGia = new TableColumn<>("Đơn giá");
         colDonGia.setPrefWidth(143.3);
 
-        TableColumn<ChiTietHoaDon, String> colSL = new TableColumn<>("Số lượng");
+        TableColumn<ChiTietHoaDon, Number> colSL = new TableColumn<>("Số lượng");
         colSL.setPrefWidth(131);
 
         TableColumn<ChiTietHoaDon, String> colDonVi = new TableColumn<>("Đơn vị");
@@ -100,8 +100,9 @@ public class LapHoaDon_GUI {
         TableColumn<ChiTietHoaDon, String> colThanhTien = new TableColumn<>("Thành tiền");
         colThanhTien.setPrefWidth(174);
 
-        TableColumn<ChiTietHoaDon, String> colBo = new TableColumn<>("");
+        TableColumn<ChiTietHoaDon, String> colBo = new TableColumn<>("Bỏ");
         colBo.setPrefWidth(55);
+        tblChiTietHD.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         tblChiTietHD.getColumns().addAll(colSTT, colTenSP, colKeDon, colDonGia, colSL, colDonVi, colChietKhau, colThanhTien, colBo);
 

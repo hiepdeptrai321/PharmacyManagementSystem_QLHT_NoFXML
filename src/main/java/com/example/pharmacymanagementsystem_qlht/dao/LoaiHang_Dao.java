@@ -114,6 +114,31 @@ public class LoaiHang_Dao implements DaoInterface<LoaiHang>{
         }
         return list.get(0);
     }
+
+    public String generateNewMaLoaiHang() {
+        String newMa = "LH001";
+        String sql =
+                "SELECT TOP 1 MaLoaiHang " +
+                        "FROM LoaiHang " +
+                        "WHERE MaLoaiHang LIKE 'LH%' " +
+                        "ORDER BY MaLoaiHang DESC";
+
+        try (ResultSet rs = ConnectDB.query(sql)) {
+            if (rs.next()) {
+                String lastMa = rs.getString("MaLoaiHang");
+                String num = lastMa.substring(2);
+
+                if (num.matches("\\d+")) {
+                    newMa = String.format("LH%03d", Integer.parseInt(num) + 1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newMa;
+    }
+
+
 }
 
 
