@@ -9,6 +9,7 @@ import com.example.pharmacymanagementsystem_qlht.model.ChiTietDonViTinh;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
 import com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia.ThietLapDonViTinh_Them_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.ThemThuoc_GUI;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,7 +61,7 @@ public class ThemThuoc_LapPhieuNhapHang_Ctrl{
         colHeSo.setCellValueFactory(new PropertyValueFactory<>("heSoQuyDoi"));
         colGiaNhap.setCellValueFactory(new PropertyValueFactory<>("giaNhap"));
         colGiaBan.setCellValueFactory(new PropertyValueFactory<>("giaBan"));
-        colDVCB.setCellValueFactory(new PropertyValueFactory<>("donViCoBan"));
+        colDVCB.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().isDonViCoBan()?"X":""));
 
         addDetailButtonToTable();
 

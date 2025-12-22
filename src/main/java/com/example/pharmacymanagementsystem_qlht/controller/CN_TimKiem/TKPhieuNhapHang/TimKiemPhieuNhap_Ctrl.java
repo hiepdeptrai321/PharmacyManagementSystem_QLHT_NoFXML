@@ -83,7 +83,7 @@ public class TimKiemPhieuNhap_Ctrl {
         tpBoLoc.setOnMouseClicked(event -> {
             tpBoLocOnClick = !tpBoLocOnClick;
             if(tpBoLocOnClick){
-                tblPhieuNhap.setPrefSize(1613, 667);
+                tblPhieuNhap.setPrefSize(1613, 660);
             }else{
                 tblPhieuNhap.setPrefSize(1613, 707);
             }

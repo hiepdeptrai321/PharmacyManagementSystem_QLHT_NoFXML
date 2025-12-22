@@ -15,40 +15,6 @@ import java.util.Objects;
 
 public class TKPhieuNhapHang_GUI {
 
-    public void showWithController(Stage stage, TimKiemPhieuNhap_Ctrl ctrl) {
-        ViewRefs v = buildUIForController();
-
-        // ==== GÁN CONTROL về controller ====
-        ctrl.cbxTimKiem = v.cbxTimKiem;
-        ctrl.txtTimKiem = v.txtTimKiem;
-        ctrl.tpBoLoc = v.tpBoLoc;
-        ctrl.cbxChonNhaCC = v.cbxChonNhaCC;
-        ctrl.chonNhanVien = v.chonNhanVien;
-        ctrl.cboxTrangThai = v.cboxTrangThai;
-        ctrl.txtNgayNhapMin = v.txtNgayNhapMin;
-        ctrl.txtNgayNhapMax = v.txtNgayNhapMax;
-        ctrl.tblPhieuNhap = v.tblPhieuNhap;
-        ctrl.colMaPN = v.colMaPN;
-        ctrl.colNgayNhap = v.colNgayNhap;
-        ctrl.colNhaCungCap = v.colNhaCungCap;
-        ctrl.colNhanVien = v.colNhanVien;
-        ctrl.colGhiChu = v.colGhiChu;
-        ctrl.colTrangThai = v.colTrangThai;
-        ctrl.colChiTiet = v.colChiTiet;
-
-        v.btnReset.setOnAction(ctrl::btnXoaRong);
-
-        try {
-            ctrl.initialize();
-        } catch (Exception ignore) {}
-
-        // Scene tự động nhận CSS từ v.root
-        Scene scene = new Scene(v.root);
-        stage.setTitle("Tìm kiếm phiếu nhập hàng");
-        stage.setScene(scene);
-    }
-
-    // ================== XÂY UI & GIỮ THAM CHIẾU ==================
     private ViewRefs buildUIForController() {
         ViewRefs v = new ViewRefs();
 
@@ -128,21 +94,41 @@ public class TKPhieuNhapHang_GUI {
         v.tpBoLoc.setPrefWidth(1613);
 
         AnchorPane apFilter = new AnchorPane();
-        apFilter.setMinHeight(40);
-        apFilter.setPrefSize(1611, 50);
+        apFilter.setPrefSize(1611, 30);
+        apFilter.setMinHeight(50);
 
         v.cbxChonNhaCC = new ComboBox<>();
         v.cbxChonNhaCC.setLayoutY(7);
-        v.cbxChonNhaCC.setPrefSize(302, 44);
+        v.cbxChonNhaCC.setLayoutX(7);
+        v.cbxChonNhaCC.setPrefSize(302, 37);
         v.cbxChonNhaCC.setPromptText("Chọn nhà cung cấp");
-        v.cbxChonNhaCC.getStyleClass().add("btntim"); // Thêm style cho đẹp
+        v.cbxChonNhaCC.getStyleClass().add("btntim");
+
+        v.cbxChonNhaCC.setMinHeight(37);
+        v.cbxChonNhaCC.setMaxHeight(37);
+
+        v.cbxChonNhaCC.setStyle(
+                "-fx-padding: 0 10 0 10;" +
+                        "-fx-alignment: CENTER_LEFT;"
+        );
+
 
         v.chonNhanVien = new ComboBox<>();
         v.chonNhanVien.setLayoutX(318);
         v.chonNhanVien.setLayoutY(7);
-        v.chonNhanVien.setPrefSize(347, 44);
+        v.chonNhanVien.setPrefSize(347, 37);
         v.chonNhanVien.setPromptText("Chọn nhân viên");
-        v.chonNhanVien.getStyleClass().add("btntim"); // Thêm style
+        v.chonNhanVien.getStyleClass().add("btntim");
+
+        v.chonNhanVien.setMinHeight(37);
+        v.chonNhanVien.setMaxHeight(37);
+
+        v.chonNhanVien.setStyle(
+                "-fx-padding: 0 10 0 10;" +
+                        "-fx-alignment: CENTER_LEFT;"
+        );
+
+
 
         Label lbTrangThai = new Label("Trạng thái nhập hàng:");
         lbTrangThai.setLayoutX(693);
@@ -254,6 +240,39 @@ public class TKPhieuNhapHang_GUI {
         iv.setPreserveRatio(preserveRatio);
         iv.setPickOnBounds(true);
         return iv;
+    }
+
+    public void showWithController(Stage stage, TimKiemPhieuNhap_Ctrl ctrl) {
+        ViewRefs v = buildUIForController();
+
+        // ==== GÁN CONTROL về controller ====
+        ctrl.cbxTimKiem = v.cbxTimKiem;
+        ctrl.txtTimKiem = v.txtTimKiem;
+        ctrl.tpBoLoc = v.tpBoLoc;
+        ctrl.cbxChonNhaCC = v.cbxChonNhaCC;
+        ctrl.chonNhanVien = v.chonNhanVien;
+        ctrl.cboxTrangThai = v.cboxTrangThai;
+        ctrl.txtNgayNhapMin = v.txtNgayNhapMin;
+        ctrl.txtNgayNhapMax = v.txtNgayNhapMax;
+        ctrl.tblPhieuNhap = v.tblPhieuNhap;
+        ctrl.colMaPN = v.colMaPN;
+        ctrl.colNgayNhap = v.colNgayNhap;
+        ctrl.colNhaCungCap = v.colNhaCungCap;
+        ctrl.colNhanVien = v.colNhanVien;
+        ctrl.colGhiChu = v.colGhiChu;
+        ctrl.colTrangThai = v.colTrangThai;
+        ctrl.colChiTiet = v.colChiTiet;
+
+        v.btnReset.setOnAction(ctrl::btnXoaRong);
+
+        try {
+            ctrl.initialize();
+        } catch (Exception ignore) {}
+
+        // Scene tự động nhận CSS từ v.root
+        Scene scene = new Scene(v.root);
+        stage.setTitle("Tìm kiếm phiếu nhập hàng");
+        stage.setScene(scene);
     }
 
     // Class giữ tham chiếu UI
