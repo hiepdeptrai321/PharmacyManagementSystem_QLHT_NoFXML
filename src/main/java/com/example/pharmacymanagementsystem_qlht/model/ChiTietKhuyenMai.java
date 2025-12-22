@@ -6,15 +6,16 @@ public class ChiTietKhuyenMai {
     private Thuoc_SanPham thuoc;
     private KhuyenMai khuyenMai;
     private int slApDung;
-    private int slToiDa;
+    private int soHDToiDa;
+
 
     public ChiTietKhuyenMai() {
     }
-    public ChiTietKhuyenMai(Thuoc_SanPham thuoc, KhuyenMai khuyenMai, int slApDung, int slToiDa) {
+    public ChiTietKhuyenMai(Thuoc_SanPham thuoc, KhuyenMai khuyenMai, int slApDung, int soHDToiDa) {
         this.thuoc = thuoc;
         this.khuyenMai = khuyenMai;
         this.slApDung = slApDung;
-        this.slToiDa = slToiDa;
+        this.soHDToiDa = soHDToiDa;
     }
 
     public Thuoc_SanPham getThuoc() {
@@ -41,12 +42,12 @@ public class ChiTietKhuyenMai {
         this.slApDung = slApDung;
     }
 
-    public int getSlToiDa() {
-        return slToiDa;
+    public int getSoHDToiDa() {
+        return soHDToiDa;
     }
 
-    public void setSlToiDa(int slToiDa) {
-        this.slToiDa = slToiDa;
+    public void setSoHDToiDa(int soHDToiDa) {
+        this.soHDToiDa = soHDToiDa;
     }
 
     @Override
@@ -67,7 +68,7 @@ public class ChiTietKhuyenMai {
                 "thuoc=" + thuoc +
                 ", khuyenMai=" + khuyenMai +
                 ", slApDung=" + slApDung +
-                ", slToiDa=" + slToiDa +
+                ", slToiDa=" + soHDToiDa +
                 '}';
     }
 }

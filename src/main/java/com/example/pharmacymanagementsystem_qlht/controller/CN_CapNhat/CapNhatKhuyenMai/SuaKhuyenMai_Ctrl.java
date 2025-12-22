@@ -145,13 +145,13 @@ public class SuaKhuyenMai_Ctrl {
         }
         if (colSLTD != null) {
             colSLTD.setCellValueFactory(cd ->
-                    new SimpleIntegerProperty(cd.getValue() != null ? cd.getValue().getSlToiDa() : 0).asObject()
+                    new SimpleIntegerProperty(cd.getValue() != null ? cd.getValue().getSoHDToiDa() : 0).asObject()
             );
             colSLTD.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
             colSLTD.setOnEditCommit(e -> {
                 ChiTietKhuyenMai row = e.getRowValue();
                 Integer v = e.getNewValue() == null ? 0 : Math.max(0, e.getNewValue());
-                row.setSlToiDa(v);
+                row.setSoHDToiDa(v);
                 tbDSThuoc.refresh();
             });
         }
@@ -404,7 +404,7 @@ public class SuaKhuyenMai_Ctrl {
         ChiTietKhuyenMai ct = new ChiTietKhuyenMai();
         ct.setThuoc(sp);
         ct.setSlApDung(1);
-        ct.setSlToiDa(1);
+        ct.setSoHDToiDa(1);
         ctItems.add(ct);
     }
 
