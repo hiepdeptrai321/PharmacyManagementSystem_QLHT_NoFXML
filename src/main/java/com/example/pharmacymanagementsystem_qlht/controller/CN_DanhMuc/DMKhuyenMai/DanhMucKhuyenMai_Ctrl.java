@@ -5,6 +5,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.ChiTietKhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.KhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TangKem_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.KhuyenMai;
+import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TheoLo;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,6 +23,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.Node;
 
+import java.util.Date;
 import java.util.List;
 
 public class DanhMucKhuyenMai_Ctrl extends Application {
@@ -35,9 +37,9 @@ public class DanhMucKhuyenMai_Ctrl extends Application {
     @FXML public TableColumn<KhuyenMai, String> colTenKM;
     @FXML public TableColumn<KhuyenMai, String> colLoaiKM;
     @FXML public TableColumn<KhuyenMai, Float> colGiaTri;
-    @FXML public TableColumn<KhuyenMai, java.sql.Date> colNBD;
-    @FXML public TableColumn<KhuyenMai, java.sql.Date> colNKT;
-    @FXML public TableColumn<KhuyenMai, java.sql.Date> colNgayTao;
+    @FXML public TableColumn<KhuyenMai, String> colNBD;
+    @FXML public TableColumn<KhuyenMai, String> colNKT;
+    @FXML public TableColumn<KhuyenMai, String> colNgayTao;
     @FXML public Button btnLamMoi;
     public Button btnTim;
 
@@ -83,10 +85,33 @@ public class DanhMucKhuyenMai_Ctrl extends Application {
             }
         });
         colLoaiKM.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLoaiKM().getMaLoai()));
-        colNBD.setCellValueFactory(new PropertyValueFactory<>("ngayBatDau"));
-        colNKT.setCellValueFactory(new PropertyValueFactory<>("ngayKetThuc"));
-        colNgayTao.setCellValueFactory(new PropertyValueFactory<>("ngayTao"));
-
+        colNBD.setCellValueFactory(cellData -> {
+            if (cellData.getValue() instanceof KhuyenMai) {
+                KhuyenMai km = (KhuyenMai) cellData.getValue();
+                if (km.getNgayBatDau() != null) {
+                    return new SimpleStringProperty(com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay.dinhDangNgay(km.getNgayBatDau()));
+                }
+            }
+            return new SimpleStringProperty("");
+        });
+        colNKT.setCellValueFactory(cellData -> {
+            if (cellData.getValue() instanceof KhuyenMai) {
+                KhuyenMai km = (KhuyenMai) cellData.getValue();
+                if (km.getNgayKetThuc() != null) {
+                    return new SimpleStringProperty(com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay.dinhDangNgay(km.getNgayKetThuc()));
+                }
+            }
+            return new SimpleStringProperty("");
+        });
+        colNgayTao.setCellValueFactory(cellData -> {
+            if (cellData.getValue() instanceof KhuyenMai) {
+                KhuyenMai km = (KhuyenMai) cellData.getValue();
+                if (km.getNgayTao() != null) {
+                    return new SimpleStringProperty(com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay.dinhDangNgay(km.getNgayTao()));
+                }
+            }
+            return new SimpleStringProperty("");
+        });
         // Change to red "Xóa" button and hook delete handler
         colChiTiet.setCellFactory(col -> new TableCell<KhuyenMai, String>() {
             private final Button btn = new Button("Xóa");

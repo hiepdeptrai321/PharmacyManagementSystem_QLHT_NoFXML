@@ -29,8 +29,8 @@ public class CapNhatKhuyenMai_Ctrl{
     public TableColumn<KhuyenMai, String> colTenKM;
     public TableColumn<KhuyenMai, String> colLoaiKM;
     public TableColumn<KhuyenMai, Float> colGiaTri;
-    public TableColumn<KhuyenMai, java.sql.Date> colNBD;
-    public TableColumn<KhuyenMai, java.sql.Date> colNKT;
+    public TableColumn<KhuyenMai, String> colNBD;
+    public TableColumn<KhuyenMai, String> colNKT;
     public Button btnReset;
     private KhuyenMai_Dao khuyenMaiDao = new KhuyenMai_Dao();
     public StackPane rootTablePane;
@@ -67,8 +67,24 @@ public class CapNhatKhuyenMai_Ctrl{
                 colTenKM.setCellValueFactory(new PropertyValueFactory<>("tenKM"));
                 colLoaiKM.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLoaiKM().getMaLoai()));
                 colGiaTri.setCellValueFactory(new PropertyValueFactory<>("giaTriKM"));
-                colNBD.setCellValueFactory(new PropertyValueFactory<>("ngayBatDau"));
-                colNKT.setCellValueFactory(new PropertyValueFactory<>("ngayKetThuc"));
+                colNBD.setCellValueFactory(cellData -> {
+                    if (cellData.getValue() instanceof KhuyenMai) {
+                        KhuyenMai km = (KhuyenMai) cellData.getValue();
+                        if (km.getNgayBatDau() != null) {
+                            return new SimpleStringProperty(com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay.dinhDangNgay(km.getNgayBatDau()));
+                        }
+                    }
+                    return new SimpleStringProperty("");
+                });
+                colNKT.setCellValueFactory(cellData -> {
+                    if (cellData.getValue() instanceof KhuyenMai) {
+                        KhuyenMai km = (KhuyenMai) cellData.getValue();
+                        if (km.getNgayKetThuc() != null) {
+                            return new SimpleStringProperty(com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay.dinhDangNgay(km.getNgayKetThuc()));
+                        }
+                    }
+                    return new SimpleStringProperty("");
+                });
                 colChiTiet.setCellFactory(col -> new TableCell<KhuyenMai, String>() {
                     private final Button btn = new Button("Chi tiết");
                     {
