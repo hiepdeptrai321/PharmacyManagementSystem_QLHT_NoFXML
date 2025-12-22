@@ -4,6 +4,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.DonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SanPham_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietDonViTinh;
 import com.example.pharmacymanagementsystem_qlht.model.DonViTinh;
+import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -66,7 +67,9 @@ public class ThietLapDonViTinh_Them_Ctrl {
             if (!newValue.equals(formatted)) {
                 textField.setText(formatted);
                 // Di chuyển con trỏ về cuối
-                textField.positionCaret(formatted.length());
+                Platform.runLater(() ->
+                        textField.positionCaret(textField.getText().length())
+                );
             }
         });
     }
