@@ -586,11 +586,11 @@ public class SuaKhuyenMai_Ctrl {
             double giaTriApDungVal = 0d;
 
             if (loai != null && loai.getMaLoai() != null &&
-                    ("LKM004".equalsIgnoreCase(loai.getMaLoai()) || "LKM005".equalsIgnoreCase(loai.getMaLoai()))) {
+                    ("LKM004".equalsIgnoreCase(loai.getMaLoai()) )) {
                 giaTriKMVal = (float) parseCurrencyToDouble(tfGiaTri == null ? "0" : tfGiaTri.getText());
                 giaTriApDungVal = parseCurrencyToDouble(tfGiaTriHoaDon == null ? "0" : tfGiaTriHoaDon.getText());
             } else {
-                giaTriKMVal = (float) parseCurrencyToDouble(tfGiaTri == null ? "0" : tfGiaTri.getText());
+                giaTriKMVal = (float) parseCurrencyToDouble2(tfGiaTri == null ? "0" : tfGiaTri.getText());
             }
 
             // 3. Build KhuyenMai and set invoice-applied value
@@ -653,6 +653,19 @@ public class SuaKhuyenMai_Ctrl {
         if (cleaned.isEmpty()) return 0d;
         // remove thousand separators (dots), convert comma to dot for decimals
         cleaned = cleaned.replaceAll("\\.", "");
+        cleaned = cleaned.replace(',', '.');
+        try {
+            return Double.parseDouble(cleaned);
+        } catch (Exception ex) {
+            return 0d;
+        }
+    }
+
+    private double parseCurrencyToDouble2(String text) {
+        if (text == null) return 0d;
+        String cleaned = text.replaceAll("[^\\d,.-]", ""); // keep digits, comma, dot, minus
+        if (cleaned.isEmpty()) return 0d;
+        // remove thousand separators (dots), convert comma to dot for decimals
         cleaned = cleaned.replace(',', '.');
         try {
             return Double.parseDouble(cleaned);
