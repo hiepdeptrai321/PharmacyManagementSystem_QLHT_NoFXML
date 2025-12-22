@@ -76,9 +76,6 @@ public class SuaXoaThuoc_GUI extends Application {
         ctrl.btnLuu = btnLuu;
         ctrl.btnChonAnh = btnChonAnh;
 
-        // debug
-        System.out.println("tblHoatChat injected? " + ctrl.tblHoatChat);
-
         ctrl.initialize();
 
         Scene scene = new Scene(root, 1004, 690);
