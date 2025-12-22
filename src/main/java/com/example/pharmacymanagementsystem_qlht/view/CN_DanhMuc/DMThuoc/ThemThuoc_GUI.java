@@ -19,7 +19,6 @@ import java.util.Objects;
 @SuppressWarnings("unchecked")
 public class ThemThuoc_GUI {
 
-    // Controls tương đương fx:id trong FXML
     public TextField txtTenThuoc, txtMaThuoc, txtDonViHamLuong, txtHamLuong,
             txtHangSanXuat, txtNuocSanXuat, txtQuyCachDongGoi,
             txtSDK_GPNK, txtDuongDung, txtTimKiemHoatChat;
@@ -30,56 +29,8 @@ public class ThemThuoc_GUI {
     public TableColumn<ChiTietHoatChat, Float> colHamLuong;
     public ListView<HoatChat> listViewHoatChat;
     public Button btnChonAnh, btnThem;
+    public CheckBox cbETC;
 
-    /** Hiển thị + Inject controller + gắn handler */
-    public void showWithController(Stage stage, ThemThuoc_Ctrl ctrl) {
-        AnchorPane root = buildUI();
-
-        // ===== Inject sang controller (trùng fx:id) =====
-        ctrl.txtTenThuoc = txtTenThuoc;
-        ctrl.txtMaThuoc = txtMaThuoc;
-        ctrl.txtDonViHamLuong = txtDonViHamLuong;
-        ctrl.txtHamLuong = txtHamLuong;
-        ctrl.txtHangSanXuat = txtHangSanXuat;
-        ctrl.txtNuocSanXuat = txtNuocSanXuat;
-        ctrl.txtQuyCachDongGoi = txtQuyCachDongGoi;
-        ctrl.txtSDK_GPNK = txtSDK_GPNK;
-        ctrl.txtDuongDung = txtDuongDung;
-
-        ctrl.cbxLoaiHang = (ComboBox) cbxLoaiHang;
-        ctrl.cbxViTri = (ComboBox) cbxViTri;
-        ctrl.cbxNhomDuocLy = (ComboBox) cbxNhomDuocLy;
-        try { ctrl.getClass().getField("cbDVTCB").set(ctrl, cbDVTCB); } catch (Exception ignore) {}
-
-        ctrl.imgThuoc_SanPham = imgThuoc_SanPham;
-
-        ctrl.tblHoatChat = tblHoatChat;
-        ctrl.colMaHoatChat = (TableColumn) colMaHoatChat;
-        ctrl.colTenHoatChat = (TableColumn) colTenHoatChat;
-        ctrl.colHamLuong = (TableColumn) colHamLuong;
-        ctrl.colXoa = (TableColumn) colXoa;
-
-        ctrl.txtTimKiemHoatChat = txtTimKiemHoatChat;
-        ctrl.listViewHoatChat = listViewHoatChat;
-
-        try { ctrl.getClass().getField("btnChonAnh").set(ctrl, btnChonAnh); } catch (Exception ignore) {}
-        try { ctrl.getClass().getField("btnThem").set(ctrl, btnThem); } catch (Exception ignore) {}
-
-        // ===== Gắn action giống FXML (không reflection) =====
-        // Controller nên có: public void chonFile(ActionEvent e) và public void btnThemThuoc(ActionEvent e)
-        btnChonAnh.setOnAction(ctrl::chonFile);
-        btnThem.setOnAction(ctrl::btnThemThuoc);
-
-        // Cho controller hoàn tất init (cellFactory, dữ liệu…)
-        try { ctrl.initialize(); } catch (Exception ignore) {}
-
-        Scene scene = new Scene(root, 1004, 690);
-        addStyles(scene);
-        stage.setScene(scene);
-        stage.setTitle("Thêm thuốc");
-    }
-
-    /** Build UI tương đương FXML */
     private AnchorPane buildUI() {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(1004, 690);
@@ -105,10 +56,10 @@ public class ThemThuoc_GUI {
         txtTenThuoc = new TextField(); txtTenThuoc.setLayoutX(283); txtTenThuoc.setLayoutY(-28); txtTenThuoc.setPrefSize(360, 25);
 
         Label lbLoaiHang = new Label("Loại hàng"); lbLoaiHang.setLayoutX(0); lbLoaiHang.setLayoutY(15); lbLoaiHang.setFont(Font.font(14));
-        cbxLoaiHang = new ComboBox<>(); cbxLoaiHang.setLayoutX(70); cbxLoaiHang.setLayoutY(15); cbxLoaiHang.setPrefSize(158, 25);
+        cbxLoaiHang = new ComboBox<>(); cbxLoaiHang.setLayoutX(70); cbxLoaiHang.setLayoutY(15); cbxLoaiHang.setPrefSize(228, 25);
 
-        Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(248); lbViTri.setLayoutY(18); lbViTri.setFont(Font.font(14));
-        cbxViTri = new ComboBox<>(); cbxViTri.setLayoutX(286); cbxViTri.setLayoutY(16); cbxViTri.setPrefSize(158, 25);
+        Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(318); lbViTri.setLayoutY(18); lbViTri.setFont(Font.font(14));
+        cbxViTri = new ComboBox<>(); cbxViTri.setLayoutX(356); cbxViTri.setLayoutY(16); cbxViTri.setPrefSize(287, 25);
 
         Label lbMa = new Label("Mã thuốc"); lbMa.setLayoutX(1); lbMa.setLayoutY(-27); lbMa.setFont(Font.font(14));
         txtMaThuoc = new TextField(); txtMaThuoc.setEditable(false); txtMaThuoc.setDisable(true);
@@ -159,8 +110,11 @@ public class ThemThuoc_GUI {
         cbxNhomDuocLy = new ComboBox<>(); cbxNhomDuocLy.setLayoutX(4); cbxNhomDuocLy.setLayoutY(142); cbxNhomDuocLy.setPrefSize(370, 25);
 
         Label lbDVTCB = new Label("Đơn vị tính (cơ bản)"); lbDVTCB.setLayoutX(386); lbDVTCB.setLayoutY(125); lbDVTCB.setFont(Font.font(11));
-        cbDVTCB = new ComboBox<>(); cbDVTCB.setLayoutX(386); cbDVTCB.setLayoutY(142); cbDVTCB.setPrefSize(257, 25);
+        cbDVTCB = new ComboBox<>(); cbDVTCB.setLayoutX(386); cbDVTCB.setLayoutY(142); cbDVTCB.setPrefSize(157, 25);
         cbDVTCB.setPromptText("Chọn đơn vị");
+
+        Label lbETC = new Label("ETC: "); lbETC.setLayoutX(570); lbETC.setLayoutY(145); lbETC.setFont(Font.font(14));
+        cbETC = new CheckBox();cbETC.setLayoutX(600); cbETC.setLayoutY(142); cbETC.setPrefSize(157, 25);
 
         btnChonAnh = new Button("Chọn ảnh");
         btnChonAnh.setId("btnchonanh"); // để CSS match
@@ -170,7 +124,7 @@ public class ThemThuoc_GUI {
         detailPane.getChildren().addAll(
                 lbTTCT, lbHL, txtHamLuong, lbDVHL, txtDonViHamLuong, lbDuong, txtDuongDung,
                 lbQCDG, txtQuyCachDongGoi, lbSDK, txtSDK_GPNK, lbHSX, txtHangSanXuat,
-                lbNSX, txtNuocSanXuat, lbNDL, cbxNhomDuocLy, lbDVTCB, cbDVTCB, btnChonAnh
+                lbNSX, txtNuocSanXuat, lbNDL, cbxNhomDuocLy, lbDVTCB, cbDVTCB, btnChonAnh,lbETC,cbETC
         );
 
         vbox.getChildren().addAll(topPane, detailPane);
@@ -213,6 +167,54 @@ public class ThemThuoc_GUI {
         );
 
         return root;
+    }
+
+    public void showWithController(Stage stage, ThemThuoc_Ctrl ctrl) {
+        AnchorPane root = buildUI();
+
+        // ===== Inject sang controller (trùng fx:id) =====
+        ctrl.txtTenThuoc = txtTenThuoc;
+        ctrl.txtMaThuoc = txtMaThuoc;
+        ctrl.txtDonViHamLuong = txtDonViHamLuong;
+        ctrl.txtHamLuong = txtHamLuong;
+        ctrl.txtHangSanXuat = txtHangSanXuat;
+        ctrl.txtNuocSanXuat = txtNuocSanXuat;
+        ctrl.txtQuyCachDongGoi = txtQuyCachDongGoi;
+        ctrl.txtSDK_GPNK = txtSDK_GPNK;
+        ctrl.txtDuongDung = txtDuongDung;
+        ctrl.cbETC = cbETC;
+
+        ctrl.cbxLoaiHang = (ComboBox) cbxLoaiHang;
+        ctrl.cbxViTri = (ComboBox) cbxViTri;
+        ctrl.cbxNhomDuocLy = (ComboBox) cbxNhomDuocLy;
+        try { ctrl.getClass().getField("cbDVTCB").set(ctrl, cbDVTCB); } catch (Exception ignore) {}
+
+        ctrl.imgThuoc_SanPham = imgThuoc_SanPham;
+
+        ctrl.tblHoatChat = tblHoatChat;
+        ctrl.colMaHoatChat = (TableColumn) colMaHoatChat;
+        ctrl.colTenHoatChat = (TableColumn) colTenHoatChat;
+        ctrl.colHamLuong = (TableColumn) colHamLuong;
+        ctrl.colXoa = (TableColumn) colXoa;
+
+        ctrl.txtTimKiemHoatChat = txtTimKiemHoatChat;
+        ctrl.listViewHoatChat = listViewHoatChat;
+
+        try { ctrl.getClass().getField("btnChonAnh").set(ctrl, btnChonAnh); } catch (Exception ignore) {}
+        try { ctrl.getClass().getField("btnThem").set(ctrl, btnThem); } catch (Exception ignore) {}
+
+        // ===== Gắn action giống FXML (không reflection) =====
+        // Controller nên có: public void chonFile(ActionEvent e) và public void btnThemThuoc(ActionEvent e)
+        btnChonAnh.setOnAction(ctrl::chonFile);
+        btnThem.setOnAction(ctrl::btnThemThuoc);
+
+        // Cho controller hoàn tất init (cellFactory, dữ liệu…)
+        try { ctrl.initialize(); } catch (Exception ignore) {}
+
+        Scene scene = new Scene(root, 1004, 690);
+        addStyles(scene);
+        stage.setScene(scene);
+        stage.setTitle("Thêm thuốc");
     }
 
     private void addStyles(Scene scene) {

@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Thuoc_SanPham_Dao implements DaoInterface<Thuoc_SanPham> {
-    private final String INSERT_SQL = "INSERT INTO Thuoc_SanPham (MaThuoc,TenThuoc, HamLuong, DonViHL, DuongDung, QuyCachDongGoi, SDK_GPNK, HangSX, NuocSX, MaNDL, MaLoaiHang, HinhAnh, ViTri, TrangThaiXoa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final String INSERT_SQL = "INSERT INTO Thuoc_SanPham (MaThuoc,TenThuoc, HamLuong, DonViHL, DuongDung, QuyCachDongGoi, SDK_GPNK, HangSX, NuocSX, MaNDL, MaLoaiHang, HinhAnh, ViTri, TrangThaiXoa,ETC) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private final String UPDATE_SQL =
             "UPDATE Thuoc_SanPham SET " +
                     "TenThuoc=?, HamLuong=?, DonViHL=?, DuongDung=?, QuyCachDongGoi=?, SDK_GPNK=?, HangSX=?, NuocSX=?, " +
-                    "HinhAnh=?, MaLoaiHang=?, MaNDL=?, ViTri=? " +
+                    "HinhAnh=?, MaLoaiHang=?, MaNDL=?, ViTri=? , ETC=?" +
                     "WHERE MaThuoc=?";
     private final String DELETE_SQL = "DELETE FROM Thuoc_SanPham WHERE MaThuoc=?";
     private final String SELECT_ALL_SQL = "SELECT * FROM Thuoc_SanPham WHERE TrangThaiXoa = 0";
@@ -57,7 +57,7 @@ public class Thuoc_SanPham_Dao implements DaoInterface<Thuoc_SanPham> {
                     "ORDER BY ts.TenThuoc";
     @Override
     public boolean insert(Thuoc_SanPham e) {
-        return ConnectDB.update(INSERT_SQL,e.getMaThuoc(), e.getTenThuoc(), e.getHamLuong(), e.getDonViHamLuong(), e.getDuongDung(), e.getQuyCachDongGoi(), e.getSDK_GPNK(), e.getHangSX(), e.getNuocSX(),e.getNhomDuocLy()!=null?e.getNhomDuocLy().getMaNDL():null, e.getLoaiHang()!=null?e.getLoaiHang().getMaLoaiHang():null, e.getHinhAnh(),e.getVitri()!=null?e.getVitri().getMaKe():null,0)>0;
+        return ConnectDB.update(INSERT_SQL,e.getMaThuoc(), e.getTenThuoc(), e.getHamLuong(), e.getDonViHamLuong(), e.getDuongDung(), e.getQuyCachDongGoi(), e.getSDK_GPNK(), e.getHangSX(), e.getNuocSX(),e.getNhomDuocLy()!=null?e.getNhomDuocLy().getMaNDL():null, e.getLoaiHang()!=null?e.getLoaiHang().getMaLoaiHang():null, e.getHinhAnh(),e.getVitri()!=null?e.getVitri().getMaKe():null,0,e.isETC())>0;
     }
 
     @Override
@@ -76,6 +76,7 @@ public class Thuoc_SanPham_Dao implements DaoInterface<Thuoc_SanPham> {
                 thuoc.getLoaiHang() != null ? thuoc.getLoaiHang().getMaLoaiHang() : null,
                 thuoc.getNhomDuocLy() != null ? thuoc.getNhomDuocLy().getMaNDL() : null,
                 thuoc.getVitri() != null ? thuoc.getVitri().getMaKe() : null,
+                thuoc.isETC(),
                 thuoc.getMaThuoc()
         ) > 0;
     }
@@ -111,6 +112,7 @@ public class Thuoc_SanPham_Dao implements DaoInterface<Thuoc_SanPham> {
                 sp.setLoaiHang(new LoaiHang_Dao().selectById(rs.getString("MaLoaiHang")));
                 sp.setHinhAnh(rs.getBytes("HinhAnh"));
                 sp.setVitri(new KeHang_Dao().selectById(rs.getString("ViTri")));
+                sp.setETC(rs.getBoolean("ETC"));
                 list.add(sp);
             }
             rs.getStatement().getConnection().close();

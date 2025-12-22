@@ -42,6 +42,7 @@ public class ThemThuoc_Ctrl {
     public TextField txtQuyCachDongGoi;
     public TextField txtSDK_GPNK;
     public TextField txtDuongDung;
+    public CheckBox cbETC;
     public ComboBox cbDVTCB;
     public TableColumn<ChiTietHoatChat,String> colMaHoatChat;
     public TableColumn<ChiTietHoatChat,String> colTenHoatChat;
@@ -221,6 +222,7 @@ public class ThemThuoc_Ctrl {
             }else{
                 thuocThem.setVitri(null);
             }
+            thuocThem.setETC(cbETC.isSelected());
 
 
 //          Get image

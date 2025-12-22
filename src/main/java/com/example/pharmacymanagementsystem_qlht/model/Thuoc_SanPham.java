@@ -21,11 +21,12 @@ public class Thuoc_SanPham {
     private List<ChiTietDonViTinh> dsCTDVT = new ArrayList<>();
     private List<Thuoc_SP_TheoLo> dsTS_TheoLo = new ArrayList<>();
     private ChiTietDonViTinh dvcb;
+    private boolean ETC;
 
     public Thuoc_SanPham(){
     }
 
-    public Thuoc_SanPham(String maThuoc, String tenThuoc, float hamLuong, String donViHamLuong, String duongDung, String quyCachDongGoi, String SDK_GPNK, String hangSX, String nuocSX, NhomDuocLy nhomDuocLy, LoaiHang loaiHang, byte[] hinhAnh, KeHang vitri) {
+    public Thuoc_SanPham(String maThuoc, String tenThuoc, float hamLuong, String donViHamLuong, String duongDung, String quyCachDongGoi, String SDK_GPNK, String hangSX, String nuocSX, NhomDuocLy nhomDuocLy, LoaiHang loaiHang, byte[] hinhAnh, KeHang vitri, boolean ETC) {
         this.maThuoc = maThuoc;
         this.tenThuoc = tenThuoc;
         this.hamLuong = hamLuong;
@@ -39,6 +40,7 @@ public class Thuoc_SanPham {
         this.loaiHang = loaiHang;
         this.hinhAnh = hinhAnh;
         this.vitri = vitri;
+        this.ETC = ETC;
     }
 
     public String getMaThuoc() {
@@ -165,6 +167,14 @@ public class Thuoc_SanPham {
 
     public void setDvcb(ChiTietDonViTinh dvcb) {
         this.dvcb = dvcb;
+    }
+
+    public boolean isETC() {
+        return ETC;
+    }
+
+    public void setETC(boolean ETC) {
+        this.ETC = ETC;
     }
 
     public Double getGiaNhapCoBan() {
