@@ -88,7 +88,7 @@ public class LapHoaDon_GUI {
         TableColumn<ChiTietHoaDon, String> colDonGia = new TableColumn<>("Đơn giá");
         colDonGia.setPrefWidth(143.3);
 
-        TableColumn<ChiTietHoaDon, String> colSL = new TableColumn<>("Số lượng");
+        TableColumn<ChiTietHoaDon, Number> colSL = new TableColumn<>("Số lượng");
         colSL.setPrefWidth(131);
 
         TableColumn<ChiTietHoaDon, String> colDonVi = new TableColumn<>("Đơn vị");
