@@ -57,7 +57,7 @@
 .suggestion-detail { -fx-text-fill: #262626; }
 .suggestion-row {
     -fx-padding: 10 14;
-//-fx-background-color: #ece2e2;
+/*-fx-background-color: #ece2e2;*/
     -fx-background-color: #c4dcfb;
     -fx-background-radius: 10;
     -fx-alignment: center-left;

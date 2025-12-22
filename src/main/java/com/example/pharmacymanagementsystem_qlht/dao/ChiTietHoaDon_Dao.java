@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChiTietHoaDon_Dao implements  DaoInterface<ChiTietHoaDon> {
-    private final String INSERT_SQL = "INSERT INTO ChiTietHoaDon (MaHD, MaLH, MaDVT, SoLuong, DonGia, GiamGia) VALUES (?, ?, ?, ?, ?, ?)";
+    private final String INSERT_SQL = "INSERT INTO ChiTietHoaDon (MaHD, MaLH, MaDVT, SoLuong, DonGia, GiamGia, KeDon) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private final String UPDATE_SQL = "UPDATE ChiTietHoaDon SET SoLuong=?, DonGia=?, GiamGia=? WHERE MaHD=? AND MaLH=? AND MaDVT=?";
     private final String DELETE_SQL = "DELETE FROM ChiTietHoaDon WHERE MaHD=? AND MaLH=? AND MaDVT=?";
     private final String SELECT_ALL_SQL = "SELECT * FROM ChiTietHoaDon";
@@ -20,13 +20,16 @@ public class ChiTietHoaDon_Dao implements  DaoInterface<ChiTietHoaDon> {
 
     @Override
     public boolean insert(ChiTietHoaDon e) {
-        return ConnectDB.update(INSERT_SQL,
+        return ConnectDB.update(
+                INSERT_SQL,
                 e.getHoaDon().getMaHD(),
                 e.getLoHang().getMaLH(),
                 e.getDvt().getMaDVT(),
                 e.getSoLuong(),
                 e.getDonGia(),
-                e.getGiamGia()) > 0;
+                e.getGiamGia(),
+                e.isKeDon()
+        ) > 0;
     }
 //    public boolean insert(ChiTietHoaDon cthd) {
 //        String sql = "insert into ChiTietHoaDon(MaHD, MaLH, SoLuong, DonGia, GiamGia) values (?, ?, ?, ?, ?)";
@@ -112,6 +115,7 @@ public class ChiTietHoaDon_Dao implements  DaoInterface<ChiTietHoaDon> {
                 cthd.setSoLuong(rs.getInt("SoLuong"));
                 cthd.setDonGia(rs.getDouble("DonGia"));
                 cthd.setGiamGia(rs.getDouble("GiamGia"));
+                cthd.setKeDon(rs.getBoolean("KeDon"));
 
                 list.add(cthd);
             }
@@ -120,6 +124,17 @@ public class ChiTietHoaDon_Dao implements  DaoInterface<ChiTietHoaDon> {
             throw new RuntimeException(e);
         }
         return list;
+    }
+    public boolean updateKeDon(String maHD, String maLH, String maDVT, boolean keDon) {
+        String sql = """
+        UPDATE ChiTietHoaDon
+        SET KeDon = ?
+        WHERE MaHD = ?
+          AND MaLH = ?
+          AND MaDVT = ?
+    """;
+
+        return ConnectDB.update(sql, keDon, maHD, maLH, maDVT) > 0;
     }
     public boolean updateSoLuong(ChiTietHoaDon e) {
         String sql = """
@@ -130,13 +145,7 @@ public class ChiTietHoaDon_Dao implements  DaoInterface<ChiTietHoaDon> {
           AND MaDVT = ?
     """;
 
-        return ConnectDB.update(
-                sql,
-                e.getSoLuong(),
-                e.getHoaDon().getMaHD(),
-                e.getLoHang().getMaLH(),
-                e.getDvt().getMaDVT()
-        ) > 0;
+        return ConnectDB.update(sql, e.getSoLuong(), e.getHoaDon().getMaHD(), e.getLoHang().getMaLH(), e.getDvt().getMaDVT()) > 0;
     }
 
     @Override
