@@ -79,18 +79,14 @@ public class LapHoaDon_GUI {
 
         TableColumn<ChiTietHoaDon, String> colSTT = new TableColumn<>("STT");
         colSTT.setPrefWidth(50);
-
-        TableColumn<ChiTietHoaDon, String> colTenSP = new TableColumn<>("Tên sản phẩm/Hoạt chất");
+        TableColumn<ChiTietHoaDon, String> colTenSP = new TableColumn<>("Tên sản phẩm");
         colTenSP.setPrefWidth(324.6);
         TableColumn<ChiTietHoaDon, Boolean> colKeDon = new TableColumn<>("Kê đơn");
         colKeDon.setPrefWidth(80);
-
         TableColumn<ChiTietHoaDon, String> colDonGia = new TableColumn<>("Đơn giá");
         colDonGia.setPrefWidth(143.3);
-
         TableColumn<ChiTietHoaDon, Number> colSL = new TableColumn<>("Số lượng");
         colSL.setPrefWidth(131);
-
         TableColumn<ChiTietHoaDon, String> colDonVi = new TableColumn<>("Đơn vị");
         colDonVi.setPrefWidth(100);
 
@@ -112,7 +108,7 @@ public class LapHoaDon_GUI {
         infoPane.setLayoutY(14);
         infoPane.setPrefSize(451, 867);
         infoPane.getStyleClass().add("info-pane");
-
+    
 // Tiêu đề
         Label lblTitle = new Label("THÔNG TIN GIAO DỊCH");
         lblTitle.setLayoutX(30);
@@ -361,6 +357,7 @@ public class LapHoaDon_GUI {
         // --- Inject controller ---
         ctrl.txtTimThuoc = txtTimThuoc;
         ctrl.tblChiTietHD = tblChiTietHD;
+        ctrl.btnXoaRong = btnXoaRong;
         ctrl.colSTT = colSTT;
         ctrl.colTenSP = colTenSP;
         ctrl.colKeDon = colKeDon;

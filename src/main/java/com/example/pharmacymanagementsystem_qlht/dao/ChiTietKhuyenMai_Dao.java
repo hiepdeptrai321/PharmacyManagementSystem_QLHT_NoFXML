@@ -23,12 +23,12 @@ public class ChiTietKhuyenMai_Dao implements DaoInterface<ChiTietKhuyenMai> {
     }
     @Override
     public boolean insert(ChiTietKhuyenMai e) {
-        return ConnectDB.update(INSERT_SQL, e.getThuoc().getMaThuoc(), e.getKhuyenMai().getMaKM(), e.getSlApDung(), e.getSlToiDa())>0;
+        return ConnectDB.update(INSERT_SQL, e.getThuoc().getMaThuoc(), e.getKhuyenMai().getMaKM(), e.getSlApDung(), e.getSoHDToiDa())>0;
     }
 
     @Override
     public boolean update(ChiTietKhuyenMai e) {
-        return ConnectDB.update(UPDATE_SQL, e.getSlApDung(), e.getSlToiDa(), e.getThuoc().getMaThuoc(), e.getKhuyenMai().getMaKM())>0;
+        return ConnectDB.update(UPDATE_SQL, e.getSlApDung(), e.getSoHDToiDa(), e.getThuoc().getMaThuoc(), e.getKhuyenMai().getMaKM())>0;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ChiTietKhuyenMai_Dao implements DaoInterface<ChiTietKhuyenMai> {
                 ct.setThuoc(new Thuoc_SanPham_Dao().selectById(rs.getString("MaThuoc")));
                 ct.setKhuyenMai(new KhuyenMai_Dao().selectById(rs.getString("MaKM")));
                 ct.setSlApDung(rs.getInt("SLApDung"));
-                ct.setSlToiDa(rs.getInt("SLToiDa"));
+                ct.setSoHDToiDa(rs.getInt("SLToiDa"));
                 list.add(ct);
             }
             rs.getStatement().close();

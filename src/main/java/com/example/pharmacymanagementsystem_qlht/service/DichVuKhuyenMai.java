@@ -3,6 +3,7 @@ package com.example.pharmacymanagementsystem_qlht.service;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietKhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.KhuyenMai_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.Thuoc_SP_TangKem_Dao;
+import com.example.pharmacymanagementsystem_qlht.model.ChiTietHoaDon;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietKhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.model.KhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SP_TangKem;
@@ -36,20 +37,25 @@ public class DichVuKhuyenMai {
             if (ngay.isBefore(nbd) || ngay.isAfter(nkt)) continue;
 
             int slApDung = Math.max(1, ct.getSlApDung());
-            int toiDa = Math.max(1, ct.getSlToiDa());
-            int times = Math.min(soLuong / slApDung, toiDa);
+
+            int times = soLuong / slApDung;
             if (times <= 0) continue;
+
 
             String loai = km.getLoaiKM().getMaLoai(); // LKM001/LKM002/LKM003
             if ("LKM003".equalsIgnoreCase(loai)) {
                 // Giảm % trên số lượng được áp
-                BigDecimal percent = BigDecimal.valueOf(km.getGiaTriKM() / 100.0);
-                BigDecimal giam = donGia.multiply(BigDecimal.valueOf(slApDung * times)).multiply(percent);
+                BigDecimal percent = BigDecimal.valueOf(km.getGiaTriKM()).divide(BigDecimal.valueOf(100));
+                BigDecimal giam = donGia
+                        .multiply(BigDecimal.valueOf(slApDung))
+                        .multiply(BigDecimal.valueOf(times))
+                        .multiply(percent);
                 kq.addDiscount(giam);
                 kq.addApplied(km.getMaKM());
             } else if ("LKM002".equalsIgnoreCase(loai)) {
                 // Giảm tiền trực tiếp theo lần áp
-                BigDecimal giam = BigDecimal.valueOf(km.getGiaTriKM()).multiply(BigDecimal.valueOf(times));
+                BigDecimal giam = BigDecimal.valueOf(km.getGiaTriKM())
+                        .multiply(BigDecimal.valueOf(times));
                 kq.addDiscount(giam);
                 kq.addApplied(km.getMaKM());
             } else  if ("LKM001".equalsIgnoreCase(loai)) {
@@ -59,8 +65,8 @@ public class DichVuKhuyenMai {
                 int bundles = soLuong / ap;
                 if (bundles <= 0) continue;
 
-                int maxBundles = ct.getSlToiDa() > 0 ? ct.getSlToiDa() : Integer.MAX_VALUE;
-                bundles = Math.min(bundles, maxBundles);
+//                int maxBundles = ct.getSoHDToiDa() > 0 ? ct.getSoHDToiDa() : Integer.MAX_VALUE;
+//                bundles = Math.min(bundles, maxBundles);
 
                 List<Thuoc_SP_TangKem> gifts = giftDao.selectByMaKM(km.getMaKM());
                 if (gifts != null) {
@@ -73,7 +79,6 @@ public class DichVuKhuyenMai {
                     }
                 }
 
-                // Fallback: parse \`MoTa\` if no row in gift table
                 if (kq.getFreeItems().isEmpty()) {
                     String maTang = parseMaThuocTang(km.getMoTa());
                     if (maTang != null) kq.addFreeItem(maTang, bundles);
@@ -83,6 +88,51 @@ public class DichVuKhuyenMai {
         }
         return kq;
     }
+    public double tinhGiamGiaSanPham(ChiTietHoaDon row,
+                                     ChiTietKhuyenMai ctKm,
+                                     KhuyenMai km,
+                                     double heSoToBase) {
+
+        if (row == null || ctKm == null || km == null || km.getLoaiKM() == null)
+            return 0d;
+
+        String loaiKM = km.getLoaiKM().getMaLoai(); // LKM002 / LKM003
+
+        // so luong
+        int soLuongDisplay = Math.max(0, row.getSoLuong());
+
+        int soLuongBase = (int) Math.floor(
+                soLuongDisplay * Math.max(1d, heSoToBase)
+        );
+        int slApDung = Math.max(1, ctKm.getSlApDung());
+
+        int times = soLuongBase / slApDung;
+        if (times <= 0) return 0d;
+        // don gia
+        double donGia = Math.max(0d, row.getDonGia());
+
+        // số lượng HIỂN THỊ tương ứng cho 1 lần áp KM
+        int soLuongDisplayPerTime = (int) Math.ceil(
+                slApDung / Math.max(1d, heSoToBase)
+        );
+
+        // giam
+        // co dinh
+        if ("LKM002".equalsIgnoreCase(loaiKM)) {
+            return times * km.getGiaTriKM();
+        }
+
+        // giam %
+        if ("LKM003".equalsIgnoreCase(loaiKM)) {
+            double tienApDung =
+                    soLuongDisplayPerTime * donGia * times;
+
+            return tienApDung * (km.getGiaTriKM() / 100.0);
+        }
+
+        return 0d;
+    }
+
 
     public ApDungKhuyenMai apDungChoHoaDon(BigDecimal baseSauKMHang, LocalDate ngay) {
         ApDungKhuyenMai kq = new ApDungKhuyenMai();

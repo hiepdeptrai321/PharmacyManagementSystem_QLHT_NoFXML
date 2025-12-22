@@ -11,6 +11,7 @@ import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import com.example.pharmacymanagementsystem_qlht.service.ApDungKhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.service.DichVuKhuyenMai;
+import com.example.pharmacymanagementsystem_qlht.service.PhienKhuyenMai;
 import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMKhachHang.ThemKhachHang_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKHoaDon.ChiTietHoaDon_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_TimKiem.TKKhachHang.TimKiemKhachHangTrongHD_GUI;
@@ -42,6 +43,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.io.File;
 import com.itextpdf.kernel.font.PdfFont;
@@ -84,8 +86,8 @@ public class LapHoaDon_Ctrl extends Application {
     private final Thuoc_SanPham_Dao spDao = new Thuoc_SanPham_Dao();
     private final ConcurrentHashMap<String, String> tenSpCache = new ConcurrentHashMap<>();
     private Map<ChiTietHoaDon, Integer> baseQtyMap = new IdentityHashMap<>();
-    
-    public Button btnThanhToanVaIn;
+    private ChiTietKhuyenMai_Dao ctDao = new ChiTietKhuyenMai_Dao();
+    public Button btnXoaRong;
     public Button btnThemKH;
     public DatePicker dpNgayLap;
     public ChoiceBox<String> cbPhuongThucTT;
@@ -157,7 +159,7 @@ public class LapHoaDon_Ctrl extends Application {
         if (maPhieuDat != null) {
             loadDataFromMaPhieuDat(maPhieuDat);
         }
-        System.out.println(dsChiTietHD.getClass());
+        btnXoaRong.setOnAction(e -> xuLyXoaRong());
     }
 
     public void setDsChiTietHD(List<ChiTietHoaDon> dsChiTietHD) {
@@ -639,6 +641,7 @@ public class LapHoaDon_Ctrl extends Application {
         cthd.setDonGia(chosen.getGiaBan());
         apDungKMChoRow(cthd);
         dsChiTietHD.add(cthd);
+        tinhTongTien();
         dvtTheoDong.put(cthd, chosen);
 
         Platform.runLater(() -> {
@@ -1160,27 +1163,79 @@ public void xuLyThemKH() {
 
         updateTienThua();
     }
-    // 5) After updating per-row KM, re-run totals (keeps invoice KM in sync)
+//    private void apDungKMChoRow(ChiTietHoaDon row) {
+//        if (row == null || row.getLoHang() == null || row.getLoHang().getThuoc() == null) return;
+//
+//        String maThuoc = row.getLoHang().getThuoc().getMaThuoc();
+//        int soLuong = row.getSoLuong();
+//        BigDecimal donGia = BigDecimal.valueOf(row.getDonGia());
+//
+//        try {
+//            ApDungKhuyenMai kq =
+//                    kmService.apDungChoSP(maThuoc, soLuong, donGia, LocalDate.now());
+//
+//            kmTheoDong.put(row, kq);
+//            row.setGiamGia(kq != null && kq.getDiscount() != null ? kq.getDiscount().doubleValue() : 0.0);
+//        } finally {
+//            capNhatTongTien();
+//        }
+//        if (lblThanhTien != null && lblGiamGia != null) {
+//            capNhatTongTien();
+//        }
+//    }
     private void apDungKMChoRow(ChiTietHoaDon row) {
-        if (row == null || row.getLoHang() == null || row.getLoHang().getThuoc() == null) return;
+        if (row == null || row.getLoHang() == null || row.getLoHang().getThuoc() == null) {
+            row.setGiamGia(0d);
+            row.setChiTietKhuyenMai(null);
+            return;
+        }
 
         String maThuoc = row.getLoHang().getThuoc().getMaThuoc();
-        int soLuong = row.getSoLuong();
-        BigDecimal donGia = BigDecimal.valueOf(row.getDonGia());
+        Date today = Date.valueOf(LocalDate.now());
 
+        List<ChiTietKhuyenMai> ctList =
+                ctDao.selectActiveByMaThuoc(maThuoc, today);
+
+        ChiTietKhuyenMai ctKm = null;
+        KhuyenMai km = null;
+
+        // 1️⃣ chọn KM giảm tiền / giảm %
+        for (ChiTietKhuyenMai ct : ctList) {
+            if (ct == null || ct.getKhuyenMai() == null || ct.getKhuyenMai().getLoaiKM() == null)
+                continue;
+
+            String loai = ct.getKhuyenMai().getLoaiKM().getMaLoai();
+            if ("LKM002".equalsIgnoreCase(loai) || "LKM003".equalsIgnoreCase(loai)) {
+                ctKm = ct;
+                km = ct.getKhuyenMai();
+                break;
+            }
+        }
+
+        if (ctKm == null || km == null) {
+            row.setGiamGia(0d);
+            row.setChiTietKhuyenMai(null);
+            return;
+        }
+
+        // 2️⃣ hệ số đơn vị
+        double heSoToBase = 1d;
         try {
-            ApDungKhuyenMai kq =
-                    kmService.apDungChoSP(maThuoc, soLuong, donGia, LocalDate.now());
+            var dvtChiTiet = dvtOf(row);
+            if (dvtChiTiet == null)
+                dvtChiTiet = layDVTCoBan(row.getLoHang().getThuoc());
+            heSoToBase = heSo(dvtChiTiet);
+        } catch (Exception ignore) {}
 
-            kmTheoDong.put(row, kq);
-            row.setGiamGia(kq != null && kq.getDiscount() != null ? kq.getDiscount().doubleValue() : 0.0);
-        } finally {
-            capNhatTongTien();
-        }
-        if (lblThanhTien != null && lblGiamGia != null) {
-            capNhatTongTien();
-        }
+        // 3️⃣ tính giảm giá
+        double giamGia = kmService.tinhGiamGiaSanPham(
+                row, ctKm, km, heSoToBase
+        );
+
+        row.setChiTietKhuyenMai(ctKm);
+        row.setGiamGia(giamGia);
     }
+
     //-------XuLy khi qua don vi duoi
     private ChiTietDonViTinh findNextLargerUnit(Thuoc_SanPham sp, ChiTietDonViTinh current) {
         if (sp == null || sp.getDsCTDVT() == null || current == null) return null;
@@ -1245,6 +1300,7 @@ public void xuLyThemKH() {
             newRows.add(r);
             dvtTheoDong.put(r, dvt);
             apDungKMChoRow(r);
+            tinhTongTien();
 
             remainingBaseQty -= toBaseQty(soLuongByThisUnit, dvt);
         }
@@ -1382,7 +1438,7 @@ public void xuLyThemKH() {
     }
 
 
-    public void xoaRong() {
+    public void xuLyXoaRong() {
         txtTimThuoc.setText("");
     }
     public void xuLyThanhToan() {

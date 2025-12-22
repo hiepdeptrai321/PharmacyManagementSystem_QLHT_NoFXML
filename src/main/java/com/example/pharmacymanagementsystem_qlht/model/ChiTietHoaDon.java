@@ -16,6 +16,7 @@ public class ChiTietHoaDon {
     private DonViTinh dvt;
     private double donGia;
     private double giamGia;
+    private ChiTietKhuyenMai ctKM;
 
     public ChiTietHoaDon() {
     }
@@ -76,6 +77,12 @@ public class ChiTietHoaDon {
 
     public void setGiamGia(double giamGia) {
         this.giamGia = giamGia;
+    }
+    public ChiTietKhuyenMai getChiTietKhuyenMai() {
+        return ctKM;
+    }
+    public void setChiTietKhuyenMai(ChiTietKhuyenMai ctKm) {
+        this.ctKM = ctKm;
     }
 
 
