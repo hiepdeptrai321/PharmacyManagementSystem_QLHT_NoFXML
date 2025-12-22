@@ -2,6 +2,8 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc;
 
 import com.example.pharmacymanagementsystem_qlht.dao.*;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietHoatChat;
+import com.example.pharmacymanagementsystem_qlht.model.LoaiHang;
+import com.example.pharmacymanagementsystem_qlht.model.NhomDuocLy;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -38,13 +40,21 @@ public class ThemThuocBangFileExcel {
     public ImageView btnXoa;
     public Button btnLuu;
     private DanhMucThuoc_Ctrl danhMucThuocCtrl;
-
     public List<Thuoc_SanPham> danhSachThuoc = new ArrayList<>();
+    private List<NhomDuocLy> listNhomDuocLy;
+    private NhomDuocLy_Dao nhomDuocLy_Dao;
+    private List<LoaiHang> listLoaiHang;
+    private LoaiHang_Dao loaiHang_Dao;
 
 //  ==================================================================Khởi tạo
     public void initialize() {
         lblThongTinFile.setText("Kéo & thả file Excel vào đây");
         btnXoa.setVisible(false);
+        listNhomDuocLy = new ArrayList<>();
+        listLoaiHang = new ArrayList<>();
+        loaiHang_Dao = new LoaiHang_Dao();
+        danhSachThuoc = new ArrayList<>();
+
     }
 //  ==================================================================hàm xử lý
     public void setDanhMucThuocCtrl(DanhMucThuoc_Ctrl ctrl){
@@ -131,18 +141,19 @@ public class ThemThuocBangFileExcel {
 
                 Thuoc_SanPham sp = new Thuoc_SanPham();
                 sp.setTenThuoc(getString(row.getCell(0)));
-                sp.setHamLuong((int) getNumeric(row.getCell(1)));
-                sp.setDonViHamLuong(getString(row.getCell(2)));
-                sp.setDuongDung(getString(row.getCell(3)));
-                sp.setQuyCachDongGoi(getString(row.getCell(4)));
-                sp.setSDK_GPNK(getString(row.getCell(5)));
-                sp.setHangSX(getString(row.getCell(6)));
-                sp.setNuocSX(getString(row.getCell(7)));
+                sp.setETC(getString(row.getCell(1)).equals("x"));
+                sp.setHamLuong((int) getNumeric(row.getCell(2)));
+                sp.setDonViHamLuong(getString(row.getCell(3)));
+                sp.setDuongDung(getString(row.getCell(4)));
+                sp.setQuyCachDongGoi(getString(row.getCell(5)));
+                sp.setSDK_GPNK(getString(row.getCell(6)));
+                sp.setHangSX(getString(row.getCell(7)));
+                sp.setNuocSX(getString(row.getCell(8)));
 
                 // Lấy các entity liên kết
-                String maNDL = getString(row.getCell(8));
-                String maLoaiHang = getString(row.getCell(9));
-                String viTri = getString(row.getCell(10));
+                String maNDL = getString(row.getCell(9));
+                String maLoaiHang = getString(row.getCell(10));
+                String viTri = getString(row.getCell(11));
 
                 sp.setNhomDuocLy(new NhomDuocLy_Dao().selectById(maNDL));
                 sp.setLoaiHang(new LoaiHang_Dao().selectById(maLoaiHang));
