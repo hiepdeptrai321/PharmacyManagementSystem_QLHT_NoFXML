@@ -1,7 +1,6 @@
 package com.example.pharmacymanagementsystem_qlht.controller.CN_DanhMuc.DMThuoc;
 
 import com.example.pharmacymanagementsystem_qlht.dao.*;
-import com.example.pharmacymanagementsystem_qlht.model.ChiTietHoatChat;
 import com.example.pharmacymanagementsystem_qlht.model.LoaiHang;
 import com.example.pharmacymanagementsystem_qlht.model.NhomDuocLy;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
@@ -53,8 +52,9 @@ public class ThemThuocBangFileExcel {
         listNhomDuocLy = new ArrayList<>();
         listLoaiHang = new ArrayList<>();
         loaiHang_Dao = new LoaiHang_Dao();
-        danhSachThuoc = new ArrayList<>();
-
+        nhomDuocLy_Dao = new NhomDuocLy_Dao();
+        listNhomDuocLy = nhomDuocLy_Dao.selectAll();
+        listLoaiHang = loaiHang_Dao.selectAll();
     }
 //  ==================================================================hàm xử lý
     public void setDanhMucThuocCtrl(DanhMucThuoc_Ctrl ctrl){
@@ -153,31 +153,85 @@ public class ThemThuocBangFileExcel {
                 // Lấy các entity liên kết
                 String maNDL = getString(row.getCell(9));
                 String maLoaiHang = getString(row.getCell(10));
-                String viTri = getString(row.getCell(11));
 
-                sp.setNhomDuocLy(new NhomDuocLy_Dao().selectById(maNDL));
-                sp.setLoaiHang(new LoaiHang_Dao().selectById(maLoaiHang));
-                sp.setVitri(new KeHang_Dao().selectById(viTri));
+                NhomDuocLy ndl = findOrCreateNhomDuocLy(maNDL);
+                LoaiHang lh = findOrCreateLoaiHang(maLoaiHang);
+
+                sp.setNhomDuocLy(ndl);
+                sp.setLoaiHang(lh);
 
                 danhSachThuoc.add(sp);
                 count++;
             }
 
-            System.out.println("✅ Đã thêm " + count + " thuốc từ Excel!");
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    private NhomDuocLy findOrCreateNhomDuocLy(String tenNDL) {
+        if (tenNDL == null || tenNDL.isBlank()) return null;
 
-//  Hàm hỗ trợ đọc dữ liệu từ ô Excel
-    private String getString(Cell cell) {
-        if (cell == null) return "";
-        cell.setCellType(CellType.STRING);
-        return cell.getStringCellValue().trim();
+        // Tìm trong list đã load sẵn
+        for (NhomDuocLy ndl : listNhomDuocLy) {
+            if (tenNDL.equalsIgnoreCase(ndl.getTenNDL())) {
+                return ndl; // đã tồn tại
+            }
+        }
+
+        // Chưa có → tạo mới
+        NhomDuocLy newNDL = new NhomDuocLy();
+        newNDL.setMaNDL(nhomDuocLy_Dao.generateNewMaNhomDL());
+        newNDL.setTenNDL(tenNDL); // hoặc tên khác từ Excel
+
+        nhomDuocLy_Dao.insert(newNDL);
+
+        // Thêm vào list để các dòng sau dùng lại
+        listNhomDuocLy.add(newNDL);
+
+        return newNDL;
     }
 
-//  Lấy giá trị số từ ô Excel
+    private LoaiHang findOrCreateLoaiHang(String tenLoaiHang) {
+        if (tenLoaiHang == null || tenLoaiHang.isBlank()) return null;
+
+        for (LoaiHang lh : listLoaiHang) {
+            if (tenLoaiHang.equalsIgnoreCase(lh.getTenLoaiHang())) {
+                return lh;
+            }
+        }
+
+        LoaiHang newLH = new LoaiHang();
+        newLH.setMaLoaiHang(loaiHang_Dao.generateNewMaLoaiHang());
+        newLH.setTenLoaiHang(tenLoaiHang);
+
+        loaiHang_Dao.insert(newLH);
+        listLoaiHang.add(newLH);
+
+        return newLH;
+    }
+
+    //  Hàm hỗ trợ đọc dữ liệu từ ô Excel
+    private String getString(Cell cell) {
+        if (cell == null) return "";
+
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+
+            case NUMERIC:
+                return String.valueOf((long) cell.getNumericCellValue());
+
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+
+            case FORMULA:
+                return cell.getCellFormula();
+
+            default:
+                return "";
+        }
+    }
+    //  Lấy giá trị số từ ô Excel
     private double getNumeric(Cell cell) {
         if (cell == null) return 0;
         if (cell.getCellType() == CellType.NUMERIC) return cell.getNumericCellValue();
@@ -211,29 +265,39 @@ public class ThemThuocBangFileExcel {
 
 //      Tạo luồng riêng để xử lý cập nhật (tránh lag UI)
         new Thread(() -> {
-            Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
-            for(Thuoc_SanPham thuoc : danhSachThuoc){
-                thuocDao.insertThuocProc(thuoc);
-            }
-            danhMucThuocCtrl.loadTable();
-            // Quay lại luồng giao diện để loại bỏ overlay
-            Platform.runLater(() -> {
-                danhMucThuocCtrl.refestTable();
+            boolean success = true;
+            String errorMsg = "";
 
-                // Xóa overlay
+            Thuoc_SanPham_Dao thuocDao = new Thuoc_SanPham_Dao();
+            try {
+                for (Thuoc_SanPham thuoc : danhSachThuoc) {
+                    thuocDao.insertThuocProc(thuoc);
+                }
+            } catch (Exception e) {
+                success = false;
+                errorMsg = e.getMessage();
+                e.printStackTrace();
+            }
+
+            boolean finalSuccess = success;
+            String finalError = errorMsg;
+
+            Platform.runLater(() -> {
                 root.getChildren().remove(overlay);
 
-                // Alert thành công
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Thành công");
-                alert.setHeaderText(null);
-                alert.setContentText("Lưu dữ liệu thành công!");
-                alert.initOwner(stage);
-                alert.showAndWait();
-                stage.close();
+                if (finalSuccess) {
+                    danhMucThuocCtrl.refestTable();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setContentText("Lưu dữ liệu thành công!");
+                    alert.showAndWait();
+                    stage.close();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Lỗi lưu dữ liệu:\n" + finalError);
+                    alert.showAndWait();
+                }
             });
         }).start();
-
     }
 
 //  Tải file mẫu
