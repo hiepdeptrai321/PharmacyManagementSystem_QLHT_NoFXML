@@ -38,7 +38,6 @@ public class ThietLapDonViTinh_SuaXoa_Ctrl {
         btnXoa.setOnAction(actionEvent -> btnXoaClick(null));
         btnThemDVT.setOnAction(actionEvent -> btnThemDVTClick(null));
         checkDVCB.setOnAction(e-> cbDVCBCheck());
-
     }
 
     // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN

@@ -55,10 +55,10 @@ public class ThemThuoc_GUI {
         Label lbTenThuoc = new Label("Tên thuốc"); lbTenThuoc.setLayoutX(209); lbTenThuoc.setLayoutY(-25); lbTenThuoc.setFont(Font.font(14));
         txtTenThuoc = new TextField(); txtTenThuoc.setLayoutX(283); txtTenThuoc.setLayoutY(-28); txtTenThuoc.setPrefSize(360, 25);
 
-        Label lbLoaiHang = new Label("Loại hàng"); lbLoaiHang.setLayoutX(0); lbLoaiHang.setLayoutY(15); lbLoaiHang.setFont(Font.font(14));
+        Label lbLoaiHang = new Label("Loại hàng"); lbLoaiHang.setLayoutX(0); lbLoaiHang.setLayoutY(18); lbLoaiHang.setFont(Font.font(14));
         cbxLoaiHang = new ComboBox<>(); cbxLoaiHang.setLayoutX(70); cbxLoaiHang.setLayoutY(15); cbxLoaiHang.setPrefSize(228, 25);
 
-        Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(318); lbViTri.setLayoutY(18); lbViTri.setFont(Font.font(14));
+        Label lbViTri = new Label("Vị trí"); lbViTri.setLayoutX(318); lbViTri.setLayoutY(20); lbViTri.setFont(Font.font(14));
         cbxViTri = new ComboBox<>(); cbxViTri.setLayoutX(356); cbxViTri.setLayoutY(16); cbxViTri.setPrefSize(287, 25);
 
         Label lbMa = new Label("Mã thuốc"); lbMa.setLayoutX(1); lbMa.setLayoutY(-27); lbMa.setFont(Font.font(14));
