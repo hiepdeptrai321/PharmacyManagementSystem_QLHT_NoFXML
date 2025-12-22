@@ -97,29 +97,38 @@ public class TKThuocTrongKho_GUI {
         colMaThuoc.setPrefWidth(273);
         colMaThuoc.setStyle("-fx-alignment: CENTER;");
 
+        //70 + 40 + 50
         TableColumn<Object, String> colTenThuoc = new TableColumn<>("Tên thuốc");
-        colTenThuoc.setPrefWidth(473);
+        colTenThuoc.setPrefWidth(403);
         colTenThuoc.setStyle("-fx-alignment: CENTER-LEFT;");
 
         TableColumn<Object, String> colDVT = new TableColumn<>("Đơn vị tính (cơ bản)");
-        colDVT.setPrefWidth(241);
+        colDVT.setPrefWidth(201);
         colDVT.setStyle("-fx-alignment: CENTER;");
 
         TableColumn<Object, String> colMaLo = new TableColumn<>("Mã lô hàng");
-        colMaLo.setPrefWidth(252);
+        colMaLo.setPrefWidth(162);
         colMaLo.setStyle("-fx-alignment: CENTER;");
 
+        TableColumn<Object, String> colNSX = new TableColumn<>("NSX");
+        colNSX.setPrefWidth(150);
+        colNSX.setStyle("-fx-alignment: CENTER;");
+
+        TableColumn<Object, String> colHSD = new TableColumn<>("HSD");
+        colHSD.setPrefWidth(150);
+        colHSD.setStyle("-fx-alignment: CENTER;");
+
         TableColumn<Object, String> colSLTon = new TableColumn<>("Số lượng tồn");
-        colSLTon.setPrefWidth(313);
+        colSLTon.setPrefWidth(213);
         colSLTon.setStyle("-fx-alignment: CENTER;");
 
         TableColumn<Object, Integer> colSoLoTon = new TableColumn<>("Số lô tồn");
-        colSoLoTon.setPrefWidth(252);
+        colSoLoTon.setPrefWidth(462);
         colSoLoTon.setStyle("-fx-alignment: CENTER;");
         colSoLoTon.setVisible(false);
 
 
-        tbThuoc.getColumns().addAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colMaLo, colSoLoTon,colSLTon);
+        tbThuoc.getColumns().addAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colMaLo, colNSX, colHSD, colSoLoTon,colSLTon);
         rootTablePane.getChildren().add(tbThuoc);
 
         Button btnLamMoi = new Button();
@@ -153,6 +162,8 @@ public class TKThuocTrongKho_GUI {
         ctrl.colDVT = (TableColumn<Object, String>) (TableColumn<?, ?>) colDVT;
         ctrl.colMaLo = (TableColumn<Object, String>) (TableColumn<?, ?>) colMaLo;
         ctrl.colSLTon = (TableColumn<Object, Integer>) (TableColumn<?, ?>) colSLTon;
+        ctrl.colNSX = (TableColumn<Object, String>) (TableColumn<?, ?>) colNSX;
+        ctrl.colHSD = (TableColumn<Object, String>) (TableColumn<?, ?>) colHSD;
         ctrl.hienThiTheoLo = hienThiTheoLo;
         ctrl.colSoLoTon = (TableColumn<Object, Integer>) (TableColumn<?, ?>) colSoLoTon;
         ctrl.rootTablePane = rootTablePane;

@@ -272,6 +272,11 @@ public class LapHoaDon_GUI {
         lblThanhTien.getStyleClass().add("main-value-label");
         lblThanhTien.setId("lblThanhTien");
 
+        Label lblThongBaoTT = new Label("");
+        lblThongBaoTT.setLayoutX(310);
+        lblThongBaoTT.setLayoutY(610);
+        lblThanhTien.setPrefSize(204, 30);
+
 // Phương thức thanh toán
         Label lblPhuongThucText = new Label("Phương thức thanh toán:");
         lblPhuongThucText.setLayoutX(33);
@@ -343,7 +348,7 @@ public class LapHoaDon_GUI {
                 lblMaDonThuocText, txtMaDonThuoc, lblNgayLapText, dpNgayLap,
                 lblGiamGiaText, lblGiamGia, lblTongTienText, lblTongTien,
                 lblGiamTheoHDText, lblGiamTheoHD, lblVATText, lblVAT,
-                lblThanhTienText, lblThanhTien, lblPhuongThucText, cbPhuongThucTT,
+                lblThanhTienText, lblThanhTien, lblThongBaoTT, lblPhuongThucText, cbPhuongThucTT,
                 paneTienMat, btnThanhToan, btnHuy
         );
 
@@ -374,6 +379,7 @@ public class LapHoaDon_GUI {
         ctrl.txtSoTienKhachDua = txtSoTienKhachDua;
         ctrl.lblTienThua = lblTienThua;
         ctrl.lblTongTien = lblTongTien;
+        ctrl.lblThongBaoTT = lblThongBaoTT;
         ctrl.lblGiamGia = lblGiamGia;
         ctrl.lblVAT = lblVAT;
         ctrl.lblThanhTien = lblThanhTien;

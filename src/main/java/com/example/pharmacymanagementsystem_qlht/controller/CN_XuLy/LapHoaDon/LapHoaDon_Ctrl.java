@@ -105,6 +105,7 @@ public class LapHoaDon_Ctrl extends Application {
     public TableColumn <ChiTietHoaDon, String> colBo;
     public Label lblTongTien;
     public Label lblGiamGia;
+    public Label lblThongBaoTT;
     public Label lblVAT;
     public Label lblThanhTien;
     public TextField txtSoTienKhachDua;
@@ -1283,12 +1284,55 @@ public void xuLyThemKH() {
                 .setScale(0, RoundingMode.HALF_UP);
         BigDecimal thanhTien = tongSauGiamTruocVAT.add(vat);
 
+
         if (lblGiamGia != null) lblGiamGia.setText(cur(tongGiamGia));
         if (lblTongTien != null) lblTongTien.setText(cur(tongSauGiamTruocVAT));
         if (lblVAT != null) lblVAT.setText(cur(vat));
         if (lblThanhTien != null) lblThanhTien.setText(cur(thanhTien));
         updateTienThua();
     }
+
+    private void tinhTongTienTruTienCoc(PhieuDatHang pdh) {
+        if (tblChiTietHD == null) return;
+
+        BigDecimal tongSauGiamTruocVAT = BigDecimal.ZERO;
+        BigDecimal tongGiamGia = BigDecimal.ZERO;
+
+        for (ChiTietHoaDon r : tblChiTietHD.getItems()) {
+            if (r == null) continue;
+
+            apDungKMChoRow(r);
+
+            BigDecimal soLuong = BigDecimal.valueOf(Math.max(0, r.getSoLuong()));
+            BigDecimal donGia = BigDecimal.valueOf(Math.max(0, r.getDonGia()));
+            BigDecimal giamGia = BigDecimal.valueOf(Math.max(0, r.getGiamGia()));
+
+            BigDecimal thanhTienRaw = soLuong.multiply(donGia);
+            BigDecimal thanhSauGiam = thanhTienRaw.subtract(giamGia);
+            if (thanhSauGiam.signum() < 0) thanhSauGiam = BigDecimal.ZERO;
+
+            tongGiamGia = tongGiamGia.add(giamGia);
+            tongSauGiamTruocVAT = tongSauGiamTruocVAT.add(thanhSauGiam);
+        }
+
+        BigDecimal vat = tongSauGiamTruocVAT.multiply(new BigDecimal("0.05"))
+                .setScale(0, RoundingMode.HALF_UP);
+        BigDecimal thanhTien = tongSauGiamTruocVAT.add(vat);
+
+        Double tienCoc = pdh.getSoTienCoc();
+        thanhTien = thanhTien.subtract(BigDecimal.valueOf(tienCoc)).max(BigDecimal.ZERO);
+
+        if (lblGiamGia != null) lblGiamGia.setText(cur(tongGiamGia));
+        if (lblTongTien != null) lblTongTien.setText(cur(tongSauGiamTruocVAT));
+        if (lblVAT != null) lblVAT.setText(cur(vat));
+        if (lblThanhTien != null) lblThanhTien.setText(cur(thanhTien));
+        lblThongBaoTT.setText("Cọc: " + formatVND(tienCoc.longValue()));
+        lblThongBaoTT.setStyle("-fx-text-fill: blue; -fx-font-weight: bold;");
+        updateTienThua();
+    }
+
+
+
     //----------Xử lý Tien Thua ----------
     private void initTienMatEvents() {
         txtSoTienKhachDua.textProperty().addListener((obs, oldVal, newVal) -> updateTienThua());
@@ -1568,6 +1612,7 @@ public void xuLyThemKH() {
             lblGiamTheoHD.setText("0 VNĐ");
             txtSoTienKhachDua.clear();
             lblTienThua.setText("0 VNĐ");
+            lblThongBaoTT.setText("");
         } catch (Exception ex) {
             ex.printStackTrace();
             if (con != null) {
@@ -1716,7 +1761,8 @@ public void xuLyThemKH() {
                 }
 
                 // 6. Tính tổng tiền
-                tinhTongTien();
+                tinhTongTienTruTienCoc(pdh);
+
             }
 
             hien(INFORMATION, "Thành công", "Đã load dữ liệu từ phiếu đặt hàng: " + maPhieuDat);
@@ -1794,15 +1840,7 @@ public void xuLyThemKH() {
             cthd.setSoLuong(ctpdh.getSoLuong());
             cthd.setDonGia(ctpdh.getDonGia());
             cthd.setGiamGia(ctpdh.getGiamGia());
-
-            // Chuyển đơn vị từ String sang DonViTinh
-            if (ctpdh.getDvt() != null && !ctpdh.getDvt().isEmpty()) {
-                DonViTinh dvt = new DonViTinh();
-                dvt.setMaDVT(ctpdh.getDvt());
-                // Có thể dùng DAO để load đầy đủ thông tin DVT nếu cần
-                // dvt = new DonViTinh_Dao().selectById(ctpdh.getDvt());
-                cthd.setDvt(dvt);
-            }
+            cthd.setDvt(new DonViTinh_Dao().selectById(ctpdh.getDvt()));
             cthd.setHoaDon(null);
 
             dsCTHD.add(cthd);
@@ -1825,6 +1863,7 @@ public void xuLyThemKH() {
         txtSDT.clear();
         rbOTC.setSelected(false);
         txtMaDonThuoc.clear();
+        lblThongBaoTT.setText("");
     }
 
     public void xuLyHuy() {

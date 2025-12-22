@@ -51,6 +51,8 @@ public class TimKiemThuocTrongKho_Ctrl {
     public Button btnLamMoi;
     public ToggleButton hienThiTheoLo;
     public TableColumn<Object, Integer> colSoLoTon;
+    public TableColumn<Object, String> colNSX;
+    public TableColumn<Object, String> colHSD;
     private Timeline colorTimeline;
     private Color current;
     public StackPane rootTablePane;
@@ -114,6 +116,25 @@ public class TimKiemThuocTrongKho_Ctrl {
                         }
                         return new SimpleStringProperty("");
                     });
+                    colNSX.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                            Thuoc_SP_TheoLo lo = (Thuoc_SP_TheoLo) cellData.getValue();
+                            if (lo.getNsx() != null) {
+                                return new SimpleStringProperty(com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay.dinhDangNgay(lo.getNsx()));
+                            }
+                        }
+                        return new SimpleStringProperty("");
+                    });
+
+                    colHSD.setCellValueFactory(cellData -> {
+                        if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
+                            Thuoc_SP_TheoLo lo = (Thuoc_SP_TheoLo) cellData.getValue();
+                            if (lo.getHsd() != null) {
+                                return new SimpleStringProperty(com.example.pharmacymanagementsystem_qlht.TienIch.DoiNgay.dinhDangNgay(lo.getHsd()));
+                            }
+                        }
+                        return new SimpleStringProperty("");
+                    });
                     colSLTon.setCellValueFactory(cellData -> {
                         if (cellData.getValue() instanceof Thuoc_SP_TheoLo) {
                             return new javafx.beans.property.SimpleIntegerProperty(((Thuoc_SP_TheoLo) cellData.getValue()).getSoLuongTon()).asObject();
@@ -171,17 +192,47 @@ public class TimKiemThuocTrongKho_Ctrl {
 
     // 4. XỬ LÝ NGHIỆP VỤ
     public void timThuoc() {
-        runWithLoading(() -> {
-            String keyword = tfTimThuoc.getText().trim().toLowerCase();
-            Stage stage = (Stage) btnTimThuoc.getScene().getWindow();
-            Thuoc_SP_TheoLo_Dao dao = new Thuoc_SP_TheoLo_Dao();
-            List<Thuoc_SP_TheoLo> list = keyword.isEmpty()
-                    ? dao.selectAll()
-                    : dao.selectByTuKhoa(keyword);
+        String keyword = tfTimThuoc.getText().trim().toLowerCase();
 
-            ObservableList<Object> data = FXCollections.observableArrayList(list);
+        if (keyword.isEmpty()) {
+            loadTable();
+            return;
+        }
+
+        runWithLoading(() -> {
+            boolean isTheoLo = hienThiTheoLo != null && hienThiTheoLo.isSelected();
+            ObservableList<Object> filteredList = FXCollections.observableArrayList();
+
+            if (isTheoLo) {
+                // Tìm kiếm trong danh sách Thuoc_SP_TheoLo
+                for (Object item : tbThuoc.getItems()) {
+                    if (item instanceof Thuoc_SP_TheoLo) {
+                        Thuoc_SP_TheoLo lo = (Thuoc_SP_TheoLo) item;
+                        String maThuoc = lo.getThuoc().getMaThuoc().toLowerCase();
+                        String tenThuoc = lo.getThuoc().getTenThuoc().toLowerCase();
+
+                        if (maThuoc.contains(keyword) || tenThuoc.contains(keyword)) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+            } else {
+                // Tìm kiếm trong danh sách ThuocTonKho
+                for (Object item : tbThuoc.getItems()) {
+                    if (item instanceof ThuocTonKho) {
+                        ThuocTonKho thuoc = (ThuocTonKho) item;
+                        String maThuoc = thuoc.getMaThuoc().toLowerCase();
+                        String tenThuoc = thuoc.getTenThuoc().toLowerCase();
+
+                        if (maThuoc.contains(keyword) || tenThuoc.contains(keyword)) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+            }
+
             Platform.runLater(() -> {
-                tbThuoc.setItems(data);
+                tbThuoc.setItems(filteredList);
             });
         });
     }
@@ -203,10 +254,14 @@ public class TimKiemThuocTrongKho_Ctrl {
 
         if (selected) {
             colMaLo.setVisible(true);
+            colNSX.setVisible(true);
+            colHSD.setVisible(true);
             colSoLoTon.setVisible(false);
-            tbThuoc.getColumns().setAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colMaLo, colSLTon);
+            tbThuoc.getColumns().setAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colMaLo, colNSX, colHSD, colSLTon);
         } else {
             colMaLo.setVisible(false);
+            colNSX.setVisible(false);
+            colHSD.setVisible(false);
             colSoLoTon.setVisible(true);
             tbThuoc.getColumns().setAll(colSTT, colMaThuoc, colTenThuoc, colDVT, colSoLoTon, colSLTon);
         }

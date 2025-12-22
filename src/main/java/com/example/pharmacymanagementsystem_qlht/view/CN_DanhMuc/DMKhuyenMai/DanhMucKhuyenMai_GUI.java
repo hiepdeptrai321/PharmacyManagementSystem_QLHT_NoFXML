@@ -116,15 +116,15 @@ public class DanhMucKhuyenMai_GUI {
         colLoaiKM.setPrefWidth(253);
         colLoaiKM.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<KhuyenMai, java.sql.Date> colNBD = new TableColumn<>("Ngày bắt đầu");
+        TableColumn<KhuyenMai, String> colNBD = new TableColumn<>("Ngày bắt đầu");
         colNBD.setPrefWidth(285);
         colNBD.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<KhuyenMai, java.sql.Date> colNKT = new TableColumn<>("Ngày kết thúc");
+        TableColumn<KhuyenMai, String> colNKT = new TableColumn<>("Ngày kết thúc");
         colNKT.setPrefWidth(220);
         colNKT.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<KhuyenMai, java.sql.Date> colNgayTao = new TableColumn<>("Ngày tạo khuyến mãi");
+        TableColumn<KhuyenMai, String> colNgayTao = new TableColumn<>("Ngày tạo khuyến mãi");
         colNgayTao.setPrefWidth(227);
         colNgayTao.setStyle("-fx-alignment: CENTER;");
 
