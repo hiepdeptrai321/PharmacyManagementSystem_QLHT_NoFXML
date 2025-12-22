@@ -6,7 +6,7 @@ USE QuanLyNhaThuoc;
 GO
 
 --Link thư mục hình ảnh thuốc
-DECLARE @path NVARCHAR(255) = N'F:\hk5\PTUD_Java\Project\PharmacyManagementSystem_QLHT_NoFXML\SQL\imgThuoc\';
+DECLARE @path NVARCHAR(255) = N'C:\Users\hiepdeptrai\Desktop\hk1_2025-2026\QLHT\SQL\imgThuoc\';
 
 -- =========================
 -- Bảng KhachHang
@@ -105,7 +105,7 @@ CREATE TABLE Thuoc_SanPham (
     HamLuong   INT,
     DonViHL    VARCHAR(20),
     DuongDung  NVARCHAR(20),
-    QuyCachDongGoi NVARCHAR(20),
+    QuyCachDongGoi NVARCHAR(100),
     SDK_GPNK   VARCHAR(20),
     HangSX     NVARCHAR(30),
     NuocSX     NVARCHAR(20),
