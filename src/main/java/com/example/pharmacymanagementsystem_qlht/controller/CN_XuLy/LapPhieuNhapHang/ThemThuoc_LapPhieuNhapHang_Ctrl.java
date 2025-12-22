@@ -7,7 +7,9 @@ import com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKNhaCung
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietDonViTinh_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.ChiTietDonViTinh;
 import com.example.pharmacymanagementsystem_qlht.model.Thuoc_SanPham;
+import com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia.ThietLapDonViTinh_Them_GUI;
 import com.example.pharmacymanagementsystem_qlht.view.CN_DanhMuc.DMThuoc.ThemThuoc_GUI;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javafx.util.Callback;
@@ -58,7 +61,7 @@ public class ThemThuoc_LapPhieuNhapHang_Ctrl{
         colHeSo.setCellValueFactory(new PropertyValueFactory<>("heSoQuyDoi"));
         colGiaNhap.setCellValueFactory(new PropertyValueFactory<>("giaNhap"));
         colGiaBan.setCellValueFactory(new PropertyValueFactory<>("giaBan"));
-        colDVCB.setCellValueFactory(new PropertyValueFactory<>("donViCoBan"));
+        colDVCB.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().isDonViCoBan()?"X":""));
 
         addDetailButtonToTable();
 
@@ -92,11 +95,15 @@ public class ThemThuoc_LapPhieuNhapHang_Ctrl{
                             if (ct == null || thuoc == null) return;
 
                             try {
-                                FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                                        "/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatGia/ThietLapDonViTinh_SuaXoa_GUI.fxml"));
-                                Parent root = loader.load();
-                                ThietLapDonViTinh_SuaXoa_Ctrl ctrl = loader.getController();
+                                ThietLapDonViTinh_SuaXoa_Ctrl ctrl = new ThietLapDonViTinh_SuaXoa_Ctrl();
 
+                                Stage stage = new Stage();
+                                stage.setTitle("Sửa giá thuốc");
+                                stage.initModality(Modality.APPLICATION_MODAL);
+                                // show UI built in code (SuaGiaThuoc_GUI)
+                                new com.example.pharmacymanagementsystem_qlht.view.CN_CapNhat.CapNhatGia.ThietLapDonViTinh_SuaXoa_GUI()
+                                        .showWithController(stage, ctrl);
+                                ctrl.setCtdvt(ct);
                                 // Sử dụng setContext để thiết lập callback và thông tin cần thiết
                                 ctrl.setContext(
                                         thuoc.getMaThuoc(),
@@ -109,16 +116,6 @@ public class ThemThuoc_LapPhieuNhapHang_Ctrl{
                                             tbDVT.refresh();
                                         }
                                 );
-
-                                ctrl.setCtdvt(ct);
-
-                                Stage dialog = new Stage();
-                                dialog.initOwner(tbDVT.getScene().getWindow());
-                                //Set modality để chặn tương tác với cửa sổ cha, có thể dùng APPPLICATION_MODAL để chặn tất cả cửa sổ khác
-                                dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-                                dialog.setScene(new Scene(root));
-                                dialog.setTitle("Chi tiết đơn vị tính");
-                                dialog.showAndWait();
                             } catch (Exception e) {
                                 new Alert(Alert.AlertType.ERROR, "Không mở được cửa sổ chi tiết.").showAndWait();
                             }
@@ -146,24 +143,20 @@ public class ThemThuoc_LapPhieuNhapHang_Ctrl{
     public void btnThietLapGiaClick() {
         if (thuoc == null) return;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pharmacymanagementsystem_qlht/CN_CapNhat/CapNhatGia/ThietLapDonViTinh_Them_GUI.fxml"));
-            Parent root = loader.load();
-            ThietLapDonViTinh_Them_Ctrl ctrl = loader.getController();
+                ThietLapDonViTinh_Them_Ctrl ctrl = new ThietLapDonViTinh_Them_Ctrl();
 
-            // Sử dụng setContext để thiết lập callback lấy về chi tiết đơn vị tính vừa thêm và cập nhật table
-            ctrl.setContext(thuoc.getMaThuoc(), newItem -> {
-                listGia.add(newItem);
-                tbDVT.refresh();
-            });
+                // Sử dụng setContext để thiết lập callback lấy về chi tiết đơn vị tính vừa thêm và cập nhật table
+                ctrl.setContext(thuoc.getMaThuoc(), newItem -> {
+                    listGia.add(newItem);
+                    tbDVT.refresh();
+                });
 
-            Stage dialog = new Stage();
-            dialog.initOwner(tbDVT.getScene().getWindow());
-            dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            dialog.setScene(new Scene(root));
-            dialog.setTitle("Thiết lập đơn vị tính");
-            dialog.showAndWait();
+                Stage stage = new Stage();
+                stage.setTitle("Thiết lập giá thuốc");
+                stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+                new ThietLapDonViTinh_Them_GUI().showWithController(stage, ctrl);
         } catch (Exception e) {
+            e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Không mở được cửa sổ thiết lập đơn vị tính.").showAndWait();
         }
     }

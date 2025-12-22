@@ -211,6 +211,14 @@ public class ThemThuoc_LapPhieuNhapHang_GUI extends Application {
         v.colXoa = new TableColumn<>("");
         v.colXoa.setPrefWidth(78);
 
+        v.colDVT.setStyle("-fx-alignment: CENTER;");
+        v.colKH.setStyle("-fx-alignment: CENTER;");
+        v.colHeSo.setStyle("-fx-alignment: CENTER;");
+        v.colGiaNhap.setStyle("-fx-alignment: CENTER;");
+        v.colGiaBan.setStyle("-fx-alignment: CENTER;");
+        v.colDVCB.setStyle("-fx-alignment: CENTER;");
+        v.colXoa.setStyle("-fx-alignment: CENTER;");
+
         v.tbDVT.getColumns().addAll(v.colDVT, v.colKH, v.colHeSo, v.colGiaNhap, v.colGiaBan, v.colDVCB, v.colXoa);
         boxTable.getChildren().add(v.tbDVT);
 

@@ -1170,7 +1170,6 @@ public class LapPhieuNhapHang_Ctrl{
                 && eq(i.getDonViHamLuong(), o.getDonViHamLuong())
                 && eq(i.getDuongDung(), o.getDuongDung())
                 && eq(i.getQuyCachDongGoi(), o.getQuyCachDongGoi())
-                && eq(i.getSDK_GPNK(), o.getSDK_GPNK())
                 && eq(i.getHangSX(), o.getHangSX())
                 && eq(i.getNuocSX(), o.getNuocSX())
                 && Math.abs(i.getHamLuong() - o.getHamLuong()) < 0.0001;
