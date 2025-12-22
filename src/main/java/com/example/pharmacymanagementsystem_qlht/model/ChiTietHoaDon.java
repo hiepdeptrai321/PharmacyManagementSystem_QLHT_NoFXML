@@ -6,16 +6,16 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class ChiTietHoaDon {
-    private final IntegerProperty stt = new SimpleIntegerProperty();
+    private final UUID uuid = UUID.randomUUID();
     private HoaDon hoaDon;
     private Thuoc_SP_TheoLo loHang;
-    private int soLuong;
+    private final IntegerProperty soLuong = new SimpleIntegerProperty(1);
     private DonViTinh dvt;
     private double donGia;
     private double giamGia;
-    private final BooleanProperty keDon = new SimpleBooleanProperty(false);
 
     public ChiTietHoaDon() {
     }
@@ -23,31 +23,12 @@ public class ChiTietHoaDon {
     public ChiTietHoaDon(HoaDon hoaDon, Thuoc_SP_TheoLo loHang, int soLuong, DonViTinh dvt, double donGia, double giamGia) {
         this.hoaDon = hoaDon;
         this.loHang = loHang;
-        this.soLuong = soLuong;
+        this.soLuong.set(soLuong);
         this.dvt = dvt;
         this.donGia = donGia;
         this.giamGia = giamGia;
     }
-    public ChiTietHoaDon(HoaDon hoaDon, Thuoc_SP_TheoLo loHang, int soLuong, DonViTinh dvt, double donGia, double giamGia, boolean keDon) {
-        this.hoaDon = hoaDon;
-        this.loHang = loHang;
-        this.soLuong = soLuong;
-        this.dvt = dvt;
-        this.donGia = donGia;
-        this.giamGia = giamGia;
-        this.keDon.set(keDon);
-    }
-    public int getStt() {
-        return stt.get();
-    }
 
-    public void setStt(int stt) {
-        this.stt.set(stt);
-    }
-
-    public IntegerProperty sttProperty() {
-        return stt;
-    }
     public HoaDon getHoaDon() {
         return hoaDon;
     }
@@ -65,11 +46,13 @@ public class ChiTietHoaDon {
     }
 
     public int getSoLuong() {
-        return soLuong;
+        return soLuong.get();
     }
-
-    public void setSoLuong(int soLuong) {
-        this.soLuong = soLuong;
+    public void setSoLuong(int v) {
+        soLuong.set(v);
+    }
+    public IntegerProperty soLuongProperty() {
+        return soLuong;
     }
     public DonViTinh getDvt() {
         return dvt;
@@ -94,31 +77,24 @@ public class ChiTietHoaDon {
     public void setGiamGia(double giamGia) {
         this.giamGia = giamGia;
     }
-    public boolean isKeDon() {
-        return keDon.get();
-    }
 
-    public void setKeDon(boolean keDon) {
-        this.keDon.set(keDon);
-    }
-
-    public BooleanProperty keDonProperty() {
-        return keDon;
-    }
 
     public double tinhThanhTien() {
-        double thanhTien = this.soLuong * this.donGia - this.giamGia;
+        double thanhTien = getSoLuong() * getDonGia() - getGiamGia();
         return thanhTien;
     }
 
     @Override
     public boolean equals(Object o) {
-        return this == o;
+        if (this == o) return true;
+        if (!(o instanceof ChiTietHoaDon)) return false;
+        ChiTietHoaDon other = (ChiTietHoaDon) o;
+        return uuid.equals(other.uuid);
     }
 
     @Override
     public int hashCode() {
-        return System.identityHashCode(this);
+        return uuid.hashCode();
     }
 
     @Override
