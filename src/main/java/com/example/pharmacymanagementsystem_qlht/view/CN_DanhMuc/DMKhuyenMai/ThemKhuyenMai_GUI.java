@@ -149,7 +149,7 @@ public class ThemKhuyenMai_GUI {
         TableColumn<Object, String> colSLAP = new TableColumn<>("Số lượng áp dụng");
         colSLAP.setPrefWidth(161);
         colSLAP.setStyle("-fx-alignment: CENTER;");
-        TableColumn<Object, String> colSLTD = new TableColumn<>("Số lượng tối đa");
+        TableColumn<Object, String> colSLTD = new TableColumn<>("Số hóa đơn áp dụng");
         colSLTD.setPrefWidth(162);
         colSLTD.setStyle("-fx-alignment: CENTER;");
         TableColumn<Object, String> colDonVi = new TableColumn<>("Đơn vị (cơ bản)");

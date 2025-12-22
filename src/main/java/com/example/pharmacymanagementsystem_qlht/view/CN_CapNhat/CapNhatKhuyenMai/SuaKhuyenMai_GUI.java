@@ -152,7 +152,7 @@ public class SuaKhuyenMai_GUI {
         colSLAP.setPrefWidth(152);
         colSLAP.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<ChiTietKhuyenMai, Integer> colSLTD = new TableColumn<>("Số lượng tối đa");
+        TableColumn<ChiTietKhuyenMai, Integer> colSLTD = new TableColumn<>("Số hóa đơn áp dụng");
         colSLTD.setPrefWidth(166);
         colSLTD.setStyle("-fx-alignment: CENTER;");
 
