@@ -202,6 +202,7 @@ CREATE TABLE ChiTietHoaDon (
 	MaHD       VARCHAR(10) FOREIGN KEY REFERENCES HoaDon(MaHD),
     MaLH       VARCHAR(10) FOREIGN KEY REFERENCES Thuoc_SP_TheoLo(MaLH),
     SoLuong    INT NOT NULL,
+    KeDon BIT NOT NULL DEFAULT 0,
 	MaDVT      VARCHAR(10),
     DonGia     FLOAT NOT NULL,
     GiamGia    FLOAT NOT NULL,
@@ -2163,9 +2164,6 @@ BEGIN
     -- Nếu không tìm thấy hoặc lỗi, mặc định 30 ngày
     IF @SoNgayCanhBao IS NULL SET @SoNgayCanhBao = 30;
 
-    -- In ra màn hình Message để debug (bạn có thể xem trong tab Messages khi chạy thử)
-    PRINT N'Đang lọc thuốc hết hạn trước ngày: ' + CONVERT(NVARCHAR, DATEADD(DAY, @SoNgayCanhBao, GETDATE()), 103);
-
     -- Truy vấn
     SELECT
         T.MaThuoc       AS maThuocHH,
@@ -2177,7 +2175,6 @@ BEGIN
     JOIN
         Thuoc_SanPham AS T ON L.MaThuoc = T.MaThuoc
     WHERE
-        -- Logic: HSD <= (Hôm nay + Số ngày cài đặt)
         L.HSD <= DATEADD(DAY, @SoNgayCanhBao, CAST(GETDATE() AS DATE))
         AND L.SoLuongTon > 0
     GROUP BY

@@ -24,9 +24,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -92,6 +94,7 @@ public class LapHoaDon_Ctrl extends Application {
     public TableView<ChiTietHoaDon> tblChiTietHD;
     public TableColumn <ChiTietHoaDon, String> colSTT;
     public TableColumn <ChiTietHoaDon, String> colTenSP;
+    public TableColumn <ChiTietHoaDon, Boolean> colKeDon;
     public TableColumn <ChiTietHoaDon, String> colSL;
     public TableColumn <ChiTietHoaDon, String> colDonVi;
     public TableColumn <ChiTietHoaDon, String> colDonGia;
@@ -620,22 +623,33 @@ public class LapHoaDon_Ctrl extends Application {
             int maxForThisRow = (int)Math.floor(remainBaseForThisRow / heSo(chosen));
             if (same.getSoLuong() + 1 > maxForThisRow) { canhBaoTonKhongDu(); return; }
             same.setSoLuong(same.getSoLuong() + 1);
+            capNhatSTT();
             same.setDonGia(chosen.getGiaBan());
             apDungKMChoRow(same);
-            if (tblChiTietHD != null) tblChiTietHD.refresh();
             return;
         }
 
         // create new row with the chosen unit
         ChiTietHoaDon cthd = new ChiTietHoaDon();
         ganThuocVaoCTHD(cthd, sp);
+        //cthd.setKeDon(sp.isThuocKeDon());
         cthd.setSoLuong(1);
         cthd.setDonGia(chosen.getGiaBan());
+        cthd.keDonProperty().addListener((obs, oldVal, newVal) -> {
+            if (cthd.getHoaDon() == null) return;
+
+            new ChiTietHoaDon_Dao().updateKeDon(
+                    cthd.getHoaDon().getMaHD(),
+                    cthd.getLoHang().getMaLH(),
+                    cthd.getDvt().getMaDVT(),
+                    newVal
+            );
+        });
         apDungKMChoRow(cthd);
         dsChiTietHD.add(cthd);
+        capNhatSTT();
         dvtTheoDong.put(cthd, chosen);
 
-        if (tblChiTietHD != null) tblChiTietHD.refresh();
         Platform.runLater(() -> {
             if (txtTimThuoc != null) {
                 txtTimThuoc.requestFocus();
@@ -666,13 +680,9 @@ public class LapHoaDon_Ctrl extends Application {
     private void cauHinhCotBang() {
         if (tblChiTietHD == null) return;
         if (colSTT != null) {
-            colSTT.setCellFactory(tc -> new TableCell<>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty ? null : String.valueOf(getIndex() + 1));
-                }
-            });
+            colSTT.setCellValueFactory(p ->
+                    p.getValue().sttProperty().asString()
+            );
             colSTT.setSortable(false);
             colSTT.setReorderable(false);
         }
@@ -681,6 +691,17 @@ public class LapHoaDon_Ctrl extends Application {
                     new ReadOnlyStringWrapper(layTenSP(p.getValue()))
             );
         }
+        colKeDon.setCellValueFactory(cellData ->
+                cellData.getValue().keDonProperty()
+        );
+        colKeDon.setCellFactory(tc -> {
+            CheckBoxTableCell<ChiTietHoaDon, Boolean> cell =
+                    new CheckBoxTableCell<>();
+            cell.setAlignment(Pos.CENTER);
+            return cell;
+        });
+        colKeDon.setEditable(true);
+        tblChiTietHD.setEditable(true);
         if (colSL != null) {
             colSL.setCellValueFactory(p -> new ReadOnlyStringWrapper(String.valueOf(p.getValue().getSoLuong())));
             colSL.setCellFactory(tc -> new TableCell<>() {
@@ -723,9 +744,7 @@ public class LapHoaDon_Ctrl extends Application {
                     }
                     if (target != cur) {
                         row.setSoLuong(target);
-                        // AFTER changing quantity, attempt auto-conversion to larger unit(s)
                         autoConvertUnitsAfterChange(row);
-                        if (tblChiTietHD != null) tblChiTietHD.refresh();
                         tinhTongTien();
                     }
                     tf.setText(String.valueOf(row.getSoLuong()));
@@ -752,7 +771,6 @@ public class LapHoaDon_Ctrl extends Application {
                             row.setSoLuong(entered);
                             // attempt auto-conversion after user edited absolute number
                             autoConvertUnitsAfterChange(row);
-                            if (tblChiTietHD != null) tblChiTietHD.refresh();
                             tinhTongTien();
                         }
                         tf.setText(String.valueOf(row.getSoLuong()));
@@ -822,9 +840,10 @@ public class LapHoaDon_Ctrl extends Application {
 
                         // Remove the row; STT will auto-shift (index-based STT)
                         dsChiTietHD.remove(item);
+                        capNhatSTT();
 
                         // Refresh UI and totals
-                        if (tblChiTietHD != null) tblChiTietHD.refresh();
+                        //if (tblChiTietHD != null) tblChiTietHD.refresh();
                         capNhatTongTien(); // or tinhTongTien();
                     });
                     // Optional styling
@@ -845,8 +864,14 @@ public class LapHoaDon_Ctrl extends Application {
             colBo.setEditable(false);
             colBo.setStyle("-fx-alignment: CENTER; -fx-padding: 0 4 0 4;");
         }
+        tblChiTietHD.getSortOrder().clear();
+        tblChiTietHD.setSortPolicy(tv -> false);
 
-        dsChiTietHD.addListener((ListChangeListener<ChiTietHoaDon>) c -> tblChiTietHD.refresh());
+    }
+    private void capNhatSTT() {
+        for (int i = 0; i < dsChiTietHD.size(); i++) {
+            dsChiTietHD.get(i).setStt(i + 1);
+        }
     }
 
     private void canPhai(TableColumn<ChiTietHoaDon, String> col) {
@@ -1789,6 +1814,7 @@ public void xuLyThemKH() {
                     apDungKMChoRow(cthd);
 
                     dsChiTietHD.add(cthd);
+                    capNhatSTT();
                 }
 
                 // Refresh bảng

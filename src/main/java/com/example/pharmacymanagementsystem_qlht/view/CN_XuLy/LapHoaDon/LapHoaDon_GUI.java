@@ -82,6 +82,8 @@ public class LapHoaDon_GUI {
 
         TableColumn<ChiTietHoaDon, String> colTenSP = new TableColumn<>("Tên sản phẩm/Hoạt chất");
         colTenSP.setPrefWidth(324.6);
+        TableColumn<ChiTietHoaDon, Boolean> colKeDon = new TableColumn<>("Kê đơn");
+        colKeDon.setPrefWidth(80);
 
         TableColumn<ChiTietHoaDon, String> colDonGia = new TableColumn<>("Đơn giá");
         colDonGia.setPrefWidth(143.3);
@@ -98,10 +100,11 @@ public class LapHoaDon_GUI {
         TableColumn<ChiTietHoaDon, String> colThanhTien = new TableColumn<>("Thành tiền");
         colThanhTien.setPrefWidth(174);
 
-        TableColumn<ChiTietHoaDon, String> colBo = new TableColumn<>("");
+        TableColumn<ChiTietHoaDon, String> colBo = new TableColumn<>("Bỏ");
         colBo.setPrefWidth(55);
+        tblChiTietHD.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        tblChiTietHD.getColumns().addAll(colSTT, colTenSP, colDonGia, colSL, colDonVi, colChietKhau, colThanhTien, colBo);
+        tblChiTietHD.getColumns().addAll(colSTT, colTenSP, colKeDon, colDonGia, colSL, colDonVi, colChietKhau, colThanhTien, colBo);
 
         // --- Info Pane ---
         Pane infoPane = new Pane();
@@ -355,6 +358,7 @@ public class LapHoaDon_GUI {
         ctrl.tblChiTietHD = tblChiTietHD;
         ctrl.colSTT = colSTT;
         ctrl.colTenSP = colTenSP;
+        ctrl.colKeDon = colKeDon;
         ctrl.colDonGia = colDonGia;
         ctrl.colSL = colSL;
         ctrl.colDonVi = colDonVi;
