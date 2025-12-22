@@ -35,14 +35,72 @@ public class ThietLapDonViTinh_Them_Ctrl {
         btnHuy.setOnAction(e -> btnHuyClick(null));
         btnThem.setOnAction(e -> btnThemClick(null));
         checkDVCB.setOnAction(e-> cbDVCBCheck());
+        setupVNDFormat(tfGiaBan);
+        setupVNDFormat(tfGiaNhap);
     }
 
     // 3. XỬ LÝ SỰ KIỆN GIAO DIỆN
 
-    public void setCtdvt(ChiTietDonViTinh ctdvt) {
-        this.ctdvt = ctdvt;
-        fillFormFromModel();
+    // Phương thức setup format VND
+    private void setupVNDFormat(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || newValue.isEmpty()) {
+                return;
+            }
+
+            // Loại bỏ tất cả ký tự không phải số
+            String digitsOnly = newValue.replaceAll("[^0-9]", "");
+
+            if (digitsOnly.isEmpty()) {
+                textField.setText("");
+                return;
+            }
+
+            // Format với dấu chấm phân cách hàng nghìn
+            String formatted = formatVND(digitsOnly);
+            if(formatted.equals("00")) {
+                formatted = "0";
+            };
+
+            // Chỉ cập nhật nếu giá trị thay đổi để tránh vòng lặp
+            if (!newValue.equals(formatted)) {
+                textField.setText(formatted);
+                // Di chuyển con trỏ về cuối
+                textField.positionCaret(formatted.length());
+            }
+        });
     }
+
+    // Format số theo kiểu VND (ngăn cách hàng nghìn bằng dấu chấm)
+    private String formatVND(String digitsOnly) {
+        if (digitsOnly == null || digitsOnly.isEmpty()) {
+            return "";
+        }
+
+        // Loại bỏ các số 0 ở đầu (trừ trường hợp chỉ có 1 số 0)
+        digitsOnly = digitsOnly.replaceFirst("^0+(?!$)", "");
+
+        // Nếu sau khi loại bỏ mà rỗng hoặc chỉ còn "0"
+        if (digitsOnly.isEmpty() || digitsOnly.equals("0")) {
+            return "0";
+        }
+
+        StringBuilder result = new StringBuilder();
+        int count = 0;
+
+        // Duyệt từ phải sang trái
+        for (int i = digitsOnly.length() - 1; i >= 0; i--) {
+            if (count == 3) {
+                result.insert(0, ",");
+                count = 0;
+            }
+            result.insert(0, digitsOnly.charAt(i));
+            count++;
+        }
+
+        return result.toString();
+    }
+
 
     public void loadCbDVT(){
         cbDVT.getItems().clear();
@@ -80,8 +138,8 @@ public class ThietLapDonViTinh_Them_Ctrl {
         DonViTinh dvt = donViTinh_dao.selectByTenDVT(cbDVT.getSelectionModel().getSelectedItem().toString());
 
         Float heSo = parseNumberVN(tfHeSo.getText().trim());
-        Float giaNhap = parseNumberVN(tfGiaNhap.getText().trim());
-        Float giaBan = parseNumberVN(tfGiaBan.getText().trim());
+        Double giaNhap = parseVNDFormat(tfGiaNhap.getText().trim());
+        Double giaBan = parseVNDFormat(tfGiaBan.getText().trim());
 
         ctdvt.setDvt(dvt);
         ctdvt.setHeSoQuyDoi(heSo);
@@ -103,19 +161,6 @@ public class ThietLapDonViTinh_Them_Ctrl {
     public void setContext(String maThuoc, Consumer<ChiTietDonViTinh> onAdded) {
         this.maThuoc = maThuoc;
         this.onAdded = onAdded;
-    }
-
-
-    private void fillFormFromModel() {
-        if (ctdvt == null) return;
-        if (cbDVT != null && ctdvt.getDvt() != null) {
-            cbDVT.getSelectionModel().select(ctdvt.getDvt().getTenDonViTinh());
-        }
-        if (tfHeSo != null) tfHeSo.setText(String.valueOf(ctdvt.getHeSoQuyDoi()));
-        if (tfGiaNhap != null) tfGiaNhap.setText(String.valueOf(ctdvt.getGiaNhap()));
-        if (tfGiaBan != null) tfGiaBan.setText(String.valueOf(ctdvt.getGiaBan()));
-        if (checkDVCB != null) checkDVCB.setSelected(ctdvt.isDonViCoBan());
-        cbDVCBCheck();
     }
 
     // --- Helpers ---
@@ -149,12 +194,12 @@ public class ThietLapDonViTinh_Them_Ctrl {
 
         // Giá nhập
         String giaNhapText = tfGiaNhap.getText() == null ? "" : tfGiaNhap.getText().trim();
-        Float giaNhap = null;
+        Double giaNhap = null;
         if (giaNhapText.isEmpty()) {
             sb.append("Giá nhập không được để trống.\n");
             addErrorStyle(tfGiaNhap);
         } else {
-            giaNhap = parseNumberVN(giaNhapText);
+            giaNhap = parseVNDFormat(giaNhapText);
             if (giaNhap == null) {
                 sb.append("Giá nhập phải là số hợp lệ.\n");
                 addErrorStyle(tfGiaNhap);
@@ -166,12 +211,12 @@ public class ThietLapDonViTinh_Them_Ctrl {
 
         // Giá bán
         String giaBanText = tfGiaBan.getText() == null ? "" : tfGiaBan.getText().trim();
-        Float giaBan = null;
+        Double giaBan = null;
         if (giaBanText.isEmpty()) {
             sb.append("Giá bán không được để trống.\n");
             addErrorStyle(tfGiaBan);
         } else {
-            giaBan = parseNumberVN(giaBanText);
+            giaBan = parseVNDFormat(giaBanText);
             if (giaBan == null) {
                 sb.append("Giá bán phải là số hợp lệ.\n");
                 addErrorStyle(tfGiaBan);
@@ -219,6 +264,24 @@ public class ThietLapDonViTinh_Them_Ctrl {
             return false;
         }
         return true;
+    }
+
+    private Double parseVNDFormat(String raw) {
+        if (raw == null) return null;
+        String s = raw.trim();
+        if (s.isEmpty()) return null;
+
+        // Loại bỏ khoảng trắng
+        s = s.replaceAll("\\s+", "");
+
+        // Thay dấu phẩy thập phân thành dấu chấm (nếu có)
+        s = s.replace(",", "");
+
+        try {
+            return Double.parseDouble(s);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 
     // Parse to Float instead of Double
