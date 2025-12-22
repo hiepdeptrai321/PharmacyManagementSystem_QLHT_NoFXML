@@ -1,14 +1,21 @@
 package com.example.pharmacymanagementsystem_qlht.model;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 import java.util.Objects;
 
 public class ChiTietHoaDon {
+    private final IntegerProperty stt = new SimpleIntegerProperty();
     private HoaDon hoaDon;
     private Thuoc_SP_TheoLo loHang;
     private int soLuong;
     private DonViTinh dvt;
     private double donGia;
     private double giamGia;
+    private final BooleanProperty keDon = new SimpleBooleanProperty(false);
 
     public ChiTietHoaDon() {
     }
@@ -21,7 +28,26 @@ public class ChiTietHoaDon {
         this.donGia = donGia;
         this.giamGia = giamGia;
     }
+    public ChiTietHoaDon(HoaDon hoaDon, Thuoc_SP_TheoLo loHang, int soLuong, DonViTinh dvt, double donGia, double giamGia, boolean keDon) {
+        this.hoaDon = hoaDon;
+        this.loHang = loHang;
+        this.soLuong = soLuong;
+        this.dvt = dvt;
+        this.donGia = donGia;
+        this.giamGia = giamGia;
+        this.keDon.set(keDon);
+    }
+    public int getStt() {
+        return stt.get();
+    }
 
+    public void setStt(int stt) {
+        this.stt.set(stt);
+    }
+
+    public IntegerProperty sttProperty() {
+        return stt;
+    }
     public HoaDon getHoaDon() {
         return hoaDon;
     }
@@ -68,6 +94,17 @@ public class ChiTietHoaDon {
     public void setGiamGia(double giamGia) {
         this.giamGia = giamGia;
     }
+    public boolean isKeDon() {
+        return keDon.get();
+    }
+
+    public void setKeDon(boolean keDon) {
+        this.keDon.set(keDon);
+    }
+
+    public BooleanProperty keDonProperty() {
+        return keDon;
+    }
 
     public double tinhThanhTien() {
         double thanhTien = this.soLuong * this.donGia - this.giamGia;
@@ -76,16 +113,12 @@ public class ChiTietHoaDon {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        ChiTietHoaDon that = (ChiTietHoaDon) o;
-        return Objects.equals(hoaDon, that.hoaDon) &&
-                Objects.equals(loHang, that.loHang) &&
-                Objects.equals(dvt, that.dvt);
+        return this == o;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hoaDon, loHang, dvt);
+        return System.identityHashCode(this);
     }
 
     @Override
