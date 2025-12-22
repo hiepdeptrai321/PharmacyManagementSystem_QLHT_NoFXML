@@ -148,7 +148,6 @@ public class    TKPhieuDatHang_Ctrl {
         try {
             ChiTietPhieuDatHang_Ctrl ctrl = new ChiTietPhieuDatHang_Ctrl();
             PhieuDatHang_Dao pdhdao = new PhieuDatHang_Dao();
-            pdhdao.duyetPhieuDatHang(pdh.getMaPDat());
 
             Stage stage = new Stage();
             stage.setTitle("Chi tiết phiếu đặt hàng");

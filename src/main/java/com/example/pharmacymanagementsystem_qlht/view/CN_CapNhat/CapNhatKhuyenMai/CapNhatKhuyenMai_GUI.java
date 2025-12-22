@@ -151,8 +151,8 @@ public class CapNhatKhuyenMai_GUI {
         ctrl.colTenKM = (TableColumn<KhuyenMai, String>) (TableColumn<?, ?>) colTenKM;
         ctrl.colLoaiKM = (TableColumn<KhuyenMai, String>) (TableColumn<?, ?>) colLoaiKM;
         ctrl.colGiaTri = (TableColumn<KhuyenMai, Float>) (TableColumn<?, ?>) colGiaTri;
-        ctrl.colNBD = (TableColumn<KhuyenMai, java.sql.Date>) (TableColumn<?, ?>) colNBD;
-        ctrl.colNKT = (TableColumn<KhuyenMai, java.sql.Date>) (TableColumn<?, ?>) colNKT;
+        ctrl.colNBD = (TableColumn<KhuyenMai, String>) (TableColumn<?, ?>) colNBD;
+        ctrl.colNKT = (TableColumn<KhuyenMai, String>) (TableColumn<?, ?>) colNKT;
         ctrl.colChiTiet = (TableColumn<KhuyenMai, String>) (TableColumn<?, ?>) colChiTiet;
         ctrl.rootTablePane = rootTablePane;
 

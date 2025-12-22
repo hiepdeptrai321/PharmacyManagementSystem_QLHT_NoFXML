@@ -3,6 +3,7 @@ package com.example.pharmacymanagementsystem_qlht.controller.CN_TimKiem.TKPhieuD
 import com.example.pharmacymanagementsystem_qlht.controller.CuaSoChinh_QuanLy_Ctrl;
 import com.example.pharmacymanagementsystem_qlht.dao.ChiTietPhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.dao.DonViTinh_Dao;
+import com.example.pharmacymanagementsystem_qlht.dao.PhieuDatHang_Dao;
 import com.example.pharmacymanagementsystem_qlht.model.*;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -210,6 +211,8 @@ public class ChiTietPhieuDatHang_Ctrl  {
                     "Phiếu đặt hàng này đã được hoàn tất.");
             return;
         }
+        PhieuDatHang_Dao pdhdao = new PhieuDatHang_Dao();
+        pdhdao.duyetPhieuDatHang(lblMaPhieuDatValue.getText());
 
         CuaSoChinh_QuanLy_Ctrl.instance.openLapHoaDonWithMa(phieuDatHang.getMaPDat());
         btnLapHoaDon.getScene().getWindow().hide();

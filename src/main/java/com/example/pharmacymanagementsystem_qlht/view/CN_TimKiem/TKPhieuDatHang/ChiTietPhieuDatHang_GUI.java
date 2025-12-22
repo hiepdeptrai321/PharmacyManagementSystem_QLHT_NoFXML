@@ -248,31 +248,30 @@ public class ChiTietPhieuDatHang_GUI {
         lblTienDaThanhToan.getStyleClass().add("label-normal");
         lblTienDaThanhToan.setFont(Font.font("System Bold", 12));
         lblTienDaThanhToan.setLayoutX(5);
-        lblTienDaThanhToan.setLayoutY(175);
+        lblTienDaThanhToan.setLayoutY(155);
 
         Label lblTienDaThanhToanValue = new Label("0 VNĐ");
         lblTienDaThanhToanValue.setId("lblTienDaThanhToanValue");
         lblTienDaThanhToanValue.getStyleClass().addAll("bold-label", "value-label");
         lblTienDaThanhToanValue.setLayoutX(240);
-        lblTienDaThanhToanValue.setLayoutY(175);
+        lblTienDaThanhToanValue.setLayoutY(155);
 
         Label lblTienConLaiLabel = new Label("Còn phải thanh toán:");
         lblTienConLaiLabel.getStyleClass().add("bold-label");
         lblTienConLaiLabel.setLayoutX(5);
-        lblTienConLaiLabel.setLayoutY(210);
+        lblTienConLaiLabel.setLayoutY(190);
 
         Label lblTienConLaiValue = new Label("0 VNĐ");
         lblTienConLaiValue.setId("lblTienConLaiValue");
         lblTienConLaiValue.getStyleClass().addAll("change-due-value", "bold-label", "value-label");
         lblTienConLaiValue.setLayoutX(240);
-        lblTienConLaiValue.setLayoutY(210);
+        lblTienConLaiValue.setLayoutY(190);
 
         summaryPane.getChildren().addAll(
                 lblTongTienDat, lblTongTienDatValue,
                 lblChietKhauPD, lblChietKhauPDValue,
                 lblThueVAT, lblThueVATValue,
                 lblTotalLabel, lblTongTienPhaiDatValue,
-                lblPTTT, lblPTTTValue,
                 lblTienDaThanhToan, lblTienDaThanhToanValue,
                 lblTienConLaiLabel, lblTienConLaiValue
         );
