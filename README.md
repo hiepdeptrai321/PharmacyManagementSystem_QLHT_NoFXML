@@ -17,3 +17,4 @@ Tổng quan về project:
      - Nên lên kế hoạch kỹ hơn nữa
 
 Chúc mọi người một ngày vui vẻ, có thể xem clip demo dui dẻ ở dưới nha <3
+https://drive.google.com/file/d/1d8SAiu7ZhIjgL6JT042fV5iKdeuwFsD8/view?usp=sharing
