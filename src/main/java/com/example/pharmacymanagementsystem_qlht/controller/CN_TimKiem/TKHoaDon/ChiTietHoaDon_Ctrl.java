@@ -56,6 +56,7 @@ public class ChiTietHoaDon_Ctrl extends Application {
     public TableColumn<ChiTietHoaDon, Double> colNDonGia;
     public TableColumn<ChiTietHoaDon, Double> colNChietKhau;
     public TableColumn<ChiTietHoaDon, Double> colNThanhTien;
+    public TableColumn<ChiTietHoaDon,String> colMaLoHang;
     public Label lblMaHoaDonValue;
     public Label lblNgayLapValue;
     public Label lblTenNhanVienValue;
@@ -134,7 +135,6 @@ public class ChiTietHoaDon_Ctrl extends Application {
                 lblLoaiHoaDon.setText(isETC ? "Hóa đơn kê đơn (ETC)" : "Hóa đơn không kê đơn (OTC)");
             }
 
-            // Ẩn/Hiện trường Mã Đơn Thuốc
             if (lblMaDonThuocTitle != null) {
                 lblMaDonThuocTitle.setVisible(isETC);
                 lblMaDonThuocTitle.setManaged(isETC);
@@ -146,9 +146,7 @@ public class ChiTietHoaDon_Ctrl extends Application {
                     lblMaDonThuocValue.setText(safeStr(hoaDon.getMaDonThuoc()));
                 }
             }
-
         } else {
-            // Dự phòng cho các hóa đơn cũ chưa có dữ liệu
             if (lblLoaiHoaDon != null) lblLoaiHoaDon.setText("Không kê đơn (OTC)");
             if (lblMaDonThuocTitle != null) lblMaDonThuocTitle.setVisible(false);
             if (lblMaDonThuocValue != null) lblMaDonThuocValue.setVisible(false);
@@ -170,6 +168,18 @@ public class ChiTietHoaDon_Ctrl extends Application {
                 String ten = (lo != null && lo.getThuoc() != null) ? safeStr(lo.getThuoc().getTenThuoc()) : "";
                 String suffix = giftSuffix(row);
                 return new SimpleStringProperty(ten + suffix);
+            });
+        }
+
+        // === THÊM MỚI: Cột Mã Lô Hàng ===
+        if (colMaLoHang != null) {
+            colMaLoHang.setCellValueFactory(cel -> {
+                ChiTietHoaDon row = cel.getValue();
+                String maLo = "";
+                if (row != null && row.getLoHang() != null) {
+                    maLo = safeStr(row.getLoHang().getMaLH());
+                }
+                return new SimpleStringProperty(maLo);
             });
         }
 
@@ -241,6 +251,8 @@ public class ChiTietHoaDon_Ctrl extends Application {
         if (lblVAT != null)             lblVAT.setText(formatVNDLabel(vat));
         if (lblTongThanhToan != null)   lblTongThanhToan.setText(formatVNDLabel(tongThanhToan));
     }
+
+
     private String tenDonViGiaoDich(ChiTietHoaDon cthd) {
         if (cthd == null || cthd.getDvt() == null) {
             return "";
@@ -419,46 +431,49 @@ public class ChiTietHoaDon_Ctrl extends Application {
             }
         }
 
-        // 5. Thông tin khách hàng và nhân viên (ĐÃ CẬP NHẬT)
+        // 5. Thông tin khách hàng và nhân viên
         document.add(new Paragraph("THÔNG TIN GIAO DỊCH")
                 .setFontSize(14).setBold().setMarginTop(15));
         document.add(new Paragraph("Khách hàng: " + lblTenKhachHangValue.getText()));
         document.add(new Paragraph("Số điện thoại: " + lblSDTKhachHangValue.getText()));
-
-        // Ghi rõ nhân viên lập HĐ (người tạo HĐ gốc)
         document.add(new Paragraph("Nhân viên: " + lblTenNhanVienValue.getText()));
 
-        // ----- BẮT ĐẦU THÊM MỚI -----
-        // Lấy nhân viên đang đăng nhập (người in)
         String tenNhanVienIn = "Không rõ";
         if (DangNhap_Ctrl.user != null && DangNhap_Ctrl.user.getTenNV() != null) {
             tenNhanVienIn = DangNhap_Ctrl.user.getTenNV();
         }
 
-        // 6. Bảng chi tiết sản phẩm
+        // 6. Bảng chi tiết sản phẩm - THÊM CỘT MÃ LÔ
         document.add(new Paragraph("DANH SÁCH SẢN PHẨM")
                 .setFontSize(14).setBold().setMarginTop(15));
 
-        float[] columnWidths = {1, 5, 1.5f, 2, 2.5f, 2.5f, 3};
+        // Điều chỉnh số cột từ 7 → 8 và width tương ứng
+        float[] columnWidths = {0.8f, 4.5f, 2f, 1.2f, 1.5f, 2f, 2f, 2.5f};
         Table table = new Table(UnitValue.createPercentArray(columnWidths));
         table.setWidth(UnitValue.createPercentValue(100));
 
-        // Headers của bảng
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colNSTT.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colNTen.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colNSL.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colNDonVi.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colNDonGia.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colNChietKhau.getText()).setBold()));
-        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(colNThanhTien.getText()).setBold()));
+        // Headers của bảng - THÊM CỘT MÃ LÔ
+        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("STT").setBold()));
+        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Tên sản phẩm").setBold()));
+        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Mã lô").setBold()));
+        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("SL").setBold()));
+        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("ĐVT").setBold()));
+        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Đơn giá").setBold()));
+        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Giảm giá").setBold()));
+        table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Thành tiền").setBold()));
 
-        // Dữ liệu bảng
+        // Dữ liệu bảng - THÊM DỮ LIỆU MÃ LÔ
         int stt = 1;
         for (ChiTietHoaDon cthd : tblChiTietHoaDon.getItems()) {
             String tenSP = "";
-            if (cthd.getLoHang() != null && cthd.getLoHang().getThuoc() != null) {
-                tenSP = safeStr(cthd.getLoHang().getThuoc().getTenThuoc()) + giftSuffix(cthd);
+            String maLo = "";
+            if (cthd.getLoHang() != null) {
+                if (cthd.getLoHang().getThuoc() != null) {
+                    tenSP = safeStr(cthd.getLoHang().getThuoc().getTenThuoc()) + giftSuffix(cthd);
+                }
+                maLo = safeStr(cthd.getLoHang().getMaLH());
             }
+
             int soLuong = cthd.getSoLuong();
             String donVi = tenDonViGiaoDich(cthd);
             double donGia = cthd.getDonGia();
@@ -467,8 +482,9 @@ public class ChiTietHoaDon_Ctrl extends Application {
 
             table.addCell(String.valueOf(stt++));
             table.addCell(tenSP);
+            table.addCell(maLo).setTextAlignment(TextAlignment.CENTER);
             table.addCell(String.valueOf(soLuong)).setTextAlignment(TextAlignment.CENTER);
-            table.addCell(donVi);
+            table.addCell(donVi).setTextAlignment(TextAlignment.CENTER);
             table.addCell(formatVNDTable(donGia)).setTextAlignment(TextAlignment.RIGHT);
             table.addCell(formatVNDTable(chietKhau)).setTextAlignment(TextAlignment.RIGHT);
             table.addCell(formatVNDTable(thanhTien)).setTextAlignment(TextAlignment.RIGHT);
