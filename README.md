@@ -1,4 +1,5 @@
-Project là sản phẩm của Nhóm 2 khi học môn học Phát triển ứng dụng 
+Project là sản phẩm của Nhóm 2 khi học môn học Phát triển ứng dụng !!!
+
 Tổng quan về project:
   1. Ngôn ngữ: sử dụng java + database sql
   2. Công nghệ: ban đầu sử dụng thư viện javafx + thiết kế giao diện ở dạng file .fxml nhưng đã đổi lại thuần java (thầy la)
@@ -15,4 +16,4 @@ Tổng quan về project:
      - Nếu là chủ đề thầy cho phải hỏi thầy thật kỹ để không lạc đề
      - Nên lên kế hoạch kỹ hơn nữa
 
-Chúc mọi người một ngày vui vẻ, có thể xem clip demo dui dẻ ở dưới nha
+Chúc mọi người một ngày vui vẻ, có thể xem clip demo dui dẻ ở dưới nha <3
