@@ -136,7 +136,39 @@ public class ChiTietHoaDon_GUI {
         ctrl.colNThanhTien.setPrefWidth(149);
         ctrl.colNThanhTien.setStyle("-fx-alignment: CENTER;");
 
-        ctrl.tblChiTietHoaDon.getColumns().addAll(ctrl.colNSTT, ctrl.colNTen, ctrl.colNSL, ctrl.colNDonVi, ctrl.colNDonGia, ctrl.colNChietKhau, ctrl.colNThanhTien);
+        // Thêm khai báo cột mới trong Controller
+        ctrl.colMaLoHang = new TableColumn<>("Mã lô");
+        ctrl.colMaLoHang.setPrefWidth(100);
+        ctrl.colMaLoHang.setStyle("-fx-alignment: CENTER;");
+
+        // Điều chỉnh lại width các cột
+        ctrl.colNSTT.setPrefWidth(50);
+
+        ctrl.colNTen.setPrefWidth(345);
+
+        ctrl.colMaLoHang.setPrefWidth(100); // Cột mới
+
+        ctrl.colNSL.setPrefWidth(90);  // Giảm từ 130 → 90
+
+        ctrl.colNDonVi.setPrefWidth(80);  // Giảm từ 103 → 80
+
+        ctrl.colNDonGia.setPrefWidth(120);  // Giảm từ 170 → 120
+
+        ctrl.colNChietKhau.setPrefWidth(110);  // Giảm từ 148 → 110
+
+        ctrl.colNThanhTien.setPrefWidth(135);  // Giảm từ 149 → 135
+
+        // Thêm cột vào table theo đúng thứ tự
+        ctrl.tblChiTietHoaDon.getColumns().addAll(
+                ctrl.colNSTT,
+                ctrl.colNTen,
+                ctrl.colMaLoHang,  // Thêm cột mới sau Tên SP
+                ctrl.colNSL,
+                ctrl.colNDonVi,
+                ctrl.colNDonGia,
+                ctrl.colNChietKhau,
+                ctrl.colNThanhTien
+        );
 
         Label lblTitle = new Label("CHI TIẾT HÓA ĐƠN");
         lblTitle.setLayoutX(10);

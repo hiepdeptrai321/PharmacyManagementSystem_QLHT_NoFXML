@@ -1689,13 +1689,15 @@ public void xuLyThemKH() {
         anQR();
         dangThanhToan = false;
     }
+
     private void allocateLotsAutomatically(Connection con, List<ChiTietHoaDon> chiTietList) throws SQLException {
         Thuoc_SP_TheoLo_Dao loDao = new Thuoc_SP_TheoLo_Dao();
         Map<String, List<Thuoc_SP_TheoLo>> lotCache = new HashMap<>();
-        // luu sl co ban can giam theo dong
         Map<ChiTietHoaDon, Integer> baseQtyToReduce = new IdentityHashMap<>();
 
-        // lap tung dong trong gio hang
+        // Danh sách mới để chứa các dòng sau khi tách lô
+        List<ChiTietHoaDon> expandedList = new ArrayList<>();
+
         for (ChiTietHoaDon original : chiTietList) {
             if (original == null || original.getLoHang() == null || original.getLoHang().getThuoc() == null) {
                 throw new IllegalStateException("Thông tin sản phẩm trong giỏ hàng không hợp lệ.");
@@ -1706,51 +1708,78 @@ public void xuLyThemKH() {
             int requestedDisplayQty = Math.max(0, original.getSoLuong());
             if (requestedDisplayQty <= 0) continue;
 
-            // 1. Lấy dvt co ban cua dòng gốc
+            // Lấy đơn vị và hệ số quy đổi
             ChiTietDonViTinh dvtGoc = dvtOf(original);
             if (dvtGoc == null) dvtGoc = layDVTCoBan(sp);
             double heSoGoc = heSo(dvtGoc);
-            original.setDvt(dvtGoc.getDvt());
 
-            // 2. Tính tổng số lượng cơ bản cần thiết
+            // Tính tổng số lượng cơ bản cần thiết
             int neededBaseQty = (int) Math.round(requestedDisplayQty * heSoGoc);
 
-
+            // Lấy danh sách lô
             List<Thuoc_SP_TheoLo> danhSachLo = lotCache.get(maThuoc);
             if (danhSachLo == null) {
                 danhSachLo = loDao.selectAllAvailableLots(con, maThuoc);
-                lotCache.put(maThuoc, danhSachLo); // Lưu vào cache
+                lotCache.put(maThuoc, danhSachLo);
             }
 
             if (danhSachLo == null || danhSachLo.isEmpty()) {
-                throw new IllegalStateException("Không đủ hàng cho sản phẩm: " + sp.getTenThuoc());
+                throw new IllegalStateException("Không có lô hàng cho sản phẩm: " + sp.getTenThuoc());
             }
 
-            // 4. Tìm lô phù hơp
-            Thuoc_SP_TheoLo selectedLot = null;
+            // Tính tổng tồn kho
+            int tongTon = danhSachLo.stream().mapToInt(Thuoc_SP_TheoLo::getSoLuongTon).sum();
+            if (tongTon < neededBaseQty) {
+                throw new IllegalStateException(
+                        "Không đủ hàng cho " + sp.getTenThuoc() +
+                                ". Cần: " + neededBaseQty + ", Còn: " + tongTon
+                );
+            }
+
+            // PHÂN BỔ QUA NHIỀU LÔ
+            int remainingQty = neededBaseQty;
+
             for (Thuoc_SP_TheoLo lo : danhSachLo) {
-                if (lo.getSoLuongTon() >= neededBaseQty) {
-                    selectedLot = lo;
-                    break;
-                }
+                if (remainingQty <= 0) break;
+
+                int available = lo.getSoLuongTon();
+                if (available <= 0) continue;
+
+                int allocated = Math.min(available, remainingQty);
+
+                // Tạo dòng mới cho mỗi lô
+                ChiTietHoaDon newLine = new ChiTietHoaDon();
+                newLine.setLoHang(lo);
+                newLine.setDvt(dvtGoc.getDvt());
+
+                // Chuyển đổi số lượng cơ bản về đơn vị hiển thị
+                int displayQty = (int) Math.round(allocated / heSoGoc);
+                newLine.setSoLuong(displayQty);
+                newLine.setDonGia(original.getDonGia());
+                newLine.setGiamGia(original.getGiamGia());
+
+                expandedList.add(newLine);
+                baseQtyToReduce.put(newLine, allocated);
+
+                // Cập nhật tồn kho tạm thời
+                lo.setSoLuongTon(available - allocated);
+                remainingQty -= allocated;
             }
 
-            // 5. Kiểm tra kết quả
-            if (selectedLot == null) {
-                throw new IllegalStateException("Không tìm thấy lô nào đủ " + neededBaseQty
-                        + " (đv cơ bản) cho " + requestedDisplayQty + " " + dvtGoc.getDvt().getTenDonViTinh()
-                        + " " + sp.getTenThuoc());
+            if (remainingQty > 0) {
+                throw new IllegalStateException(
+                        "Không thể phân bổ đủ " + neededBaseQty +
+                                " cho " + sp.getTenThuoc()
+                );
             }
-
-            // 6. Gán lô đã chọn vào origi
-            original.setLoHang(selectedLot);
-
-            selectedLot.setSoLuongTon(selectedLot.getSoLuongTon() - neededBaseQty);
-            baseQtyToReduce.put(original, neededBaseQty);
         }
-        this.baseQtyMap = baseQtyToReduce;
 
+        // Cập nhật lại danh sách chi tiết
+        chiTietList.clear();
+        chiTietList.addAll(expandedList);
+        this.baseQtyMap = baseQtyToReduce;
     }
+
     public void loadDataFromMaPhieuDat(String maPhieuDat) {
         if (maPhieuDat == null || maPhieuDat.isBlank()) return;
 
